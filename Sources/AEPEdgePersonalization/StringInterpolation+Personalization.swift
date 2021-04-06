@@ -10,9 +10,16 @@
  governing permissions and limitations under the License.
  */
 
-enum PersonalizationConstants {
-    static let EXTENSION_NAME = "com.adobe.edge.personalization"
-    static let FRIENDLY_NAME = "Edge Personalization"
-    static let EXTENSION_VERSION = "1.0.0"
-    static let LOG_TAG = FRIENDLY_NAME
+import Foundation
+
+// MARK: StringInterpolation Extensions
+
+extension String.StringInterpolation {
+    mutating func appendInterpolation(activityId: String, placementId: String, itemCount: UInt) {
+        if itemCount > 1 {
+            appendInterpolation("{\"activityId\":\"\(activityId)\",\"placementId\":\"\(placementId)\",\"itemCount\":\(itemCount)}")
+        } else {
+            appendInterpolation("{\"activityId\":\"\(activityId)\",\"placementId\":\"\(placementId)\"}")
+        }
+    }
 }
