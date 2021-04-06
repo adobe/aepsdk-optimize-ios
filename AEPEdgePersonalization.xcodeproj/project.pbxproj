@@ -8,7 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		2E87F2BD58FB15D6C57F5A51 /* Pods_AEPEdgePersonalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5237AAF8AAE9850DEDEA2C88 /* Pods_AEPEdgePersonalization.framework */; };
+		3AEB05F692581AAC67BB2B85 /* Pods_FunctionalTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EE07424FC1DD074D8B9FD0C /* Pods_FunctionalTests.framework */; };
 		41CB4F5069B6936944DDB6B1 /* Pods_UnitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9C2F3CA52295A7E3D1705 /* Pods_UnitTests.framework */; };
+		C8276BE4261EC74F00508873 /* Array+Personalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8276BE3261EC74F00508873 /* Array+Personalization.swift */; };
 		C88C5E932613249C003AE3DE /* Personalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5E8F2613249C003AE3DE /* Personalization.swift */; };
 		C88C5E942613249C003AE3DE /* AEPEdgePersonalization.h in Headers */ = {isa = PBXBuildFile; fileRef = C88C5E902613249C003AE3DE /* AEPEdgePersonalization.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C88C5E952613249C003AE3DE /* PersonalizationConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5E912613249C003AE3DE /* PersonalizationConstants.swift */; };
@@ -23,10 +25,26 @@
 		C88C5F3326185EF8003AE3DE /* StringInterpolation+Personalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F3226185EF4003AE3DE /* StringInterpolation+Personalization.swift */; };
 		C88C5F4126187F0B003AE3DE /* String+Personalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F4026187F0A003AE3DE /* String+Personalization.swift */; };
 		C88C5F56261C3F6A003AE3DE /* PropositionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F55261C3F69003AE3DE /* PropositionTests.swift */; };
+		C88C5F7A261D06A6003AE3DE /* Personalization+PublicAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F79261D06A5003AE3DE /* Personalization+PublicAPI.swift */; };
+		C88C5FA4261D649A003AE3DE /* AEPEdgePersonalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPEdgePersonalization.framework */; };
+		C88C5FB1261D6545003AE3DE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C88C5FAF261D6545003AE3DE /* Info.plist */; };
+		C88C5FDA261D8EE3003AE3DE /* PersonalizationPublicAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5FBE261D6602003AE3DE /* PersonalizationPublicAPITests.swift */; };
+		C88C5FE3261D8FBF003AE3DE /* MockExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5FE2261D8FBF003AE3DE /* MockExtension.swift */; };
+		C88C5FEA261D9AD0003AE3DE /* EventHub+PersonalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5FB9261D65AD003AE3DE /* EventHub+PersonalizationTests.swift */; };
+		C88C5FF2261D9E00003AE3DE /* PersonalizationFunctionalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5FF1261D9E00003AE3DE /* PersonalizationFunctionalTests.swift */; };
 		C892B4F22612DC84007FE5C5 /* AEPEdgePersonalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPEdgePersonalization.framework */; };
+		C8CA1654261EF29E005B09A0 /* Event+Personalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA1653261EF29E005B09A0 /* Event+Personalization.swift */; };
+		C8CA1666261F6AD0005B09A0 /* ExperienceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA1665261F6AD0005B09A0 /* ExperienceData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		C88C5FA5261D649A003AE3DE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C892B487260EAC74007FE5C5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C892B48F260EAC74007FE5C5;
+			remoteInfo = AEPEdgePersonalization;
+		};
 		C892B4F32612DC84007FE5C5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C892B487260EAC74007FE5C5 /* Project object */;
@@ -41,6 +59,8 @@
 		5237AAF8AAE9850DEDEA2C88 /* Pods_AEPEdgePersonalization.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AEPEdgePersonalization.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74B9C2F3CA52295A7E3D1705 /* Pods_UnitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UnitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83FC35562E7450747904E39C /* Pods-UnitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnitTests.release.xcconfig"; path = "Target Support Files/Pods-UnitTests/Pods-UnitTests.release.xcconfig"; sourceTree = "<group>"; };
+		9EE07424FC1DD074D8B9FD0C /* Pods_FunctionalTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FunctionalTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C8276BE3261EC74F00508873 /* Array+Personalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Personalization.swift"; sourceTree = "<group>"; };
 		C88C5E8F2613249C003AE3DE /* Personalization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Personalization.swift; sourceTree = "<group>"; };
 		C88C5E902613249C003AE3DE /* AEPEdgePersonalization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEPEdgePersonalization.h; sourceTree = "<group>"; };
 		C88C5E912613249C003AE3DE /* PersonalizationConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalizationConstants.swift; sourceTree = "<group>"; };
@@ -57,13 +77,33 @@
 		C88C5F3226185EF4003AE3DE /* StringInterpolation+Personalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringInterpolation+Personalization.swift"; sourceTree = "<group>"; };
 		C88C5F4026187F0A003AE3DE /* String+Personalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Personalization.swift"; sourceTree = "<group>"; };
 		C88C5F55261C3F69003AE3DE /* PropositionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropositionTests.swift; sourceTree = "<group>"; };
+		C88C5F79261D06A5003AE3DE /* Personalization+PublicAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Personalization+PublicAPI.swift"; sourceTree = "<group>"; };
+		C88C5F9F261D6499003AE3DE /* FunctionalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FunctionalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C88C5FAF261D6545003AE3DE /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C88C5FB9261D65AD003AE3DE /* EventHub+PersonalizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EventHub+PersonalizationTests.swift"; sourceTree = "<group>"; };
+		C88C5FBE261D6602003AE3DE /* PersonalizationPublicAPITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalizationPublicAPITests.swift; sourceTree = "<group>"; };
+		C88C5FE2261D8FBF003AE3DE /* MockExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockExtension.swift; sourceTree = "<group>"; };
+		C88C5FF1261D9E00003AE3DE /* PersonalizationFunctionalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalizationFunctionalTests.swift; sourceTree = "<group>"; };
 		C892B490260EAC74007FE5C5 /* AEPEdgePersonalization.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AEPEdgePersonalization.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C892B4ED2612DC84007FE5C5 /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C8CA1653261EF29E005B09A0 /* Event+Personalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Event+Personalization.swift"; sourceTree = "<group>"; };
+		C8CA1665261F6AD0005B09A0 /* ExperienceData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperienceData.swift; sourceTree = "<group>"; };
 		EE8A689046136AC61038271D /* Pods-UnitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnitTests.debug.xcconfig"; path = "Target Support Files/Pods-UnitTests/Pods-UnitTests.debug.xcconfig"; sourceTree = "<group>"; };
+		F41CCB211E0AC213CB539097 /* Pods-FunctionalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FunctionalTests.release.xcconfig"; path = "Target Support Files/Pods-FunctionalTests/Pods-FunctionalTests.release.xcconfig"; sourceTree = "<group>"; };
 		F58FEDB703638AF8D0DCB35B /* Pods-AEPEdgePersonalization.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEPEdgePersonalization.debug.xcconfig"; path = "Target Support Files/Pods-AEPEdgePersonalization/Pods-AEPEdgePersonalization.debug.xcconfig"; sourceTree = "<group>"; };
+		F9DF9898D8A50504F485C58E /* Pods-FunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-FunctionalTests/Pods-FunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		C88C5F9C261D6499003AE3DE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C88C5FA4261D649A003AE3DE /* AEPEdgePersonalization.framework in Frameworks */,
+				3AEB05F692581AAC67BB2B85 /* Pods_FunctionalTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C892B48D260EAC74007FE5C5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -89,6 +129,7 @@
 			children = (
 				5237AAF8AAE9850DEDEA2C88 /* Pods_AEPEdgePersonalization.framework */,
 				74B9C2F3CA52295A7E3D1705 /* Pods_UnitTests.framework */,
+				9EE07424FC1DD074D8B9FD0C /* Pods_FunctionalTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -100,6 +141,8 @@
 				2D18351243B271451E8EAA1C /* Pods-AEPEdgePersonalization.release.xcconfig */,
 				EE8A689046136AC61038271D /* Pods-UnitTests.debug.xcconfig */,
 				83FC35562E7450747904E39C /* Pods-UnitTests.release.xcconfig */,
+				F9DF9898D8A50504F485C58E /* Pods-FunctionalTests.debug.xcconfig */,
+				F41CCB211E0AC213CB539097 /* Pods-FunctionalTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -136,6 +179,7 @@
 		C88C5E9C261324E8003AE3DE /* AEPEdgePersonalizationTests */ = {
 			isa = PBXGroup;
 			children = (
+				C88C5FAD261D6545003AE3DE /* FunctionalTests */,
 				C88C5E9D26132525003AE3DE /* UnitTests */,
 			);
 			path = AEPEdgePersonalizationTests;
@@ -144,7 +188,9 @@
 		C88C5E9D26132525003AE3DE /* UnitTests */ = {
 			isa = PBXGroup;
 			children = (
+				C88C5FE1261D8F25003AE3DE /* Mocks */,
 				C88C5EA02613255F003AE3DE /* Info.plist */,
+				C88C5FBE261D6602003AE3DE /* PersonalizationPublicAPITests.swift */,
 				C88C5F1E2615916D003AE3DE /* DecisionScopeTests.swift */,
 				C88C5F0326152390003AE3DE /* OfferTests.swift */,
 				C88C5F262615A057003AE3DE /* OfferTypeTests.swift */,
@@ -157,10 +203,12 @@
 		C88C5F1726154621003AE3DE /* Public */ = {
 			isa = PBXGroup;
 			children = (
+				C88C5F79261D06A5003AE3DE /* Personalization+PublicAPI.swift */,
 				C88C5F1126152DAB003AE3DE /* DecisionScope.swift */,
 				C88C5EDC2614F640003AE3DE /* Offer.swift */,
 				C88C5EE02614F693003AE3DE /* OfferType.swift */,
 				C88C5F0D26152CFF003AE3DE /* Proposition.swift */,
+				C8CA1665261F6AD0005B09A0 /* ExperienceData.swift */,
 			);
 			name = Public;
 			sourceTree = "<group>";
@@ -170,8 +218,36 @@
 			children = (
 				C88C5F3226185EF4003AE3DE /* StringInterpolation+Personalization.swift */,
 				C88C5F4026187F0A003AE3DE /* String+Personalization.swift */,
+				C8276BE3261EC74F00508873 /* Array+Personalization.swift */,
+				C8CA1653261EF29E005B09A0 /* Event+Personalization.swift */,
 			);
 			name = Utils;
+			sourceTree = "<group>";
+		};
+		C88C5FAD261D6545003AE3DE /* FunctionalTests */ = {
+			isa = PBXGroup;
+			children = (
+				C88C5FB8261D65AD003AE3DE /* TestHelpers */,
+				C88C5FAF261D6545003AE3DE /* Info.plist */,
+				C88C5FF1261D9E00003AE3DE /* PersonalizationFunctionalTests.swift */,
+			);
+			path = FunctionalTests;
+			sourceTree = "<group>";
+		};
+		C88C5FB8261D65AD003AE3DE /* TestHelpers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = TestHelpers;
+			sourceTree = "<group>";
+		};
+		C88C5FE1261D8F25003AE3DE /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				C88C5FE2261D8FBF003AE3DE /* MockExtension.swift */,
+				C88C5FB9261D65AD003AE3DE /* EventHub+PersonalizationTests.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 		C892B486260EAC74007FE5C5 = {
@@ -190,6 +266,7 @@
 			children = (
 				C892B490260EAC74007FE5C5 /* AEPEdgePersonalization.framework */,
 				C892B4ED2612DC84007FE5C5 /* UnitTests.xctest */,
+				C88C5F9F261D6499003AE3DE /* FunctionalTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -208,6 +285,26 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		C88C5F9E261D6499003AE3DE /* FunctionalTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C88C5FA7261D649A003AE3DE /* Build configuration list for PBXNativeTarget "FunctionalTests" */;
+			buildPhases = (
+				76A0AA98420F093814A001FF /* [CP] Check Pods Manifest.lock */,
+				C88C5F9B261D6499003AE3DE /* Sources */,
+				C88C5F9C261D6499003AE3DE /* Frameworks */,
+				C88C5F9D261D6499003AE3DE /* Resources */,
+				61237D260AE1FFFEB4D9E453 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C88C5FA6261D649A003AE3DE /* PBXTargetDependency */,
+			);
+			name = FunctionalTests;
+			productName = FunctionalTests;
+			productReference = C88C5F9F261D6499003AE3DE /* FunctionalTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		C892B48F260EAC74007FE5C5 /* AEPEdgePersonalization */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C892B498260EAC74007FE5C5 /* Build configuration list for PBXNativeTarget "AEPEdgePersonalization" */;
@@ -256,6 +353,9 @@
 				LastSwiftUpdateCheck = 1230;
 				LastUpgradeCheck = 1230;
 				TargetAttributes = {
+					C88C5F9E261D6499003AE3DE = {
+						CreatedOnToolsVersion = 12.3;
+					};
 					C892B48F260EAC74007FE5C5 = {
 						CreatedOnToolsVersion = 12.3;
 						LastSwiftMigration = 1230;
@@ -281,11 +381,20 @@
 			targets = (
 				C892B48F260EAC74007FE5C5 /* AEPEdgePersonalization */,
 				C892B4EC2612DC84007FE5C5 /* UnitTests */,
+				C88C5F9E261D6499003AE3DE /* FunctionalTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		C88C5F9D261D6499003AE3DE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C88C5FB1261D6545003AE3DE /* Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C892B48E260EAC74007FE5C5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -303,6 +412,45 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		61237D260AE1FFFEB4D9E453 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FunctionalTests/Pods-FunctionalTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FunctionalTests/Pods-FunctionalTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FunctionalTests/Pods-FunctionalTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		76A0AA98420F093814A001FF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FunctionalTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		A6312654F9A6FD3B985C242F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -367,17 +515,29 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		C88C5F9B261D6499003AE3DE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C88C5FF2261D9E00003AE3DE /* PersonalizationFunctionalTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C892B48C260EAC74007FE5C5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				C88C5EDD2614F640003AE3DE /* Offer.swift in Sources */,
 				C88C5F3326185EF8003AE3DE /* StringInterpolation+Personalization.swift in Sources */,
+				C8CA1654261EF29E005B09A0 /* Event+Personalization.swift in Sources */,
+				C88C5F7A261D06A6003AE3DE /* Personalization+PublicAPI.swift in Sources */,
 				C88C5F0E26152CFF003AE3DE /* Proposition.swift in Sources */,
 				C88C5F1226152DAB003AE3DE /* DecisionScope.swift in Sources */,
 				C88C5E952613249C003AE3DE /* PersonalizationConstants.swift in Sources */,
 				C88C5EE12614F693003AE3DE /* OfferType.swift in Sources */,
 				C88C5F4126187F0B003AE3DE /* String+Personalization.swift in Sources */,
+				C8CA1666261F6AD0005B09A0 /* ExperienceData.swift in Sources */,
+				C8276BE4261EC74F00508873 /* Array+Personalization.swift in Sources */,
 				C88C5E932613249C003AE3DE /* Personalization.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -387,16 +547,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				C88C5F0A261523A4003AE3DE /* OfferTests.swift in Sources */,
+				C88C5FE3261D8FBF003AE3DE /* MockExtension.swift in Sources */,
 				C88C5F1F2615916D003AE3DE /* DecisionScopeTests.swift in Sources */,
 				C88C5F56261C3F6A003AE3DE /* PropositionTests.swift in Sources */,
 				C88C5F272615A057003AE3DE /* OfferTypeTests.swift in Sources */,
+				C88C5FDA261D8EE3003AE3DE /* PersonalizationPublicAPITests.swift in Sources */,
 				C88C5EA82613257A003AE3DE /* PersonalizationTests.swift in Sources */,
+				C88C5FEA261D9AD0003AE3DE /* EventHub+PersonalizationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		C88C5FA6261D649A003AE3DE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C892B48F260EAC74007FE5C5 /* AEPEdgePersonalization */;
+			targetProxy = C88C5FA5261D649A003AE3DE /* PBXContainerItemProxy */;
+		};
 		C892B4F42612DC84007FE5C5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C892B48F260EAC74007FE5C5 /* AEPEdgePersonalization */;
@@ -405,6 +573,44 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		C88C5FA8261D649A003AE3DE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F9DF9898D8A50504F485C58E /* Pods-FunctionalTests.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = FKGEE875K4;
+				INFOPLIST_FILE = FunctionalTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.adobe.aep.FunctionalTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C88C5FA9261D649A003AE3DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F41CCB211E0AC213CB539097 /* Pods-FunctionalTests.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = FKGEE875K4;
+				INFOPLIST_FILE = FunctionalTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.adobe.aep.FunctionalTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		C892B496260EAC74007FE5C5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -630,6 +836,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C88C5FA7261D649A003AE3DE /* Build configuration list for PBXNativeTarget "FunctionalTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C88C5FA8261D649A003AE3DE /* Debug */,
+				C88C5FA9261D649A003AE3DE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C892B48A260EAC74007FE5C5 /* Build configuration list for PBXProject "AEPEdgePersonalization" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

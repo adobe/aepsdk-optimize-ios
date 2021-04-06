@@ -37,28 +37,54 @@ public class DecisionScope: NSObject, Codable {
     /// otherwise,
     ///
     ///     {"activityId":#activityId,"placementId":#placementId}
-    ///
-    /// The initializer returns `nil` in the following cases:
-    /// - `activityId` or `placementId` is empty.
-    /// - `itemCount` is 0.
-    /// - Base64 encode fails for the JSON string from the provided data.
     /// - Parameters:
     ///   - activityId: unique activity identifier for the decisioning activity.
     ///   - placementId: unique placement identifier for the decisioning activity offer.
     ///   - itemCount: number of offers to be returned from the server.
     @objc
-    public convenience init?(activityId: String, placementId: String, itemCount: UInt = 1) {
-        if activityId.isEmpty || placementId.isEmpty || itemCount == 0 {
-            Log.debug(label: PersonalizationConstants.LOG_TAG,
-                      "DecisionScope init failed! Provided activityId/ placementId is empty or itemCount is 0.")
-            return nil
+    public convenience init(activityId: String, placementId: String, itemCount: UInt = 1) {
+        let name = "\(activityId: activityId, placementId: placementId, itemCount: itemCount)".base64Encode()
+
+        self.init(name: name ?? "")
+    }
+
+    /// Checks whether the decision scope has a valid name.
+    var isValid: Bool {
+        if name.isEmpty {
+            Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope! Scope name is empty.")
+            return false
         }
 
-        guard let name = "\(activityId: activityId, placementId: placementId, itemCount: itemCount)".base64Encode() else {
-            Log.debug(label: PersonalizationConstants.LOG_TAG, "DecisionScope init failed! Unable to create Base64 encoded scope string.")
-            return nil
-        }
+        if let decodedName = name.base64Decode() {
+            guard
+                let decodedData = decodedName.data(using: .utf8),
+                let dictionary = try? JSONSerialization.jsonObject(with: decodedData) as? [String: Any]
+            else {
+                Log.debug(label: PersonalizationConstants.LOG_TAG, "Failed to decode scope data.")
+                return false
+            }
 
-        self.init(name: name)
+            guard let activityId = dictionary[PersonalizationConstants.ACTIVITY_ID] as? String,
+                  !activityId.isEmpty
+            else {
+                Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope! Activity Id is nil or empty.")
+                return false
+            }
+
+            guard let placementId = dictionary[PersonalizationConstants.PLACEMENT_ID] as? String,
+                  !placementId.isEmpty
+            else {
+                Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope! Placement Id is nil or empty.")
+                return false
+            }
+
+            let itemCount = dictionary[PersonalizationConstants.ITEM_COUNT] as? Int ?? 1
+            if itemCount == 0 {
+                Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope! itemCount is 0.")
+                return false
+            }
+        }
+        Log.trace(label: PersonalizationConstants.LOG_TAG, "Decision scope is valid.")
+        return true
     }
 }
