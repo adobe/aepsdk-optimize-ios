@@ -4,6 +4,7 @@
 
 The AEP Mobile Personalization SDK Extension provides APIs to enable real-time personalization workflows in Adobe Experience Platform SDKs using the Edge decisioning services. It depends on AEPCore and requires AEPEdge Extension to send personalization query Events to the Experience Edge network.
 
+
 ## Requirements
 - Xcode 11.0 (or newer)
 - Swift 5.1 (or newer)
