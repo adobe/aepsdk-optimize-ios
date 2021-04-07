@@ -24,7 +24,7 @@ class DecisionScopeTests: XCTestCase {
         let decisionScope = DecisionScope(name: "")
         XCTAssertEqual("", decisionScope.name)
     }
-    
+
     func testConvenienceInit_withDefaultItemCount() {
         guard let decisionScope = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
                                                 placementId: "xcore:offer-placement:1111111111111111")
@@ -32,39 +32,38 @@ class DecisionScopeTests: XCTestCase {
             XCTFail("Decision Scope should not be nil.")
             return
         }
-            
+
         XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", decisionScope.name)
     }
-    
+
     func testConvenienceInit_withItemCount() {
-        guard let decisionScope = DecisionScope(activityId:"xcore:offer-activity:1111111111111111",
+        guard let decisionScope = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
                                                 placementId: "xcore:offer-placement:1111111111111111",
                                                 itemCount: 10)
         else {
             XCTFail("Decision Scope should not be nil.")
             return
         }
-        
+
         XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEiLCJpdGVtQ291bnQiOjEwfQ==", decisionScope.name)
     }
-    
+
     func testConvenienceInit_withEmptyActivityId() {
         let decisionScope = DecisionScope(activityId: "",
                                           placementId: "xcore:offer-placement:1111111111111111")
         XCTAssertNil(decisionScope)
     }
-    
+
     func testConvenienceInit_withEmptyPlacementId() {
         let decisionScope = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
                                           placementId: "")
         XCTAssertNil(decisionScope)
     }
-    
+
     func testConvenienceInit_withZeroItemCount() {
         let decisionScope = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
                                           placementId: "xcore:offer-placement:1111111111111111",
                                           itemCount: 0)
         XCTAssertNil(decisionScope)
     }
-
 }

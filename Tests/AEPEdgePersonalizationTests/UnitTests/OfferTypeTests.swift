@@ -9,7 +9,7 @@ the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTA
 OF ANY KIND, either express or implied. See the License for the specific language
 governing permissions and limitations under the License.
 */
-    
+
 @testable import AEPEdgePersonalization
 import XCTest
 
@@ -19,52 +19,52 @@ class OfferTypeTests: XCTestCase {
         let jsonOfferType = OfferType(rawValue: 1)
         XCTAssertEqual(.json, jsonOfferType)
     }
-    
+
     func testOfferTypeInit_textFromRawValue() {
         let textOfferType = OfferType(rawValue: 2)
         XCTAssertEqual(.text, textOfferType)
     }
-    
+
     func testOfferTypeInit_htmlFromRawValue() {
         let htmlOfferType = OfferType(rawValue: 3)
         XCTAssertEqual(.html, htmlOfferType)
     }
-    
+
     func testOfferTypeInit_ImageFromRawValue() {
         let imageOfferType = OfferType(rawValue: 4)
         XCTAssertEqual(.image, imageOfferType)
     }
-    
+
     func testOfferTypeInit_unknownFromRawValue() {
         let unknownOfferType = OfferType(rawValue: 0)
         XCTAssertEqual(.unknown, unknownOfferType)
     }
-    
+
     func testOfferTypeInit_invalidFromRawValue() {
         let invalidOfferType = OfferType(rawValue: 100)
         XCTAssertNil(invalidOfferType)
     }
-    
+
     func testOfferTypeInit_jsonFromFormat() {
         let offerType = OfferType(from: "application/json")
         XCTAssertEqual(.json, offerType)
     }
-    
+
     func testOfferTypeInit_textFromFormat() {
         let offerType = OfferType(from: "text/plain")
         XCTAssertEqual(.text, offerType)
     }
-    
+
     func testOfferTypeInit_htmlFromFormat() {
         let offerType = OfferType(from: "text/html")
         XCTAssertEqual(.html, offerType)
     }
-    
+
     func testOfferTypeInit_imageFromFormat() {
         let offerType = OfferType(from: "image/png")
         XCTAssertEqual(.image, offerType)
     }
-    
+
     func testOfferTypeInit_unknownFromFormat() {
         let offerType = OfferType(from: "*/*")
         XCTAssertEqual(.unknown, offerType)

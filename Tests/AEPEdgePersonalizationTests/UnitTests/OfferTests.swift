@@ -34,7 +34,7 @@ class OfferTests: XCTestCase {
     }\
 }
 """
-    
+
     private let TEXT_OFFER =
 """
 {\
@@ -54,7 +54,7 @@ class OfferTests: XCTestCase {
     }\
 }
 """
-    
+
     private let HTML_OFFER =
 """
 {\
@@ -74,7 +74,7 @@ class OfferTests: XCTestCase {
     }\
 }
 """
-    
+
     private let IMAGE_OFFER =
 """
 {\
@@ -94,6 +94,7 @@ class OfferTests: XCTestCase {
     }\
 }
 """
+
     // PDCL-4528 & PDCL-4703
     private let TARGET_OFFER =
 """
@@ -120,7 +121,7 @@ class OfferTests: XCTestCase {
     }\
 }
 """
-    
+
     private let OFFER_INVALID =
 """
 {\
@@ -133,7 +134,7 @@ class OfferTests: XCTestCase {
     }\
 }
 """
-    
+
     func testJsonOffer() throws {
         guard let offerData = JSON_OFFER.data(using: .utf8),
               let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
@@ -171,7 +172,7 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("true", offer.characteristics?["mobile"])
         
     }
-    
+
     func testHtmlOffer() throws {
         guard let offerData = HTML_OFFER.data(using: .utf8),
               let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
@@ -190,7 +191,7 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("true", offer.characteristics?["mobile"])
         
     }
-    
+
     func testImageOffer() throws {
         guard let offerData = IMAGE_OFFER.data(using: .utf8),
               let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
@@ -208,7 +209,7 @@ class OfferTests: XCTestCase {
         XCTAssertEqual(1, offer.characteristics?.count)
         XCTAssertEqual("true", offer.characteristics?["mobile"])
     }
-    
+
     func testOffer_validFromTarget() throws {
         guard let offerData = TARGET_OFFER.data(using: .utf8),
               let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
@@ -224,7 +225,7 @@ class OfferTests: XCTestCase {
         XCTAssertNil(offer.language)
         XCTAssertNil(offer.characteristics)
     }
-    
+
     func testOffer_minimal() throws {
         guard let offerData = OFFER_MINIMAL.data(using: .utf8),
               let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
@@ -240,7 +241,7 @@ class OfferTests: XCTestCase {
         XCTAssertNil(offer.language)
         XCTAssertNil(offer.characteristics)
     }
-    
+
     func testOffer_invalid() throws {
         guard let offerData = OFFER_INVALID.data(using: .utf8) else {
             XCTFail("Offer json data should be valid.")

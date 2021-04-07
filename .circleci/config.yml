@@ -61,7 +61,7 @@ jobs:
 
       - run: 
           name: Swift Linting
-          command: make lint
+          command: swiftlint lint Sources/AEPEdgePersonalization
 
       - run:
           name: Install nicklockwood/SwiftFormat
