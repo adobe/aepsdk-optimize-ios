@@ -21,14 +21,9 @@ public class DecisionScope: NSObject, Codable {
 
     /// Creates a new decision scope using the given scope `name`.
     ///
-    /// This initializer returns `nil` if the provided scope `name` is empty.
     /// - Parameter name: string representation for the decision scope.
     @objc
-    public init?(name: String) {
-        if name.isEmpty {
-            Log.debug(label: PersonalizationConstants.LOG_TAG, "DecisionScope init failed! Provided scope name is empty.")
-            return nil
-        }
+    public init(name: String) {
         self.name = name
     }
 

@@ -70,9 +70,10 @@ public class Offer: NSObject, Decodable {
             return
         }
 
-        if let jsonData = data.dictionaryValue,
-           let encodedData = try? JSONSerialization.data(withJSONObject: jsonData),
-           let offerContent = String(data: encodedData, encoding: .utf8)
+        if
+            let jsonData = data.dictionaryValue,
+            let encodedData = try? JSONSerialization.data(withJSONObject: jsonData),
+            let offerContent = String(data: encodedData, encoding: .utf8)
         {
             content = offerContent
             return

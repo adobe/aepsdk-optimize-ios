@@ -16,16 +16,13 @@ import XCTest
 class DecisionScopeTests: XCTestCase {
 
     func testInit_validName() {
-        guard let decisionScope = DecisionScope(name: "myMbox") else {
-            XCTFail("Decision Scope should not be nil.")
-            return
-        }
+        let decisionScope = DecisionScope(name: "myMbox")
         XCTAssertEqual("myMbox", decisionScope.name)
     }
 
     func testInit_emptyName() {
         let decisionScope = DecisionScope(name: "")
-        XCTAssertNil(decisionScope)
+        XCTAssertEqual("", decisionScope.name)
     }
     
     func testConvenienceInit_withDefaultItemCount() {
