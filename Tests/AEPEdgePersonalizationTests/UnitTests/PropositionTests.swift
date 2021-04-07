@@ -9,7 +9,7 @@ the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTA
 OF ANY KIND, either express or implied. See the License for the specific language
 governing permissions and limitations under the License.
 */
-    
+
 import AEPEdgePersonalization
 import XCTest
 
@@ -101,7 +101,7 @@ class PropositionTests: XCTestCase {
         XCTAssertNil(offer.language)
         XCTAssertNil(offer.characteristics)
     }
-    
+
     func testProposition_validFromTarget() throws {
         guard
             let propositionData = PROPOSITION_VALID_TARGET.data(using: .utf8),
@@ -122,7 +122,7 @@ class PropositionTests: XCTestCase {
         XCTAssertNil(offer.language)
         XCTAssertNil(offer.characteristics)
     }
-    
+
     func testProposition_invalid() throws {
         guard let propositionData = PROPOSITION_INVALID.data(using: .utf8) else {
             XCTFail("Proposition json data should be valid.")
@@ -131,5 +131,4 @@ class PropositionTests: XCTestCase {
         let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
         XCTAssertNil(proposition)
     }
-
 }

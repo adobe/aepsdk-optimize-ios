@@ -142,7 +142,7 @@ class OfferTests: XCTestCase {
             XCTFail("Offer should be valid.")
             return
         }
-        
+
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-json", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 1), offer.type)
@@ -151,7 +151,6 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("en-us", offer.language?[0])
         XCTAssertEqual(1, offer.characteristics?.count)
         XCTAssertEqual("true", offer.characteristics?["mobile"])
-        
     }
 
     func testTextOffer() throws {
@@ -161,7 +160,7 @@ class OfferTests: XCTestCase {
             XCTFail("Offer should be valid.")
             return
         }
-        
+
         XCTAssertEqual("xcore:personalized-offer:2222222222222222", offer.id)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-text", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 2), offer.type)
@@ -170,7 +169,6 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("en-us", offer.language?[0])
         XCTAssertEqual(1, offer.characteristics?.count)
         XCTAssertEqual("true", offer.characteristics?["mobile"])
-        
     }
 
     func testHtmlOffer() throws {
@@ -180,7 +178,7 @@ class OfferTests: XCTestCase {
             XCTFail("Offer should be valid.")
             return
         }
-        
+
         XCTAssertEqual("xcore:personalized-offer:3333333333333333", offer.id)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 3), offer.type)
@@ -189,7 +187,6 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("en-us", offer.language?[0])
         XCTAssertEqual(1, offer.characteristics?.count)
         XCTAssertEqual("true", offer.characteristics?["mobile"])
-        
     }
 
     func testImageOffer() throws {
@@ -199,7 +196,7 @@ class OfferTests: XCTestCase {
             XCTFail("Offer should be valid.")
             return
         }
-        
+
         XCTAssertEqual("xcore:personalized-offer:4444444444444444", offer.id)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-imagelink", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 4), offer.type)
@@ -217,7 +214,7 @@ class OfferTests: XCTestCase {
             XCTFail("Offer should be valid.")
             return
         }
-        
+
         XCTAssertEqual("0", offer.id)
         XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 0), offer.type)
@@ -233,7 +230,7 @@ class OfferTests: XCTestCase {
             XCTFail("Offer should be valid.")
             return
         }
-        
+
         XCTAssertEqual("xcore:personalized-offer:2222222222222222", offer.id)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-text", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 2), offer.type)
