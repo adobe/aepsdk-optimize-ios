@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,6 +13,16 @@
 		C88C5E942613249C003AE3DE /* AEPEdgePersonalization.h in Headers */ = {isa = PBXBuildFile; fileRef = C88C5E902613249C003AE3DE /* AEPEdgePersonalization.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C88C5E952613249C003AE3DE /* PersonalizationConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5E912613249C003AE3DE /* PersonalizationConstants.swift */; };
 		C88C5EA82613257A003AE3DE /* PersonalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5EA12613255F003AE3DE /* PersonalizationTests.swift */; };
+		C88C5EDD2614F640003AE3DE /* Offer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5EDC2614F640003AE3DE /* Offer.swift */; };
+		C88C5EE12614F693003AE3DE /* OfferType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5EE02614F693003AE3DE /* OfferType.swift */; };
+		C88C5F0A261523A4003AE3DE /* OfferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F0326152390003AE3DE /* OfferTests.swift */; };
+		C88C5F0E26152CFF003AE3DE /* Proposition.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F0D26152CFF003AE3DE /* Proposition.swift */; };
+		C88C5F1226152DAB003AE3DE /* DecisionScope.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F1126152DAB003AE3DE /* DecisionScope.swift */; };
+		C88C5F1F2615916D003AE3DE /* DecisionScopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F1E2615916D003AE3DE /* DecisionScopeTests.swift */; };
+		C88C5F272615A057003AE3DE /* OfferTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F262615A057003AE3DE /* OfferTypeTests.swift */; };
+		C88C5F3326185EF8003AE3DE /* StringInterpolation+Personalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F3226185EF4003AE3DE /* StringInterpolation+Personalization.swift */; };
+		C88C5F4126187F0B003AE3DE /* String+Personalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F4026187F0A003AE3DE /* String+Personalization.swift */; };
+		C88C5F56261C3F6A003AE3DE /* PropositionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F55261C3F69003AE3DE /* PropositionTests.swift */; };
 		C892B4F22612DC84007FE5C5 /* AEPEdgePersonalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPEdgePersonalization.framework */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +47,16 @@
 		C88C5E922613249C003AE3DE /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C88C5EA02613255F003AE3DE /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C88C5EA12613255F003AE3DE /* PersonalizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalizationTests.swift; sourceTree = "<group>"; };
+		C88C5EDC2614F640003AE3DE /* Offer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Offer.swift; sourceTree = "<group>"; };
+		C88C5EE02614F693003AE3DE /* OfferType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferType.swift; sourceTree = "<group>"; };
+		C88C5F0326152390003AE3DE /* OfferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferTests.swift; sourceTree = "<group>"; };
+		C88C5F0D26152CFF003AE3DE /* Proposition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Proposition.swift; sourceTree = "<group>"; };
+		C88C5F1126152DAB003AE3DE /* DecisionScope.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecisionScope.swift; sourceTree = "<group>"; };
+		C88C5F1E2615916D003AE3DE /* DecisionScopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecisionScopeTests.swift; sourceTree = "<group>"; };
+		C88C5F262615A057003AE3DE /* OfferTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferTypeTests.swift; sourceTree = "<group>"; };
+		C88C5F3226185EF4003AE3DE /* StringInterpolation+Personalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringInterpolation+Personalization.swift"; sourceTree = "<group>"; };
+		C88C5F4026187F0A003AE3DE /* String+Personalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Personalization.swift"; sourceTree = "<group>"; };
+		C88C5F55261C3F69003AE3DE /* PropositionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropositionTests.swift; sourceTree = "<group>"; };
 		C892B490260EAC74007FE5C5 /* AEPEdgePersonalization.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AEPEdgePersonalization.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C892B4ED2612DC84007FE5C5 /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE8A689046136AC61038271D /* Pods-UnitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnitTests.debug.xcconfig"; path = "Target Support Files/Pods-UnitTests/Pods-UnitTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -95,9 +115,11 @@
 		C88C5E812613242E003AE3DE /* AEPEdgePersonalization */ = {
 			isa = PBXGroup;
 			children = (
-				C88C5E902613249C003AE3DE /* AEPEdgePersonalization.h */,
+				C88C5F1726154621003AE3DE /* Public */,
 				C88C5E8F2613249C003AE3DE /* Personalization.swift */,
 				C88C5E912613249C003AE3DE /* PersonalizationConstants.swift */,
+				C88C5E902613249C003AE3DE /* AEPEdgePersonalization.h */,
+				C88C5F3626185F0D003AE3DE /* Utils */,
 				C88C5E922613249C003AE3DE /* Info.plist */,
 			);
 			path = AEPEdgePersonalization;
@@ -123,9 +145,33 @@
 			isa = PBXGroup;
 			children = (
 				C88C5EA02613255F003AE3DE /* Info.plist */,
+				C88C5F1E2615916D003AE3DE /* DecisionScopeTests.swift */,
+				C88C5F0326152390003AE3DE /* OfferTests.swift */,
+				C88C5F262615A057003AE3DE /* OfferTypeTests.swift */,
+				C88C5F55261C3F69003AE3DE /* PropositionTests.swift */,
 				C88C5EA12613255F003AE3DE /* PersonalizationTests.swift */,
 			);
 			path = UnitTests;
+			sourceTree = "<group>";
+		};
+		C88C5F1726154621003AE3DE /* Public */ = {
+			isa = PBXGroup;
+			children = (
+				C88C5F1126152DAB003AE3DE /* DecisionScope.swift */,
+				C88C5EDC2614F640003AE3DE /* Offer.swift */,
+				C88C5EE02614F693003AE3DE /* OfferType.swift */,
+				C88C5F0D26152CFF003AE3DE /* Proposition.swift */,
+			);
+			name = Public;
+			sourceTree = "<group>";
+		};
+		C88C5F3626185F0D003AE3DE /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				C88C5F3226185EF4003AE3DE /* StringInterpolation+Personalization.swift */,
+				C88C5F4026187F0A003AE3DE /* String+Personalization.swift */,
+			);
+			name = Utils;
 			sourceTree = "<group>";
 		};
 		C892B486260EAC74007FE5C5 = {
@@ -325,7 +371,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C88C5EDD2614F640003AE3DE /* Offer.swift in Sources */,
+				C88C5F3326185EF8003AE3DE /* StringInterpolation+Personalization.swift in Sources */,
+				C88C5F0E26152CFF003AE3DE /* Proposition.swift in Sources */,
+				C88C5F1226152DAB003AE3DE /* DecisionScope.swift in Sources */,
 				C88C5E952613249C003AE3DE /* PersonalizationConstants.swift in Sources */,
+				C88C5EE12614F693003AE3DE /* OfferType.swift in Sources */,
+				C88C5F4126187F0B003AE3DE /* String+Personalization.swift in Sources */,
 				C88C5E932613249C003AE3DE /* Personalization.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -334,6 +386,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C88C5F0A261523A4003AE3DE /* OfferTests.swift in Sources */,
+				C88C5F1F2615916D003AE3DE /* DecisionScopeTests.swift in Sources */,
+				C88C5F56261C3F6A003AE3DE /* PropositionTests.swift in Sources */,
+				C88C5F272615A057003AE3DE /* OfferTypeTests.swift in Sources */,
 				C88C5EA82613257A003AE3DE /* PersonalizationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -401,7 +457,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -459,7 +515,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -535,6 +591,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = FKGEE875K4;
 				INFOPLIST_FILE = Tests/AEPEdgePersonalizationTests/UnitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -557,6 +614,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = FKGEE875K4;
 				INFOPLIST_FILE = Tests/AEPEdgePersonalizationTests/UnitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
