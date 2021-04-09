@@ -12,7 +12,7 @@
 
 import Foundation
 
-// MARK: String Extensions
+// MARK: String extension
 
 extension String {
     /// Encode a string to base-64 representation
