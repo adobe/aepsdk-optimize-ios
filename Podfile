@@ -15,3 +15,7 @@ end
 target 'UnitTests' do
   pod 'AEPCore'
 end
+
+target 'FunctionalTests' do
+  pod 'AEPCore'
+end

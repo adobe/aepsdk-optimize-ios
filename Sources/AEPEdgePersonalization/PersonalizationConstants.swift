@@ -15,4 +15,29 @@ enum PersonalizationConstants {
     static let FRIENDLY_NAME = "Edge Personalization"
     static let EXTENSION_VERSION = "1.0.0"
     static let LOG_TAG = FRIENDLY_NAME
+
+    static let ACTIVITY_ID = "activityId"
+    static let PLACEMENT_ID = "placementId"
+    static let ITEM_COUNT = "itemCount"
+
+    enum EventNames {
+        static let UPDATE_PROPOSITIONS_REQUEST = "Update Propositions Request"
+        static let GET_PROPOSITIONS_REQUEST = "Get Propositions Request"
+        static let CLEAR_PROPOSITIONS_REQUEST = "Clear Propositions Request"
+        static let EDGE_PERSONALIZATION_REQUEST = "Edge Personalization Request"
+    }
+
+    enum EventDataKeys {
+        static let REQUEST_TYPE = "requesttype"
+        static let DECISION_SCOPES = "decisionscopes"
+        static let PAYLOAD = "payload"
+        static let XDM = "xdm"
+        static let DATA = "data"
+        static let DATASET_ID = "datasetId"
+    }
+
+    enum EventDataValues {
+        static let REQUEST_TYPE_UPDATE = "updatedecisions"
+        static let REQUEST_TYPE_GET = "getdecisions"
+    }
 }

@@ -31,5 +31,8 @@ let package = Package(
         .testTarget(name: "UnitTests",
                     dependencies: ["AEPEdgePersonalization"],
                     path: "Tests/AEPEdgePersonalizationTests/UnitTests"),
+	    .testTarget(name: "FunctionalTests",
+                    dependencies: ["AEPEdgePersonalization"],
+                    path: "Tests/AEPEdgePersonalizationTests/FunctionalTests"),
     ]
 )
