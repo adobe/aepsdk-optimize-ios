@@ -60,27 +60,27 @@ public class DecisionScope: NSObject, Codable {
                 let decodedData = decodedName.data(using: .utf8),
                 let dictionary = try? JSONSerialization.jsonObject(with: decodedData) as? [String: Any]
             else {
-                Log.debug(label: PersonalizationConstants.LOG_TAG, "Failed to decode scope data.")
+                Log.debug(label: PersonalizationConstants.LOG_TAG, "Failed to decode data for scope \(name).")
                 return false
             }
 
             guard let activityId = dictionary[PersonalizationConstants.ACTIVITY_ID] as? String,
                   !activityId.isEmpty
             else {
-                Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope! Activity Id is nil or empty.")
+                Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope \(name)! Activity Id is nil or empty.")
                 return false
             }
 
             guard let placementId = dictionary[PersonalizationConstants.PLACEMENT_ID] as? String,
                   !placementId.isEmpty
             else {
-                Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope! Placement Id is nil or empty.")
+                Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope \(name)! Placement Id is nil or empty.")
                 return false
             }
 
             let itemCount = dictionary[PersonalizationConstants.ITEM_COUNT] as? Int ?? 1
             if itemCount == 0 {
-                Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope! itemCount is 0.")
+                Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope \(name)! itemCount is 0.")
                 return false
             }
         }
