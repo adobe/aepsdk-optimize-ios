@@ -61,9 +61,7 @@ jobs:
 
       - run: 
           name: Swift Linting
-          command: |
-            brew update-reset
-            make lint
+          command: make lint
 
       - run:
           name: Install nicklockwood/SwiftFormat

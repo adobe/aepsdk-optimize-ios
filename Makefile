@@ -49,7 +49,7 @@ test-podspec:
 	(sh ./Scripts/test-podspec.sh)
 
 install-swiftlint:
-	brew install swiftlint && brew cleanup swiftlint
+	brew update-reset && brew install swiftlint && brew cleanup swiftlint
 
 lint-autocorrect:
 	(swiftlint autocorrect --format)
