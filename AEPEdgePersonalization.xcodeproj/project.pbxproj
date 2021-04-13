@@ -35,6 +35,10 @@
 		C892B4F22612DC84007FE5C5 /* AEPEdgePersonalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPEdgePersonalization.framework */; };
 		C8CA1654261EF29E005B09A0 /* Event+Personalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA1653261EF29E005B09A0 /* Event+Personalization.swift */; };
 		C8CA1666261F6AD0005B09A0 /* ExperienceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA1665261F6AD0005B09A0 /* ExperienceData.swift */; };
+		C8CA16DC2624BDA6005B09A0 /* Array+PersonalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA16D82624BDA5005B09A0 /* Array+PersonalizationTests.swift */; };
+		C8CA16DD2624BDA6005B09A0 /* Event+PersonalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA16D92624BDA5005B09A0 /* Event+PersonalizationTests.swift */; };
+		C8CA16DE2624BDA6005B09A0 /* String+PersonalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA16DA2624BDA5005B09A0 /* String+PersonalizationTests.swift */; };
+		C8CA16DF2624BDA6005B09A0 /* StringInterpolation+PersonalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA16DB2624BDA5005B09A0 /* StringInterpolation+PersonalizationTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,6 +92,10 @@
 		C892B4ED2612DC84007FE5C5 /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8CA1653261EF29E005B09A0 /* Event+Personalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Event+Personalization.swift"; sourceTree = "<group>"; };
 		C8CA1665261F6AD0005B09A0 /* ExperienceData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperienceData.swift; sourceTree = "<group>"; };
+		C8CA16D82624BDA5005B09A0 /* Array+PersonalizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+PersonalizationTests.swift"; sourceTree = "<group>"; };
+		C8CA16D92624BDA5005B09A0 /* Event+PersonalizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Event+PersonalizationTests.swift"; sourceTree = "<group>"; };
+		C8CA16DA2624BDA5005B09A0 /* String+PersonalizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+PersonalizationTests.swift"; sourceTree = "<group>"; };
+		C8CA16DB2624BDA5005B09A0 /* StringInterpolation+PersonalizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StringInterpolation+PersonalizationTests.swift"; sourceTree = "<group>"; };
 		EE8A689046136AC61038271D /* Pods-UnitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnitTests.debug.xcconfig"; path = "Target Support Files/Pods-UnitTests/Pods-UnitTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F41CCB211E0AC213CB539097 /* Pods-FunctionalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FunctionalTests.release.xcconfig"; path = "Target Support Files/Pods-FunctionalTests/Pods-FunctionalTests.release.xcconfig"; sourceTree = "<group>"; };
 		F58FEDB703638AF8D0DCB35B /* Pods-AEPEdgePersonalization.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEPEdgePersonalization.debug.xcconfig"; path = "Target Support Files/Pods-AEPEdgePersonalization/Pods-AEPEdgePersonalization.debug.xcconfig"; sourceTree = "<group>"; };
@@ -189,6 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				C88C5FE1261D8F25003AE3DE /* Mocks */,
+				C8CA16E62624BDC9005B09A0 /* Utils */,
 				C88C5EA02613255F003AE3DE /* Info.plist */,
 				C88C5FBE261D6602003AE3DE /* PersonalizationPublicAPITests.swift */,
 				C88C5F1E2615916D003AE3DE /* DecisionScopeTests.swift */,
@@ -269,6 +278,17 @@
 				C88C5F9F261D6499003AE3DE /* FunctionalTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C8CA16E62624BDC9005B09A0 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				C8CA16D82624BDA5005B09A0 /* Array+PersonalizationTests.swift */,
+				C8CA16D92624BDA5005B09A0 /* Event+PersonalizationTests.swift */,
+				C8CA16DA2624BDA5005B09A0 /* String+PersonalizationTests.swift */,
+				C8CA16DB2624BDA5005B09A0 /* StringInterpolation+PersonalizationTests.swift */,
+			);
+			name = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -546,11 +566,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8CA16DF2624BDA6005B09A0 /* StringInterpolation+PersonalizationTests.swift in Sources */,
+				C8CA16DD2624BDA6005B09A0 /* Event+PersonalizationTests.swift in Sources */,
 				C88C5F0A261523A4003AE3DE /* OfferTests.swift in Sources */,
+				C8CA16DE2624BDA6005B09A0 /* String+PersonalizationTests.swift in Sources */,
 				C88C5FE3261D8FBF003AE3DE /* MockExtension.swift in Sources */,
 				C88C5F1F2615916D003AE3DE /* DecisionScopeTests.swift in Sources */,
 				C88C5F56261C3F6A003AE3DE /* PropositionTests.swift in Sources */,
 				C88C5F272615A057003AE3DE /* OfferTypeTests.swift in Sources */,
+				C8CA16DC2624BDA6005B09A0 /* Array+PersonalizationTests.swift in Sources */,
 				C88C5FDA261D8EE3003AE3DE /* PersonalizationPublicAPITests.swift in Sources */,
 				C88C5EA82613257A003AE3DE /* PersonalizationTests.swift in Sources */,
 				C88C5FEA261D9AD0003AE3DE /* EventHub+PersonalizationTests.swift in Sources */,

@@ -12,7 +12,7 @@
 
 import Foundation
 
-// MARK: StringInterpolation Extensions
+// MARK: StringInterpolation extension
 
 extension String.StringInterpolation {
     mutating func appendInterpolation(activityId: String, placementId: String, itemCount: UInt) {
