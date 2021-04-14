@@ -16,6 +16,7 @@ enum PersonalizationConstants {
     static let EXTENSION_VERSION = "1.0.0"
     static let LOG_TAG = FRIENDLY_NAME
 
+    static let DECISION_SCOPE_NAME = "name"
     static let ACTIVITY_ID = "activityId"
     static let PLACEMENT_ID = "placementId"
     static let ITEM_COUNT = "itemCount"
@@ -30,14 +31,31 @@ enum PersonalizationConstants {
     enum EventDataKeys {
         static let REQUEST_TYPE = "requesttype"
         static let DECISION_SCOPES = "decisionscopes"
-        static let PAYLOAD = "payload"
         static let XDM = "xdm"
         static let DATA = "data"
-        static let DATASET_ID = "datasetId"
+        static let DATASET_ID = "datasetid"
     }
 
     enum EventDataValues {
         static let REQUEST_TYPE_UPDATE = "updatedecisions"
         static let REQUEST_TYPE_GET = "getdecisions"
+    }
+
+    enum Configuration {
+        static let EXTENSION_NAME = "com.adobe.module.configuration"
+    }
+
+    enum JsonKeys {
+        static let DECISION_SCOPES = "decisionScopes"
+        static let XDM = "xdm"
+        static let XDM_QUERY = "query"
+        static let QUERY_PERSONALIZATION = "personalization"
+        static let DATA = "data"
+        static let DATASET_ID = "datasetId"
+        static let XDM_EVENT_TYPE = "eventType"
+    }
+
+    enum JsonValues {
+        static let XDM_EVENT_TYPE_PERSONALIZATION = "personalization.request"
     }
 }

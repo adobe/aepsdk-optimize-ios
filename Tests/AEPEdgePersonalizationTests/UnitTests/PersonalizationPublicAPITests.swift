@@ -28,7 +28,7 @@ class PersonalizationPublicAPITests: XCTestCase {
         EventHub.reset()
     }
 
-    func testUpdatePropositions() {
+    func testUpdatePropositions_validDecisionScope() {
         // setup
         let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event with expected data.")
         expectation.assertForOverFulfill = true
@@ -48,7 +48,7 @@ class PersonalizationPublicAPITests: XCTestCase {
         // test
         EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
                                                                                     source: testEvent.source) { event in
-            XCTAssertEqual(event.name, testEvent.name)
+            XCTAssertEqual(testEvent.name, event.name)
             XCTAssertEqual("updatedecisions", event.data?["requesttype"] as? String)
             guard let decisionScopes: [DecisionScope] = event.decodeTypedData(for: "decisionscopes") else {
                 XCTFail("Decision Scope array should be valid.")
@@ -57,6 +57,10 @@ class PersonalizationPublicAPITests: XCTestCase {
             XCTAssertEqual(1, decisionScopes.count)
             XCTAssertTrue(decisionScopes[0].isValid)
             XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", decisionScopes[0].name)
+
+            XCTAssertNil(event.data?["xdm"])
+            XCTAssertNil(event.data?["data"])
+            XCTAssertNil(event.data?["datasetid"])
             expectation.fulfill()
         }
 
@@ -65,6 +69,241 @@ class PersonalizationPublicAPITests: XCTestCase {
                                           placementId: "xcore:offer-placement:1111111111111111")
 
         Personalization.updatePropositions(for: [decisionScope])
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testUpdatePropositions_validDecisionScopeWithExperienceData() {
+        // setup
+        let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event with expected data.")
+        expectation.assertForOverFulfill = true
+
+        let testEventData: [String: Any] = [
+            "requesttype": "updatedecisions",
+            "decisionscopes": [
+                [ "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
+                ]
+            ],
+            "xdm": [
+                "myXdmKey": "myXdmValue"
+            ],
+            "data": [
+                "myKey": "myValue"
+            ],
+            "datasetid": "111111111111111111111111"
+        ]
+        let testEvent = Event(name: "Update Propositions Request",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: testEventData)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { event in
+            XCTAssertEqual(testEvent.name, event.name)
+            XCTAssertEqual("updatedecisions", event.data?["requesttype"] as? String)
+            guard let decisionScopes: [DecisionScope] = event.decodeTypedData(for: "decisionscopes") else {
+                XCTFail("Decision Scope array should be valid.")
+                return
+            }
+            XCTAssertEqual(1, decisionScopes.count)
+            XCTAssertTrue(decisionScopes[0].isValid)
+            XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", decisionScopes[0].name)
+
+            guard let xdm = event.data?["xdm"] as? [String: Any] else {
+                XCTFail("Xdm data should be valid.")
+                return
+            }
+            XCTAssertEqual(1, xdm.count)
+            XCTAssertEqual("myXdmValue", xdm["myXdmKey"] as? String)
+
+            guard let data = event.data?["data"] as? [String: Any] else {
+                XCTFail("Freeform data should be valid.")
+                return
+            }
+            XCTAssertEqual(1, data.count)
+            XCTAssertEqual("myValue", data["myKey"] as? String)
+
+            XCTAssertEqual("111111111111111111111111", event.data?["datasetid"] as? String)
+            expectation.fulfill()
+        }
+
+        // test
+        let decisionScope = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
+                                          placementId: "xcore:offer-placement:1111111111111111")
+
+        let experienceData = ExperienceData(xdm: ["myXdmKey": "myXdmValue"] as [String: Any],
+                                            data: ["myKey": "myValue"] as [String: Any],
+                                            datasetIdentifier: "111111111111111111111111")
+
+        Personalization.updatePropositions(for: [decisionScope], with: experienceData)
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testUpdatePropositions_multipleValidDecisionScopes() {
+        // setup
+        let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event with expected data.")
+        expectation.assertForOverFulfill = true
+
+        let testEventData: [String: Any] = [
+            "requesttype": "updatedecisions",
+            "decisionscopes": [
+                [
+                    "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
+                ],
+                [
+                    "name": "myMbox"
+                ]
+            ]
+        ]
+        let testEvent = Event(name: "Update Propositions Request",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: testEventData)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { event in
+            XCTAssertEqual(testEvent.name, event.name)
+            XCTAssertEqual("updatedecisions", event.data?["requesttype"] as? String)
+            guard let decisionScopes: [DecisionScope] = event.decodeTypedData(for: "decisionscopes") else {
+                XCTFail("Decision Scope array should be valid.")
+                return
+            }
+            XCTAssertEqual(2, decisionScopes.count)
+            XCTAssertTrue(decisionScopes[0].isValid)
+            XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", decisionScopes[0].name)
+            XCTAssertTrue(decisionScopes[1].isValid)
+            XCTAssertEqual("myMbox", decisionScopes[1].name)
+            expectation.fulfill()
+        }
+
+        // test
+        let decisionScope1 = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
+                                           placementId: "xcore:offer-placement:1111111111111111")
+        let decisionScope2 = DecisionScope(name: "myMbox")
+
+        Personalization.updatePropositions(for: [decisionScope1, decisionScope2])
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testUpdatePropositions_noDecisionScope() {
+        // setup
+        let expectation = XCTestExpectation(description: "updatePropositions should not dispatch an event.")
+        expectation.isInverted = true
+
+        let testEvent = Event(name: "Update Propositions Request",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: nil)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { _ in
+            expectation.fulfill()
+        }
+
+        // test
+        Personalization.updatePropositions(for: [])
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testUpdatePropositions_emptyDecisionScope() {
+        // setup
+        let expectation = XCTestExpectation(description: "updatePropositions should not dispatch an event.")
+        expectation.isInverted = true
+
+        let testEvent = Event(name: "Update Propositions Request",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: nil)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { _ in
+            expectation.fulfill()
+        }
+
+        // test
+        let decisionScope = DecisionScope(name: "")
+
+        Personalization.updatePropositions(for: [decisionScope])
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testUpdatePropositions_invalidDecisionScope() {
+        // setup
+        let expectation = XCTestExpectation(description: "updatePropositions should not dispatch an event.")
+        expectation.isInverted = true
+
+        let testEvent = Event(name: "Update Propositions Request",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: nil)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { _ in
+            expectation.fulfill()
+        }
+
+        // test
+        let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoiIn0=")
+
+        Personalization.updatePropositions(for: [decisionScope])
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testUpdatePropositions_validAndInvalidDecisionScopes() {
+        // setup
+        let expectation = XCTestExpectation(description: "updatePropositions should not dispatch an event.")
+        expectation.assertForOverFulfill = true
+
+        let testEventData: [String: Any] = [
+            "requesttype": "updatedecisions",
+            "decisionscopes": [
+                [
+                    "name": "myMbox"
+                ]
+            ]
+        ]
+        let testEvent = Event(name: "Update Propositions Request",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: testEventData)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { event in
+            XCTAssertEqual(testEvent.name, event.name)
+            XCTAssertEqual("updatedecisions", event.data?["requesttype"] as? String)
+            guard let decisionScopes: [DecisionScope] = event.decodeTypedData(for: "decisionscopes") else {
+                XCTFail("Decision Scope array should be valid.")
+                return
+            }
+            XCTAssertEqual(1, decisionScopes.count)
+            XCTAssertTrue(decisionScopes[0].isValid)
+            XCTAssertEqual("myMbox", decisionScopes[0].name)
+            expectation.fulfill()
+        }
+
+        // test
+        let decisionScope1 = DecisionScope(activityId: "",
+                                           placementId: "xcore:offer-placement:1111111111111111")
+        let decisionScope2 = DecisionScope(name: "myMbox")
+
+        Personalization.updatePropositions(for: [decisionScope1, decisionScope2])
 
         // verify
         wait(for: [expectation], timeout: 1)
