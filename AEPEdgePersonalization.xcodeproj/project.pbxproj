@@ -27,7 +27,6 @@
 		C88C5F56261C3F6A003AE3DE /* PropositionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F55261C3F69003AE3DE /* PropositionTests.swift */; };
 		C88C5F7A261D06A6003AE3DE /* Personalization+PublicAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F79261D06A5003AE3DE /* Personalization+PublicAPI.swift */; };
 		C88C5FA4261D649A003AE3DE /* AEPEdgePersonalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPEdgePersonalization.framework */; };
-		C88C5FB1261D6545003AE3DE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C88C5FAF261D6545003AE3DE /* Info.plist */; };
 		C88C5FDA261D8EE3003AE3DE /* PersonalizationPublicAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5FBE261D6602003AE3DE /* PersonalizationPublicAPITests.swift */; };
 		C88C5FE3261D8FBF003AE3DE /* MockExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5FE2261D8FBF003AE3DE /* MockExtension.swift */; };
 		C88C5FEA261D9AD0003AE3DE /* EventHub+PersonalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5FB9261D65AD003AE3DE /* EventHub+PersonalizationTests.swift */; };
@@ -39,6 +38,7 @@
 		C8CA16DD2624BDA6005B09A0 /* Event+PersonalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA16D92624BDA5005B09A0 /* Event+PersonalizationTests.swift */; };
 		C8CA16DE2624BDA6005B09A0 /* String+PersonalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA16DA2624BDA5005B09A0 /* String+PersonalizationTests.swift */; };
 		C8CA16DF2624BDA6005B09A0 /* StringInterpolation+PersonalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA16DB2624BDA5005B09A0 /* StringInterpolation+PersonalizationTests.swift */; };
+		C8CA172D262523C4005B09A0 /* TestableExtensionRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA1728262523BF005B09A0 /* TestableExtensionRuntime.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +96,7 @@
 		C8CA16D92624BDA5005B09A0 /* Event+PersonalizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Event+PersonalizationTests.swift"; sourceTree = "<group>"; };
 		C8CA16DA2624BDA5005B09A0 /* String+PersonalizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+PersonalizationTests.swift"; sourceTree = "<group>"; };
 		C8CA16DB2624BDA5005B09A0 /* StringInterpolation+PersonalizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StringInterpolation+PersonalizationTests.swift"; sourceTree = "<group>"; };
+		C8CA1728262523BF005B09A0 /* TestableExtensionRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestableExtensionRuntime.swift; sourceTree = "<group>"; };
 		EE8A689046136AC61038271D /* Pods-UnitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnitTests.debug.xcconfig"; path = "Target Support Files/Pods-UnitTests/Pods-UnitTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F41CCB211E0AC213CB539097 /* Pods-FunctionalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FunctionalTests.release.xcconfig"; path = "Target Support Files/Pods-FunctionalTests/Pods-FunctionalTests.release.xcconfig"; sourceTree = "<group>"; };
 		F58FEDB703638AF8D0DCB35B /* Pods-AEPEdgePersonalization.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEPEdgePersonalization.debug.xcconfig"; path = "Target Support Files/Pods-AEPEdgePersonalization/Pods-AEPEdgePersonalization.debug.xcconfig"; sourceTree = "<group>"; };
@@ -246,6 +247,7 @@
 		C88C5FB8261D65AD003AE3DE /* TestHelpers */ = {
 			isa = PBXGroup;
 			children = (
+				C8CA1728262523BF005B09A0 /* TestableExtensionRuntime.swift */,
 			);
 			path = TestHelpers;
 			sourceTree = "<group>";
@@ -411,7 +413,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C88C5FB1261D6545003AE3DE /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -539,6 +540,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8CA172D262523C4005B09A0 /* TestableExtensionRuntime.swift in Sources */,
 				C88C5FF2261D9E00003AE3DE /* PersonalizationFunctionalTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -603,7 +605,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = FKGEE875K4;
-				INFOPLIST_FILE = FunctionalTests/Info.plist;
+				INFOPLIST_FILE = Tests/AEPEdgePersonalizationTests/FunctionalTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -622,7 +624,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = FKGEE875K4;
-				INFOPLIST_FILE = FunctionalTests/Info.plist;
+				INFOPLIST_FILE = Tests/AEPEdgePersonalizationTests/FunctionalTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

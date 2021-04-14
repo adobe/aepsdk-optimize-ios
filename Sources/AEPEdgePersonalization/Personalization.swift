@@ -11,6 +11,7 @@
  */
 
 import AEPCore
+import AEPServices
 
 @objc(AEPMobileEdgePersonalization)
 public class Personalization: NSObject, Extension {
@@ -27,11 +28,71 @@ public class Personalization: NSObject, Extension {
         super.init()
     }
 
-    public func onRegistered() {}
+    public func onRegistered() {
+        registerListener(type: EventType.offerDecisioning, source: EventSource.requestContent, listener: updatePropositions(event:))
+    }
 
     public func onUnregistered() {}
 
-    public func readyForEvent(_: Event) -> Bool {
-        true
+    public func readyForEvent(_ event: Event) -> Bool {
+        if event.source == EventSource.requestContent {
+            return getSharedState(extensionName: PersonalizationConstants.Configuration.EXTENSION_NAME, event: event)?.value != nil
+        }
+        return true
+    }
+
+    // MARK: Event Listeners
+
+    /// Processes the update propositions request event, dispatched with type `EventType.offerDecisioning` and source `EventSource.requestContent`.
+    ///
+    /// It dispatches an event to the Edge extension to send personalization query request to the Experience Edge network.
+    /// - Parameter event: Update propositions request event
+    private func updatePropositions(event: Event) {
+        guard let decisionScopes = event.data?[PersonalizationConstants.EventDataKeys.DECISION_SCOPES] as? [[String: Any]],
+              !decisionScopes.isEmpty
+        else {
+            Log.debug(label: PersonalizationConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
+            return
+        }
+
+        let targetDecisionScopes = decisionScopes.compactMap { $0[PersonalizationConstants.DECISION_SCOPE_NAME] as? String }
+        if targetDecisionScopes.isEmpty {
+            Log.debug(label: PersonalizationConstants.LOG_TAG, "No valid decision scopes found for the Edge personalization request!")
+            return
+        }
+
+        var eventData: [String: Any] = [:]
+
+        // Add query
+        eventData[PersonalizationConstants.JsonKeys.XDM_QUERY] = [
+            PersonalizationConstants.JsonKeys.QUERY_PERSONALIZATION: [
+                PersonalizationConstants.JsonKeys.DECISION_SCOPES: targetDecisionScopes
+            ]
+        ]
+
+        // Add xdm
+        var xdmData: [String: Any] = [
+            PersonalizationConstants.JsonKeys.XDM_EVENT_TYPE: PersonalizationConstants.JsonValues.XDM_EVENT_TYPE_PERSONALIZATION
+        ]
+        if let additionalXdmData = event.data?[PersonalizationConstants.EventDataKeys.XDM] as? [String: Any] {
+            xdmData.merge(additionalXdmData) { old, _ in old }
+        }
+        eventData[PersonalizationConstants.JsonKeys.XDM] = xdmData
+
+        // Add data
+        if let data = event.data?[PersonalizationConstants.EventDataKeys.DATA] as? [String: Any] {
+            eventData[PersonalizationConstants.JsonKeys.DATA] = data
+        }
+
+        // Add datasetId
+        if let datasetId = event.data?[PersonalizationConstants.EventDataKeys.DATASET_ID] as? String {
+            eventData[PersonalizationConstants.JsonKeys.DATASET_ID] = datasetId
+        }
+
+        let event = Event(name: PersonalizationConstants.EventNames.EDGE_PERSONALIZATION_REQUEST,
+                          type: EventType.edge,
+                          source: EventSource.requestContent,
+                          data: eventData)
+        dispatch(event: event)
     }
 }

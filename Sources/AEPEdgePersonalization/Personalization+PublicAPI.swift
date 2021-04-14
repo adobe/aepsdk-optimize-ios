@@ -27,7 +27,7 @@ public extension Personalization {
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
 
-        guard !decisionScopes.isEmpty else {
+        guard !flattenedDecisionScopes.isEmpty else {
             Log.warning(label: PersonalizationConstants.LOG_TAG,
                         "Cannot update propositions, provided decision scopes array is empty or has invalid items.")
             return
@@ -62,7 +62,7 @@ public extension Personalization {
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
 
-        guard !decisionScopes.isEmpty else {
+        guard !flattenedDecisionScopes.isEmpty else {
             completion(nil, AEPError.invalidRequest)
             Log.warning(label: PersonalizationConstants.LOG_TAG,
                         "Cannot get propositions, provided decision scopes array is empty or has invalid items.")
