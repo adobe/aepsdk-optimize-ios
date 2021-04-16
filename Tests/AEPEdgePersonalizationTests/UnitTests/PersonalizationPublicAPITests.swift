@@ -50,7 +50,7 @@ class PersonalizationPublicAPITests: XCTestCase {
                                                                                     source: testEvent.source) { event in
             XCTAssertEqual(testEvent.name, event.name)
             XCTAssertEqual("updatedecisions", event.data?["requesttype"] as? String)
-            guard let decisionScopes: [DecisionScope] = event.decodeTypedData(for: "decisionscopes") else {
+            guard let decisionScopes: [DecisionScope] = event.getTypedData(for: "decisionscopes") else {
                 XCTFail("Decision Scope array should be valid.")
                 return
             }
@@ -103,7 +103,7 @@ class PersonalizationPublicAPITests: XCTestCase {
                                                                                     source: testEvent.source) { event in
             XCTAssertEqual(testEvent.name, event.name)
             XCTAssertEqual("updatedecisions", event.data?["requesttype"] as? String)
-            guard let decisionScopes: [DecisionScope] = event.decodeTypedData(for: "decisionscopes") else {
+            guard let decisionScopes: [DecisionScope] = event.getTypedData(for: "decisionscopes") else {
                 XCTFail("Decision Scope array should be valid.")
                 return
             }
@@ -169,7 +169,7 @@ class PersonalizationPublicAPITests: XCTestCase {
                                                                                     source: testEvent.source) { event in
             XCTAssertEqual(testEvent.name, event.name)
             XCTAssertEqual("updatedecisions", event.data?["requesttype"] as? String)
-            guard let decisionScopes: [DecisionScope] = event.decodeTypedData(for: "decisionscopes") else {
+            guard let decisionScopes: [DecisionScope] = event.getTypedData(for: "decisionscopes") else {
                 XCTFail("Decision Scope array should be valid.")
                 return
             }
@@ -267,7 +267,7 @@ class PersonalizationPublicAPITests: XCTestCase {
 
     func testUpdatePropositions_validAndInvalidDecisionScopes() {
         // setup
-        let expectation = XCTestExpectation(description: "updatePropositions should not dispatch an event.")
+        let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event.")
         expectation.assertForOverFulfill = true
 
         let testEventData: [String: Any] = [
@@ -288,7 +288,7 @@ class PersonalizationPublicAPITests: XCTestCase {
                                                                                     source: testEvent.source) { event in
             XCTAssertEqual(testEvent.name, event.name)
             XCTAssertEqual("updatedecisions", event.data?["requesttype"] as? String)
-            guard let decisionScopes: [DecisionScope] = event.decodeTypedData(for: "decisionscopes") else {
+            guard let decisionScopes: [DecisionScope] = event.getTypedData(for: "decisionscopes") else {
                 XCTFail("Decision Scope array should be valid.")
                 return
             }
@@ -331,7 +331,7 @@ class PersonalizationPublicAPITests: XCTestCase {
                                                                                     source: testEvent.source) { event in
             XCTAssertEqual(event.name, testEvent.name)
             XCTAssertEqual("getdecisions", event.data?["requesttype"] as? String)
-            guard let decisionScopes: [DecisionScope] = event.decodeTypedData(for: "decisionscopes") else {
+            guard let decisionScopes: [DecisionScope] = event.getTypedData(for: "decisionscopes") else {
                 XCTFail("Decision Scope array should be valid.")
                 return
             }
@@ -351,14 +351,97 @@ class PersonalizationPublicAPITests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
 
-    func testOnPropositionsUpdate_invalidEvent() {
+    func testOnPropositionsUpdate_validProposition() {
         // setup
         let expectation = XCTestExpectation(description: "onPropositionsUpdate should be called with response event upon personalization notification.")
-        expectation.isInverted = true
-        let testEvent = Event(name: "Propositions Notification Event",
+        expectation.assertForOverFulfill = true
+        
+        let testEvent = Event(name: "Personalization Notification",
                               type: "com.adobe.eventType.offerDecisioning",
                               source: "com.adobe.eventSource.notification",
-                              data: [:])
+                              data: [
+                                "propositions": [
+                                    [
+                                    "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
+                                    ],
+                                    [
+                                        "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+                                        "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
+                                        "items": [
+                                            [
+                                                "id": "xcore:personalized-offer:1111111111111111",
+                                                "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
+                                                "data": [
+                                                    "id": "xcore:personalized-offer:1111111111111111",
+                                                    "type": 2,
+                                                    "content": "This is a plain text content!"
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                              ])
+
+        // test
+        Personalization.onPropositionsUpdate { propositionsDictionary in
+            guard let propositionsDictionary = propositionsDictionary else {
+                XCTFail("Propositions should be valid.")
+                return
+            }
+            XCTAssertEqual(1, propositionsDictionary.count)
+
+            let scope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
+            XCTAssertNotNil(propositionsDictionary[scope])
+
+            let proposition = propositionsDictionary[scope]
+            XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
+            XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
+            XCTAssertEqual(1, proposition?.offers.count)
+            XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
+            XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-text", proposition?.offers[0].schema)
+            XCTAssertEqual(.text, proposition?.offers[0].type)
+            XCTAssertEqual("This is a plain text content!", proposition?.offers[0].content)
+
+            expectation.fulfill()
+        }
+
+        EventHub.shared.dispatch(event: testEvent)
+
+        // verify
+        wait(for: [expectation], timeout: 2)
+    }
+
+    func testOnPropositionsUpdate_emptyProposition() {
+        // setup
+        let expectation = XCTestExpectation(description: "onPropositionsUpdate should not be called for empty propositions in personalization notification response.")
+        expectation.isInverted = true
+
+        let testEvent = Event(name: "Personalization Notification",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.notification",
+                              data: [
+                                "propositions": [:]
+                              ])
+
+        // test
+        Personalization.onPropositionsUpdate { _ in
+            expectation.fulfill()
+        }
+
+        EventHub.shared.dispatch(event: testEvent)
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testOnPropositionsUpdate_invalidEvent() {
+        // setup
+        let expectation = XCTestExpectation(description: "onPropositionsUpdate should not be called for no propositions in personalization notification response.")
+        expectation.isInverted = true
+        let testEvent = Event(name: "Personalization Notification",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.notification",
+                              data: nil)
 
         // test
         Personalization.onPropositionsUpdate { _ in

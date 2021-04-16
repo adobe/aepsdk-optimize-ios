@@ -100,4 +100,29 @@ class DecisionScopeTests: XCTestCase {
                                           itemCount: 0)
         XCTAssertTrue(decisionScope.isValid)
     }
+
+    func testIsEqual() {
+        let decisionScope1 = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
+
+        let decisionScope2 = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
+                                           placementId: "xcore:offer-placement:1111111111111111")
+        XCTAssertTrue(decisionScope1 == decisionScope2)
+    }
+
+    func testIsEqual_withItemCount() {
+        let decisionScope1 = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEiLCJpdGVtQ291bnQiOjEwMH0=")
+
+        let decisionScope2 = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
+                                           placementId: "xcore:offer-placement:1111111111111111",
+                                           itemCount: 100)
+        XCTAssertTrue(decisionScope1 == decisionScope2)
+    }
+
+    func testIsEqual_scopesNotEqual() {
+        let decisionScope1 = DecisionScope(name: "myMbox")
+
+        let decisionScope2 = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
+                                           placementId: "xcore:offer-placement:1111111111111111")
+        XCTAssertFalse(decisionScope1 == decisionScope2)
+    }
 }

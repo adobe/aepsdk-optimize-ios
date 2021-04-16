@@ -14,7 +14,7 @@ import Foundation
 
 /// `Proposition` class
 @objc(AEPProposition)
-public class Proposition: NSObject, Decodable {
+public class Proposition: NSObject, Codable {
     /// Unique proposition identifier
     @objc public let id: String
 
@@ -36,5 +36,13 @@ public class Proposition: NSObject, Decodable {
         id = try container.decode(String.self, forKey: .id)
         scope = try container.decode(String.self, forKey: .scope)
         offers = try container.decode([Offer].self, forKey: .items)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(id, forKey: .id)
+        try container.encode(scope, forKey: .scope)
+        try container.encode(offers, forKey: .items)
     }
 }

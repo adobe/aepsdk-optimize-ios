@@ -85,7 +85,7 @@ public extension Personalization {
                 return
             }
 
-            guard let propositions: [Proposition] = responseEvent.decodeTypedData() else {
+            guard let propositions: [Proposition] = responseEvent.getTypedData() else {
                 completion(nil, AEPError.unexpected)
                 return
             }
@@ -105,10 +105,15 @@ public extension Personalization {
         MobileCore.registerEventListener(type: EventType.offerDecisioning,
                                          source: EventSource.notification) { event in
 
-            guard let propositions: [Proposition] = event.decodeTypedData() else {
+            guard
+                let propositions: [DecisionScope: Proposition] = event.getTypedData(for: PersonalizationConstants.EventDataKeys.PROPOSITIONS),
+                !propositions.isEmpty
+            else {
+                Log.warning(label: PersonalizationConstants.LOG_TAG, "No valid propositions found in the notification event.")
                 return
             }
-            completion(propositions.toDictionary { DecisionScope(name: $0.scope) })
+
+            completion(propositions)
         }
     }
 

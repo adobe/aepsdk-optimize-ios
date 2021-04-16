@@ -15,7 +15,7 @@ import Foundation
 
 /// `Offer` class
 @objc(AEPOffer)
-public class Offer: NSObject, Decodable {
+public class Offer: NSObject, Codable {
     /// Unique Offer identifier
     @objc public let id: String
 
@@ -41,7 +41,9 @@ public class Offer: NSObject, Decodable {
     }
 
     enum DataKeys: String, CodingKey {
+        case id
         case format
+        case type
         case language
         case content
         case deliveryURL
@@ -54,8 +56,18 @@ public class Offer: NSObject, Decodable {
         schema = try container.decode(String.self, forKey: .schema)
 
         let nestedContainer = try container.nestedContainer(keyedBy: DataKeys.self, forKey: .data)
-        let format = try nestedContainer.decodeIfPresent(String.self, forKey: .format)
-        type = OfferType(from: format ?? "")
+        let nestedId = try nestedContainer.decode(String.self, forKey: .id)
+
+        if nestedId != id {
+            throw DecodingError.dataCorruptedError(forKey: DataKeys.id, in: nestedContainer, debugDescription: "Data id should be same as items id.")
+        }
+
+        if let format = try nestedContainer.decodeIfPresent(String.self, forKey: .format) {
+            type = OfferType(from: format)
+        } else {
+            type = try nestedContainer.decodeIfPresent(OfferType.self, forKey: .type) ?? .unknown
+        }
+
         language = try nestedContainer.decodeIfPresent([String].self, forKey: .language)
         characteristics = try nestedContainer.decodeIfPresent([String: String].self, forKey: .characteristics)
 
@@ -81,5 +93,19 @@ public class Offer: NSObject, Decodable {
         throw DecodingError.typeMismatch(Offer.self,
                                          DecodingError.Context(codingPath: decoder.codingPath,
                                                                debugDescription: "Offer content is not of an expected type."))
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(id, forKey: .id)
+        try container.encode(schema, forKey: .schema)
+
+        var data = container.nestedContainer(keyedBy: DataKeys.self, forKey: .data)
+        try data.encode(id, forKey: .id)
+        try data.encode(type, forKey: .type)
+        try data.encode(language, forKey: .language)
+        try data.encode(content, forKey: .content)
+        try data.encode(characteristics, forKey: .characteristics)
     }
 }

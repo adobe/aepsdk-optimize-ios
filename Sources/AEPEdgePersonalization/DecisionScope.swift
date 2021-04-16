@@ -87,4 +87,17 @@ public class DecisionScope: NSObject, Codable {
         Log.trace(label: PersonalizationConstants.LOG_TAG, "Decision scope is valid.")
         return true
     }
+
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? DecisionScope else {
+            return false
+        }
+        return name == rhs.name
+    }
+
+    override public var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(name)
+        return hasher.finalize()
+    }
 }

@@ -23,13 +23,27 @@ public class Personalization: NSObject, Extension {
     public let metadata: [String: String]? = nil
     public let runtime: ExtensionRuntime
 
+    /// Dictionary containing decision propositions currently cached in-memory in the SDK.
+    private(set) var cachedPropositions: [DecisionScope: Proposition]
+
     public required init?(runtime: ExtensionRuntime) {
         self.runtime = runtime
+        cachedPropositions = [:]
         super.init()
     }
 
     public func onRegistered() {
-        registerListener(type: EventType.offerDecisioning, source: EventSource.requestContent, listener: updatePropositions(event:))
+        registerListener(type: EventType.offerDecisioning,
+                         source: EventSource.requestContent,
+                         listener: processUpdatePropositions(event:))
+
+        registerListener(type: EventType.edge,
+                         source: PersonalizationConstants.EventSource.EDGE_PERSONALIZATION_DECISIONS,
+                         listener: processEdgeResponse(event:))
+
+        registerListener(type: EventType.edge,
+                         source: PersonalizationConstants.EventSource.EDGE_ERROR_RESPONSE,
+                         listener: processEdgeErrorResponse(event:))
     }
 
     public func onUnregistered() {}
@@ -47,15 +61,18 @@ public class Personalization: NSObject, Extension {
     ///
     /// It dispatches an event to the Edge extension to send personalization query request to the Experience Edge network.
     /// - Parameter event: Update propositions request event
-    private func updatePropositions(event: Event) {
-        guard let decisionScopes = event.data?[PersonalizationConstants.EventDataKeys.DECISION_SCOPES] as? [[String: Any]],
+    private func processUpdatePropositions(event: Event) {
+        guard let decisionScopes: [DecisionScope] = event.getTypedData(for: PersonalizationConstants.EventDataKeys.DECISION_SCOPES),
               !decisionScopes.isEmpty
         else {
             Log.debug(label: PersonalizationConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
             return
         }
 
-        let targetDecisionScopes = decisionScopes.compactMap { $0[PersonalizationConstants.DECISION_SCOPE_NAME] as? String }
+        let targetDecisionScopes = decisionScopes
+            .filter { $0.isValid }
+            .compactMap { $0.name }
+
         if targetDecisionScopes.isEmpty {
             Log.debug(label: PersonalizationConstants.LOG_TAG, "No valid decision scopes found for the Edge personalization request!")
             return
@@ -94,5 +111,56 @@ public class Personalization: NSObject, Extension {
                           source: EventSource.requestContent,
                           data: eventData)
         dispatch(event: event)
+    }
+
+    /// Processes the Edge response event, dispatched with type `EventType.edge` and source `personalization: decisions`.
+    ///
+    /// It dispatches a personalization notification event with the propositions received from the decisioning services configured behind
+    /// Experience Edge network.
+    /// - Parameter event: Edge response event.
+    private func processEdgeResponse(event: Event) {
+        guard let eventType = event.data?[PersonalizationConstants.Edge.EVENT_HANDLE] as? String,
+              eventType == PersonalizationConstants.Edge.EVENT_HANDLE_TYPE_PERSONALIZATION
+        else {
+            Log.debug(label: PersonalizationConstants.LOG_TAG, "Ignoring Edge event, handle type is not personalization:decisions.")
+            return
+        }
+
+        guard let propositions: [Proposition] = event.getTypedData(for: PersonalizationConstants.Edge.PAYLOAD),
+              !propositions.isEmpty
+        else {
+            Log.debug(label: PersonalizationConstants.LOG_TAG, "Failed to read Edge response, propositions array is invalid or empty.")
+            return
+        }
+
+        let propositionsDict = propositions.toDictionary { DecisionScope(name: $0.scope) }
+
+        // Update propositions cache
+        cachedPropositions.merge(propositionsDict) { _, new in new }
+
+        let eventData = [PersonalizationConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
+
+        let event = Event(name: PersonalizationConstants.EventNames.PERSONALIZATION_NOTIFICATION,
+                          type: EventType.offerDecisioning,
+                          source: EventSource.notification,
+                          data: eventData)
+        dispatch(event: event)
+    }
+
+    /// Processes the Edge error response event, dispatched with type `EventType.edge` and source `com.adobe.eventSource.errorResponseContent`.
+    ///
+    /// It logs error related information specifying error type along with a detailed message.
+    /// - Parameter event: Edge error response event.
+    private func processEdgeErrorResponse(event: Event) {
+        let errorType = event.data?[PersonalizationConstants.Edge.ErrorKeys.TYPE] as? String
+        let errorDetail = event.data?[PersonalizationConstants.Edge.ErrorKeys.DETAIL] as? String
+
+        let errorString =
+            """
+            Decisioning Service error, type: \(errorType ?? PersonalizationConstants.ERROR_UNKNOWN), \
+            detail: \(errorDetail ?? PersonalizationConstants.ERROR_UNKNOWN)"
+            """
+
+        Log.warning(label: PersonalizationConstants.LOG_TAG, errorString)
     }
 }

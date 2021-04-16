@@ -47,14 +47,14 @@ class Event_PersonalizationTests: XCTestCase {
             "name": "testMbox1"
     ]
 
-    func testDecodeTypedData_keyInEventDataValid() {
+    func testGetTypedData_keyInEventDataValid() {
 
         let testEvent = Event(name: "Test Event",
                               type: "com.adobe.eventType.mockExtension",
                               source: "com.adobe.eventSource.requestContent",
                               data: TEST_EVENT_DATA_VALID)
 
-        guard let scopesArray: [DecisionScope] = testEvent.decodeTypedData(for: "decisionscopes") else {
+        guard let scopesArray: [DecisionScope] = testEvent.getTypedData(for: "decisionscopes") else {
             XCTFail("Decision Scopes Array should be valid.")
             return
         }
@@ -63,36 +63,36 @@ class Event_PersonalizationTests: XCTestCase {
         XCTAssertEqual("testMbox2", scopesArray[1].name)
     }
 
-    func testDecodeTypedData_keyInEventDataInvalid() {
+    func testGetTypedData_keyInEventDataInvalid() {
 
         let testEvent = Event(name: "Test Event",
                               type: "com.adobe.eventType.mockExtension",
                               source: "com.adobe.eventSource.requestContent",
                               data: TEST_EVENT_DATA_INVALID)
 
-        let scopesArray: [DecisionScope]? = testEvent.decodeTypedData(for: "decisionscopes")
+        let scopesArray: [DecisionScope]? = testEvent.getTypedData(for: "decisionscopes")
         XCTAssertNil(scopesArray)
     }
 
-    func testDecodeTypedData_keyNotInEventData() {
+    func testGetTypedData_keyNotInEventData() {
 
         let testEvent = Event(name: "Test Event",
                               type: "com.adobe.eventType.mockExtension",
                               source: "com.adobe.eventSource.requestContent",
                               data: TEST_EVENT_DATA_MISSING_KEY)
 
-        let scopesArray: [DecisionScope]? = testEvent.decodeTypedData(for: "decisionscopes")
+        let scopesArray: [DecisionScope]? = testEvent.getTypedData(for: "decisionscopes")
         XCTAssertNil(scopesArray)
     }
 
-    func testDecodeTypedData_EventData() {
+    func testGetTypedData_EventData() {
 
         let testEvent = Event(name: "Test Event",
                               type: "com.adobe.eventType.mockExtension",
                               source: "com.adobe.eventSource.requestContent",
                               data: TEST_EVENT_DATA_NO_TYPEKEY)
 
-        guard let scope: DecisionScope = testEvent.decodeTypedData() else {
+        guard let scope: DecisionScope = testEvent.getTypedData() else {
             XCTFail("Decision Scope should be valid.")
             return
         }
