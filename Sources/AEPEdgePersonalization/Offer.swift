@@ -62,6 +62,9 @@ public class Offer: NSObject, Codable {
             throw DecodingError.dataCorruptedError(forKey: DataKeys.id, in: nestedContainer, debugDescription: "Data id should be same as items id.")
         }
 
+        // Try and decode format, if present, usually in Edge response. Personalization extension parses format into a public
+        // enum for customers to easily identify how to parse the decision content. Thereon, type field is encoded in EventData
+        // for events dispatched by this extension indicating the type of content.
         if let format = try nestedContainer.decodeIfPresent(String.self, forKey: .format) {
             type = OfferType(from: format)
         } else {

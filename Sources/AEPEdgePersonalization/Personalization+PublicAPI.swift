@@ -101,7 +101,7 @@ public extension Personalization {
     ///
     /// - Parameter completion: The completion handler to be invoked with the decision propositions.
     @objc(onPropositionsUpdate:)
-    static func onPropositionsUpdate(_ completion: @escaping ([DecisionScope: Proposition]?) -> Void) {
+    static func onPropositionsUpdate(perform action: @escaping ([DecisionScope: Proposition]?) -> Void) {
         MobileCore.registerEventListener(type: EventType.offerDecisioning,
                                          source: EventSource.notification) { event in
 
@@ -113,7 +113,7 @@ public extension Personalization {
                 return
             }
 
-            completion(propositions)
+            action(propositions)
         }
     }
 
