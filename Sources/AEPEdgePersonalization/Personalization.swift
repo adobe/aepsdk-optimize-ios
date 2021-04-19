@@ -176,7 +176,7 @@ public class Personalization: NSObject, Extension {
 
         Log.warning(label: PersonalizationConstants.LOG_TAG, errorString)
     }
-    
+
     /// Clears propositions cached in-memory in the extension.
     ///
     /// This method is also invoked upon Core`resetIdentities` to clear the propositions cached locally.
