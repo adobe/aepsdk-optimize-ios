@@ -24,7 +24,11 @@ public class Personalization: NSObject, Extension {
     public let runtime: ExtensionRuntime
 
     /// Dictionary containing decision propositions currently cached in-memory in the SDK.
-    private(set) var cachedPropositions: [DecisionScope: Proposition]
+    #if DEBUG
+        var cachedPropositions: [DecisionScope: Proposition]
+    #else
+        private(set) var cachedPropositions: [DecisionScope: Proposition]
+    #endif
 
     public required init?(runtime: ExtensionRuntime) {
         self.runtime = runtime
@@ -44,6 +48,15 @@ public class Personalization: NSObject, Extension {
         registerListener(type: EventType.edge,
                          source: PersonalizationConstants.EventSource.EDGE_ERROR_RESPONSE,
                          listener: processEdgeErrorResponse(event:))
+
+        registerListener(type: EventType.offerDecisioning,
+                         source: EventSource.requestReset,
+                         listener: processClearPropositions(event:))
+
+        // Register listener - Core `resetIdentities()` API dispatches generic identity request reset event.
+        registerListener(type: EventType.genericIdentity,
+                         source: EventSource.requestReset,
+                         listener: processClearPropositions(event:))
     }
 
     public func onUnregistered() {}
@@ -162,5 +175,14 @@ public class Personalization: NSObject, Extension {
             """
 
         Log.warning(label: PersonalizationConstants.LOG_TAG, errorString)
+    }
+    
+    /// Clears propositions cached in-memory in the extension.
+    ///
+    /// This method is also invoked upon Core`resetIdentities` to clear the propositions cached locally.
+    /// - Parameter event: Personalization request reset event.
+    private func processClearPropositions(event _: Event) {
+        // Clear propositions cache
+        cachedPropositions.removeAll()
     }
 }

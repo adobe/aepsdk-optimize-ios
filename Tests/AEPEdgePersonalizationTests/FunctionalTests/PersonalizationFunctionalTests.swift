@@ -280,14 +280,14 @@ class PersonalizationFunctionalTests: XCTestCase {
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.offerDecisioning", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
-        
+
         guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
             XCTFail("Propositions dictionary should be valid.")
             return
         }
         let scope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
         XCTAssertNotNil(propositionsDictionary[scope])
-        
+
         let proposition = propositionsDictionary[scope]
         XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
         XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
@@ -330,13 +330,129 @@ class PersonalizationFunctionalTests: XCTestCase {
                               type: "com.adobe.eventType.edge",
                               source: "com.adobe.eventSource.errorResponseContent",
                               data: [
-                                "requestId" : "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBBA",
-                                "detail" : "The following scope was not found: xcore:offer-activity:1111111111111111/xcore:offer-placement:1111111111111111",
-                                "status" : 404,
-                                "requestEventId" : "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
-                                "type" : "https://ns.adobe.com/aep/errors/ODE-0001-404",
-                                "title" : "Not Found"
+                                "requestId": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBBA",
+                                "detail": "The following scope was not found: xcore:offer-activity:1111111111111111/xcore:offer-placement:1111111111111111",
+                                "status": 404,
+                                "requestEventId": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
+                                "type": "https://ns.adobe.com/aep/errors/ODE-0001-404",
+                                "title": "Not Found"
                               ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+        XCTAssertTrue(personalization.cachedPropositions.isEmpty)
+    }
+
+    func testClearCachedPropositions() {
+        // setup
+        let propositionsData =
+        """
+          {
+              "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+              "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
+              "activity": {
+                  "etag": 8,
+                  "id": "xcore:offer-activity:1111111111111111"
+              },
+              "placement": {
+                  "etag": 1,
+                  "id": "xcore:offer-placement:1111111111111111"
+              },
+              "items": [
+                  {
+                      "id": "xcore:personalized-offer:1111111111111111",
+                      "etag": 10,
+                      "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
+                      "data": {
+                          "id": "xcore:personalized-offer:1111111111111111",
+                          "format": "text/plain",
+                          "content": "This is a plain text content!",
+                          "characteristics": {
+                              "testing": "true"
+                          }
+                      }
+                  }
+              ]
+          }
+        """.data(using: .utf8)!
+
+        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+
+        personalization.cachedPropositions[DecisionScope(name: "myScope")] = propositions
+        XCTAssertEqual(1, personalization.cachedPropositions.count)
+
+        let testEvent = Event(name: "Clear Propositions Request",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.requestReset",
+                              data: nil)
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+        XCTAssertTrue(personalization.cachedPropositions.isEmpty)
+    }
+
+    func testCoreResetIdentities() {
+        // setup
+        let propositionsData =
+        """
+          {
+              "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+              "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
+              "activity": {
+                  "etag": 8,
+                  "id": "xcore:offer-activity:1111111111111111"
+              },
+              "placement": {
+                  "etag": 1,
+                  "id": "xcore:offer-placement:1111111111111111"
+              },
+              "items": [
+                  {
+                      "id": "xcore:personalized-offer:1111111111111111",
+                      "etag": 10,
+                      "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
+                      "data": {
+                          "id": "xcore:personalized-offer:1111111111111111",
+                          "format": "text/plain",
+                          "content": "This is a plain text content!",
+                          "characteristics": {
+                              "testing": "true"
+                          }
+                      }
+                  }
+              ]
+          }
+        """.data(using: .utf8)!
+
+        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+
+        personalization.cachedPropositions[DecisionScope(name: "myScope")] = propositions
+        XCTAssertEqual(1, personalization.cachedPropositions.count)
+
+        let testEvent = Event(name: "Reset Identities Request",
+                              type: "com.adobe.eventType.generic.identity",
+                              source: "com.adobe.eventSource.requestReset",
+                              data: nil)
 
         mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
                                         data: ([
