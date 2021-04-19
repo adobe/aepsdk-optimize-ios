@@ -19,7 +19,7 @@ extension Event {
     /// Decode an instance of given type from the event data.
     /// - Parameter key: Event data key, default value is nil.
     /// - Returns: Optional type instance
-    func decodeTypedData<T: Decodable>(for key: String? = nil) -> T? {
+    func getTypedData<T: Decodable>(for key: String? = nil) -> T? {
         let key = key ?? ""
         guard
             let jsonObject = !key.isEmpty ? data?[key] : data,

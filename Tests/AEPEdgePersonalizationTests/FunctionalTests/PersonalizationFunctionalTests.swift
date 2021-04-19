@@ -11,7 +11,7 @@ governing permissions and limitations under the License.
 */
 
 import AEPCore
-import AEPEdgePersonalization
+@testable import AEPEdgePersonalization
 import XCTest
 
 class PersonalizationFunctionalTests: XCTestCase {
@@ -167,5 +167,186 @@ class PersonalizationFunctionalTests: XCTestCase {
 
         // verify
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+    }
+
+    func testUpdatePropositions_invalidDecisionScope() {
+            // setup
+        let testEvent = Event(name: "Update Propositions Request",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatedecisions",
+                                "decisionscopes": [
+                                    [
+                                        "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoiIn0="
+                                    ]
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+    }
+
+    func testUpdatePropositions_validAndInvalidDecisionScopes() {
+        // setup
+        let testEvent = Event(name: "Update Propositions Request",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatedecisions",
+                                "decisionscopes": [
+                                    [
+                                        "name": "eyJhY3Rpdml0eUlkIjoiIiwicGxhY2VtZW50SWQiOiJ4Y29yZTpvZmZlci1wbGFjZW1lbnQ6MTExMTExMTExMTExMTExMSJ9"
+                                    ],
+                                    [
+                                        "name": "myMbox"
+                                    ]
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
+        let query = dispatchedEvent?.data?["query"] as? [String: Any]
+        let personalization = query?["personalization"] as? [String: Any]
+        let decisionScopes = personalization?["decisionScopes"] as? [String]
+        XCTAssertEqual(1, decisionScopes?.count)
+        XCTAssertEqual("myMbox", decisionScopes?[0])
+    }
+
+    func testEdgeResponse_validProposition() {
+        // setup
+        let testEvent = Event(name: "AEP Response Event Handle",
+                              type: "com.adobe.eventType.edge",
+                              source: "personalization:decisions",
+                              data: [
+                                  "payload": [
+                                    [
+                                        "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+                                        "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
+                                        "activity": [
+                                            "etag": 8,
+                                            "id": "xcore:offer-activity:1111111111111111"
+                                        ],
+                                        "placement": [
+                                            "etag": 1,
+                                            "id": "xcore:offer-placement:1111111111111111"
+                                        ],
+                                        "items": [
+                                            [
+                                                "id": "xcore:personalized-offer:1111111111111111",
+                                                "etag": 10,
+                                                "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",
+                                                "data": [
+                                                    "id": "xcore:personalized-offer:1111111111111111",
+                                                    "format": "text/html",
+                                                    "content": "<h1>This is HTML content</h1>",
+                                                    "characteristics": [
+                                                        "testing": "true"
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                  ],
+                                "requestEventId": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
+                                "requestId": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB",
+                                "type": "personalization:decisions"
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.offerDecisioning", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
+        
+        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions dictionary should be valid.")
+            return
+        }
+        let scope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
+        XCTAssertNotNil(propositionsDictionary[scope])
+        
+        let proposition = propositionsDictionary[scope]
+        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
+        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
+        XCTAssertEqual(1, proposition?.offers.count)
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", proposition?.offers[0].schema)
+        XCTAssertEqual(.html, proposition?.offers[0].type)
+        XCTAssertEqual("<h1>This is HTML content</h1>", proposition?.offers[0].content)
+        XCTAssertEqual(1, proposition?.offers[0].characteristics?.count)
+        XCTAssertEqual("true", proposition?.offers[0].characteristics?["testing"])
+    }
+
+    func testEdgeResponse_emptyProposition() {
+        // setup
+        let testEvent = Event(name: "AEP Response Event Handle",
+                              type: "com.adobe.eventType.edge",
+                              source: "personalization:decisions",
+                              data: [
+                                "payload": [],
+                                "requestEventId": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
+                                "requestId": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB",
+                                "type": "personalization:decisions"
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+        XCTAssertTrue(personalization.cachedPropositions.isEmpty)
+    }
+
+    func testEdgeErrorResponse() {
+        // setup
+        let testEvent = Event(name: "AEP Error Response",
+                              type: "com.adobe.eventType.edge",
+                              source: "com.adobe.eventSource.errorResponseContent",
+                              data: [
+                                "requestId" : "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBBA",
+                                "detail" : "The following scope was not found: xcore:offer-activity:1111111111111111/xcore:offer-placement:1111111111111111",
+                                "status" : 404,
+                                "requestEventId" : "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
+                                "type" : "https://ns.adobe.com/aep/errors/ODE-0001-404",
+                                "title" : "Not Found"
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+        XCTAssertTrue(personalization.cachedPropositions.isEmpty)
     }
 }

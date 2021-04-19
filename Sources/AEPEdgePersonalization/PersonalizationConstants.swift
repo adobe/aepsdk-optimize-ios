@@ -21,11 +21,19 @@ enum PersonalizationConstants {
     static let PLACEMENT_ID = "placementId"
     static let ITEM_COUNT = "itemCount"
 
+    static let ERROR_UNKNOWN = "unknown"
+
     enum EventNames {
         static let UPDATE_PROPOSITIONS_REQUEST = "Update Propositions Request"
         static let GET_PROPOSITIONS_REQUEST = "Get Propositions Request"
         static let CLEAR_PROPOSITIONS_REQUEST = "Clear Propositions Request"
+        static let PERSONALIZATION_NOTIFICATION = "Personalization Notification"
         static let EDGE_PERSONALIZATION_REQUEST = "Edge Personalization Request"
+    }
+
+    enum EventSource {
+        static let EDGE_PERSONALIZATION_DECISIONS = "personalization:decisions"
+        static let EDGE_ERROR_RESPONSE = "com.adobe.eventSource.errorResponseContent"
     }
 
     enum EventDataKeys {
@@ -34,11 +42,23 @@ enum PersonalizationConstants {
         static let XDM = "xdm"
         static let DATA = "data"
         static let DATASET_ID = "datasetid"
+        static let PROPOSITIONS = "propositions"
     }
 
     enum EventDataValues {
         static let REQUEST_TYPE_UPDATE = "updatedecisions"
         static let REQUEST_TYPE_GET = "getdecisions"
+    }
+
+    enum Edge {
+        static let EXTENSION_NAME = "com.adobe.edge"
+        static let EVENT_HANDLE = "type"
+        static let EVENT_HANDLE_TYPE_PERSONALIZATION = "personalization:decisions"
+        static let PAYLOAD = "payload"
+        enum ErrorKeys {
+            static let TYPE = "type"
+            static let DETAIL = "detail"
+        }
     }
 
     enum Configuration {
