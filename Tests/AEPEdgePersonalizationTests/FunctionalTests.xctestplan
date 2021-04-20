@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "67A5CFA4-6EAD-4C03-90E4-E1FFC1DA53DC",
+      "name" : "Configuration 1",
+      "options" : {
+        "testExecutionOrdering" : "random"
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:AEPEdgePersonalization.xcodeproj",
+        "identifier" : "C88C5F9E261D6499003AE3DE",
+        "name" : "FunctionalTests"
+      }
+    }
+  ],
+  "version" : 1
+}

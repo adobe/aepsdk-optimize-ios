@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "BD5D088E-5C54-48F4-93AC-78A4DE0DC249",
+      "name" : "Configuration 1",
+      "options" : {
+        "testExecutionOrdering" : "random"
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:AEPEdgePersonalization.xcodeproj",
+        "identifier" : "C88C5F9E261D6499003AE3DE",
+        "name" : "FunctionalTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:AEPEdgePersonalization.xcodeproj",
+        "identifier" : "C892B4EC2612DC84007FE5C5",
+        "name" : "UnitTests"
+      }
+    }
+  ],
+  "version" : 1
+}

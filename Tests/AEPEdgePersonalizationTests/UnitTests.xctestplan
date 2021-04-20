@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "CB38E285-D9C9-436D-9FCC-936F6E591CAA",
+      "name" : "Configuration 1",
+      "options" : {
+        "testExecutionOrdering" : "random"
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:AEPEdgePersonalization.xcodeproj",
+        "identifier" : "C892B4EC2612DC84007FE5C5",
+        "name" : "UnitTests"
+      }
+    }
+  ],
+  "version" : 1
+}

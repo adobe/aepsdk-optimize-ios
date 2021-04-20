@@ -97,6 +97,9 @@
 		C8CA16DA2624BDA5005B09A0 /* String+PersonalizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+PersonalizationTests.swift"; sourceTree = "<group>"; };
 		C8CA16DB2624BDA5005B09A0 /* StringInterpolation+PersonalizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StringInterpolation+PersonalizationTests.swift"; sourceTree = "<group>"; };
 		C8CA1728262523BF005B09A0 /* TestableExtensionRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestableExtensionRuntime.swift; sourceTree = "<group>"; };
+		C8CA17E4262EC221005B09A0 /* UnitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UnitTests.xctestplan; sourceTree = "<group>"; };
+		C8CA17F5262EC292005B09A0 /* FunctionalTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = FunctionalTests.xctestplan; path = "/Users/swsaraf/Workspace/SwiftSDK/aepsdk-edgepersonalization-ios/Tests/AEPEdgePersonalizationTests/FunctionalTests.xctestplan"; sourceTree = "<absolute>"; };
+		C8CA17FC262EC324005B09A0 /* FullTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FullTests.xctestplan; sourceTree = "<group>"; };
 		EE8A689046136AC61038271D /* Pods-UnitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnitTests.debug.xcconfig"; path = "Target Support Files/Pods-UnitTests/Pods-UnitTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F41CCB211E0AC213CB539097 /* Pods-FunctionalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FunctionalTests.release.xcconfig"; path = "Target Support Files/Pods-FunctionalTests/Pods-FunctionalTests.release.xcconfig"; sourceTree = "<group>"; };
 		F58FEDB703638AF8D0DCB35B /* Pods-AEPEdgePersonalization.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEPEdgePersonalization.debug.xcconfig"; path = "Target Support Files/Pods-AEPEdgePersonalization/Pods-AEPEdgePersonalization.debug.xcconfig"; sourceTree = "<group>"; };
@@ -188,6 +191,9 @@
 		C88C5E9C261324E8003AE3DE /* AEPEdgePersonalizationTests */ = {
 			isa = PBXGroup;
 			children = (
+				C8CA17FC262EC324005B09A0 /* FullTests.xctestplan */,
+				C8CA17F5262EC292005B09A0 /* FunctionalTests.xctestplan */,
+				C8CA17E4262EC221005B09A0 /* UnitTests.xctestplan */,
 				C88C5FAD261D6545003AE3DE /* FunctionalTests */,
 				C88C5E9D26132525003AE3DE /* UnitTests */,
 			);
