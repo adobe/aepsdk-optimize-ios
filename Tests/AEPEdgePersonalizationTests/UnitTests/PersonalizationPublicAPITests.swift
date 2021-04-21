@@ -355,7 +355,7 @@ class PersonalizationPublicAPITests: XCTestCase {
         // setup
         let expectation = XCTestExpectation(description: "onPropositionsUpdate should be called with response event upon personalization notification.")
         expectation.assertForOverFulfill = true
-        
+
         let testEvent = Event(name: "Personalization Notification",
                               type: "com.adobe.eventType.offerDecisioning",
                               source: "com.adobe.eventSource.notification",
@@ -472,6 +472,29 @@ class PersonalizationPublicAPITests: XCTestCase {
         }
 
         Personalization.clearCachedPropositions()
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testCoreResetIdentities() {
+        // setup
+        let expectation = XCTestExpectation(description: "Reset Identities should dispatch an event.")
+        expectation.assertForOverFulfill = true
+        let testEvent = Event(name: "Reset Identities Request",
+                              type: "com.adobe.eventType.generic.identity",
+                              source: "com.adobe.eventSource.requestReset",
+                              data: nil)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { event in
+            XCTAssertEqual(event.name, testEvent.name)
+            XCTAssertNil(event.data)
+            expectation.fulfill()
+        }
+
+        MobileCore.resetIdentities()
 
         // verify
         wait(for: [expectation], timeout: 1)
