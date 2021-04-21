@@ -88,6 +88,6 @@ jobs:
             for i in 1 256 512
             do
               shasum -a $i -c --ignore-missing <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM") ||
-              shasum -a $i -c <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM")
+              shasum -a $i -c <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM" | grep -w "codecov")
             done  
-            bash codecov -v -X s3 -c -D "./build/out" -J "AEPEdgePersonalization" -t ${CODECOV_TOKEN} || echo "Codecov did not collect coverage reports!"
+            bash ./codecov -v -X s3 -c -D "./build/out" -J "AEPEdgePersonalization" -t ${CODECOV_TOKEN}
