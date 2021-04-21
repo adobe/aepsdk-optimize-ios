@@ -91,4 +91,4 @@ jobs:
               shasum -a $i -c --ignore-missing <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM") ||
               shasum -a $i -c <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM")
             done  
-            bash ./.codecov -v -X s3 -c -D "./build/out" -J "AEPEdgePersonalization" -t ${CODECOV_TOKEN}
+            ./.codecov -v -X s3 -c -D "./build/out" -J "AEPEdgePersonalization" -t ${CODECOV_TOKEN}
