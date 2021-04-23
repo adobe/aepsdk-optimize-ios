@@ -29,4 +29,16 @@ extension Event {
         }
         return try? JSONDecoder().decode(T.self, from: jsonData)
     }
+
+    /// Creates a response event with specified AEPError type added in the Event data.
+    /// - Parameter error: type of AEPError
+    /// - Returns: error response Event
+    func createErrorResponseEvent(_ error: AEPError) -> Event {
+        createResponseEvent(name: PersonalizationConstants.EventNames.PERSONALIZATION_RESPONSE,
+                            type: EventType.offerDecisioning,
+                            source: EventSource.responseContent,
+                            data: [
+                                PersonalizationConstants.EventDataKeys.RESPONSE_ERROR: error.rawValue
+                            ])
+    }
 }
