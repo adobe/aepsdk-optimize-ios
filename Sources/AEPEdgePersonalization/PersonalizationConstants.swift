@@ -29,6 +29,7 @@ enum PersonalizationConstants {
         static let CLEAR_PROPOSITIONS_REQUEST = "Clear Propositions Request"
         static let PERSONALIZATION_NOTIFICATION = "Personalization Notification"
         static let EDGE_PERSONALIZATION_REQUEST = "Edge Personalization Request"
+        static let PERSONALIZATION_RESPONSE = "Personalization Response"
     }
 
     enum EventSource {
@@ -43,6 +44,7 @@ enum PersonalizationConstants {
         static let DATA = "data"
         static let DATASET_ID = "datasetid"
         static let PROPOSITIONS = "propositions"
+        static let RESPONSE_ERROR = "responseerror"
     }
 
     enum EventDataValues {

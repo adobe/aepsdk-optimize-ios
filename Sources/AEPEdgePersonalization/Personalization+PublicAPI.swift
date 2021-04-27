@@ -85,7 +85,12 @@ public extension Personalization {
                 return
             }
 
-            guard let propositions: [Proposition] = responseEvent.getTypedData() else {
+            if let error = responseEvent.data?[PersonalizationConstants.EventDataKeys.RESPONSE_ERROR] as? AEPError {
+                completion(nil, error)
+                return
+            }
+
+            guard let propositions: [Proposition] = responseEvent.getTypedData(for: PersonalizationConstants.EventDataKeys.PROPOSITIONS) else {
                 completion(nil, AEPError.unexpected)
                 return
             }
