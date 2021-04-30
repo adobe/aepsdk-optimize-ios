@@ -37,9 +37,17 @@ public class Personalization: NSObject, Extension {
     }
 
     public func onRegistered() {
-        registerListener(type: EventType.offerDecisioning,
-                         source: EventSource.requestContent,
-                         listener: processUpdatePropositions(event:))
+        registerListener(type: EventType.offerDecisioning, source: EventSource.requestContent) { event in
+            guard let requestType = event.data?[PersonalizationConstants.EventDataKeys.REQUEST_TYPE] as? String else {
+                Log.warning(label: PersonalizationConstants.LOG_TAG, "Ignoring event! Cannot determine the type of request event.")
+                return
+            }
+            if requestType == PersonalizationConstants.EventDataValues.REQUEST_TYPE_UPDATE {
+                self.processUpdatePropositions(event: event)
+            } else if requestType == PersonalizationConstants.EventDataValues.REQUEST_TYPE_GET {
+                self.processGetPropositions(event: event)
+            }
+        }
 
         registerListener(type: EventType.edge,
                          source: PersonalizationConstants.EventSource.EDGE_PERSONALIZATION_DECISIONS,
@@ -175,6 +183,33 @@ public class Personalization: NSObject, Extension {
             """
 
         Log.warning(label: PersonalizationConstants.LOG_TAG, errorString)
+    }
+
+    /// Processes the get propositions request event, dispatched with type `EventType.offerDecisioning` and source `EventSource.requestContent`.
+    ///
+    ///  It returns previously cached propositions for the requested decision scopes. Any decision scope(s) not already present in the cache are ignored.
+    /// - Parameter event: Get propositions request event
+    private func processGetPropositions(event: Event) {
+        guard let decisionScopes: [DecisionScope] = event.getTypedData(for: PersonalizationConstants.EventDataKeys.DECISION_SCOPES),
+              !decisionScopes.isEmpty
+        else {
+            Log.debug(label: PersonalizationConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
+            dispatch(event: event.createErrorResponseEvent(AEPError.invalidRequest))
+            return
+        }
+
+        let propositionsDict = cachedPropositions.filter { decisionScopes.contains($0.key) }
+
+        let eventData = [PersonalizationConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
+
+        let responseEvent = event.createResponseEvent(
+            name: PersonalizationConstants.EventNames.PERSONALIZATION_RESPONSE,
+            type: EventType.offerDecisioning,
+            source: EventSource.responseContent,
+            data: eventData
+        )
+
+        dispatch(event: responseEvent)
     }
 
     /// Clears propositions cached in-memory in the extension.

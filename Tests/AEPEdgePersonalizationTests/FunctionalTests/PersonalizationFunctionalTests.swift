@@ -52,6 +52,8 @@ class PersonalizationFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+        
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
@@ -91,6 +93,8 @@ class PersonalizationFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+        
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
@@ -137,6 +141,8 @@ class PersonalizationFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+        
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
@@ -219,6 +225,8 @@ class PersonalizationFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+        
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
@@ -277,6 +285,8 @@ class PersonalizationFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+        
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.offerDecisioning", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
@@ -348,6 +358,368 @@ class PersonalizationFunctionalTests: XCTestCase {
         // verify
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
         XCTAssertTrue(personalization.cachedPropositions.isEmpty)
+    }
+
+    func testGetPropositions_decisionScopeInCache() {
+        // setup
+        let propositionsData =
+        """
+          {
+              "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+              "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
+              "activity": {
+                  "etag": 8,
+                  "id": "xcore:offer-activity:1111111111111111"
+              },
+              "placement": {
+                  "etag": 1,
+                  "id": "xcore:offer-placement:1111111111111111"
+              },
+              "items": [
+                  {
+                      "id": "xcore:personalized-offer:1111111111111111",
+                      "etag": 10,
+                      "schema": "https://ns.adobe.com/experience/offer-management/content-component-json",
+                      "data": {
+                          "id": "xcore:personalized-offer:1111111111111111",
+                          "format": "application/json",
+                          "content": {\"key\": \"value\"},
+                          "characteristics": {
+                              "testing": "true"
+                          }
+                      }
+                  }
+              ]
+          }
+        """.data(using: .utf8)!
+
+        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+
+        personalization.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")] = propositions
+        XCTAssertEqual(1, personalization.cachedPropositions.count)
+
+        let testEvent = Event(name: "Get Propositions Request",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "getdecisions",
+                                "decisionscopes": [
+                                    [
+                                        "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
+                                    ]
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.offerDecisioning", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
+        XCTAssertNil(dispatchedEvent?.data?["responseerror"])
+
+        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions dictionary should be valid.")
+            return
+        }
+        XCTAssertEqual(1, propositionsDictionary.count)
+
+        let scope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
+        XCTAssertNotNil(propositionsDictionary[scope])
+
+        let proposition = propositionsDictionary[scope]
+        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
+        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
+        XCTAssertEqual(1, proposition?.offers.count)
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-json", proposition?.offers[0].schema)
+        XCTAssertEqual(.json, proposition?.offers[0].type)
+        XCTAssertEqual("{\"key\":\"value\"}", proposition?.offers[0].content)
+        XCTAssertEqual(1, proposition?.offers[0].characteristics?.count)
+        XCTAssertEqual("true", proposition?.offers[0].characteristics?["testing"])
+    }
+
+    func testGetPropositions_notAllDecisionScopesInCache() {
+        // setup
+        let propositionsData =
+        """
+          {
+              "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+              "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
+              "activity": {
+                  "etag": 8,
+                  "id": "xcore:offer-activity:1111111111111111"
+              },
+              "placement": {
+                  "etag": 1,
+                  "id": "xcore:offer-placement:1111111111111111"
+              },
+              "items": [
+                  {
+                      "id": "xcore:personalized-offer:1111111111111111",
+                      "etag": 10,
+                      "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
+                      "data": {
+                          "id": "xcore:personalized-offer:1111111111111111",
+                          "format": "text/plain",
+                          "content": "This is a plain text content."
+                      }
+                  }
+              ]
+          }
+        """.data(using: .utf8)!
+
+        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+
+        personalization.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")] = propositions
+        XCTAssertEqual(1, personalization.cachedPropositions.count)
+
+        let testEvent = Event(name: "Get Propositions Request",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "getdecisions",
+                                "decisionscopes": [
+                                    [
+                                        "name": "myMbox"
+                                    ],
+                                    [
+                                        "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
+                                    ]
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+        
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.offerDecisioning", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
+        XCTAssertNil(dispatchedEvent?.data?["responseerror"])
+
+        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions dictionary should be valid.")
+            return
+        }
+        XCTAssertEqual(1, propositionsDictionary.count)
+
+        let scope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
+        XCTAssertNotNil(propositionsDictionary[scope])
+
+        let proposition = propositionsDictionary[scope]
+        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
+        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
+        XCTAssertEqual(1, proposition?.offers.count)
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-text", proposition?.offers[0].schema)
+        XCTAssertEqual(.text, proposition?.offers[0].type)
+        XCTAssertEqual("This is a plain text content.", proposition?.offers[0].content)
+    }
+
+    func testGetPropositions_noDecisionScopeInCache() {
+        // setup
+        let propositionsData =
+        """
+          {
+              "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+              "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
+              "activity": {
+                  "etag": 8,
+                  "id": "xcore:offer-activity:1111111111111111"
+              },
+              "placement": {
+                  "etag": 1,
+                  "id": "xcore:offer-placement:1111111111111111"
+              },
+              "items": [
+                  {
+                      "id": "xcore:personalized-offer:1111111111111111",
+                      "etag": 10,
+                      "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",
+                      "data": {
+                          "id": "xcore:personalized-offer:1111111111111111",
+                          "format": "text/html",
+                          "content": "<h1>This is a html content.</h1>"
+                      }
+                  }
+              ]
+          }
+        """.data(using: .utf8)!
+
+        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+
+        personalization.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")] = propositions
+        XCTAssertEqual(1, personalization.cachedPropositions.count)
+
+        let testEvent = Event(name: "Get Propositions Request",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "getdecisions",
+                                "decisionscopes": [
+                                    [
+                                        "name": "myMbox1"
+                                    ],
+                                    [
+                                        "name": "myMbox2"
+                                    ]
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+        
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.offerDecisioning", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
+        XCTAssertNil(dispatchedEvent?.data?["responseerror"])
+
+        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions dictionary should be valid.")
+            return
+        }
+        XCTAssertTrue(propositionsDictionary.isEmpty)
+    }
+
+    func testGetPropositions_invalidDecisionScopesArray() {
+        // setup
+        let propositionsData =
+        """
+          {
+              "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+              "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
+              "activity": {
+                  "etag": 8,
+                  "id": "xcore:offer-activity:1111111111111111"
+              },
+              "placement": {
+                  "etag": 1,
+                  "id": "xcore:offer-placement:1111111111111111"
+              },
+              "items": [
+                  {
+                      "id": "xcore:personalized-offer:1111111111111111",
+                      "etag": 10,
+                      "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
+                      "data": {
+                          "id": "xcore:personalized-offer:1111111111111111",
+                          "format": "text/plain",
+                          "content": "This is a plain text content.</h1>"
+                      }
+                  }
+              ]
+          }
+        """.data(using: .utf8)!
+
+        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+
+        personalization.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")] = propositions
+        XCTAssertEqual(1, personalization.cachedPropositions.count)
+
+        let testEvent = Event(name: "Get Propositions Request",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "getdecisions",
+                                "decisionscopes": [
+                                    [
+                                        "name1": "myMbox1"
+                                    ],
+                                    [
+                                        "name2": "myMbox2"
+                                    ]
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+        
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.offerDecisioning", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
+        XCTAssertEqual(AEPError.invalidRequest, AEPError(rawValue: dispatchedEvent?.data?["responseerror"] as? Int ?? 1000))
+        XCTAssertNil(dispatchedEvent?.data?["propositions"])
+    }
+
+    func testGetPropositions_emptyCache() {
+        // setup
+        XCTAssertTrue(personalization.cachedPropositions.isEmpty)
+
+        let testEvent = Event(name: "Get Propositions Request",
+                              type: "com.adobe.eventType.offerDecisioning",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "getdecisions",
+                                "decisionscopes": [
+                                    [
+                                        "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
+                                    ],
+                                    [
+                                        "name": "myMbox"
+                                    ]
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.offerDecisioning", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
+        XCTAssertNil(dispatchedEvent?.data?["responseerror"])
+        
+        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions dictionary should be valid.")
+            return
+        }
+        XCTAssertTrue(propositionsDictionary.isEmpty)
     }
 
     func testClearCachedPropositions() {
