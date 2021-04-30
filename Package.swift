@@ -21,12 +21,11 @@ let package = Package(
         .library(name: "AEPEdgePersonalization", targets: ["AEPEdgePersonalization"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/adobe/aepsdk-core-ios.git", .branch("main")),
-        .package(url: "https://github.com/adobe/aepsdk-edge-ios.git", .branch("main")),
+        .package(url: "https://github.com/adobe/aepsdk-core-ios.git", from: "3.1.1")
     ],
     targets: [
         .target(name: "AEPEdgePersonalization",
-                dependencies: ["AEPCore", "AEPEdge"],
+                dependencies: ["AEPCore"],
                 path: "Sources/AEPEdgePersonalization"),
         .testTarget(name: "UnitTests",
                     dependencies: ["AEPEdgePersonalization"],
