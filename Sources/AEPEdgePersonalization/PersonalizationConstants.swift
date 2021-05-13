@@ -18,8 +18,11 @@ enum PersonalizationConstants {
 
     static let DECISION_SCOPE_NAME = "name"
     static let ACTIVITY_ID = "activityId"
+    static let XDM_ACTIVITY_ID = "xdm:activityId"
     static let PLACEMENT_ID = "placementId"
+    static let XDM_PLACEMENT_ID = "xdm:placementId"
     static let ITEM_COUNT = "itemCount"
+    static let XDM_ITEM_COUNT = "xdm:itemCount"
 
     static let ERROR_UNKNOWN = "unknown"
 

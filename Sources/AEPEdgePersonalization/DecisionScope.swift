@@ -31,12 +31,12 @@ public class DecisionScope: NSObject, Codable {
     ///
     /// This initializer creates a scope name by Base64 encoding the JSON string created using the provided data.
     ///
-    /// If `itemCount` > 1, JSON string is
-    ///
-    ///     {"activityId":#activityId,"placementId":#placementId,"itemCount":#itemCount}
-    /// otherwise,
+    /// If `itemCount` == 1, JSON string is
     ///
     ///     {"activityId":#activityId,"placementId":#placementId}
+    /// otherwise,
+    ///
+    ///     {"activityId":#activityId,"placementId":#placementId,"itemCount":#itemCount}
     /// - Parameters:
     ///   - activityId: unique activity identifier for the decisioning activity.
     ///   - placementId: unique placement identifier for the decisioning activity offer.
@@ -64,24 +64,48 @@ public class DecisionScope: NSObject, Codable {
                 return false
             }
 
-            guard let activityId = dictionary[PersonalizationConstants.ACTIVITY_ID] as? String,
-                  !activityId.isEmpty
-            else {
-                Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope \(name)! Activity Id is nil or empty.")
-                return false
-            }
+            if dictionary.keys.contains(PersonalizationConstants.XDM_ACTIVITY_ID) {
+                // Validate xdm:activityId, xdm:placementId and xdm:itemCount
+                guard let activityId = dictionary[PersonalizationConstants.XDM_ACTIVITY_ID] as? String,
+                      !activityId.isEmpty
+                else {
+                    Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope \(name)! Activity Id is nil or empty.")
+                    return false
+                }
 
-            guard let placementId = dictionary[PersonalizationConstants.PLACEMENT_ID] as? String,
-                  !placementId.isEmpty
-            else {
-                Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope \(name)! Placement Id is nil or empty.")
-                return false
-            }
+                guard let placementId = dictionary[PersonalizationConstants.XDM_PLACEMENT_ID] as? String,
+                      !placementId.isEmpty
+                else {
+                    Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope \(name)! Placement Id is nil or empty.")
+                    return false
+                }
 
-            let itemCount = dictionary[PersonalizationConstants.ITEM_COUNT] as? Int ?? 1
-            if itemCount == 0 {
-                Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope \(name)! itemCount is 0.")
-                return false
+                let itemCount = dictionary[PersonalizationConstants.XDM_ITEM_COUNT] as? Int ?? 1
+                if itemCount == 0 {
+                    Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope \(name)! itemCount is 0.")
+                    return false
+                }
+            } else {
+                // Validate activityId, placementId and itemCount
+                guard let activityId = dictionary[PersonalizationConstants.ACTIVITY_ID] as? String,
+                      !activityId.isEmpty
+                else {
+                    Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope \(name)! Activity Id is nil or empty.")
+                    return false
+                }
+
+                guard let placementId = dictionary[PersonalizationConstants.PLACEMENT_ID] as? String,
+                      !placementId.isEmpty
+                else {
+                    Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope \(name)! Placement Id is nil or empty.")
+                    return false
+                }
+
+                let itemCount = dictionary[PersonalizationConstants.ITEM_COUNT] as? Int ?? 1
+                if itemCount == 0 {
+                    Log.debug(label: PersonalizationConstants.LOG_TAG, "Invalid scope \(name)! itemCount is 0.")
+                    return false
+                }
             }
         }
         Log.trace(label: PersonalizationConstants.LOG_TAG, "Decision scope is valid.")

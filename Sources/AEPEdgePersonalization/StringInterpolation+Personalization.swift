@@ -16,10 +16,10 @@ import Foundation
 
 extension String.StringInterpolation {
     mutating func appendInterpolation(activityId: String, placementId: String, itemCount: UInt) {
-        if itemCount > 1 {
-            appendInterpolation("{\"activityId\":\"\(activityId)\",\"placementId\":\"\(placementId)\",\"itemCount\":\(itemCount)}")
-        } else {
+        if itemCount == 1 {
             appendInterpolation("{\"activityId\":\"\(activityId)\",\"placementId\":\"\(placementId)\"}")
+        } else {
+            appendInterpolation("{\"activityId\":\"\(activityId)\",\"placementId\":\"\(placementId)\",\"itemCount\":\(itemCount)}")
         }
     }
 }
