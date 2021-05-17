@@ -31,6 +31,6 @@ class StringInterpolation_PersonalizationTests: XCTestCase {
 
     func testAppendInterpolation_withZeroItemCount() {
         let message = "\(activityId: ACTIVITY_ID, placementId: PLACEMENT_ID, itemCount: 0)"
-        XCTAssertEqual("{\"activityId\":\"xcore:offer-activity:1111111111111111\",\"placementId\":\"xcore:offer-placement:1111111111111111\"}", message)
+        XCTAssertEqual("{\"activityId\":\"xcore:offer-activity:1111111111111111\",\"placementId\":\"xcore:offer-placement:1111111111111111\",\"itemCount\":0}", message)
     }
 }

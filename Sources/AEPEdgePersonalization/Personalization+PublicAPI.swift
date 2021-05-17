@@ -90,11 +90,13 @@ public extension Personalization {
                 return
             }
 
-            guard let propositions: [Proposition] = responseEvent.getTypedData(for: PersonalizationConstants.EventDataKeys.PROPOSITIONS) else {
+            guard
+                let propositions: [DecisionScope: Proposition] = responseEvent.getTypedData(for: PersonalizationConstants.EventDataKeys.PROPOSITIONS)
+            else {
                 completion(nil, AEPError.unexpected)
                 return
             }
-            completion(propositions.toDictionary { DecisionScope(name: $0.scope) }, .none)
+            completion(propositions, .none)
         }
     }
 
