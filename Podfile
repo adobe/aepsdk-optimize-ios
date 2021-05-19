@@ -31,7 +31,7 @@ abstract_target 'shared' do
   pod 'AEPAssurance'
   pod 'ACPCore', :git => 'https://github.com/adobe/aepsdk-compatibility-ios.git', :branch => 'main'
   
-  #target 'AEPEdgePersonalizationDemoSwiftUI'
+  target 'AEPEdgePersonalizationDemoSwiftUI'
   target 'AEPEdgePersonalizationDemoObjC'
 end
 

@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C82A605D2655A6480062E70A"
-               BuildableName = "AEPEdgePersonalizationDemoObjC.app"
-               BlueprintName = "AEPEdgePersonalizationDemoObjC"
+               BlueprintIdentifier = "C863BE9926458371004B90A0"
+               BuildableName = "AEPEdgePersonalizationDemoSwiftUI.app"
+               BlueprintName = "AEPEdgePersonalizationDemoSwiftUI"
                ReferencedContainer = "container:AEPEdgePersonalization.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -44,9 +44,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C82A605D2655A6480062E70A"
-            BuildableName = "AEPEdgePersonalizationDemoObjC.app"
-            BlueprintName = "AEPEdgePersonalizationDemoObjC"
+            BlueprintIdentifier = "C863BE9926458371004B90A0"
+            BuildableName = "AEPEdgePersonalizationDemoSwiftUI.app"
+            BlueprintName = "AEPEdgePersonalizationDemoSwiftUI"
             ReferencedContainer = "container:AEPEdgePersonalization.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -61,9 +61,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C82A605D2655A6480062E70A"
-            BuildableName = "AEPEdgePersonalizationDemoObjC.app"
-            BlueprintName = "AEPEdgePersonalizationDemoObjC"
+            BlueprintIdentifier = "C863BE9926458371004B90A0"
+            BuildableName = "AEPEdgePersonalizationDemoSwiftUI.app"
+            BlueprintName = "AEPEdgePersonalizationDemoSwiftUI"
             ReferencedContainer = "container:AEPEdgePersonalization.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
