@@ -208,7 +208,6 @@ public class Personalization: NSObject, Extension {
             source: EventSource.responseContent,
             data: eventData
         )
-
         dispatch(event: responseEvent)
     }
 
