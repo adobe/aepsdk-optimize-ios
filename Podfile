@@ -19,3 +19,19 @@ end
 target 'FunctionalTests' do
   pod 'AEPCore'
 end
+
+abstract_target 'shared' do
+  pod 'AEPCore'
+  pod 'AEPLifecycle'
+  pod 'AEPIdentity'
+  pod 'AEPSignal'
+  pod 'AEPEdge'
+  pod 'AEPEdgeConsent'
+  pod 'AEPEdgeIdentity'
+  pod 'AEPAssurance'
+  pod 'ACPCore', :git => 'https://github.com/adobe/aepsdk-compatibility-ios.git', :branch => 'main'
+  
+  #target 'AEPEdgePersonalizationDemoSwiftUI'
+  target 'AEPEdgePersonalizationDemoObjC'
+end
+
