@@ -21,7 +21,7 @@ public extension Personalization {
     /// The returned decision propositions are cached in memory in the personalization SDK extension and can be retrieved using `getPropositions(for:_:)` API.
     /// - Parameter decisionScopes: An array of decision scopes.
     /// - Parameter experienceData: Additional experience data to be sent in the personalization request.
-    @objc(updatePropositionsFor:withXdm:)
+    @objc(updatePropositions:withExperienceData:)
     static func updatePropositions(for decisionScopes: [DecisionScope], with experienceData: ExperienceData? = nil) {
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
@@ -56,7 +56,7 @@ public extension Personalization {
     /// - Parameters:
     ///   - decisionScopes: An array of decision scopes.
     ///   - completion: The completion handler to be invoked when the decisions are retrieved from cache.
-    @objc(getPropositionsFor:completion:)
+    @objc(getPropositions:completion:)
     static func getPropositions(for decisionScopes: [DecisionScope], _ completion: @escaping ([DecisionScope: Proposition]?, Error?) -> Void) {
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
