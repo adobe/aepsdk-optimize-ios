@@ -19,7 +19,11 @@ struct SettingsView: View {
     @State private var appId = ""
     @State private var assuranceSessionURL = ""
    
-    @EnvironmentObject var appSettings: AppSettings
+    @EnvironmentObject var odeSettings: OdeSettings
+    @EnvironmentObject var targetSettings: TargetSettings
+    
+    @State private var mboxDictRows: UInt = 1
+    @State private var profileDictRows: UInt = 1
     
     var body: some View {
         VStack {
@@ -36,13 +40,56 @@ struct SettingsView: View {
                             }
                         }
                 }
+                
                 Section(header: Text("Personalization - ODE")) {
-                    TextField("Enter Encoded Decision Scope (Text)", text: $appSettings.textEncodedDecisionScope)
-                    TextField("Enter Encoded Decision Scope (Image)", text: $appSettings.imageEncodedDecisionScope)
-                    TextField("Enter Encoded Decision Scope (Html)", text: $appSettings.htmlEncodedDecisionScope)
-                    TextField("Enter Encoded Decision Scope (Json)", text: $appSettings.jsonEncodedDecisionScope)
-                    TextField("Enter Target Mbox", text: $appSettings.targetMbox)
+                    TextField("Enter Encoded Decision Scope (Text)", text: $odeSettings.textEncodedDecisionScope)
+                    TextField("Enter Encoded Decision Scope (Image)", text: $odeSettings.imageEncodedDecisionScope)
+                    TextField("Enter Encoded Decision Scope (Html)", text: $odeSettings.htmlEncodedDecisionScope)
+                    TextField("Enter Encoded Decision Scope (Json)", text: $odeSettings.jsonEncodedDecisionScope)
                 }
+                
+                Section(header: Text("Personalization - Target")) {
+                    TextField("Enter Target Mbox", text: $targetSettings.targetMbox)
+                        .autocapitalization(.none)
+                    
+                    Group {
+                        Text("Target Parameters - Mbox")
+                            .frame(maxWidth: .infinity)
+                            .padding(7)
+                        ForEach(0 ..< mboxDictRows, id: \.self) { _ in
+                            DictionaryRowView(dict: $targetSettings.mboxParameters,
+                                              dictRows: $mboxDictRows)
+                        }
+                    }
+                    
+                    Group {
+                        Text("Target Parameters - Profile")
+                            .frame(maxWidth: .infinity)
+                            .padding(7)
+                        ForEach(0 ..< profileDictRows, id: \.self) { _ in
+                            DictionaryRowView(dict:$targetSettings.profileParameters,
+                                              dictRows: $profileDictRows)
+                        }
+                    }
+                    
+                    Group {
+                        Text("Target Parameters - Order")
+                            .frame(maxWidth: .infinity)
+                            .padding(7)
+                        TextField("Enter Order Id", text: $targetSettings.order.orderId)
+                        TextField("Enter Order Total", text: $targetSettings.order.orderTotal)
+                        TextField("Enter Purchased Product Ids (comma-separated)", text: $targetSettings.order.purchasedProductIds)
+                    }
+                    
+                    Group {
+                        Text("Target Parameters - Product")
+                            .frame(maxWidth: .infinity)
+                            .padding(7)
+                        TextField("Enter Product Id", text: $targetSettings.product.productId)
+                        TextField("Enter Product Category Id", text: $targetSettings.product.categoryId)
+                    }
+                }
+                
                 Section(header: Text("About")) {
                     HStack {
                         Text("Version")
@@ -58,6 +105,7 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
-            .environmentObject(AppSettings())
+            .environmentObject(OdeSettings())
+            .environmentObject(TargetSettings())
     }
 }

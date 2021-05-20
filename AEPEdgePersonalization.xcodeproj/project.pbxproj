@@ -10,7 +10,6 @@
 		2E87F2BD58FB15D6C57F5A51 /* Pods_AEPEdgePersonalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5237AAF8AAE9850DEDEA2C88 /* Pods_AEPEdgePersonalization.framework */; };
 		3AEB05F692581AAC67BB2B85 /* Pods_FunctionalTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EE07424FC1DD074D8B9FD0C /* Pods_FunctionalTests.framework */; };
 		41CB4F5069B6936944DDB6B1 /* Pods_UnitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9C2F3CA52295A7E3D1705 /* Pods_UnitTests.framework */; };
-		618448F2483396B23AA5043E /* Pods_shared_AEPEdgePersonalizationDemoSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2118A7D5C4D177B452D24132 /* Pods_shared_AEPEdgePersonalizationDemoSwiftUI.framework */; };
 		C80920C82655CD1400E37005 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C82A60412655A6300062E70A /* ViewController.m */; };
 		C80920D12655CD1B00E37005 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C82A60422655A6300062E70A /* SceneDelegate.m */; };
 		C80920E22655CD3800E37005 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C82A60482655A6300062E70A /* AppDelegate.m */; };
@@ -18,6 +17,11 @@
 		C80920F42655CD4200E37005 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C82A60452655A6300062E70A /* Main.storyboard */; };
 		C80920FD2655CD4500E37005 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C82A60432655A6300062E70A /* LaunchScreen.storyboard */; };
 		C80921162655CDAB00E37005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C82A60402655A6300062E70A /* Assets.xcassets */; };
+		C809213A2656397B00E37005 /* Pods_shared_AEPEdgePersonalizationDemoSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2118A7D5C4D177B452D24132 /* Pods_shared_AEPEdgePersonalizationDemoSwiftUI.framework */; };
+		C809213B2656397B00E37005 /* Pods_shared_AEPEdgePersonalizationDemoSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2118A7D5C4D177B452D24132 /* Pods_shared_AEPEdgePersonalizationDemoSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C809214E265652E500E37005 /* DictionaryRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80921442656529600E37005 /* DictionaryRowView.swift */; };
+		C809215E2657492100E37005 /* TargetOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C809215D2657492100E37005 /* TargetOrder.swift */; };
+		C8092164265751B900E37005 /* TargetProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8092163265751B900E37005 /* TargetProduct.swift */; };
 		C8276BE4261EC74F00508873 /* Array+Personalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8276BE3261EC74F00508873 /* Array+Personalization.swift */; };
 		C82A5EF226533A250062E70A /* CustomButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82A5EEA265339A30062E70A /* CustomButtonView.swift */; };
 		C82A5EF7265347060062E70A /* TextOfferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82A5EF6265347040062E70A /* TextOfferView.swift */; };
@@ -29,7 +33,6 @@
 		C863BE9F26458371004B90A0 /* OffersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C863BE9E26458371004B90A0 /* OffersView.swift */; };
 		C863BEA126458373004B90A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C863BEA026458373004B90A0 /* Assets.xcassets */; };
 		C863BEA426458373004B90A0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C863BEA326458373004B90A0 /* Preview Assets.xcassets */; };
-		C863BF2C2647B573004B90A0 /* Pods_AEPEdgePersonalizationDemoSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 906767562397250C4323720D /* Pods_AEPEdgePersonalizationDemoSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C863BF322647B577004B90A0 /* AEPEdgePersonalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPEdgePersonalization.framework */; };
 		C863BF332647B577004B90A0 /* AEPEdgePersonalization.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPEdgePersonalization.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C863BF412647C9F2004B90A0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C863BF402647C9F2004B90A0 /* SettingsView.swift */; };
@@ -104,7 +107,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				C863BF332647B577004B90A0 /* AEPEdgePersonalization.framework in Embed Frameworks */,
-				C863BF2C2647B573004B90A0 /* Pods_AEPEdgePersonalizationDemoSwiftUI.framework in Embed Frameworks */,
+				C809213B2656397B00E37005 /* Pods_shared_AEPEdgePersonalizationDemoSwiftUI.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -125,6 +128,9 @@
 		9EE07424FC1DD074D8B9FD0C /* Pods_FunctionalTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FunctionalTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD697877E56BAD1519873733 /* Pods-shared-AEPEdgePersonalizationDemoSwiftUI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shared-AEPEdgePersonalizationDemoSwiftUI.debug.xcconfig"; path = "Target Support Files/Pods-shared-AEPEdgePersonalizationDemoSwiftUI/Pods-shared-AEPEdgePersonalizationDemoSwiftUI.debug.xcconfig"; sourceTree = "<group>"; };
 		B0E42278E35EFD3DBCB6E0CA /* Pods-AEPEdgePersonalizationDemoSwiftUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEPEdgePersonalizationDemoSwiftUI.release.xcconfig"; path = "Target Support Files/Pods-AEPEdgePersonalizationDemoSwiftUI/Pods-AEPEdgePersonalizationDemoSwiftUI.release.xcconfig"; sourceTree = "<group>"; };
+		C80921442656529600E37005 /* DictionaryRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryRowView.swift; sourceTree = "<group>"; };
+		C809215D2657492100E37005 /* TargetOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetOrder.swift; sourceTree = "<group>"; };
+		C8092163265751B900E37005 /* TargetProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetProduct.swift; sourceTree = "<group>"; };
 		C8276BE3261EC74F00508873 /* Array+Personalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Personalization.swift"; sourceTree = "<group>"; };
 		C82A5EEA265339A30062E70A /* CustomButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonView.swift; sourceTree = "<group>"; };
 		C82A5EF6265347040062E70A /* TextOfferView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextOfferView.swift; sourceTree = "<group>"; };
@@ -205,7 +211,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C863BF322647B577004B90A0 /* AEPEdgePersonalization.framework in Frameworks */,
-				618448F2483396B23AA5043E /* Pods_shared_AEPEdgePersonalizationDemoSwiftUI.framework in Frameworks */,
+				C809213A2656397B00E37005 /* Pods_shared_AEPEdgePersonalizationDemoSwiftUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,6 +322,9 @@
 				C82A5F0626535F5E0062E70A /* ImageOfferView.swift */,
 				C82A5EFE26535ACB0062E70A /* HtmlOfferView.swift */,
 				C863BF402647C9F2004B90A0 /* SettingsView.swift */,
+				C80921442656529600E37005 /* DictionaryRowView.swift */,
+				C809215D2657492100E37005 /* TargetOrder.swift */,
+				C8092163265751B900E37005 /* TargetProduct.swift */,
 				C863BEA026458373004B90A0 /* Assets.xcassets */,
 				C863BEA526458373004B90A0 /* Info.plist */,
 				C863BEA226458373004B90A0 /* Preview Content */,
@@ -880,10 +889,13 @@
 				C82A5F122653A88D0062E70A /* HeaderView.swift in Sources */,
 				C82A5EF226533A250062E70A /* CustomButtonView.swift in Sources */,
 				C863BE9F26458371004B90A0 /* OffersView.swift in Sources */,
+				C809214E265652E500E37005 /* DictionaryRowView.swift in Sources */,
 				C863BF462647CA28004B90A0 /* HomeView.swift in Sources */,
 				C863BF412647C9F2004B90A0 /* SettingsView.swift in Sources */,
 				C82A5EFF26535ACB0062E70A /* HtmlOfferView.swift in Sources */,
+				C809215E2657492100E37005 /* TargetOrder.swift in Sources */,
 				C863BE9D26458371004B90A0 /* AEPEdgePersonalizationDemoSwiftUIApp.swift in Sources */,
+				C8092164265751B900E37005 /* TargetProduct.swift in Sources */,
 				C82A5F0726535F5E0062E70A /* ImageOfferView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
