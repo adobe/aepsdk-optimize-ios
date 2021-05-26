@@ -12,7 +12,7 @@
 
 enum OptimizeConstants {
     static let EXTENSION_NAME = "com.adobe.optimize"
-    static let FRIENDLY_NAME = "AEPOptimize"
+    static let FRIENDLY_NAME = "Optimize"
     static let EXTENSION_VERSION = "1.0.0"
     static let LOG_TAG = FRIENDLY_NAME
 

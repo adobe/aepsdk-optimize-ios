@@ -14,8 +14,9 @@ import AEPOptimize
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject var appSettings = AppSettings()
-    @StateObject var propositionItems = PropositionItems()
+    @StateObject var odeSettings = OdeSettings()
+    @StateObject var targetSettings = TargetSettings()
+    @StateObject var propositions = Propositions()
     
     @State private var viewDidLoad = false
     
@@ -25,7 +26,7 @@ struct HomeView: View {
     
     var body: some View {
         TabView {
-            OffersView(propositionItems: propositionItems)
+            OffersView(propositions: propositions)
                 .tabItem {
                     Label("Offers", systemImage: "list.bullet.below.rectangle")
                 }
@@ -37,63 +38,80 @@ struct HomeView: View {
         .onAppear {
             if viewDidLoad == false {
                 viewDidLoad = true
-                Optimize.onPropositionsUpdate { propositions in
-                    guard let propositions = propositions else {
+
+                Optimize.onPropositionsUpdate { propositionsDict in
+                    guard let propositionsDict = propositionsDict else {
                         return
                     }
                     DispatchQueue.main.async {
-                        if let textProposition = propositions[DecisionScope(name: self.appSettings.textEncodedDecisionScope)] {
-                            self.propositionItems.textOffers = textProposition.offers.map {
-                                $0.content
-                            }
+                        if let textProposition = propositionsDict[DecisionScope(name: self.odeSettings.textEncodedDecisionScope)] {
+                            self.propositions.textProposition = textProposition
                         }
-                        if let imageProposition = propositions[DecisionScope(name: self.appSettings.imageEncodedDecisionScope)] {
-                            self.propositionItems.imageOffers = imageProposition.offers.map {
-                                $0.content
-                            }
+                        if let imageProposition = propositionsDict[DecisionScope(name: self.odeSettings.imageEncodedDecisionScope)] {
+                            self.propositions.imageProposition = imageProposition
                         }
-                        if let htmlProposition = propositions[DecisionScope(name: self.appSettings.htmlEncodedDecisionScope)] {
-                            self.propositionItems.htmlOffers = htmlProposition.offers.map {
-                                $0.content
-                            }
+                        if let htmlProposition = propositionsDict[DecisionScope(name: self.odeSettings.htmlEncodedDecisionScope)] {
+                            self.propositions.htmlProposition = htmlProposition
                         }
-                        if let jsonProposition = propositions[DecisionScope(name: self.appSettings.jsonEncodedDecisionScope)] {
-                            self.propositionItems.jsonOffers = jsonProposition.offers.map {
-                                $0.content
-                            }
+                        if let jsonProposition = propositionsDict[DecisionScope(name: self.odeSettings.jsonEncodedDecisionScope)] {
+                            self.propositions.jsonProposition = jsonProposition
                         }
-                        if let targetProposition = propositions[DecisionScope(name: self.appSettings.targetMbox)] {
-                            self.propositionItems.targetOffers = targetProposition.offers.map {
-                                $0.content
-                            }
+                        if let targetProposition = propositionsDict[DecisionScope(name: self.targetSettings.targetMbox)] {
+                            self.propositions.targetProposition = targetProposition
                         }
                     }
                 }
             }
         }
-        .environmentObject(appSettings)
+        .environmentObject(odeSettings)
+        .environmentObject(targetSettings)
     }
 }
 
-class AppSettings: ObservableObject {
+class OdeSettings: ObservableObject {
     @Published var textEncodedDecisionScope = ""
     @Published var imageEncodedDecisionScope = ""
     @Published var htmlEncodedDecisionScope = ""
     @Published var jsonEncodedDecisionScope = ""
-    @Published var targetMbox = ""
+    
 }
 
-class PropositionItems: ObservableObject {
-    @Published var textOffers: [String] = []
-    @Published var imageOffers: [String] = []
-    @Published var htmlOffers: [String] = []
-    @Published var jsonOffers: [String] = []
-    @Published var targetOffers: [String] = []
+class TargetSettings: ObservableObject {
+    @Published var targetMbox: String
+    @Published var mboxParameters: [String: String]
+    @Published var profileParameters: [String: String]
+    @Published var order: TargetOrder
+    @Published var product: TargetProduct
+    
+    init() {
+        targetMbox = ""
+        mboxParameters = [:]
+        profileParameters = [:]
+        order = TargetOrder(orderId: "", orderTotal: "", purchasedProductIds: "")
+        product = TargetProduct(productId: "", categoryId: "")
+    }
+}
+
+class Propositions: ObservableObject {
+    @Published var textProposition: Proposition?
+    @Published var imageProposition: Proposition?
+    @Published var htmlProposition: Proposition?
+    @Published var jsonProposition: Proposition?
+    @Published var targetProposition: Proposition?
+    
+    init() {
+        textProposition = nil
+        imageProposition = nil
+        htmlProposition = nil
+        jsonProposition = nil
+        targetProposition = nil
+    }
 }
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
-            .environmentObject(AppSettings())
+            .environmentObject(OdeSettings())
+            .environmentObject(TargetSettings())
     }
 }

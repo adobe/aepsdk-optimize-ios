@@ -12,6 +12,9 @@
 		41CB4F5069B6936944DDB6B1 /* Pods_UnitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9C2F3CA52295A7E3D1705 /* Pods_UnitTests.framework */; };
 		C8076C07265E10A7006BEC5D /* Pods_shared_AEPOptimizeDemoSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6DE1D78747B6856E34BE1F /* Pods_shared_AEPOptimizeDemoSwiftUI.framework */; };
 		C8076C08265E10A7006BEC5D /* Pods_shared_AEPOptimizeDemoSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6DE1D78747B6856E34BE1F /* Pods_shared_AEPOptimizeDemoSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C8076C4D265EE786006BEC5D /* TargetProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8076C3F265EE768006BEC5D /* TargetProduct.swift */; };
+		C8076C52265EE789006BEC5D /* TargetOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8076C46265EE776006BEC5D /* TargetOrder.swift */; };
+		C8076C57265EE78E006BEC5D /* DictionaryRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8076C45265EE776006BEC5D /* DictionaryRowView.swift */; };
 		C80920C82655CD1400E37005 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C82A60412655A6300062E70A /* ViewController.m */; };
 		C80920D12655CD1B00E37005 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C82A60422655A6300062E70A /* SceneDelegate.m */; };
 		C80920E22655CD3800E37005 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C82A60482655A6300062E70A /* AppDelegate.m */; };
@@ -121,6 +124,9 @@
 		906767562397250C4323720D /* Pods_AEPEdgePersonalizationDemoSwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AEPEdgePersonalizationDemoSwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9EE07424FC1DD074D8B9FD0C /* Pods_FunctionalTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FunctionalTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B48C275D1BA731A0183926FC /* Pods-shared-AEPOptimizeDemoObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shared-AEPOptimizeDemoObjC.debug.xcconfig"; path = "Target Support Files/Pods-shared-AEPOptimizeDemoObjC/Pods-shared-AEPOptimizeDemoObjC.debug.xcconfig"; sourceTree = "<group>"; };
+		C8076C3F265EE768006BEC5D /* TargetProduct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetProduct.swift; sourceTree = "<group>"; };
+		C8076C45265EE776006BEC5D /* DictionaryRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryRowView.swift; sourceTree = "<group>"; };
+		C8076C46265EE776006BEC5D /* TargetOrder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetOrder.swift; sourceTree = "<group>"; };
 		C8276BE3261EC74F00508873 /* Array+Optimize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Optimize.swift"; sourceTree = "<group>"; };
 		C82A5EEA265339A30062E70A /* CustomButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonView.swift; sourceTree = "<group>"; };
 		C82A5EF6265347040062E70A /* TextOfferView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextOfferView.swift; sourceTree = "<group>"; };
@@ -303,6 +309,9 @@
 		C863BE9B26458371004B90A0 /* AEPOptimizeDemoSwiftUI */ = {
 			isa = PBXGroup;
 			children = (
+				C8076C45265EE776006BEC5D /* DictionaryRowView.swift */,
+				C8076C46265EE776006BEC5D /* TargetOrder.swift */,
+				C8076C3F265EE768006BEC5D /* TargetProduct.swift */,
 				C863BE9C26458371004B90A0 /* AEPOptimizeDemoSwiftUIApp.swift */,
 				C863BF452647CA28004B90A0 /* HomeView.swift */,
 				C863BE9E26458371004B90A0 /* OffersView.swift */,
@@ -880,7 +889,10 @@
 				C863BF412647C9F2004B90A0 /* SettingsView.swift in Sources */,
 				C82A5EFF26535ACB0062E70A /* HtmlOfferView.swift in Sources */,
 				C863BE9D26458371004B90A0 /* AEPOptimizeDemoSwiftUIApp.swift in Sources */,
+				C8076C52265EE789006BEC5D /* TargetOrder.swift in Sources */,
+				C8076C4D265EE786006BEC5D /* TargetProduct.swift in Sources */,
 				C82A5F0726535F5E0062E70A /* ImageOfferView.swift in Sources */,
+				C8076C57265EE78E006BEC5D /* DictionaryRowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
