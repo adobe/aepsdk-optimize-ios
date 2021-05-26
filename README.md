@@ -1,8 +1,8 @@
-# Adobe Experience Platform Mobile Personalization SDK
+# Adobe Experience Platform Mobile Optimize SDK
 
 ## About this project
 
-The AEP Mobile Personalization SDK Extension provides APIs to enable real-time personalization workflows in Adobe Experience Platform SDKs using the Edge decisioning services. It depends on AEPCore and requires AEPEdge Extension to send personalization query Events to the Experience Edge network.
+The AEP Mobile Optimize SDK Extension provides APIs to enable real-time personalization workflows in Adobe Experience Platform SDKs using the Edge decisioning services. It depends on AEPCore and requires AEPEdge Extension to send personalization query Events to the Experience Edge network.
 
 ## Requirements
 - Xcode 11.0 (or newer)
@@ -22,7 +22,7 @@ use_frameworks!
 target 'YOUR_TARGET_NAME' do
       pod 'AEPCore'
       pod 'AEPEdge'
-      pod 'AEPEdgePersonalization'
+      pod 'AEPOptimize'
 end
 ```
 
@@ -34,22 +34,22 @@ $ pod install
 
 ### [Swift Package Manager](https://github.com/apple/swift-package-manager)
 
-To add the AEPEdgePersonalization Package to your application, from the Xcode menu select:
+To add the AEPOptimize Package to your application, from the Xcode menu select:
 
 `File > Swift Packages > Add Package Dependency...`
 
-Enter the URL for the AEPEdgePersonalization package repository: `https://github.com/adobe/aepsdk-edgepersonalization-ios.git`.
+Enter the URL for the AEPOptimize package repository: `https://github.com/adobe/aepsdk-optimize-ios.git`.
 
 When prompted, make sure you change the branch to `main`.
 
-Alternatively, if your project has a `Package.swift` file, you can add AEPEdgePersonalization directly to your dependencies:
+Alternatively, if your project has a `Package.swift` file, you can add AEPOptimize directly to your dependencies:
 
 ```
 dependencies: [
-    .package(url: "https://github.com/adobe/aepsdk-edgepersonalization-ios.git", .branch: "main"),
+    .package(url: "https://github.com/adobe/aepsdk-optimize-ios.git", .branch: "main"),
 targets: [
        .target(name: "YourTarget",
-                    dependencies: ["AEPEdgePersonalization"],
+                    dependencies: ["AEPOptimize"],
               path: "your/path"),
     ]
 ]
@@ -57,7 +57,7 @@ targets: [
 
 ### Binaries
 
-To generate `AEPEdgePersonalization.xcframework`, run the following Makefile target from the project root directory:
+To generate `AEPOptimize.xcframework`, run the following Makefile target from the project root directory:
 
 ```ruby
 $ make archive
@@ -80,7 +80,7 @@ make pod-update
 ~~~
 
 #### Open the project Xcode workspace
-To open the project workspace in Xcode, click on `AEPPersonalization.xcworkspace` or run the following Makefile target from the project root directory:
+To open the project workspace in Xcode, click on `AEPOptimize.xcworkspace` or run the following Makefile target from the project root directory:
 
 ~~~
 make open

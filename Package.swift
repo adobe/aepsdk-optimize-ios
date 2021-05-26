@@ -15,23 +15,23 @@
 import PackageDescription
 
 let package = Package(
-    name: "AEPEdgePersonalization",
+    name: "AEPOptimize",
     platforms: [.iOS(.v10)],
     products: [
-        .library(name: "AEPEdgePersonalization", targets: ["AEPEdgePersonalization"]),
+        .library(name: "AEPOptimize", targets: ["AEPOptimize"]),
     ],
     dependencies: [
         .package(url: "https://github.com/adobe/aepsdk-core-ios.git", from: "3.1.1")
     ],
     targets: [
-        .target(name: "AEPEdgePersonalization",
+        .target(name: "AEPOptimize",
                 dependencies: ["AEPCore"],
-                path: "Sources/AEPEdgePersonalization"),
+                path: "Sources/AEPOptimize"),
         .testTarget(name: "UnitTests",
-                    dependencies: ["AEPEdgePersonalization"],
-                    path: "Tests/AEPEdgePersonalizationTests/UnitTests"),
+                    dependencies: ["AEPOptimize"],
+                    path: "Tests/AEPOptimize/UnitTests"),
 	    .testTarget(name: "FunctionalTests",
-                    dependencies: ["AEPEdgePersonalization"],
-                    path: "Tests/AEPEdgePersonalizationTests/FunctionalTests"),
+                    dependencies: ["AEPOptimize"],
+                    path: "Tests/AEPOptimize/FunctionalTests"),
     ]
 )
