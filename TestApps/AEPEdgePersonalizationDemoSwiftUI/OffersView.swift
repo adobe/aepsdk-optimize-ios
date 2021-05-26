@@ -12,15 +12,16 @@ governing permissions and limitations under the License.
     
 import AEPAssurance
 import AEPCore
-import AEPIdentity
+import AEPEdgeIdentity
 import AEPEdgePersonalization
 import SwiftUI
 
 import Foundation
 
 struct OffersView: View {
-    @EnvironmentObject var appSettings: AppSettings
-    @ObservedObject var propositionItems: PropositionItems
+    @EnvironmentObject var odeSettings: OdeSettings
+    @EnvironmentObject var targetSettings: TargetSettings
+    @ObservedObject var propositions: Propositions
     
     @State private var errorAlert = false
     @State private var errorMessage = ""
@@ -30,9 +31,10 @@ struct OffersView: View {
             HeaderView(text: "Welcome to Personalization Demo")
             List {
                 Section(header: Text("Text Offers")) {
-                    if !propositionItems.textOffers.isEmpty {
-                        ForEach(propositionItems.textOffers, id: \.self) {
-                            TextOfferView(text: $0)
+                    if let textProposition = propositions.textProposition,
+                       !textProposition.offers.isEmpty {
+                        ForEach(textProposition.offers, id: \.self) {
+                            TextOfferView(text: $0.content)
                         }
                     } else {
                         TextOfferView(text: "Placeholder Text")
@@ -40,9 +42,10 @@ struct OffersView: View {
                 }
 
                 Section(header: Text("Image Offers")) {
-                    if !propositionItems.imageOffers.isEmpty {
-                        ForEach(propositionItems.imageOffers, id: \.self) {
-                            ImageOfferView(url: $0)
+                    if let imageProposition = propositions.imageProposition,
+                       !imageProposition.offers.isEmpty {
+                        ForEach(imageProposition.offers, id: \.self) {
+                            ImageOfferView(url: $0.content)
                         }
                     } else {
                         ImageOfferView(url: "https://gblobscdn.gitbook.com/spaces%2F-Lf1Mc1caFdNCK_mBwhe%2Favatar-1585843848509.png?alt=media")
@@ -50,9 +53,10 @@ struct OffersView: View {
                 }
 
                 Section(header: Text("Html Offers")) {
-                    if !propositionItems.htmlOffers.isEmpty {
-                        ForEach(propositionItems.htmlOffers, id: \.self) {
-                            HtmlOfferView(htmlString: $0)
+                    if let htmlProposition = propositions.htmlProposition,
+                       !htmlProposition.offers.isEmpty {
+                        ForEach(htmlProposition.offers, id: \.self) {
+                            HtmlOfferView(htmlString: $0.content)
                         }
                     } else {
                         HtmlOfferView(htmlString:
@@ -63,9 +67,10 @@ struct OffersView: View {
                 }
                 
                 Section(header: Text("Json Offers")) {
-                    if !propositionItems.jsonOffers.isEmpty {
-                        ForEach(propositionItems.jsonOffers, id: \.self) {
-                            TextOfferView(text: $0)
+                    if let jsonProposition = propositions.jsonProposition,
+                       !jsonProposition.offers.isEmpty {
+                        ForEach(jsonProposition.offers, id: \.self) {
+                            TextOfferView(text: $0.content)
                         }
                     } else {
                         TextOfferView(text: """
@@ -73,11 +78,16 @@ struct OffersView: View {
                         """)
                     }
                 }
-                // Fix after format fix is available in prod
+
                 Section(header: Text("Target Offers")) {
-                    if !propositionItems.targetOffers.isEmpty {
-                        ForEach(propositionItems.targetOffers, id: \.self) {
-                            TextOfferView(text: $0)
+                    if let targetProposition = propositions.targetProposition,
+                       !targetProposition.offers.isEmpty {
+                        ForEach(targetProposition.offers, id: \.self) {
+                            if $0.type == OfferType.html {
+                                HtmlOfferView(htmlString: $0.content)
+                            } else {
+                                TextOfferView(text: $0.content)
+                            }
                         }
                     } else {
                         TextOfferView(text: "Placeholder Target Text")
@@ -88,13 +98,46 @@ struct OffersView: View {
             HStack {
                 CustomButtonView(buttonTitle: "Update Propositions") {
                     
-                    let textDecisionScope = DecisionScope(name: appSettings.textEncodedDecisionScope)
-                    let imageDecisionScope = DecisionScope(name: appSettings.imageEncodedDecisionScope)
-                    let htmlDecisionScope = DecisionScope(name: appSettings.htmlEncodedDecisionScope)
-                    let jsonDecisionScope = DecisionScope(name: appSettings.jsonEncodedDecisionScope)
-                    let targetScope = DecisionScope(name: appSettings.targetMbox)
+                    let textDecisionScope = DecisionScope(name: odeSettings.textEncodedDecisionScope)
+                    let imageDecisionScope = DecisionScope(name: odeSettings.imageEncodedDecisionScope)
+                    let htmlDecisionScope = DecisionScope(name: odeSettings.htmlEncodedDecisionScope)
+                    let jsonDecisionScope = DecisionScope(name: odeSettings.jsonEncodedDecisionScope)
+                    let targetScope = DecisionScope(name: targetSettings.targetMbox)
 
-                    let experienceData = ExperienceData(xdm: ["xdmKey": "1234"], data: ["dataKey": "5678"], datasetIdentifier: "1234-5678")
+                    var data: [String: Any] = [:]
+                    var targetParams: [String: String] = [:]
+                    if !targetScope.name.isEmpty {
+                        if !targetSettings.mboxParameters.isEmpty {
+                            targetParams.merge(targetSettings.mboxParameters) { _, new in new }
+                        }
+                        
+                        if !targetSettings.profileParameters.isEmpty {
+                            targetParams.merge(targetSettings.profileParameters) { _, new in new }
+                        }
+                        
+                        if targetSettings.order.isValid() {
+                            targetParams["orderId"] = targetSettings.order.orderId
+                            targetParams["orderTotal"] = targetSettings.order.orderTotal
+                            targetParams["purchasedProductIds"] = targetSettings.order.purchasedProductIds
+                        }
+                        
+                        if targetSettings.product.isValid() {
+                            targetParams["productId"] = targetSettings.product.productId
+                            targetParams["categoryId"] = targetSettings.product.categoryId
+                        }
+                        
+                        if !targetParams.isEmpty {
+                            data["__adobe"] = [
+                                "target": targetParams
+                            ]
+                        }
+                    }
+                    data["dataKey"] = "5678"
+                    
+                    let experienceData = ExperienceData(
+                        xdm: ["xdmKey": "1234"],
+                        data: data,
+                        datasetIdentifier: nil)
                     
                     Personalization.updatePropositions(for: [
                         textDecisionScope,
@@ -107,11 +150,11 @@ struct OffersView: View {
                 
                 CustomButtonView(buttonTitle: "Get Propositions") {
                     
-                    let textDecisionScope = DecisionScope(name: appSettings.textEncodedDecisionScope)
-                    let imageDecisionScope = DecisionScope(name: appSettings.imageEncodedDecisionScope)
-                    let htmlDecisionScope = DecisionScope(name: appSettings.htmlEncodedDecisionScope)
-                    let jsonDecisionScope = DecisionScope(name: appSettings.jsonEncodedDecisionScope)
-                    let targetScope = DecisionScope(name: appSettings.targetMbox)
+                    let textDecisionScope = DecisionScope(name: odeSettings.textEncodedDecisionScope)
+                    let imageDecisionScope = DecisionScope(name: odeSettings.imageEncodedDecisionScope)
+                    let htmlDecisionScope = DecisionScope(name: odeSettings.htmlEncodedDecisionScope)
+                    let jsonDecisionScope = DecisionScope(name: odeSettings.jsonEncodedDecisionScope)
+                    let targetScope = DecisionScope(name: targetSettings.targetMbox)
     
                     Personalization.getPropositions(for: [
                         textDecisionScope,
@@ -134,42 +177,32 @@ struct OffersView: View {
                                 DispatchQueue.main.async {
                                     
                                     if propositionsDict.isEmpty {
-                                        propositionItems.textOffers = []
-                                        propositionItems.imageOffers = []
-                                        propositionItems.htmlOffers = []
-                                        propositionItems.jsonOffers = []
-                                        propositionItems.targetOffers = []
+                                        propositions.textProposition = nil
+                                        propositions.imageProposition = nil
+                                        propositions.htmlProposition = nil
+                                        propositions.jsonProposition = nil
+                                        propositions.targetProposition = nil
                                         return
                                     }
                                     
                                     if let textProposition = propositionsDict[textDecisionScope] {
-                                        propositionItems.textOffers = textProposition.offers.map {
-                                            $0.content
-                                        }
+                                        propositions.textProposition = textProposition
                                     }
 
                                     if let imageProposition = propositionsDict[imageDecisionScope] {
-                                        propositionItems.imageOffers = imageProposition.offers.map {
-                                            $0.content
-                                        }
+                                        propositions.imageProposition = imageProposition
                                     }
 
                                     if let htmlProposition = propositionsDict[htmlDecisionScope] {
-                                        propositionItems.htmlOffers = htmlProposition.offers.map {
-                                            $0.content
-                                        }
+                                        propositions.htmlProposition = htmlProposition
                                     }
                                     
                                     if let jsonProposition = propositionsDict[jsonDecisionScope] {
-                                        propositionItems.jsonOffers = jsonProposition.offers.map {
-                                            $0.content
-                                        }
+                                        propositions.jsonProposition = jsonProposition
                                     }
                                     
                                     if let targetProposition = propositionsDict[targetScope] {
-                                        propositionItems.targetOffers = targetProposition.offers.map {
-                                            $0.content
-                                        }
+                                        propositions.targetProposition = targetProposition
                                     }
                                 }
                             }
@@ -190,6 +223,7 @@ struct OffersView: View {
 
 struct OffersView_Previews: PreviewProvider {
     static var previews: some View {
-        OffersView(propositionItems: PropositionItems())
+        OffersView(propositions: Propositions())
     }
 }
+
