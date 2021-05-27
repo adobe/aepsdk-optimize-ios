@@ -1,7 +1,7 @@
-export EXTENSION_NAME = AEPEdgePersonalization
+export EXTENSION_NAME = AEPOptimize
 PROJECT_NAME = $(EXTENSION_NAME)
 TARGET_NAME_XCFRAMEWORK = $(EXTENSION_NAME).xcframework
-SCHEME_NAME_XCFRAMEWORK = AEPEdgePersonalization
+SCHEME_NAME_XCFRAMEWORK = AEPOptimize
 
 SIMULATOR_ARCHIVE_PATH = ./build/ios_simulator.xcarchive/Products/Library/Frameworks/
 IOS_ARCHIVE_PATH = ./build/ios.xcarchive/Products/Library/Frameworks/
@@ -55,15 +55,15 @@ lint-autocorrect:
 	(swiftlint autocorrect --format)
 
 lint:
-	(swiftlint lint Sources/AEPEdgePersonalization)
+	(swiftlint lint Sources/$(PROJECT_NAME))
 
 install-swiftformat:
 	(brew install swiftformat) 
 
 check-format:
-	(swiftformat --lint Sources/AEPEdgePersonalization --swiftversion 5.1)
+	(swiftformat --lint Sources/$(PROJECT_NAME) --swiftversion 5.1)
 	
 format:
-	(swiftformat Sources/AEPEdgePersonalization --swiftversion 5.1)
+	(swiftformat Sources/$(PROJECT_NAME) --swiftversion 5.1)
 
 

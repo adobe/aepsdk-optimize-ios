@@ -4,11 +4,11 @@ platform :ios, '10.0'
 # Comment the next line if you don't want to use dynamic frameworks
 use_frameworks!
 
-workspace 'AEPEdgePersonalization'
-project 'AEPEdgePersonalization.xcodeproj'
+workspace 'AEPOptimize'
+project 'AEPOptimize.xcodeproj'
 
-target 'AEPEdgePersonalization' do
-  # Pods for AEPEdgePersonalization
+target 'AEPOptimize' do
+  # Pods for AEPOptimize
   pod 'AEPCore'
 end
 
@@ -31,7 +31,7 @@ abstract_target 'shared' do
   pod 'AEPAssurance'
   pod 'ACPCore', :git => 'https://github.com/adobe/aepsdk-compatibility-ios.git', :branch => 'main'
   
-  target 'AEPEdgePersonalizationDemoSwiftUI'
-  target 'AEPEdgePersonalizationDemoObjC'
+  target 'AEPOptimizeDemoSwiftUI'
+  target 'AEPOptimizeDemoObjC'
 end
 
