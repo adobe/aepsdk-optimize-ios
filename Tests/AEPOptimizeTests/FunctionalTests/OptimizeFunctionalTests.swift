@@ -33,7 +33,7 @@ class OptimizeFunctionalTests: XCTestCase {
     func testUpdatePropositions_validDecisionScope() {
         // setup
         let testEvent = Event(name: "Update Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: [
                                 "requesttype": "updatedecisions",
@@ -67,7 +67,7 @@ class OptimizeFunctionalTests: XCTestCase {
     func testUpdatePropositions_validDecisionScopeWithExperienceData() {
         // setup
         let testEvent = Event(name: "Update Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: [
                                 "requesttype": "updatedecisions",
@@ -119,7 +119,7 @@ class OptimizeFunctionalTests: XCTestCase {
     func testUpdatePropositions_multipleValidDecisionScopes() {
         // setup
         let testEvent = Event(name: "Update Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: [
                                 "requesttype": "updatedecisions",
@@ -157,7 +157,7 @@ class OptimizeFunctionalTests: XCTestCase {
     func testUpdatePropositions_noDecisionScopes() {
         // setup
         let testEvent = Event(name: "Update Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: [
                                 "requesttype": "updatedecisions",
@@ -178,7 +178,7 @@ class OptimizeFunctionalTests: XCTestCase {
     func testUpdatePropositions_invalidDecisionScope() {
             // setup
         let testEvent = Event(name: "Update Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: [
                                 "requesttype": "updatedecisions",
@@ -203,7 +203,7 @@ class OptimizeFunctionalTests: XCTestCase {
     func testUpdatePropositions_validAndInvalidDecisionScopes() {
         // setup
         let testEvent = Event(name: "Update Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: [
                                 "requesttype": "updatedecisions",
@@ -288,7 +288,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
         
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
-        XCTAssertEqual("com.adobe.eventType.offerDecisioning", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
 
         guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
@@ -402,7 +402,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Get Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: [
                                 "requesttype": "getdecisions",
@@ -424,7 +424,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
 
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
-        XCTAssertEqual("com.adobe.eventType.offerDecisioning", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
 
@@ -488,7 +488,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Get Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: [
                                 "requesttype": "getdecisions",
@@ -513,7 +513,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
         
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
-        XCTAssertEqual("com.adobe.eventType.offerDecisioning", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
 
@@ -575,7 +575,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Get Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: [
                                 "requesttype": "getdecisions",
@@ -600,7 +600,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
         
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
-        XCTAssertEqual("com.adobe.eventType.offerDecisioning", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
 
@@ -650,7 +650,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Get Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: [
                                 "requesttype": "getdecisions",
@@ -675,7 +675,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
         
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
-        XCTAssertEqual("com.adobe.eventType.offerDecisioning", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertEqual(AEPError.invalidRequest, AEPError(rawValue: dispatchedEvent?.data?["responseerror"] as? Int ?? 1000))
         XCTAssertNil(dispatchedEvent?.data?["propositions"])
@@ -686,7 +686,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertTrue(optimize.cachedPropositions.isEmpty)
 
         let testEvent = Event(name: "Get Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: [
                                 "requesttype": "getdecisions",
@@ -711,7 +711,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
 
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
-        XCTAssertEqual("com.adobe.eventType.offerDecisioning", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
         
@@ -764,7 +764,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Clear Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestReset",
                               data: nil)
 
