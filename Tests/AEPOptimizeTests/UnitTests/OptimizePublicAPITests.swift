@@ -41,7 +41,7 @@ class OptimizePublicAPITests: XCTestCase {
             ]
         ]
         let testEvent = Event(name: "Update Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: testEventData)
 
@@ -94,7 +94,7 @@ class OptimizePublicAPITests: XCTestCase {
             "datasetid": "111111111111111111111111"
         ]
         let testEvent = Event(name: "Update Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: testEventData)
 
@@ -160,7 +160,7 @@ class OptimizePublicAPITests: XCTestCase {
             ]
         ]
         let testEvent = Event(name: "Update Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: testEventData)
 
@@ -198,7 +198,7 @@ class OptimizePublicAPITests: XCTestCase {
         expectation.isInverted = true
 
         let testEvent = Event(name: "Update Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: nil)
 
@@ -221,7 +221,7 @@ class OptimizePublicAPITests: XCTestCase {
         expectation.isInverted = true
 
         let testEvent = Event(name: "Update Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: nil)
 
@@ -246,7 +246,7 @@ class OptimizePublicAPITests: XCTestCase {
         expectation.isInverted = true
 
         let testEvent = Event(name: "Update Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: nil)
 
@@ -279,7 +279,7 @@ class OptimizePublicAPITests: XCTestCase {
             ]
         ]
         let testEvent = Event(name: "Update Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: testEventData)
 
@@ -322,7 +322,7 @@ class OptimizePublicAPITests: XCTestCase {
             ]
         ]
         let testEvent = Event(name: "Get Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: testEventData)
 
@@ -357,7 +357,7 @@ class OptimizePublicAPITests: XCTestCase {
         expectation.assertForOverFulfill = true
 
         let testEvent = Event(name: "Personalization Notification",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.notification",
                               data: [
                                 "propositions": [
@@ -417,7 +417,7 @@ class OptimizePublicAPITests: XCTestCase {
         expectation.isInverted = true
 
         let testEvent = Event(name: "Personalization Notification",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.notification",
                               data: [
                                 "propositions": [:]
@@ -439,7 +439,7 @@ class OptimizePublicAPITests: XCTestCase {
         let expectation = XCTestExpectation(description: "onPropositionsUpdate should not be called for no propositions in personalization notification response.")
         expectation.isInverted = true
         let testEvent = Event(name: "Personalization Notification",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.notification",
                               data: nil)
 
@@ -459,7 +459,7 @@ class OptimizePublicAPITests: XCTestCase {
         let expectation = XCTestExpectation(description: "clearCachedPropositions should dispatch an event.")
         expectation.assertForOverFulfill = true
         let testEvent = Event(name: "Clear Propositions Request",
-                              type: "com.adobe.eventType.offerDecisioning",
+                              type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestReset",
                               data: nil)
 

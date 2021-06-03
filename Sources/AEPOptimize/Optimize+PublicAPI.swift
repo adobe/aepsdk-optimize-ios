@@ -43,7 +43,7 @@ public extension Optimize {
         }
 
         let event = Event(name: OptimizeConstants.EventNames.UPDATE_PROPOSITIONS_REQUEST,
-                          type: EventType.offerDecisioning,
+                          type: EventType.optimize,
                           source: EventSource.requestContent,
                           data: eventData)
 
@@ -75,7 +75,7 @@ public extension Optimize {
         ]
 
         let event = Event(name: OptimizeConstants.EventNames.GET_PROPOSITIONS_REQUEST,
-                          type: EventType.offerDecisioning,
+                          type: EventType.optimize,
                           source: EventSource.requestContent,
                           data: eventData)
 
@@ -109,7 +109,7 @@ public extension Optimize {
     /// - Parameter completion: The completion handler to be invoked with the decision propositions.
     @objc(onPropositionsUpdate:)
     static func onPropositionsUpdate(perform action: @escaping ([DecisionScope: Proposition]?) -> Void) {
-        MobileCore.registerEventListener(type: EventType.offerDecisioning,
+        MobileCore.registerEventListener(type: EventType.optimize,
                                          source: EventSource.notification) { event in
 
             guard
@@ -128,7 +128,7 @@ public extension Optimize {
     @objc(clearCachedPropositions)
     static func clearCachedPropositions() {
         let event = Event(name: OptimizeConstants.EventNames.CLEAR_PROPOSITIONS_REQUEST,
-                          type: EventType.offerDecisioning,
+                          type: EventType.optimize,
                           source: EventSource.requestReset,
                           data: nil)
 

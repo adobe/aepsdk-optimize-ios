@@ -9,19 +9,19 @@ project 'AEPOptimize.xcodeproj'
 
 target 'AEPOptimize' do
   # Pods for AEPOptimize
-  pod 'AEPCore'
+  pod 'AEPCore', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v3.1.4'
 end
 
 target 'UnitTests' do
-  pod 'AEPCore'
+  pod 'AEPCore', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v3.1.4'
 end
 
 target 'FunctionalTests' do
-  pod 'AEPCore'
+  pod 'AEPCore', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v3.1.4'
 end
 
 abstract_target 'shared' do
-  pod 'AEPCore'
+  pod 'AEPCore', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v3.1.4'
   pod 'AEPLifecycle'
   pod 'AEPIdentity'
   pod 'AEPSignal'

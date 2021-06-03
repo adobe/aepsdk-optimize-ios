@@ -33,7 +33,7 @@ PODS:
 DEPENDENCIES:
   - ACPCore (from `https://github.com/adobe/aepsdk-compatibility-ios.git`, branch `main`)
   - AEPAssurance
-  - AEPCore
+  - AEPCore (from `https://github.com/adobe/aepsdk-core-ios.git`, branch `dev-v3.1.4`)
   - AEPEdge
   - AEPEdgeConsent
   - AEPEdgeIdentity
@@ -44,7 +44,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - AEPAssurance
-    - AEPCore
     - AEPEdge
     - AEPEdgeConsent
     - AEPEdgeIdentity
@@ -58,11 +57,17 @@ EXTERNAL SOURCES:
   ACPCore:
     :branch: main
     :git: https://github.com/adobe/aepsdk-compatibility-ios.git
+  AEPCore:
+    :branch: dev-v3.1.4
+    :git: https://github.com/adobe/aepsdk-core-ios.git
 
 CHECKOUT OPTIONS:
   ACPCore:
     :commit: c43675de0c97ee76fd51b005e8c9cdc7515e4a78
     :git: https://github.com/adobe/aepsdk-compatibility-ios.git
+  AEPCore:
+    :commit: b00c71fe0d30c7069690b9a74cdd970812bd5daa
+    :git: https://github.com/adobe/aepsdk-core-ios.git
 
 SPEC CHECKSUMS:
   ACPCore: 67e4b855bf16cfb6a63024a4ddb73d15c0fd30e5
@@ -77,6 +82,6 @@ SPEC CHECKSUMS:
   AEPServices: e032bfacfcb31f3a583b2aa1e87df5d427cca95d
   AEPSignal: c0619814fbf50dbb1dde4e79141d528aa2606e9e
 
-PODFILE CHECKSUM: 9689444712f8dd2389a0af32fe5d8c08454fa181
+PODFILE CHECKSUM: cce7e7b9ca07842658ae4de98698926d11694701
 
 COCOAPODS: 1.10.0

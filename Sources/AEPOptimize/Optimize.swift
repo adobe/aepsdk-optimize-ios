@@ -37,7 +37,7 @@ public class Optimize: NSObject, Extension {
     }
 
     public func onRegistered() {
-        registerListener(type: EventType.offerDecisioning, source: EventSource.requestContent) { event in
+        registerListener(type: EventType.optimize, source: EventSource.requestContent) { event in
             guard let requestType = event.data?[OptimizeConstants.EventDataKeys.REQUEST_TYPE] as? String else {
                 Log.warning(label: OptimizeConstants.LOG_TAG, "Ignoring event! Cannot determine the type of request event.")
                 return
@@ -57,7 +57,7 @@ public class Optimize: NSObject, Extension {
                          source: OptimizeConstants.EventSource.EDGE_ERROR_RESPONSE,
                          listener: processEdgeErrorResponse(event:))
 
-        registerListener(type: EventType.offerDecisioning,
+        registerListener(type: EventType.optimize,
                          source: EventSource.requestReset,
                          listener: processClearPropositions(event:))
 
@@ -78,7 +78,7 @@ public class Optimize: NSObject, Extension {
 
     // MARK: Event Listeners
 
-    /// Processes the update propositions request event, dispatched with type `EventType.offerDecisioning` and source `EventSource.requestContent`.
+    /// Processes the update propositions request event, dispatched with type `EventType.optimize` and source `EventSource.requestContent`.
     ///
     /// It dispatches an event to the Edge extension to send personalization query request to the Experience Edge network.
     /// - Parameter event: Update propositions request event
@@ -162,7 +162,7 @@ public class Optimize: NSObject, Extension {
         let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
 
         let event = Event(name: OptimizeConstants.EventNames.PERSONALIZATION_NOTIFICATION,
-                          type: EventType.offerDecisioning,
+                          type: EventType.optimize,
                           source: EventSource.notification,
                           data: eventData)
         dispatch(event: event)
@@ -185,7 +185,7 @@ public class Optimize: NSObject, Extension {
         Log.warning(label: OptimizeConstants.LOG_TAG, errorString)
     }
 
-    /// Processes the get propositions request event, dispatched with type `EventType.offerDecisioning` and source `EventSource.requestContent`.
+    /// Processes the get propositions request event, dispatched with type `EventType.optimize` and source `EventSource.requestContent`.
     ///
     ///  It returns previously cached propositions for the requested decision scopes. Any decision scope(s) not already present in the cache are ignored.
     /// - Parameter event: Get propositions request event
@@ -204,7 +204,7 @@ public class Optimize: NSObject, Extension {
 
         let responseEvent = event.createResponseEvent(
             name: OptimizeConstants.EventNames.PERSONALIZATION_RESPONSE,
-            type: EventType.offerDecisioning,
+            type: EventType.optimize,
             source: EventSource.responseContent,
             data: eventData
         )
