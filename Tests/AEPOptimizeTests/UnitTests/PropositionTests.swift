@@ -10,12 +10,12 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
-import AEPOptimize
+@testable import AEPOptimize
 import XCTest
 
 class PropositionTests: XCTestCase {
 
-    private let PROPOSITION_VALID =
+   let PROPOSITION_VALID =
 """
 {\
     "id": "de03ac85-802a-4331-a905-a57053164d35",\
@@ -41,7 +41,7 @@ class PropositionTests: XCTestCase {
 }
 """
 
-    private let PROPOSITION_VALID_TARGET =
+    let PROPOSITION_VALID_TARGET =
 """
 {\
     "id": "AT:eyJhY3Rpdml0eUlkIjoiMTI1NTg5IiwiZXhwZXJpZW5jZUlkIjoiMCJ9",\
@@ -53,11 +53,26 @@ class PropositionTests: XCTestCase {
             "content": {\"device\": \"mobile\"}\
         }\
     }],\
-    "scope": "myMbox"\
+    "scope": "myMbox",\
+    "scopeDetails": {\
+        "decisionProvider": "TGT",\
+        "activity": {\
+            "id": "125589"\
+        },\
+        "experience": {\
+            "id": "0"\
+        },\
+        "strategies": [\
+            {\
+                "algorithmID": "0",\
+                "trafficType": "0"\
+            }\
+        ]\
+    }\
 }
 """
 
-    private let PROPOSITION_INVALID =
+    let PROPOSITION_INVALID =
 """
 {\
     "items": [{\
@@ -82,6 +97,7 @@ class PropositionTests: XCTestCase {
 }
 """
     func testProposition_valid() throws {
+        // Decode
         guard
             let propositionData = PROPOSITION_VALID.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
@@ -100,9 +116,19 @@ class PropositionTests: XCTestCase {
         XCTAssertEqual("<h1>This is a HTML content</h1>", offer.content)
         XCTAssertNil(offer.language)
         XCTAssertNil(offer.characteristics)
+
+        // Encode
+        guard let data = try? JSONEncoder().encode(proposition) else {
+            XCTFail("Proposition data should be valid.")
+            return
+        }
+        let propositionDict = try XCTUnwrap((try? JSONSerialization.jsonObject(with: data, options: .allowFragments)).flatMap { $0 as? [String: Any] })
+        let propositionAsDict = try XCTUnwrap(proposition.asDictionary())
+        XCTAssertTrue(propositionAsDict == propositionDict)
     }
 
     func testProposition_validFromTarget() throws {
+        // Decode
         guard
             let propositionData = PROPOSITION_VALID_TARGET.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
@@ -113,6 +139,18 @@ class PropositionTests: XCTestCase {
 
         XCTAssertEqual("AT:eyJhY3Rpdml0eUlkIjoiMTI1NTg5IiwiZXhwZXJpZW5jZUlkIjoiMCJ9", proposition.id)
         XCTAssertEqual("myMbox", proposition.scope)
+
+        XCTAssertEqual(4, proposition.scopeDetails.count)
+        XCTAssertEqual("TGT", proposition.scopeDetails["decisionProvider"] as? String)
+        let activity = proposition.scopeDetails["activity"] as? [String: Any]
+        XCTAssertEqual("125589", activity?["id"] as? String)
+        let experience = proposition.scopeDetails["experience"] as? [String: Any]
+        XCTAssertEqual("0", experience?["id"] as? String)
+        let strategies = proposition.scopeDetails["strategies"] as? [[String: Any]]
+        XCTAssertEqual(1, strategies?.count)
+        XCTAssertEqual("0", strategies?[0]["algorithmID"] as? String)
+        XCTAssertEqual("0", strategies?[0]["trafficType"] as? String)
+
         XCTAssertEqual(1, proposition.offers.count)
         let offer = proposition.offers[0]
         XCTAssertEqual("246315", offer.id)
@@ -121,6 +159,15 @@ class PropositionTests: XCTestCase {
         XCTAssertEqual("{\"device\":\"mobile\"}", offer.content)
         XCTAssertNil(offer.language)
         XCTAssertNil(offer.characteristics)
+
+        // Encode
+        guard let data = try? JSONEncoder().encode(proposition) else {
+            XCTFail("Proposition data should be valid.")
+            return
+        }
+        let propositionDict = try XCTUnwrap((try? JSONSerialization.jsonObject(with: data, options: .allowFragments)).flatMap { $0 as? [String: Any] })
+        let propositionAsDict = try XCTUnwrap(proposition.asDictionary())
+        XCTAssertTrue(propositionAsDict == propositionDict)
     }
 
     func testProposition_invalid() throws {

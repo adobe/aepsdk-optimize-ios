@@ -30,7 +30,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         MobileCore.setLogLevel(.trace)
 
-        MobileCore.registerExtensions([AEPEdgeIdentity.Identity.self, AEPIdentity.Identity.self, Lifecycle.self, Signal.self, Edge.self, Optimize.self, AEPAssurance.self]) {
+        MobileCore.registerExtensions([AEPEdgeIdentity.Identity.self, AEPIdentity.Identity.self, Lifecycle.self, Signal.self, Edge.self, Optimize.self, Assurance.self]) {
             MobileCore.configureWith(appId: self.LAUNCH_ENVIRONMENT_FILE_ID)
         }
         return true
@@ -45,7 +45,7 @@ struct AEPOptimizeDemoSwiftUIApp: App {
         WindowGroup {
             HomeView()
                 .onOpenURL{ url in
-                    AEPAssurance.startSession(url)
+                    Assurance.startSession(url: url)
                 }
         }
     }

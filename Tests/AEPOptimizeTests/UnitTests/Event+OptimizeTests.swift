@@ -47,6 +47,18 @@ class Event_OptimizeTests: XCTestCase {
             "name": "testMbox1"
     ]
 
+    private let TEST_ERROR_EVENT: [String: Any] = [
+        "requesttype": "testrequest",
+        "decisionscopes": [
+            [
+                "name": "testMbox1"
+            ],
+            [
+                "name": "testMbox2"
+            ]
+        ]
+    ]
+
     func testGetTypedData_keyInEventDataValid() {
 
         let testEvent = Event(name: "Test Event",
@@ -97,5 +109,21 @@ class Event_OptimizeTests: XCTestCase {
             return
         }
         XCTAssertEqual("testMbox1", scope.name)
+    }
+
+    func testCreateErrorResponseEvent() {
+        let testEvent = Event(name: "Test Event",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: nil)
+
+        let errorResponseEvent = testEvent.createErrorResponseEvent(AEPError.invalidRequest)
+
+        XCTAssertEqual("Optimize Response", errorResponseEvent.name)
+        XCTAssertEqual("com.adobe.eventType.optimize", errorResponseEvent.type)
+        XCTAssertEqual("com.adobe.eventSource.responseContent", errorResponseEvent.source)
+        XCTAssertNotNil(errorResponseEvent.data)
+        XCTAssertEqual(1, errorResponseEvent.data?.count)
+        XCTAssertEqual(6, errorResponseEvent.data?["responseerror"] as? Int)
     }
 }

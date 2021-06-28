@@ -16,12 +16,24 @@ import WebKit
 
 struct HtmlOfferView: View {
     @State var htmlString = ""
-    
+    var displayAction: (() -> Void)? = nil
+    var clickAction: (() -> Void)? = nil
+
     var body: some View {
         WebView(htmlString: self.$htmlString)
             .multilineTextAlignment(.center)
             .frame(height: 150)
             .frame(maxWidth: .infinity)
+            .onAppear {
+                if self.displayAction != nil {
+                    self.displayAction!()
+                }
+            }
+            .onTapGesture {
+                if self.clickAction != nil {
+                    self.clickAction!()
+                }
+            }
     }
 }
 

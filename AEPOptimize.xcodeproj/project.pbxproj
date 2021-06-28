@@ -65,6 +65,12 @@
 		C8CA16DE2624BDA6005B09A0 /* String+OptimizeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA16DA2624BDA5005B09A0 /* String+OptimizeTests.swift */; };
 		C8CA16DF2624BDA6005B09A0 /* StringInterpolation+OptimizeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA16DB2624BDA5005B09A0 /* StringInterpolation+OptimizeTests.swift */; };
 		C8CA172D262523C4005B09A0 /* TestableExtensionRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA1728262523BF005B09A0 /* TestableExtensionRuntime.swift */; };
+		C8DE6B6A2684181B0076623F /* Offer+Tracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6B692684181A0076623F /* Offer+Tracking.swift */; };
+		C8DE6BEF2686848B0076623F /* Proposition+Tracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6BEE2686848A0076623F /* Proposition+Tracking.swift */; };
+		C8DE6BF9268690540076623F /* Dictionary+Optimize.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6BF8268690540076623F /* Dictionary+Optimize.swift */; };
+		C8DE6BFF2686910F0076623F /* Dictionary+OptimizeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6BFE2686910E0076623F /* Dictionary+OptimizeTests.swift */; };
+		C8DE6C052689502E0076623F /* PropositionTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6C042689502D0076623F /* PropositionTrackingTests.swift */; };
+		C8DE6C0F26895A260076623F /* OfferTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6C0E26895A260076623F /* OfferTrackingTests.swift */; };
 		FC30C5C029BE3E006D5D4F28 /* Pods_shared_AEPOptimizeDemoObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9AEC9FCA4936B233E489076 /* Pods_shared_AEPOptimizeDemoObjC.framework */; };
 /* End PBXBuildFile section */
 
@@ -185,6 +191,12 @@
 		C8CA16DA2624BDA5005B09A0 /* String+OptimizeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+OptimizeTests.swift"; sourceTree = "<group>"; };
 		C8CA16DB2624BDA5005B09A0 /* StringInterpolation+OptimizeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StringInterpolation+OptimizeTests.swift"; sourceTree = "<group>"; };
 		C8CA1728262523BF005B09A0 /* TestableExtensionRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestableExtensionRuntime.swift; sourceTree = "<group>"; };
+		C8DE6B692684181A0076623F /* Offer+Tracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Offer+Tracking.swift"; sourceTree = "<group>"; };
+		C8DE6BEE2686848A0076623F /* Proposition+Tracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Proposition+Tracking.swift"; sourceTree = "<group>"; };
+		C8DE6BF8268690540076623F /* Dictionary+Optimize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Optimize.swift"; sourceTree = "<group>"; };
+		C8DE6BFE2686910E0076623F /* Dictionary+OptimizeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+OptimizeTests.swift"; sourceTree = "<group>"; };
+		C8DE6C042689502D0076623F /* PropositionTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropositionTrackingTests.swift; sourceTree = "<group>"; };
+		C8DE6C0E26895A260076623F /* OfferTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferTrackingTests.swift; sourceTree = "<group>"; };
 		DAEFFD565F7D61D1A677746B /* Pods-shared-AEPOptimizeDemoSwiftUI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shared-AEPOptimizeDemoSwiftUI.debug.xcconfig"; path = "Target Support Files/Pods-shared-AEPOptimizeDemoSwiftUI/Pods-shared-AEPOptimizeDemoSwiftUI.debug.xcconfig"; sourceTree = "<group>"; };
 		E9AEC9FCA4936B233E489076 /* Pods_shared_AEPOptimizeDemoObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_shared_AEPOptimizeDemoObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE8A689046136AC61038271D /* Pods-UnitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnitTests.debug.xcconfig"; path = "Target Support Files/Pods-UnitTests/Pods-UnitTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -383,8 +395,10 @@
 				C88C5FBE261D6602003AE3DE /* OptimizePublicAPITests.swift */,
 				C88C5F1E2615916D003AE3DE /* DecisionScopeTests.swift */,
 				C88C5F0326152390003AE3DE /* OfferTests.swift */,
+				C8DE6C0E26895A260076623F /* OfferTrackingTests.swift */,
 				C88C5F262615A057003AE3DE /* OfferTypeTests.swift */,
 				C88C5F55261C3F69003AE3DE /* PropositionTests.swift */,
+				C8DE6C042689502D0076623F /* PropositionTrackingTests.swift */,
 				C88C5EA12613255F003AE3DE /* PersonalizationTests.swift */,
 			);
 			path = UnitTests;
@@ -396,8 +410,10 @@
 				C88C5F79261D06A5003AE3DE /* Optimize+PublicAPI.swift */,
 				C88C5F1126152DAB003AE3DE /* DecisionScope.swift */,
 				C88C5EDC2614F640003AE3DE /* Offer.swift */,
+				C8DE6B692684181A0076623F /* Offer+Tracking.swift */,
 				C88C5EE02614F693003AE3DE /* OfferType.swift */,
 				C88C5F0D26152CFF003AE3DE /* Proposition.swift */,
+				C8DE6BEE2686848A0076623F /* Proposition+Tracking.swift */,
 				C8CA1665261F6AD0005B09A0 /* ExperienceData.swift */,
 			);
 			name = Public;
@@ -410,6 +426,7 @@
 				C88C5F4026187F0A003AE3DE /* String+Optimize.swift */,
 				C8276BE3261EC74F00508873 /* Array+Optimize.swift */,
 				C8CA1653261EF29E005B09A0 /* Event+Optimize.swift */,
+				C8DE6BF8268690540076623F /* Dictionary+Optimize.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -473,6 +490,7 @@
 				C8CA16D92624BDA5005B09A0 /* Event+OptimizeTests.swift */,
 				C8CA16DA2624BDA5005B09A0 /* String+OptimizeTests.swift */,
 				C8CA16DB2624BDA5005B09A0 /* StringInterpolation+OptimizeTests.swift */,
+				C8DE6BFE2686910E0076623F /* Dictionary+OptimizeTests.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -909,7 +927,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8DE6BF9268690540076623F /* Dictionary+Optimize.swift in Sources */,
 				C88C5EDD2614F640003AE3DE /* Offer.swift in Sources */,
+				C8DE6BEF2686848B0076623F /* Proposition+Tracking.swift in Sources */,
 				C88C5F3326185EF8003AE3DE /* StringInterpolation+Optimize.swift in Sources */,
 				C8CA1654261EF29E005B09A0 /* Event+Optimize.swift in Sources */,
 				C88C5F7A261D06A6003AE3DE /* Optimize+PublicAPI.swift in Sources */,
@@ -920,6 +940,7 @@
 				C88C5F4126187F0B003AE3DE /* String+Optimize.swift in Sources */,
 				C8CA1666261F6AD0005B09A0 /* ExperienceData.swift in Sources */,
 				C8276BE4261EC74F00508873 /* Array+Optimize.swift in Sources */,
+				C8DE6B6A2684181B0076623F /* Offer+Tracking.swift in Sources */,
 				C88C5E932613249C003AE3DE /* Optimize.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -934,12 +955,15 @@
 				C8CA16DE2624BDA6005B09A0 /* String+OptimizeTests.swift in Sources */,
 				C88C5FE3261D8FBF003AE3DE /* MockExtension.swift in Sources */,
 				C88C5F1F2615916D003AE3DE /* DecisionScopeTests.swift in Sources */,
+				C8DE6BFF2686910F0076623F /* Dictionary+OptimizeTests.swift in Sources */,
 				C88C5F56261C3F6A003AE3DE /* PropositionTests.swift in Sources */,
 				C88C5F272615A057003AE3DE /* OfferTypeTests.swift in Sources */,
 				C8CA16DC2624BDA6005B09A0 /* Array+OptimizeTests.swift in Sources */,
 				C88C5FDA261D8EE3003AE3DE /* OptimizePublicAPITests.swift in Sources */,
 				C88C5EA82613257A003AE3DE /* PersonalizationTests.swift in Sources */,
 				C88C5FEA261D9AD0003AE3DE /* EventHub+OptimizeTests.swift in Sources */,
+				C8DE6C052689502E0076623F /* PropositionTrackingTests.swift in Sources */,
+				C8DE6C0F26895A260076623F /* OfferTrackingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

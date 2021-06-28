@@ -33,8 +33,10 @@ struct OffersView: View {
                 Section(header: Text("Text Offers")) {
                     if let textProposition = propositions.textProposition,
                        !textProposition.offers.isEmpty {
-                        ForEach(textProposition.offers, id: \.self) {
-                            TextOfferView(text: $0.content)
+                        ForEach(textProposition.offers, id: \.self) { offer in
+                            TextOfferView(text: offer.content,
+                                          displayAction: { offer.displayed() },
+                                          clickAction: { offer.clicked() })
                         }
                     } else {
                         TextOfferView(text: "Placeholder Text")
@@ -44,8 +46,10 @@ struct OffersView: View {
                 Section(header: Text("Image Offers")) {
                     if let imageProposition = propositions.imageProposition,
                        !imageProposition.offers.isEmpty {
-                        ForEach(imageProposition.offers, id: \.self) {
-                            ImageOfferView(url: $0.content)
+                        ForEach(imageProposition.offers, id: \.self) { offer in
+                            ImageOfferView(url: offer.content,
+                                           displayAction: { offer.displayed() },
+                                           clickAction: { offer.clicked() })
                         }
                     } else {
                         ImageOfferView(url: "https://gblobscdn.gitbook.com/spaces%2F-Lf1Mc1caFdNCK_mBwhe%2Favatar-1585843848509.png?alt=media")
@@ -55,8 +59,10 @@ struct OffersView: View {
                 Section(header: Text("Html Offers")) {
                     if let htmlProposition = propositions.htmlProposition,
                        !htmlProposition.offers.isEmpty {
-                        ForEach(htmlProposition.offers, id: \.self) {
-                            HtmlOfferView(htmlString: $0.content)
+                        ForEach(htmlProposition.offers, id: \.self) { offer in
+                            HtmlOfferView(htmlString: offer.content,
+                                          displayAction: { offer.displayed() },
+                                          clickAction: { offer.clicked() })
                         }
                     } else {
                         HtmlOfferView(htmlString:
@@ -69,8 +75,10 @@ struct OffersView: View {
                 Section(header: Text("Json Offers")) {
                     if let jsonProposition = propositions.jsonProposition,
                        !jsonProposition.offers.isEmpty {
-                        ForEach(jsonProposition.offers, id: \.self) {
-                            TextOfferView(text: $0.content)
+                        ForEach(jsonProposition.offers, id: \.self) { offer in
+                            TextOfferView(text: offer.content,
+                                          displayAction: { offer.displayed() },
+                                          clickAction: { offer.clicked() })
                         }
                     } else {
                         TextOfferView(text: """
@@ -82,11 +90,15 @@ struct OffersView: View {
                 Section(header: Text("Target Offers")) {
                     if let targetProposition = propositions.targetProposition,
                        !targetProposition.offers.isEmpty {
-                        ForEach(targetProposition.offers, id: \.self) {
-                            if $0.type == OfferType.html {
-                                HtmlOfferView(htmlString: $0.content)
+                        ForEach(targetProposition.offers, id: \.self) { offer in
+                            if offer.type == OfferType.html {
+                                HtmlOfferView(htmlString: offer.content,
+                                              displayAction: { offer.displayed() },
+                                              clickAction: { offer.clicked() })
                             } else {
-                                TextOfferView(text: $0.content)
+                                TextOfferView(text: offer.content,
+                                              displayAction: { offer.displayed() },
+                                              clickAction: { offer.clicked() })
                             }
                         }
                     } else {
@@ -104,6 +116,14 @@ struct OffersView: View {
                     let jsonDecisionScope = DecisionScope(name: odeSettings.jsonEncodedDecisionScope)
                     let targetScope = DecisionScope(name: targetSettings.targetMbox)
 
+                    // Send a custom Identity in IdentityMap as primary identifier to Edge network in personalization query request.
+                    let identityMap = IdentityMap()
+                    identityMap.add(item: IdentityItem(id: "1111",
+                                                       authenticatedState: AuthenticatedState.authenticated,
+                                                       primary: true),
+                                    withNamespace: "userCRMID")
+                    Identity.updateIdentities(with: identityMap)
+                    
                     var data: [String: Any] = [:]
                     var targetParams: [String: String] = [:]
                     if !targetScope.name.isEmpty {

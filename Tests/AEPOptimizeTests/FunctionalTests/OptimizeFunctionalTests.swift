@@ -53,7 +53,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // verify
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
-        
+
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
@@ -94,7 +94,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // verify
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
-        
+
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
@@ -142,7 +142,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // verify
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
-        
+
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
@@ -226,7 +226,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // verify
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
-        
+
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
@@ -286,7 +286,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // verify
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
-        
+
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
@@ -511,7 +511,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // verify
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
-        
+
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
@@ -598,7 +598,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // verify
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
-        
+
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
@@ -673,7 +673,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // verify
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
-        
+
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
@@ -714,7 +714,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
-        
+
         guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
             XCTFail("Propositions dictionary should be valid.")
             return

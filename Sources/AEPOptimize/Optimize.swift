@@ -46,6 +46,8 @@ public class Optimize: NSObject, Extension {
                 self.processUpdatePropositions(event: event)
             } else if requestType == OptimizeConstants.EventDataValues.REQUEST_TYPE_GET {
                 self.processGetPropositions(event: event)
+            } else if requestType == OptimizeConstants.EventDataValues.REQUEST_TYPE_TRACK {
+                self.processTrackPropositions(event: event)
             }
         }
 
@@ -102,7 +104,7 @@ public class Optimize: NSObject, Extension {
         var eventData: [String: Any] = [:]
 
         // Add query
-        eventData[OptimizeConstants.JsonKeys.XDM_QUERY] = [
+        eventData[OptimizeConstants.JsonKeys.QUERY] = [
             OptimizeConstants.JsonKeys.QUERY_PERSONALIZATION: [
                 OptimizeConstants.JsonKeys.DECISION_SCOPES: targetDecisionScopes
             ]
@@ -110,7 +112,7 @@ public class Optimize: NSObject, Extension {
 
         // Add xdm
         var xdmData: [String: Any] = [
-            OptimizeConstants.JsonKeys.XDM_EVENT_TYPE: OptimizeConstants.JsonValues.XDM_EVENT_TYPE_PERSONALIZATION
+            OptimizeConstants.JsonKeys.EXPERIENCE_EVENT_TYPE: OptimizeConstants.JsonValues.EXPERIENCE_EVENT_TYPE_PERSONALIZATION
         ]
         if let additionalXdmData = event.data?[OptimizeConstants.EventDataKeys.XDM] as? [String: Any] {
             xdmData.merge(additionalXdmData) { old, _ in old }
@@ -161,7 +163,7 @@ public class Optimize: NSObject, Extension {
 
         let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
 
-        let event = Event(name: OptimizeConstants.EventNames.PERSONALIZATION_NOTIFICATION,
+        let event = Event(name: OptimizeConstants.EventNames.OPTIMIZE_NOTIFICATION,
                           type: EventType.optimize,
                           source: EventSource.notification,
                           data: eventData)
@@ -203,12 +205,35 @@ public class Optimize: NSObject, Extension {
         let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
 
         let responseEvent = event.createResponseEvent(
-            name: OptimizeConstants.EventNames.PERSONALIZATION_RESPONSE,
+            name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
             type: EventType.optimize,
             source: EventSource.responseContent,
             data: eventData
         )
         dispatch(event: responseEvent)
+    }
+
+    /// Processes the track propositions request event, dispatched with type `EventType.optimize` and source `EventSource.requestContent`.
+    ///
+    ///  It dispatches an event for the Edge extension to send an Experience Event containing proposition interactions data to the Experience Edge network.
+    /// - Parameter event: Track propositions request event
+    private func processTrackPropositions(event: Event) {
+        guard
+            let propositionInteractionsXdm = event.data?[OptimizeConstants.EventDataKeys.PROPOSITION_INTERACTIONS] as? [String: Any],
+            !propositionInteractionsXdm.isEmpty
+        else {
+            Log.debug(label: OptimizeConstants.LOG_TAG, "Cannot track proposition options, interaction data is not present.")
+            return
+        }
+
+        var eventData: [String: Any] = [:]
+        eventData[OptimizeConstants.JsonKeys.XDM] = propositionInteractionsXdm
+
+        let event = Event(name: OptimizeConstants.EventNames.EDGE_PROPOSITION_INTERACTION_REQUEST,
+                          type: EventType.edge,
+                          source: EventSource.requestContent,
+                          data: eventData)
+        dispatch(event: event)
     }
 
     /// Clears propositions cached in-memory in the extension.

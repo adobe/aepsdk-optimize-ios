@@ -15,11 +15,24 @@ import SwiftUI
 
 struct TextOfferView: View {
     var text = ""
+    var displayAction: (() -> Void)? = nil
+    var clickAction: (() -> Void)? = nil
+
     var body: some View {
         Text(text)
             .multilineTextAlignment(.center)
             .frame(height: 150)
             .frame(maxWidth: .infinity)
+            .onAppear {
+                if self.displayAction != nil {
+                    self.displayAction!()
+                }
+            }
+            .onTapGesture {
+                if self.clickAction != nil {
+                    self.clickAction!()
+                }
+            }
     }
 }
 

@@ -27,12 +27,14 @@ enum OptimizeConstants {
     static let ERROR_UNKNOWN = "unknown"
 
     enum EventNames {
-        static let UPDATE_PROPOSITIONS_REQUEST = "Update Propositions Request"
-        static let GET_PROPOSITIONS_REQUEST = "Get Propositions Request"
-        static let CLEAR_PROPOSITIONS_REQUEST = "Clear Propositions Request"
-        static let PERSONALIZATION_NOTIFICATION = "Personalization Notification"
-        static let EDGE_PERSONALIZATION_REQUEST = "Edge Personalization Request"
-        static let PERSONALIZATION_RESPONSE = "Personalization Response"
+        static let UPDATE_PROPOSITIONS_REQUEST = "Optimize Update Propositions Request"
+        static let GET_PROPOSITIONS_REQUEST = "Optimize Get Propositions Request"
+        static let TRACK_PROPOSITIONS_REQUEST = "Optimize Track Propositions Request"
+        static let CLEAR_PROPOSITIONS_REQUEST = "Optimize Clear Propositions Request"
+        static let OPTIMIZE_NOTIFICATION = "Optimize Notification"
+        static let EDGE_PERSONALIZATION_REQUEST = "Edge Optimize Personalization Request"
+        static let EDGE_PROPOSITION_INTERACTION_REQUEST = "Edge Optimize Proposition Interaction Request"
+        static let OPTIMIZE_RESPONSE = "Optimize Response"
     }
 
     enum EventSource {
@@ -41,6 +43,7 @@ enum OptimizeConstants {
     }
 
     enum EventDataKeys {
+        static let EXPERIENCE_EVENT_TYPE = "experienceeventtype"
         static let REQUEST_TYPE = "requesttype"
         static let DECISION_SCOPES = "decisionscopes"
         static let XDM = "xdm"
@@ -48,11 +51,13 @@ enum OptimizeConstants {
         static let DATASET_ID = "datasetid"
         static let PROPOSITIONS = "propositions"
         static let RESPONSE_ERROR = "responseerror"
+        static let PROPOSITION_INTERACTIONS = "propositioninteractions"
     }
 
     enum EventDataValues {
-        static let REQUEST_TYPE_UPDATE = "updatedecisions"
-        static let REQUEST_TYPE_GET = "getdecisions"
+        static let REQUEST_TYPE_UPDATE = "updatepropositions"
+        static let REQUEST_TYPE_GET = "getpropositions"
+        static let REQUEST_TYPE_TRACK = "trackpropositions"
     }
 
     enum Edge {
@@ -73,14 +78,25 @@ enum OptimizeConstants {
     enum JsonKeys {
         static let DECISION_SCOPES = "decisionScopes"
         static let XDM = "xdm"
-        static let XDM_QUERY = "query"
+        static let QUERY = "query"
         static let QUERY_PERSONALIZATION = "personalization"
         static let DATA = "data"
         static let DATASET_ID = "datasetId"
-        static let XDM_EVENT_TYPE = "eventType"
+        static let EXPERIENCE_EVENT_TYPE = "eventType"
+        static let EXPERIENCE = "_experience"
+        static let EXPERIENCE_DECISIONING = "decisioning"
+        static let DECISIONING_PROPOSITION_ID = "propositionID"
+        static let DECISIONING_PROPOSITIONS = "propositions"
+        static let DECISIONING_PROPOSITIONS_ID = "id"
+        static let DECISIONING_PROPOSITIONS_SCOPE = "scope"
+        static let DECISIONING_PROPOSITIONS_SCOPEDETAILS = "scopeDetails"
+        static let DECISIONING_PROPOSITIONS_ITEMS = "items"
+        static let DECISIONING_PROPOSITIONS_ITEMS_ID = "id"
     }
 
     enum JsonValues {
-        static let XDM_EVENT_TYPE_PERSONALIZATION = "personalization.request"
+        static let EXPERIENCE_EVENT_TYPE_PERSONALIZATION = "personalization.request"
+        static let EXPERIENCE_EVENT_TYPE_DISPLAY = "display"
+        static let EXPERIENCE_EVENT_TYPE_CLICK = "click"
     }
 }
