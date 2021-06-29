@@ -355,7 +355,7 @@ extension PropositionTests {
                 let decisioning = experience?["decisioning"] as? [String: Any]
                 let propositionDetailsArray = decisioning?["propositions"] as? [[String: Any]]
                 guard let propositionDetailsData = propositionDetailsArray?[0] else {
-                    XCTFail("Propositions array should contain proposition details data.)
+                    XCTFail("Propositions array should contain proposition details data.")
                     return
                 }
                 XCTAssertEqual("AT:eyJhY3Rpdml0eUlkIjoiMTI1NTg5IiwiZXhwZXJpZW5jZUlkIjoiMCJ9", propositionDetailsData["id"] as? String)
@@ -437,7 +437,7 @@ extension PropositionTests {
                 let decisioning = experience?["decisioning"] as? [String: Any]
                 let propositionDetailsArray = decisioning?["propositions"] as? [[String: Any]]
                 guard let propositionDetailsData = propositionDetailsArray?[0] else {
-                    XCTFail("Propositions array should contain proposition details data.)
+                    XCTFail("Propositions array should contain proposition details data.")
                     return
                 }
                 XCTAssertEqual("de03ac85-802a-4331-a905-a57053164d35", propositionDetailsData["id"] as? String)
