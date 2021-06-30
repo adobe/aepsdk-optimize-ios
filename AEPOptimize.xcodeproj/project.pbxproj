@@ -67,10 +67,10 @@
 		C8CA172D262523C4005B09A0 /* TestableExtensionRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CA1728262523BF005B09A0 /* TestableExtensionRuntime.swift */; };
 		C8DE6B6A2684181B0076623F /* Offer+Tracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6B692684181A0076623F /* Offer+Tracking.swift */; };
 		C8DE6BEF2686848B0076623F /* Proposition+Tracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6BEE2686848A0076623F /* Proposition+Tracking.swift */; };
-		C8DE6BF9268690540076623F /* Dictionary+Optimize.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6BF8268690540076623F /* Dictionary+Optimize.swift */; };
-		C8DE6BFF2686910F0076623F /* Dictionary+OptimizeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6BFE2686910E0076623F /* Dictionary+OptimizeTests.swift */; };
 		C8DE6C052689502E0076623F /* PropositionTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6C042689502D0076623F /* PropositionTrackingTests.swift */; };
 		C8DE6C0F26895A260076623F /* OfferTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6C0E26895A260076623F /* OfferTrackingTests.swift */; };
+		C8DE6C77268CD9E50076623F /* Dictionary+OptimizeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6BF8268690540076623F /* Dictionary+OptimizeTests.swift */; };
+		C8DE6C84268CDA670076623F /* Dictionary+OptimizeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6BF8268690540076623F /* Dictionary+OptimizeTests.swift */; };
 		FC30C5C029BE3E006D5D4F28 /* Pods_shared_AEPOptimizeDemoObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9AEC9FCA4936B233E489076 /* Pods_shared_AEPOptimizeDemoObjC.framework */; };
 /* End PBXBuildFile section */
 
@@ -193,8 +193,7 @@
 		C8CA1728262523BF005B09A0 /* TestableExtensionRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestableExtensionRuntime.swift; sourceTree = "<group>"; };
 		C8DE6B692684181A0076623F /* Offer+Tracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Offer+Tracking.swift"; sourceTree = "<group>"; };
 		C8DE6BEE2686848A0076623F /* Proposition+Tracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Proposition+Tracking.swift"; sourceTree = "<group>"; };
-		C8DE6BF8268690540076623F /* Dictionary+Optimize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Optimize.swift"; sourceTree = "<group>"; };
-		C8DE6BFE2686910E0076623F /* Dictionary+OptimizeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+OptimizeTests.swift"; sourceTree = "<group>"; };
+		C8DE6BF8268690540076623F /* Dictionary+OptimizeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+OptimizeTests.swift"; sourceTree = "<group>"; };
 		C8DE6C042689502D0076623F /* PropositionTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropositionTrackingTests.swift; sourceTree = "<group>"; };
 		C8DE6C0E26895A260076623F /* OfferTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferTrackingTests.swift; sourceTree = "<group>"; };
 		DAEFFD565F7D61D1A677746B /* Pods-shared-AEPOptimizeDemoSwiftUI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shared-AEPOptimizeDemoSwiftUI.debug.xcconfig"; path = "Target Support Files/Pods-shared-AEPOptimizeDemoSwiftUI/Pods-shared-AEPOptimizeDemoSwiftUI.debug.xcconfig"; sourceTree = "<group>"; };
@@ -426,7 +425,6 @@
 				C88C5F4026187F0A003AE3DE /* String+Optimize.swift */,
 				C8276BE3261EC74F00508873 /* Array+Optimize.swift */,
 				C8CA1653261EF29E005B09A0 /* Event+Optimize.swift */,
-				C8DE6BF8268690540076623F /* Dictionary+Optimize.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -454,6 +452,7 @@
 			children = (
 				C88C5FE2261D8FBF003AE3DE /* MockExtension.swift */,
 				C88C5FB9261D65AD003AE3DE /* EventHub+OptimizeTests.swift */,
+				C8DE6BF8268690540076623F /* Dictionary+OptimizeTests.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -490,7 +489,6 @@
 				C8CA16D92624BDA5005B09A0 /* Event+OptimizeTests.swift */,
 				C8CA16DA2624BDA5005B09A0 /* String+OptimizeTests.swift */,
 				C8CA16DB2624BDA5005B09A0 /* StringInterpolation+OptimizeTests.swift */,
-				C8DE6BFE2686910E0076623F /* Dictionary+OptimizeTests.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -920,6 +918,7 @@
 			files = (
 				C8CA172D262523C4005B09A0 /* TestableExtensionRuntime.swift in Sources */,
 				C88C5FF2261D9E00003AE3DE /* OptimizeFunctionalTests.swift in Sources */,
+				C8DE6C84268CDA670076623F /* Dictionary+OptimizeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -927,7 +926,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C8DE6BF9268690540076623F /* Dictionary+Optimize.swift in Sources */,
 				C88C5EDD2614F640003AE3DE /* Offer.swift in Sources */,
 				C8DE6BEF2686848B0076623F /* Proposition+Tracking.swift in Sources */,
 				C88C5F3326185EF8003AE3DE /* StringInterpolation+Optimize.swift in Sources */,
@@ -949,13 +947,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8DE6C77268CD9E50076623F /* Dictionary+OptimizeTests.swift in Sources */,
 				C8CA16DF2624BDA6005B09A0 /* StringInterpolation+OptimizeTests.swift in Sources */,
 				C8CA16DD2624BDA6005B09A0 /* Event+OptimizeTests.swift in Sources */,
 				C88C5F0A261523A4003AE3DE /* OfferTests.swift in Sources */,
 				C8CA16DE2624BDA6005B09A0 /* String+OptimizeTests.swift in Sources */,
 				C88C5FE3261D8FBF003AE3DE /* MockExtension.swift in Sources */,
 				C88C5F1F2615916D003AE3DE /* DecisionScopeTests.swift in Sources */,
-				C8DE6BFF2686910F0076623F /* Dictionary+OptimizeTests.swift in Sources */,
 				C88C5F56261C3F6A003AE3DE /* PropositionTests.swift in Sources */,
 				C88C5F272615A057003AE3DE /* OfferTypeTests.swift in Sources */,
 				C8CA16DC2624BDA6005B09A0 /* Array+OptimizeTests.swift in Sources */,

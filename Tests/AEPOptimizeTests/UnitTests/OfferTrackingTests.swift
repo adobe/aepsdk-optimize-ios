@@ -11,7 +11,7 @@ governing permissions and limitations under the License.
 */
 
 @testable import AEPCore
-@testable import AEPOptimize
+import AEPOptimize
 import XCTest
 
 extension PropositionTests {
@@ -152,7 +152,7 @@ extension PropositionTests {
         XCTAssertEqual(proposition.id, propositionInteractionDetails["id"] as? String)
         XCTAssertEqual(proposition.scope, propositionInteractionDetails["scope"] as? String)
 
-        let scopeDetails = propositionInteractionDetails["scopeDetails"] as? [String: Any] ?? [:]
+        let scopeDetails = try XCTUnwrap(propositionInteractionDetails["scopeDetails"] as? [String: Any])
         XCTAssertTrue(proposition.scopeDetails == scopeDetails)
 
         let items = try XCTUnwrap(propositionInteractionDetails["items"] as? [[String: Any]])
@@ -216,7 +216,6 @@ extension PropositionTests {
         let expectation = XCTestExpectation(description: "Offer displayed should dispatch an event.")
         expectation.assertForOverFulfill = true
 
-        // To fix, once https://jira.corp.adobe.com/browse/CSMO-12405 is resolved.
         let testEventData: [String: Any] = [
             "requesttype": "trackpropositions",
             "propositioninteractions": [
@@ -264,6 +263,7 @@ extension PropositionTests {
                 XCTAssertEqual("de03ac85-802a-4331-a905-a57053164d35", propositionDetailsData["id"] as? String)
                 XCTAssertEqual("eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", propositionDetailsData["scope"] as? String)
 
+                // To fix, once https://jira.corp.adobe.com/browse/CSMO-12405 is resolved.
                 let scopeDetails = propositionDetailsData["scopeDetails"] as? [String: Any] ?? [:]
                 XCTAssertTrue(scopeDetails.isEmpty)
 
@@ -395,7 +395,6 @@ extension PropositionTests {
         let expectation = XCTestExpectation(description: "Offer clicked should dispatch an event.")
         expectation.assertForOverFulfill = true
 
-        // To fix, once https://jira.corp.adobe.com/browse/CSMO-12405 is resolved.
         let testEventData: [String: Any] = [
             "requesttype": "trackpropositions",
             "propositioninteractions": [
@@ -443,6 +442,7 @@ extension PropositionTests {
                 XCTAssertEqual("de03ac85-802a-4331-a905-a57053164d35", propositionDetailsData["id"] as? String)
                 XCTAssertEqual("eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", propositionDetailsData["scope"] as? String)
 
+                // To fix, once https://jira.corp.adobe.com/browse/CSMO-12405 is resolved.
                 let scopeDetails = propositionDetailsData["scopeDetails"] as? [String: Any] ?? [:]
                 XCTAssertTrue(scopeDetails.isEmpty)
 

@@ -52,6 +52,16 @@
                ReferencedContainer = "container:AEPOptimize.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C88C5F9E261D6499003AE3DE"
+               BuildableName = "FunctionalTests.xctest"
+               BlueprintName = "FunctionalTests"
+               ReferencedContainer = "container:AEPOptimize.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
