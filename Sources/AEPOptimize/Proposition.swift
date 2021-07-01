@@ -10,24 +10,36 @@
  governing permissions and limitations under the License.
  */
 
+import AEPServices
 import Foundation
 
 /// `Proposition` class
 @objc(AEPProposition)
 public class Proposition: NSObject, Codable {
+    private let items: [Offer]
+
     /// Unique proposition identifier
     @objc public let id: String
 
-    /// Array containing proposition decisions
-    @objc public let offers: [Offer]
+    /// Array containing proposition decision options
+    @objc public lazy var offers: [Offer] = {
+        items.forEach {
+            $0.proposition = self
+        }
+        return items
+    }()
 
     /// Decision scope string
     @objc public let scope: String
+
+    /// Scope details dictionary
+    @objc public var scopeDetails: [String: Any]
 
     enum CodingKeys: String, CodingKey {
         case id
         case items
         case scope
+        case scopeDetails
     }
 
     public required init(from decoder: Decoder) throws {
@@ -35,7 +47,11 @@ public class Proposition: NSObject, Codable {
 
         id = try container.decode(String.self, forKey: .id)
         scope = try container.decode(String.self, forKey: .scope)
-        offers = try container.decode([Offer].self, forKey: .items)
+        let anyCodableDict = try? container.decode([String: AnyCodable].self, forKey: .scopeDetails)
+        // Fix this once ODE supports scopeDetails in personalization query response,
+        // refer to https://jira.corp.adobe.com/browse/CSMO-12405
+        scopeDetails = AnyCodable.toAnyDictionary(dictionary: anyCodableDict) ?? [:]
+        items = try container.decode([Offer].self, forKey: .items)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -43,6 +59,7 @@ public class Proposition: NSObject, Codable {
 
         try container.encode(id, forKey: .id)
         try container.encode(scope, forKey: .scope)
+        try container.encode(AnyCodable.from(dictionary: scopeDetails), forKey: .scopeDetails)
         try container.encode(offers, forKey: .items)
     }
 }

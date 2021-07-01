@@ -15,9 +15,13 @@ import SwiftUI
 
 struct ImageOfferView: View {
     @StateObject private var imageLoader: ImageLoader
+    var displayAction: (() -> Void)? = nil
+    var tapAction: (() -> Void)? = nil
     
-    init(url: String) {
+    init(url: String, displayAction: (() -> Void)? = nil, tapAction: (() -> Void)? = nil) {
         _imageLoader = StateObject(wrappedValue: ImageLoader(urlString: url))
+        self.displayAction = displayAction
+        self.tapAction = tapAction
     }
 
     var body: some View {
@@ -26,6 +30,16 @@ struct ImageOfferView: View {
             .aspectRatio(contentMode: .fit)
             .frame(height: 150)
             .frame(maxWidth: .infinity)
+            .onAppear {
+                if self.displayAction != nil {
+                    self.displayAction!()
+                }
+            }
+            .onTapGesture {
+                if self.tapAction != nil {
+                    self.tapAction!()
+                }
+            }
     }
 }
 

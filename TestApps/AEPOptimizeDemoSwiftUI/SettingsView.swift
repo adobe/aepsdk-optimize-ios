@@ -36,7 +36,7 @@ struct SettingsView: View {
                     TextField("Enter Assurance start URL", text: $assuranceSessionURL)
                         .onChange(of: assuranceSessionURL) {
                             if let url = URL(string: $0) {
-                                AEPAssurance.startSession(url)
+                                Assurance.startSession(url: url)
                             }
                         }
                 }

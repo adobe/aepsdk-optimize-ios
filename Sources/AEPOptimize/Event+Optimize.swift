@@ -34,7 +34,7 @@ extension Event {
     /// - Parameter error: type of AEPError
     /// - Returns: error response Event
     func createErrorResponseEvent(_ error: AEPError) -> Event {
-        createResponseEvent(name: OptimizeConstants.EventNames.PERSONALIZATION_RESPONSE,
+        createResponseEvent(name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
                             type: EventType.optimize,
                             source: EventSource.responseContent,
                             data: [

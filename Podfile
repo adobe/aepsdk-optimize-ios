@@ -29,8 +29,7 @@ abstract_target 'shared' do
   pod 'AEPEdgeConsent'
   pod 'AEPEdgeIdentity'
   pod 'AEPAssurance'
-  pod 'ACPCore', :git => 'https://github.com/adobe/aepsdk-compatibility-ios.git', :branch => 'main'
-  
+
   target 'AEPOptimizeDemoSwiftUI'
   target 'AEPOptimizeDemoObjC'
 end
