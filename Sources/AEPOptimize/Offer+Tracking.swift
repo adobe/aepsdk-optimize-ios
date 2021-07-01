@@ -23,8 +23,8 @@ public extension Offer {
     /// - Note: The returned XDM data also contains the `eventType` for the Experience Event with value `display`.
     /// - Returns A dictionary containing XDM data for the propositon interactions.
     /// - SeeAlso: `interactionXdm(for:)`
-    func displayInteractionXdm() -> [String: Any] {
-        interactionXdm(for: OptimizeConstants.JsonValues.EXPERIENCE_EVENT_TYPE_DISPLAY)
+    func generateDisplayInteractionXdm() -> [String: Any] {
+        generateInteractionXdm(for: OptimizeConstants.JsonValues.EXPERIENCE_EVENT_TYPE_DISPLAY)
     }
 
     /// Creates a dictionary containing XDM formatted data for `Experience Event - Proposition Interactions` field group from the given proposition option.
@@ -34,29 +34,29 @@ public extension Offer {
     /// - Note: The returned XDM data also contains the `eventType` for the Experience Event with value `click`.
     /// - Returns A dictionary containing XDM data for the propositon interactions.
     /// - SeeAlso: `interactionXdm(for:)`
-    func clickInteractionXdm() -> [String: Any] {
-        interactionXdm(for: OptimizeConstants.JsonValues.EXPERIENCE_EVENT_TYPE_CLICK)
+    func generateTapInteractionXdm() -> [String: Any] {
+        generateInteractionXdm(for: OptimizeConstants.JsonValues.EXPERIENCE_EVENT_TYPE_CLICK)
     }
 
     /// Dispatches an event for the Edge extension to send an Experience Event to the Edge network with the display interaction data for the given proposition item.
     ///
     /// - SeeAlso: `trackWithData(_:)`
     func displayed() {
-        trackWithData(displayInteractionXdm())
+        trackWithData(generateDisplayInteractionXdm())
     }
 
-    /// Dispatches an event for the Edge extension to send an Experience Event to the Edge network with the click interaction data for the given proposition item.
+    /// Dispatches an event for the Edge extension to send an Experience Event to the Edge network with the tap interaction data for the given proposition item.
     ///
     /// - SeeAlso: `trackWithData(_:)`
-    func clicked() {
-        trackWithData(clickInteractionXdm())
+    func tapped() {
+        trackWithData(generateTapInteractionXdm())
     }
 
     /// Creates a dictionary containing XDM formatted data for `Experience Event - Proposition Interactions` field group from the given proposition option and for the provided event type.
     ///
     /// - Parameter eventType: The Experience Event event type for the proposition interaction.
     /// - Returns A dictionary containing XDM data for the propositon interactions.
-    private func interactionXdm(for eventType: String) -> [String: Any] {
+    private func generateInteractionXdm(for eventType: String) -> [String: Any] {
         var propositionDetailsData: [String: Any] = [:]
         if let proposition = self.proposition {
             propositionDetailsData = [

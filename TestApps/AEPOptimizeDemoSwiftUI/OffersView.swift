@@ -36,7 +36,7 @@ struct OffersView: View {
                         ForEach(textProposition.offers, id: \.self) { offer in
                             TextOfferView(text: offer.content,
                                           displayAction: { offer.displayed() },
-                                          clickAction: { offer.clicked() })
+                                          tapAction: { offer.tapped() })
                         }
                     } else {
                         TextOfferView(text: "Placeholder Text")
@@ -49,7 +49,7 @@ struct OffersView: View {
                         ForEach(imageProposition.offers, id: \.self) { offer in
                             ImageOfferView(url: offer.content,
                                            displayAction: { offer.displayed() },
-                                           clickAction: { offer.clicked() })
+                                           tapAction: { offer.tapped() })
                         }
                     } else {
                         ImageOfferView(url: "https://gblobscdn.gitbook.com/spaces%2F-Lf1Mc1caFdNCK_mBwhe%2Favatar-1585843848509.png?alt=media")
@@ -62,7 +62,7 @@ struct OffersView: View {
                         ForEach(htmlProposition.offers, id: \.self) { offer in
                             HtmlOfferView(htmlString: offer.content,
                                           displayAction: { offer.displayed() },
-                                          clickAction: { offer.clicked() })
+                                          tapAction: { offer.tapped() })
                         }
                     } else {
                         HtmlOfferView(htmlString:
@@ -78,7 +78,7 @@ struct OffersView: View {
                         ForEach(jsonProposition.offers, id: \.self) { offer in
                             TextOfferView(text: offer.content,
                                           displayAction: { offer.displayed() },
-                                          clickAction: { offer.clicked() })
+                                          tapAction: { offer.tapped() })
                         }
                     } else {
                         TextOfferView(text: """
@@ -94,11 +94,11 @@ struct OffersView: View {
                             if offer.type == OfferType.html {
                                 HtmlOfferView(htmlString: offer.content,
                                               displayAction: { offer.displayed() },
-                                              clickAction: { offer.clicked() })
+                                              tapAction: { offer.tapped() })
                             } else {
                                 TextOfferView(text: offer.content,
                                               displayAction: { offer.displayed() },
-                                              clickAction: { offer.clicked() })
+                                              tapAction: { offer.tapped() })
                             }
                         }
                     } else {

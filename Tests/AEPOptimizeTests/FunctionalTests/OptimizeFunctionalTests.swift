@@ -788,7 +788,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", item["id"] as? String)
     }
 
-    func testTrackPropositions_validPropositionInteractionsForClick() throws {
+    func testTrackPropositions_validPropositionInteractionsForTap() throws {
         // setup
         let testScopeDetails: [String: Any] = [
             "decisionProvider": "TGT",

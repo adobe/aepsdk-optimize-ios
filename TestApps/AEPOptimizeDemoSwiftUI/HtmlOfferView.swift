@@ -17,7 +17,7 @@ import WebKit
 struct HtmlOfferView: View {
     @State var htmlString = ""
     var displayAction: (() -> Void)? = nil
-    var clickAction: (() -> Void)? = nil
+    var tapAction: (() -> Void)? = nil
 
     var body: some View {
         WebView(htmlString: self.$htmlString)
@@ -30,8 +30,8 @@ struct HtmlOfferView: View {
                 }
             }
             .onTapGesture {
-                if self.clickAction != nil {
-                    self.clickAction!()
+                if self.tapAction != nil {
+                    self.tapAction!()
                 }
             }
     }

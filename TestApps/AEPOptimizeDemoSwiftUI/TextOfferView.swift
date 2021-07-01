@@ -16,7 +16,7 @@ import SwiftUI
 struct TextOfferView: View {
     var text = ""
     var displayAction: (() -> Void)? = nil
-    var clickAction: (() -> Void)? = nil
+    var tapAction: (() -> Void)? = nil
 
     var body: some View {
         Text(text)
@@ -29,8 +29,8 @@ struct TextOfferView: View {
                 }
             }
             .onTapGesture {
-                if self.clickAction != nil {
-                    self.clickAction!()
+                if self.tapAction != nil {
+                    self.tapAction!()
                 }
             }
     }

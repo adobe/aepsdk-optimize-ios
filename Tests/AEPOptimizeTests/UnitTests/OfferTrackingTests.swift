@@ -28,7 +28,7 @@ extension PropositionTests {
         EventHub.reset()
     }
 
-    func testDisplayInteractionXdm_validProposition() throws {
+    func testGenerateDisplayInteractionXdm_validProposition() throws {
 
         guard
             let propositionData = PROPOSITION_VALID.data(using: .utf8),
@@ -47,7 +47,7 @@ extension PropositionTests {
         let offer = proposition.offers[0]
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
 
-        let propositionInteractionXdm = offer.displayInteractionXdm()
+        let propositionInteractionXdm = offer.generateDisplayInteractionXdm()
         let eventType = try XCTUnwrap(propositionInteractionXdm["eventType"] as? String)
         XCTAssertEqual("display", eventType)
 
@@ -70,7 +70,7 @@ extension PropositionTests {
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", item["id"] as? String)
     }
 
-    func testDisplayInteractionXdm_validPropositionFromTarget() throws {
+    func testGenerateDisplayInteractionXdm_validPropositionFromTarget() throws {
 
         guard
             let propositionData = PROPOSITION_VALID_TARGET.data(using: .utf8),
@@ -97,7 +97,7 @@ extension PropositionTests {
         let offer = proposition.offers[0]
         XCTAssertEqual("246315", offer.id)
 
-        let propositionInteractionXdm = offer.displayInteractionXdm()
+        let propositionInteractionXdm = offer.generateDisplayInteractionXdm()
         let eventType = try XCTUnwrap(propositionInteractionXdm["eventType"] as? String)
         XCTAssertEqual("display", eventType)
 
@@ -120,7 +120,7 @@ extension PropositionTests {
         XCTAssertEqual("246315", item["id"] as? String)
     }
 
-    func testClickInteractionXdm_validProposition() throws {
+    func testGenerateTapInteractionXdm_validProposition() throws {
 
         guard
             let propositionData = PROPOSITION_VALID.data(using: .utf8),
@@ -139,7 +139,7 @@ extension PropositionTests {
         let offer = proposition.offers[0]
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
 
-        let propositionInteractionXdm = offer.clickInteractionXdm()
+        let propositionInteractionXdm = offer.generateTapInteractionXdm()
         let eventType = try XCTUnwrap(propositionInteractionXdm["eventType"] as? String)
         XCTAssertEqual("click", eventType)
 
@@ -162,7 +162,7 @@ extension PropositionTests {
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", item["id"] as? String)
     }
 
-    func testClickInteractionXdm_validPropositionFromTarget() throws {
+    func testGenerateTapInteractionXdm_validPropositionFromTarget() throws {
 
         guard
             let propositionData = PROPOSITION_VALID_TARGET.data(using: .utf8),
@@ -189,7 +189,7 @@ extension PropositionTests {
         let offer = proposition.offers[0]
         XCTAssertEqual("246315", offer.id)
 
-        let propositionInteractionXdm = offer.clickInteractionXdm()
+        let propositionInteractionXdm = offer.generateTapInteractionXdm()
         let eventType = try XCTUnwrap(propositionInteractionXdm["eventType"] as? String)
         XCTAssertEqual("click", eventType)
 
@@ -391,8 +391,8 @@ extension PropositionTests {
         wait(for: [expectation], timeout: 1)
     }
 
-    func testClicked_validProposition() throws {
-        let expectation = XCTestExpectation(description: "Offer clicked should dispatch an event.")
+    func testTapped_validProposition() throws {
+        let expectation = XCTestExpectation(description: "Offer tap should dispatch an event.")
         expectation.assertForOverFulfill = true
 
         let testEventData: [String: Any] = [
@@ -467,14 +467,14 @@ extension PropositionTests {
         let offer = proposition.offers[0]
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
 
-        offer.clicked()
+        offer.tapped()
 
         // verify
         wait(for: [expectation], timeout: 1)
     }
 
-    func testClicked_validPropositionFromTarget() throws {
-        let expectation = XCTestExpectation(description: "Offer clicked should dispatch an event.")
+    func testTapped_validPropositionFromTarget() throws {
+        let expectation = XCTestExpectation(description: "Offer tap should dispatch an event.")
         expectation.assertForOverFulfill = true
 
         let testScopeDetails: [String: Any] = [
@@ -565,7 +565,7 @@ extension PropositionTests {
         let offer = proposition.offers[0]
         XCTAssertEqual("246315", offer.id)
 
-        offer.clicked()
+        offer.tapped()
 
         // verify
         wait(for: [expectation], timeout: 1)

@@ -16,12 +16,12 @@ import SwiftUI
 struct ImageOfferView: View {
     @StateObject private var imageLoader: ImageLoader
     var displayAction: (() -> Void)? = nil
-    var clickAction: (() -> Void)? = nil
+    var tapAction: (() -> Void)? = nil
     
-    init(url: String, displayAction: (() -> Void)? = nil, clickAction: (() -> Void)? = nil) {
+    init(url: String, displayAction: (() -> Void)? = nil, tapAction: (() -> Void)? = nil) {
         _imageLoader = StateObject(wrappedValue: ImageLoader(urlString: url))
         self.displayAction = displayAction
-        self.clickAction = clickAction
+        self.tapAction = tapAction
     }
 
     var body: some View {
@@ -36,8 +36,8 @@ struct ImageOfferView: View {
                 }
             }
             .onTapGesture {
-                if self.clickAction != nil {
-                    self.clickAction!()
+                if self.tapAction != nil {
+                    self.tapAction!()
                 }
             }
     }
