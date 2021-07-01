@@ -15,5 +15,5 @@ Pod::Spec.new do |s|
   s.pod_target_xcconfig = { 'BUILD_LIBRARY_FOR_DISTRIBUTION' => 'YES' }
 
   s.source_files          = 'Sources/**/*.swift'
-  s.dependency 'AEPCore', '>= 3.1.1'
+  s.dependency 'AEPCore', '>= 3.2.0'
 end

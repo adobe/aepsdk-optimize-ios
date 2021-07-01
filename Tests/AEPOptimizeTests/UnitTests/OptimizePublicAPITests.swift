@@ -34,13 +34,13 @@ class OptimizePublicAPITests: XCTestCase {
         expectation.assertForOverFulfill = true
 
         let testEventData: [String: Any] = [
-            "requesttype": "updatedecisions",
+            "requesttype": "updatepropositions",
             "decisionscopes": [
                 [ "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
                 ]
             ]
         ]
-        let testEvent = Event(name: "Update Propositions Request",
+        let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: testEventData)
@@ -49,7 +49,7 @@ class OptimizePublicAPITests: XCTestCase {
         EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
                                                                                     source: testEvent.source) { event in
             XCTAssertEqual(testEvent.name, event.name)
-            XCTAssertEqual("updatedecisions", event.data?["requesttype"] as? String)
+            XCTAssertEqual("updatepropositions", event.data?["requesttype"] as? String)
             guard let decisionScopes: [DecisionScope] = event.getTypedData(for: "decisionscopes") else {
                 XCTFail("Decision Scope array should be valid.")
                 return
@@ -93,7 +93,7 @@ class OptimizePublicAPITests: XCTestCase {
             ],
             "datasetid": "111111111111111111111111"
         ]
-        let testEvent = Event(name: "Update Propositions Request",
+        let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: testEventData)
@@ -102,7 +102,7 @@ class OptimizePublicAPITests: XCTestCase {
         EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
                                                                                     source: testEvent.source) { event in
             XCTAssertEqual(testEvent.name, event.name)
-            XCTAssertEqual("updatedecisions", event.data?["requesttype"] as? String)
+            XCTAssertEqual("updatepropositions", event.data?["requesttype"] as? String)
             guard let decisionScopes: [DecisionScope] = event.getTypedData(for: "decisionscopes") else {
                 XCTFail("Decision Scope array should be valid.")
                 return
@@ -159,7 +159,7 @@ class OptimizePublicAPITests: XCTestCase {
                 ]
             ]
         ]
-        let testEvent = Event(name: "Update Propositions Request",
+        let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: testEventData)
@@ -168,7 +168,7 @@ class OptimizePublicAPITests: XCTestCase {
         EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
                                                                                     source: testEvent.source) { event in
             XCTAssertEqual(testEvent.name, event.name)
-            XCTAssertEqual("updatedecisions", event.data?["requesttype"] as? String)
+            XCTAssertEqual("updatepropositions", event.data?["requesttype"] as? String)
             guard let decisionScopes: [DecisionScope] = event.getTypedData(for: "decisionscopes") else {
                 XCTFail("Decision Scope array should be valid.")
                 return
@@ -197,7 +197,7 @@ class OptimizePublicAPITests: XCTestCase {
         let expectation = XCTestExpectation(description: "updatePropositions should not dispatch an event.")
         expectation.isInverted = true
 
-        let testEvent = Event(name: "Update Propositions Request",
+        let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: nil)
@@ -220,7 +220,7 @@ class OptimizePublicAPITests: XCTestCase {
         let expectation = XCTestExpectation(description: "updatePropositions should not dispatch an event.")
         expectation.isInverted = true
 
-        let testEvent = Event(name: "Update Propositions Request",
+        let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: nil)
@@ -245,7 +245,7 @@ class OptimizePublicAPITests: XCTestCase {
         let expectation = XCTestExpectation(description: "updatePropositions should not dispatch an event.")
         expectation.isInverted = true
 
-        let testEvent = Event(name: "Update Propositions Request",
+        let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: nil)
@@ -271,14 +271,14 @@ class OptimizePublicAPITests: XCTestCase {
         expectation.assertForOverFulfill = true
 
         let testEventData: [String: Any] = [
-            "requesttype": "updatedecisions",
+            "requesttype": "updatepropositions",
             "decisionscopes": [
                 [
                     "name": "myMbox"
                 ]
             ]
         ]
-        let testEvent = Event(name: "Update Propositions Request",
+        let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: testEventData)
@@ -287,7 +287,7 @@ class OptimizePublicAPITests: XCTestCase {
         EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
                                                                                     source: testEvent.source) { event in
             XCTAssertEqual(testEvent.name, event.name)
-            XCTAssertEqual("updatedecisions", event.data?["requesttype"] as? String)
+            XCTAssertEqual("updatepropositions", event.data?["requesttype"] as? String)
             guard let decisionScopes: [DecisionScope] = event.getTypedData(for: "decisionscopes") else {
                 XCTFail("Decision Scope array should be valid.")
                 return
@@ -315,13 +315,13 @@ class OptimizePublicAPITests: XCTestCase {
         expectation.assertForOverFulfill = true
 
         let testEventData: [String: Any] = [
-            "requesttype": "getdecisions",
+            "requesttype": "getpropositions",
             "decisionscopes": [
                 [ "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
                 ]
             ]
         ]
-        let testEvent = Event(name: "Get Propositions Request",
+        let testEvent = Event(name: "Optimize Get Propositions Request",
                               type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestContent",
                               data: testEventData)
@@ -330,7 +330,7 @@ class OptimizePublicAPITests: XCTestCase {
         EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
                                                                                     source: testEvent.source) { event in
             XCTAssertEqual(event.name, testEvent.name)
-            XCTAssertEqual("getdecisions", event.data?["requesttype"] as? String)
+            XCTAssertEqual("getpropositions", event.data?["requesttype"] as? String)
             guard let decisionScopes: [DecisionScope] = event.getTypedData(for: "decisionscopes") else {
                 XCTFail("Decision Scope array should be valid.")
                 return
@@ -344,6 +344,79 @@ class OptimizePublicAPITests: XCTestCase {
         // test
         let decisionScope = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
                                           placementId: "xcore:offer-placement:1111111111111111")
+
+        Optimize.getPropositions(for: [decisionScope]) { _, _ in }
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testGetPropositions_noDecisionScope() {
+        // setup
+        let expectation = XCTestExpectation(description: "getPropositions should not dispatch an event.")
+        expectation.isInverted = true
+
+        let testEvent = Event(name: "Optimize Get Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: nil)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { _ in
+            expectation.fulfill()
+        }
+
+        // test
+        Optimize.getPropositions(for: []) { _, _ in }
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testGetPropositions_emptyDecisionScope() {
+        // setup
+        let expectation = XCTestExpectation(description: "getPropositions should not dispatch an event.")
+        expectation.isInverted = true
+
+        let testEvent = Event(name: "Optimize Get Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: nil)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { _ in
+            expectation.fulfill()
+        }
+
+        // test
+        let decisionScope = DecisionScope(name: "")
+
+        Optimize.getPropositions(for: [decisionScope]) { _, _ in }
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testGetPropositions_invalidDecisionScope() {
+        // setup
+        let expectation = XCTestExpectation(description: "getPropositions should not dispatch an event.")
+        expectation.isInverted = true
+
+        let testEvent = Event(name: "Optimize Get Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: nil)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { _ in
+            expectation.fulfill()
+        }
+
+        // test
+        let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoiIn0=")
 
         Optimize.getPropositions(for: [decisionScope]) { _, _ in }
 
@@ -458,7 +531,7 @@ class OptimizePublicAPITests: XCTestCase {
         // setup
         let expectation = XCTestExpectation(description: "clearCachedPropositions should dispatch an event.")
         expectation.assertForOverFulfill = true
-        let testEvent = Event(name: "Clear Propositions Request",
+        let testEvent = Event(name: "Optimize Clear Propositions Request",
                               type: "com.adobe.eventType.optimize",
                               source: "com.adobe.eventSource.requestReset",
                               data: nil)
