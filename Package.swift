@@ -22,10 +22,12 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/adobe/aepsdk-core-ios.git", from: "3.2.0")
+        .package(url: "https://github.com/adobe/aepsdk-edge-ios.git", from: "1.1.0")
+    ],
     ],
     targets: [
         .target(name: "AEPOptimize",
-                dependencies: ["AEPCore"],
+                dependencies: ["AEPCore", "AEPEdge"],
                 path: "Sources/AEPOptimize"),
         .testTarget(name: "UnitTests",
                     dependencies: ["AEPOptimize"],

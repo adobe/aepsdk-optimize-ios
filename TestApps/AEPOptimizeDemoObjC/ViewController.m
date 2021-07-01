@@ -66,7 +66,6 @@ AEPDecisionScope* targetDecisionScope;
 }
 
 - (IBAction)updatePropositions:(id)sender {
-    AEPExperienceData* experienceEventData = [[AEPExperienceData alloc]initWithXdm:@{@"xdmKey": @"1234"} data:@{@"dataKey": @"5678"} datasetIdentifier:@"1234-5678"];
     
     textDecisionScope = [[AEPDecisionScope alloc]initWithName: self.textEncodedDecisionScope.text];
     imageDecisionScope = [[AEPDecisionScope alloc]initWithName: self.imageEncodedDecisionScope.text];
@@ -80,7 +79,7 @@ AEPDecisionScope* targetDecisionScope;
         htmlDecisionScope,
         jsonDecisionScope,
         targetDecisionScope
-    ] withExperienceData:experienceEventData];
+    ] withXDM:@{@"xdmKey": @"1234"} andData:@{@"dataKey": @"5678"}];
 }
 
 - (IBAction)getPropositions:(id)sender {

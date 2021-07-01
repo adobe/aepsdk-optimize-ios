@@ -16,13 +16,14 @@ import Foundation
 
 @objc
 public extension Optimize {
-    /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the Decisioning Services enabled behind Experience Edge.
+    /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the decisioning Services enabled behind Experience Edge.
     ///
     /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
     /// - Parameter decisionScopes: An array of decision scopes.
-    /// - Parameter experienceData: Additional experience data to be sent in the personalization request.
-    @objc(updatePropositions:withExperienceData:)
-    static func updatePropositions(for decisionScopes: [DecisionScope], with experienceData: ExperienceData? = nil) {
+    /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
+    /// - Parameter data: Additional free-form data to be sent in the personalization request.
+    @objc(updatePropositions:withXdm:AndData:)
+    static func updatePropositions(for decisionScopes: [DecisionScope], with xdm: [String: Any]?, and data: [String: Any]? = nil) {
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
@@ -38,8 +39,14 @@ public extension Optimize {
             OptimizeConstants.EventDataKeys.DECISION_SCOPES: flattenedDecisionScopes
         ]
 
-        if let experienceData = experienceData?.asDictionary() {
-            eventData.merge(experienceData) { old, _ in old }
+        // Add XDM data
+        if let xdm = xdm {
+            eventData[OptimizeConstants.EventDataKeys.XDM] = xdm
+        }
+
+        // Add free-form data
+        if let data = data {
+            eventData[OptimizeConstants.EventDataKeys.DATA] = data
         }
 
         let event = Event(name: OptimizeConstants.EventNames.UPDATE_PROPOSITIONS_REQUEST,

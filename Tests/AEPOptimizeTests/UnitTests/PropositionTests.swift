@@ -21,7 +21,7 @@ class PropositionTests: XCTestCase {
     "id": "de03ac85-802a-4331-a905-a57053164d35",\
     "items": [{\
         "id": "xcore:personalized-offer:1111111111111111",\
-        "etag": 10,\
+        "etag": "10",\
         "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",\
         "data": {\
             "id": "xcore:personalized-offer:1111111111111111",\
@@ -30,11 +30,11 @@ class PropositionTests: XCTestCase {
         }\
     }],\
     "placement": {\
-        "etag": 1,\
+        "etag": "1",\
         "id": "xcore:offer-placement:1111111111111111"\
     },\
     "activity": {\
-        "etag": 8,\
+        "etag": "8",\
         "id": "xcore:offer-activity:1111111111111111"\
     },\
     "scope": "eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="\
@@ -77,7 +77,7 @@ class PropositionTests: XCTestCase {
 {\
     "items": [{\
         "id": "xcore:personalized-offer:1111111111111111",\
-        "etag": 10,\
+        "etag": "10",\
         "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",\
         "data": {\
             "id": "xcore:personalized-offer:1111111111111111",\
@@ -86,11 +86,11 @@ class PropositionTests: XCTestCase {
         }\
     }],\
     "placement": {\
-        "etag": 1,\
+        "etag": "1",\
         "id": "xcore:offer-placement:1111111111111111"\
     },\
     "activity": {\
-        "etag": 8,\
+        "etag": "8",\
         "id": "xcore:offer-activity:1111111111111111"\
     },\
     "scope": "eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="\
@@ -111,6 +111,7 @@ class PropositionTests: XCTestCase {
         XCTAssertEqual(1, proposition.offers.count)
         let offer = proposition.offers[0]
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
+        XCTAssertEqual("10", offer.etag)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 3), offer.type)
         XCTAssertEqual("<h1>This is a HTML content</h1>", offer.content)
@@ -154,6 +155,7 @@ class PropositionTests: XCTestCase {
         XCTAssertEqual(1, proposition.offers.count)
         let offer = proposition.offers[0]
         XCTAssertEqual("246315", offer.id)
+        XCTAssertTrue(offer.etag.isEmpty)
         XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 0), offer.type)
         XCTAssertEqual("{\"device\":\"mobile\"}", offer.content)
