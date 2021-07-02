@@ -79,7 +79,7 @@ AEPDecisionScope* targetDecisionScope;
         htmlDecisionScope,
         jsonDecisionScope,
         targetDecisionScope
-    ] withXDM:@{@"xdmKey": @"1234"} andData:@{@"dataKey": @"5678"}];
+    ] withXdm:@{@"xdmKey": @"1234"} andData:@{@"dataKey": @"5678"}];
 }
 
 - (IBAction)getPropositions:(id)sender {

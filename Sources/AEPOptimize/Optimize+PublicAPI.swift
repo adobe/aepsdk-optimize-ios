@@ -22,7 +22,7 @@ public extension Optimize {
     /// - Parameter decisionScopes: An array of decision scopes.
     /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
-    @objc(updatePropositions:withXdm:AndData:)
+    @objc(updatePropositions:withXdm:andData:)
     static func updatePropositions(for decisionScopes: [DecisionScope], with xdm: [String: Any]?, and data: [String: Any]? = nil) {
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }

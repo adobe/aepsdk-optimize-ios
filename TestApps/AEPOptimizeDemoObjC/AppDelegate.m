@@ -45,7 +45,7 @@ governing permissions and limitations under the License.
         AEPMobileEdge.class,
         AEPMobileEdgeConsent.class,
         AEPMobileEdgeIdentity.class,
-        AEPAssurance.class,
+        AEPMobileAssurance.class,
         AEPMobileOptimize.class
     ] completion:^{
         [AEPMobileCore lifecycleStart:@{}];
