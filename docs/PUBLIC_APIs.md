@@ -9,6 +9,7 @@ This API reference guide provides usage information for the Optimize extension's
 - [getPropositions](#getPropositions)
 - [onPropositionsUpdate](#onPropositionsUpdate)
 - [registerExtension](#registerExtension)
+- [resetIdentities](#resetIdentities)
 - [updatePropositions](#updatePropositions)
 
 ---
