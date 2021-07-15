@@ -89,7 +89,8 @@ public class Optimize: NSObject, Extension {
             let configSharedState = getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME,
                                                    event: event)?.value
         else {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "Cannot process the event, Configuration shared state is not available.")
+            Log.debug(label: OptimizeConstants.LOG_TAG,
+                      "Cannot process the update propositions request event, Configuration shared state is not available.")
             return
         }
 
@@ -230,7 +231,8 @@ public class Optimize: NSObject, Extension {
             let configSharedState = getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME,
                                                    event: event)?.value
         else {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "Cannot process the event, Configuration shared state is not available.")
+            Log.debug(label: OptimizeConstants.LOG_TAG,
+                      "Cannot process the track propositions request event, Configuration shared state is not available.")
             return
         }
 
