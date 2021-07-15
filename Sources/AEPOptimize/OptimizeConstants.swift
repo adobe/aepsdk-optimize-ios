@@ -43,12 +43,10 @@ enum OptimizeConstants {
     }
 
     enum EventDataKeys {
-        static let EXPERIENCE_EVENT_TYPE = "experienceeventtype"
         static let REQUEST_TYPE = "requesttype"
         static let DECISION_SCOPES = "decisionscopes"
         static let XDM = "xdm"
         static let DATA = "data"
-        static let DATASET_ID = "datasetid"
         static let PROPOSITIONS = "propositions"
         static let RESPONSE_ERROR = "responseerror"
         static let PROPOSITION_INTERACTIONS = "propositioninteractions"
@@ -73,6 +71,7 @@ enum OptimizeConstants {
 
     enum Configuration {
         static let EXTENSION_NAME = "com.adobe.module.configuration"
+        static let OPTIMIZE_OVERRIDE_DATASET_ID = "optimize.datasetId"
     }
 
     enum JsonKeys {
