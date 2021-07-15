@@ -159,7 +159,7 @@ AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc] initWithName: @"myS
 
 ### onPropositionsUpdate
 
-This API registers a permanent callback which is invoked whenever the Edge extension dispatches a response Event received from the Experience Edge Network upon a personalization query. The personalization query requests can be triggered by the `updatePropositions(for:with:)` API, Edge extension `sendEvent(experienceEvent:_:)` API or launch consequence rules.
+This API registers a permanent callback which is invoked whenever the Edge extension dispatches a response Event received from the Experience Edge Network upon a personalization query. The personalization query requests can be triggered by the `updatePropositions(for:withXdm:andData:)` API, Edge extension `sendEvent(experienceEvent:_:)` API or launch consequence rules.
 
 #### Swift
 
