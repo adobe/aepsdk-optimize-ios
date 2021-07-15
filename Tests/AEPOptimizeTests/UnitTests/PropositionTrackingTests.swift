@@ -15,7 +15,7 @@ import XCTest
 
 extension PropositionTests {
 
-    func testReferenceXdm_validProposition() throws {
+    func testGenerateReferenceXdm_validProposition() throws {
         guard
             let propositionData = PROPOSITION_VALID.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
@@ -26,7 +26,7 @@ extension PropositionTests {
 
         XCTAssertEqual("de03ac85-802a-4331-a905-a57053164d35", proposition.id)
 
-        let propositionReferenceXdm = proposition.referenceXdm()
+        let propositionReferenceXdm = proposition.generateReferenceXdm()
         XCTAssertFalse(propositionReferenceXdm.isEmpty)
 
         // verify no event type is present
@@ -37,7 +37,7 @@ extension PropositionTests {
         XCTAssertEqual(proposition.id, decisioning?["propositionID"] as? String)
     }
 
-    func testReferenceXdm_validPropositionFromTarget() throws {
+    func testGenerateReferenceXdm_validPropositionFromTarget() throws {
         guard
             let propositionData = PROPOSITION_VALID_TARGET.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
@@ -48,7 +48,7 @@ extension PropositionTests {
 
         XCTAssertEqual("AT:eyJhY3Rpdml0eUlkIjoiMTI1NTg5IiwiZXhwZXJpZW5jZUlkIjoiMCJ9", proposition.id)
 
-        let propositionReferenceXdm = proposition.referenceXdm()
+        let propositionReferenceXdm = proposition.generateReferenceXdm()
         XCTAssertFalse(propositionReferenceXdm.isEmpty)
 
         // verify no event type is present

@@ -19,6 +19,9 @@ public class Offer: NSObject, Codable {
     /// Unique Offer identifier
     @objc public let id: String
 
+    /// Offer revision detail at the time of the request
+    @objc public let etag: String
+
     /// Offer schema string
     @objc public let schema: String
 
@@ -39,6 +42,7 @@ public class Offer: NSObject, Codable {
 
     enum CodingKeys: String, CodingKey {
         case id
+        case etag
         case schema
         case data
     }
@@ -56,6 +60,10 @@ public class Offer: NSObject, Codable {
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
+
+        // Try and decode format, if present. Target response doesn't contain etag, so setting the default value to empty string.
+        etag = try container.decodeIfPresent(String.self, forKey: .etag) ?? ""
+
         schema = try container.decode(String.self, forKey: .schema)
 
         let nestedContainer = try container.nestedContainer(keyedBy: DataKeys.self, forKey: .data)
@@ -105,6 +113,7 @@ public class Offer: NSObject, Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(id, forKey: .id)
+        try container.encode(etag, forKey: .etag)
         try container.encode(schema, forKey: .schema)
 
         var data = container.nestedContainer(keyedBy: DataKeys.self, forKey: .data)

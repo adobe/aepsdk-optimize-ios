@@ -85,6 +85,15 @@ public class Optimize: NSObject, Extension {
     /// It dispatches an event to the Edge extension to send personalization query request to the Experience Edge network.
     /// - Parameter event: Update propositions request event
     private func processUpdatePropositions(event: Event) {
+        guard
+            let configSharedState = getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME,
+                                                   event: event)?.value
+        else {
+            Log.debug(label: OptimizeConstants.LOG_TAG,
+                      "Cannot process the update propositions request event, Configuration shared state is not available.")
+            return
+        }
+
         guard let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
               !decisionScopes.isEmpty
         else {
@@ -124,8 +133,8 @@ public class Optimize: NSObject, Extension {
             eventData[OptimizeConstants.JsonKeys.DATA] = data
         }
 
-        // Add datasetId
-        if let datasetId = event.data?[OptimizeConstants.EventDataKeys.DATASET_ID] as? String {
+        // Add override datasetId
+        if let datasetId = configSharedState[OptimizeConstants.Configuration.OPTIMIZE_OVERRIDE_DATASET_ID] as? String {
             eventData[OptimizeConstants.JsonKeys.DATASET_ID] = datasetId
         }
 
@@ -219,6 +228,15 @@ public class Optimize: NSObject, Extension {
     /// - Parameter event: Track propositions request event
     private func processTrackPropositions(event: Event) {
         guard
+            let configSharedState = getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME,
+                                                   event: event)?.value
+        else {
+            Log.debug(label: OptimizeConstants.LOG_TAG,
+                      "Cannot process the track propositions request event, Configuration shared state is not available.")
+            return
+        }
+
+        guard
             let propositionInteractionsXdm = event.data?[OptimizeConstants.EventDataKeys.PROPOSITION_INTERACTIONS] as? [String: Any],
             !propositionInteractionsXdm.isEmpty
         else {
@@ -228,6 +246,11 @@ public class Optimize: NSObject, Extension {
 
         var eventData: [String: Any] = [:]
         eventData[OptimizeConstants.JsonKeys.XDM] = propositionInteractionsXdm
+
+        // Add override datasetId
+        if let datasetId = configSharedState[OptimizeConstants.Configuration.OPTIMIZE_OVERRIDE_DATASET_ID] as? String {
+            eventData[OptimizeConstants.JsonKeys.DATASET_ID] = datasetId
+        }
 
         let event = Event(name: OptimizeConstants.EventNames.EDGE_PROPOSITION_INTERACTION_REQUEST,
                           type: EventType.edge,
