@@ -135,10 +135,10 @@ Optimize.getPropositions(for: [decisionScope1, decisionScope2]) { propositionsDi
 ##### Example
 
 ```objc
-AEPDecisionScope* decisionScope1 = [[AEPDecisionScope alloc]initWithActivityId: @"xcore:offer-activity:1111111111111111" 
+AEPDecisionScope* decisionScope1 = [[AEPDecisionScope alloc] initWithActivityId: @"xcore:offer-activity:1111111111111111" 
                                                                    placementId: @"xcore:offer-placement:1111111111111111" 
                                                                      itemCount: 2];
-AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc]initWithName: @"myScope"];
+AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc] initWithName: @"myScope"];
 
 [AEPMobileOptimize getPropositions: @[decisionScope1, decisionScope2] 
                         completion: ^(NSDictionary<AEPDecisionScope*, AEPProposition*>* propositionsDict, NSError* error) {
@@ -280,8 +280,8 @@ This API dispatches an Event for the Edge network extension to fetch decision pr
 ##### Syntax
 ```swift
 static func updatePropositions(for decisionScopes: [DecisionScope], 
-                               with xdm: [String: Any]?,
-                               and data: [String: Any]? = nil)
+                               withXdm xdm: [String: Any]?,
+                               andData data: [String: Any]? = nil)
 ```
 
 ##### Example
@@ -292,8 +292,8 @@ let decisionScope1 = DecisionScope(activityId: "xcore:offer-activity:11111111111
 let decisionScope2 = DecisionScope(name: "myScope")
 
 Optimize.updatePropositions(for: [decisionScope1, decisionScope2] 
-                            with: ["xdmKey": "xdmValue"] 
-                            and: ["dataKey": "dataValue"])
+                            withXdm: ["xdmKey": "xdmValue"] 
+                            andData: ["dataKey": "dataValue"])
 ```
 
 #### Objective-C
@@ -307,10 +307,10 @@ Optimize.updatePropositions(for: [decisionScope1, decisionScope2]
 
 ##### Example
 ```objc
-AEPDecisionScope* decisionScope1 = [[AEPDecisionScope alloc]initWithActivityId: @"xcore:offer-activity:1111111111111111" 
+AEPDecisionScope* decisionScope1 = [[AEPDecisionScope alloc] initWithActivityId: @"xcore:offer-activity:1111111111111111" 
                                                                    placementId: @"xcore:offer-placement:1111111111111111" 
                                                                      itemCount: 2];
-AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc]initWithName: @"myScope"];
+AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc] initWithName: @"myScope"];
 
 [AEPMobileOptimize updatePropositions: @[decisionScope1, decisionScope2] 
                               withXdm: @{@"xdmKey": @"xdmValue"} 
