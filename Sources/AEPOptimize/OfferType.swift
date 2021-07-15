@@ -13,7 +13,7 @@
 import Foundation
 
 /// Enum representing the supported Offer Types.
-@objc
+@objc(AEPOfferType)
 public enum OfferType: Int, Codable {
     /// Unknown Offer type
     case unknown = 0

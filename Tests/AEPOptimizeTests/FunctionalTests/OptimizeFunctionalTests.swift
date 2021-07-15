@@ -64,7 +64,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", decisionScopes?[0])
     }
 
-    func testUpdatePropositions_validDecisionScopeWithExperienceData() {
+    func testUpdatePropositions_validDecisionScopeWithXdmAndDataAndDatasetId() {
         // setup
         let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
@@ -81,13 +81,14 @@ class OptimizeFunctionalTests: XCTestCase {
                                 ],
                                 "data": [
                                     "myKey": "myValue"
-                                ],
-                                "datasetid": "111111111111111111111111"
+                                ]
                               ])
 
         mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
                                         data: ([
-                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+                                            "optimize.datasetId": "111111111111111111111111"
+                                        ] as [String: Any], .set))
 
         // test
         mockRuntime.simulateComingEvents(testEvent)
@@ -114,6 +115,59 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("myValue", data?["myKey"] as? String)
 
         XCTAssertEqual("111111111111111111111111", dispatchedEvent?.data?["datasetId"] as? String)
+    }
+
+    func testUpdatePropositions_validDecisionScopeWithXdmAndDataAndNoDatasetId() {
+        // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "decisionscopes": [
+                                    [
+                                        "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
+                                    ]
+                                ],
+                                "xdm": [
+                                    "myXdmKey": "myXdmValue"
+                                ],
+                                "data": [
+                                    "myKey": "myValue"
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"
+                                        ] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
+        let query = dispatchedEvent?.data?["query"] as? [String: Any]
+        let personalization = query?["personalization"] as? [String: Any]
+        let decisionScopes = personalization?["decisionScopes"] as? [String]
+        XCTAssertEqual(1, decisionScopes?.count)
+        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", decisionScopes?[0])
+
+        let xdm = dispatchedEvent?.data?["xdm"] as? [String: Any]
+        XCTAssertEqual(2, xdm?.count)
+        XCTAssertEqual("personalization.request", xdm?["eventType"] as? String)
+        XCTAssertEqual("myXdmValue", xdm?["myXdmKey"] as? String)
+
+        let data = dispatchedEvent?.data?["data"] as? [String: Any]
+        XCTAssertEqual(1, data?.count)
+        XCTAssertEqual("myValue", data?["myKey"] as? String)
+
+        // Verify no override dataset Identifier is present.
+        XCTAssertNil(dispatchedEvent?.data?["datasetId"])
     }
 
     func testUpdatePropositions_multipleValidDecisionScopes() {
@@ -248,17 +302,17 @@ class OptimizeFunctionalTests: XCTestCase {
                                         "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
                                         "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
                                         "activity": [
-                                            "etag": 8,
+                                            "etag": "8",
                                             "id": "xcore:offer-activity:1111111111111111"
                                         ],
                                         "placement": [
-                                            "etag": 1,
+                                            "etag": "1",
                                             "id": "xcore:offer-placement:1111111111111111"
                                         ],
                                         "items": [
                                             [
                                                 "id": "xcore:personalized-offer:1111111111111111",
-                                                "etag": 10,
+                                                "etag": "10",
                                                 "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",
                                                 "data": [
                                                     "id": "xcore:personalized-offer:1111111111111111",
@@ -368,17 +422,17 @@ class OptimizeFunctionalTests: XCTestCase {
               "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
               "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
               "activity": {
-                  "etag": 8,
+                  "etag": "8",
                   "id": "xcore:offer-activity:1111111111111111"
               },
               "placement": {
-                  "etag": 1,
+                  "etag": "1",
                   "id": "xcore:offer-placement:1111111111111111"
               },
               "items": [
                   {
                       "id": "xcore:personalized-offer:1111111111111111",
-                      "etag": 10,
+                      "etag": "10",
                       "schema": "https://ns.adobe.com/experience/offer-management/content-component-json",
                       "data": {
                           "id": "xcore:personalized-offer:1111111111111111",
@@ -457,17 +511,17 @@ class OptimizeFunctionalTests: XCTestCase {
               "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
               "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
               "activity": {
-                  "etag": 8,
+                  "etag": "8",
                   "id": "xcore:offer-activity:1111111111111111"
               },
               "placement": {
-                  "etag": 1,
+                  "etag": "1",
                   "id": "xcore:offer-placement:1111111111111111"
               },
               "items": [
                   {
                       "id": "xcore:personalized-offer:1111111111111111",
-                      "etag": 10,
+                      "etag": "10",
                       "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
                       "data": {
                           "id": "xcore:personalized-offer:1111111111111111",
@@ -544,17 +598,17 @@ class OptimizeFunctionalTests: XCTestCase {
               "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
               "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
               "activity": {
-                  "etag": 8,
+                  "etag": "8",
                   "id": "xcore:offer-activity:1111111111111111"
               },
               "placement": {
-                  "etag": 1,
+                  "etag": "1",
                   "id": "xcore:offer-placement:1111111111111111"
               },
               "items": [
                   {
                       "id": "xcore:personalized-offer:1111111111111111",
-                      "etag": 10,
+                      "etag": "10",
                       "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",
                       "data": {
                           "id": "xcore:personalized-offer:1111111111111111",
@@ -619,17 +673,17 @@ class OptimizeFunctionalTests: XCTestCase {
               "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
               "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
               "activity": {
-                  "etag": 8,
+                  "etag": "8",
                   "id": "xcore:offer-activity:1111111111111111"
               },
               "placement": {
-                  "etag": 1,
+                  "etag": "1",
                   "id": "xcore:offer-placement:1111111111111111"
               },
               "items": [
                   {
                       "id": "xcore:personalized-offer:1111111111111111",
-                      "etag": 10,
+                      "etag": "10",
                       "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
                       "data": {
                           "id": "xcore:personalized-offer:1111111111111111",
@@ -918,17 +972,17 @@ class OptimizeFunctionalTests: XCTestCase {
               "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
               "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
               "activity": {
-                  "etag": 8,
+                  "etag": "8",
                   "id": "xcore:offer-activity:1111111111111111"
               },
               "placement": {
-                  "etag": 1,
+                  "etag": "1",
                   "id": "xcore:offer-placement:1111111111111111"
               },
               "items": [
                   {
                       "id": "xcore:personalized-offer:1111111111111111",
-                      "etag": 10,
+                      "etag": "10",
                       "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
                       "data": {
                           "id": "xcore:personalized-offer:1111111111111111",
@@ -976,17 +1030,17 @@ class OptimizeFunctionalTests: XCTestCase {
               "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
               "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
               "activity": {
-                  "etag": 8,
+                  "etag": "8",
                   "id": "xcore:offer-activity:1111111111111111"
               },
               "placement": {
-                  "etag": 1,
+                  "etag": "1",
                   "id": "xcore:offer-placement:1111111111111111"
               },
               "items": [
                   {
                       "id": "xcore:personalized-offer:1111111111111111",
-                      "etag": 10,
+                      "etag": "10",
                       "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
                       "data": {
                           "id": "xcore:personalized-offer:1111111111111111",

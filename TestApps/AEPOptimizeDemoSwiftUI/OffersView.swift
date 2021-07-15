@@ -153,19 +153,15 @@ struct OffersView: View {
                         }
                     }
                     data["dataKey"] = "5678"
-                    
-                    let experienceData = ExperienceData(
-                        xdm: ["xdmKey": "1234"],
-                        data: data,
-                        datasetIdentifier: nil)
-                    
+
                     Optimize.updatePropositions(for: [
                         textDecisionScope,
                         imageDecisionScope,
                         htmlDecisionScope,
                         jsonDecisionScope,
                         targetScope
-                    ], with: experienceData)
+                    ], with: ["xdmKey": "1234"],
+                        and: data)
                 }
                 
                 CustomButtonView(buttonTitle: "Get Propositions") {

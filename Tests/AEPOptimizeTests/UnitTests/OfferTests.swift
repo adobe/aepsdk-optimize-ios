@@ -144,6 +144,7 @@ class OfferTests: XCTestCase {
         }
 
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
+        XCTAssertEqual("8", offer.etag)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-json", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 1), offer.type)
         XCTAssertEqual("{\"testing\":\"ho-ho\"}", offer.content)
@@ -162,6 +163,7 @@ class OfferTests: XCTestCase {
         }
 
         XCTAssertEqual("xcore:personalized-offer:2222222222222222", offer.id)
+        XCTAssertEqual("7", offer.etag)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-text", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 2), offer.type)
         XCTAssertEqual("This is a plain text content!", offer.content)
@@ -180,6 +182,7 @@ class OfferTests: XCTestCase {
         }
 
         XCTAssertEqual("xcore:personalized-offer:3333333333333333", offer.id)
+        XCTAssertEqual("8", offer.etag)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 3), offer.type)
         XCTAssertEqual("<h1>Hello, Welcome!</h1>", offer.content)
@@ -198,6 +201,7 @@ class OfferTests: XCTestCase {
         }
 
         XCTAssertEqual("xcore:personalized-offer:4444444444444444", offer.id)
+        XCTAssertEqual("8", offer.etag)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-imagelink", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 4), offer.type)
         XCTAssertEqual("https://example.com/avatar1.png?alt=media", offer.content)
@@ -216,6 +220,7 @@ class OfferTests: XCTestCase {
         }
 
         XCTAssertEqual("0", offer.id)
+        XCTAssertTrue(offer.etag.isEmpty)
         XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 0), offer.type)
         XCTAssertEqual("{\"device\":\"mobile\"}", offer.content)
@@ -232,6 +237,7 @@ class OfferTests: XCTestCase {
         }
 
         XCTAssertEqual("xcore:personalized-offer:2222222222222222", offer.id)
+        XCTAssertEqual("7", offer.etag)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-text", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 2), offer.type)
         XCTAssertEqual("This is a plain text content!", offer.content)

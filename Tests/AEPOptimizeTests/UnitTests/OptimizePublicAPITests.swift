@@ -60,7 +60,6 @@ class OptimizePublicAPITests: XCTestCase {
 
             XCTAssertNil(event.data?["xdm"])
             XCTAssertNil(event.data?["data"])
-            XCTAssertNil(event.data?["datasetid"])
             expectation.fulfill()
         }
 
@@ -68,19 +67,19 @@ class OptimizePublicAPITests: XCTestCase {
         let decisionScope = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
                                           placementId: "xcore:offer-placement:1111111111111111")
 
-        Optimize.updatePropositions(for: [decisionScope])
+        Optimize.updatePropositions(for: [decisionScope], with: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
     }
 
-    func testUpdatePropositions_validDecisionScopeWithExperienceData() {
+    func testUpdatePropositions_validDecisionScopeWithXdmAndData() {
         // setup
         let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event with expected data.")
         expectation.assertForOverFulfill = true
 
         let testEventData: [String: Any] = [
-            "requesttype": "updatedecisions",
+            "requesttype": "updatepropositions",
             "decisionscopes": [
                 [ "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
                 ]
@@ -90,8 +89,7 @@ class OptimizePublicAPITests: XCTestCase {
             ],
             "data": [
                 "myKey": "myValue"
-            ],
-            "datasetid": "111111111111111111111111"
+            ]
         ]
         let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
@@ -125,7 +123,6 @@ class OptimizePublicAPITests: XCTestCase {
             XCTAssertEqual(1, data.count)
             XCTAssertEqual("myValue", data["myKey"] as? String)
 
-            XCTAssertEqual("111111111111111111111111", event.data?["datasetid"] as? String)
             expectation.fulfill()
         }
 
@@ -133,11 +130,9 @@ class OptimizePublicAPITests: XCTestCase {
         let decisionScope = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
                                           placementId: "xcore:offer-placement:1111111111111111")
 
-        let experienceData = ExperienceData(xdm: ["myXdmKey": "myXdmValue"] as [String: Any],
-                                            data: ["myKey": "myValue"] as [String: Any],
-                                            datasetIdentifier: "111111111111111111111111")
-
-        Optimize.updatePropositions(for: [decisionScope], with: experienceData)
+        Optimize.updatePropositions(for: [decisionScope],
+                                    with: ["myXdmKey": "myXdmValue"] as [String: Any],
+                                    and: ["myKey": "myValue"] as [String: Any])
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -149,7 +144,7 @@ class OptimizePublicAPITests: XCTestCase {
         expectation.assertForOverFulfill = true
 
         let testEventData: [String: Any] = [
-            "requesttype": "updatedecisions",
+            "requesttype": "updatepropositions",
             "decisionscopes": [
                 [
                     "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
@@ -186,7 +181,7 @@ class OptimizePublicAPITests: XCTestCase {
                                            placementId: "xcore:offer-placement:1111111111111111")
         let decisionScope2 = DecisionScope(name: "myMbox")
 
-        Optimize.updatePropositions(for: [decisionScope1, decisionScope2])
+        Optimize.updatePropositions(for: [decisionScope1, decisionScope2], with: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -209,7 +204,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositions(for: [])
+        Optimize.updatePropositions(for: [], with: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -234,7 +229,7 @@ class OptimizePublicAPITests: XCTestCase {
         // test
         let decisionScope = DecisionScope(name: "")
 
-        Optimize.updatePropositions(for: [decisionScope])
+        Optimize.updatePropositions(for: [decisionScope], with: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -259,7 +254,7 @@ class OptimizePublicAPITests: XCTestCase {
         // test
         let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoiIn0=")
 
-        Optimize.updatePropositions(for: [decisionScope])
+        Optimize.updatePropositions(for: [decisionScope], with: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -303,7 +298,7 @@ class OptimizePublicAPITests: XCTestCase {
                                            placementId: "xcore:offer-placement:1111111111111111")
         let decisionScope2 = DecisionScope(name: "myMbox")
 
-        Optimize.updatePropositions(for: [decisionScope1, decisionScope2])
+        Optimize.updatePropositions(for: [decisionScope1, decisionScope2], with: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)

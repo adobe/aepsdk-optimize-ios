@@ -16,4 +16,5 @@ Pod::Spec.new do |s|
 
   s.source_files          = 'Sources/**/*.swift'
   s.dependency 'AEPCore', '>= 3.2.0'
+  s.dependency 'AEPEdge', '>= 1.1.0'
 end
