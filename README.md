@@ -1,10 +1,11 @@
-# Adobe Experience Platform Mobile Optimize SDK
+# Adobe Experience Platform Optimize Mobile SDK
 
 ## About this project
 
 The AEP Mobile Optimize SDK Extension provides APIs to enable real-time personalization workflows in Adobe Experience Platform SDKs using the Edge decisioning services. It depends on AEPCore and requires AEPEdge Extension to send personalization query Events to the Experience Edge network.
 
 ## Requirements
+
 - Xcode 11.0 (or newer)
 - Swift 5.1 (or newer)
 
@@ -38,19 +39,20 @@ To add the AEPOptimize Package to your application, from the Xcode menu select:
 
 `File > Swift Packages > Add Package Dependency...`
 
-Enter the URL for the AEPOptimize package repository: `https://github.com/adobe/aepsdk-optimize-ios.git`.
+Enter the URL for the AEPOptimize package repository: `https://github.com/adobe/aepsdk-optimize-ios.git`. Click Next.
 
-When prompted, make sure you change the branch to `main`.
+Specify the Version rule for the package options. Click Next and Finish.
 
 Alternatively, if your project has a `Package.swift` file, you can add AEPOptimize directly to your dependencies:
 
 ```
 dependencies: [
-    .package(url: "https://github.com/adobe/aepsdk-optimize-ios.git", .branch: "main"),
+    .package(url: "https://github.com/adobe/aepsdk-optimize-ios.git", .upToNextMajor(from: "1.0.0"))
+],
 targets: [
        .target(name: "YourTarget",
-                    dependencies: ["AEPOptimize"],
-              path: "your/path"),
+               dependencies: ["AEPOptimize"],
+               path: "your/path"),
     ]
 ]
 ```
@@ -80,6 +82,7 @@ make pod-update
 ~~~
 
 #### Open the project Xcode workspace
+
 To open the project workspace in Xcode, click on `AEPOptimize.xcworkspace` or run the following Makefile target from the project root directory:
 
 ~~~
@@ -95,7 +98,8 @@ make test
 ~~~
 
 ## Documentation
-TBD
+
+Check out the extension documentation [here](https://github.com/adobe/aepsdk-optimize-ios/Documentation/README.md).
 
 ## Related Projects
 
