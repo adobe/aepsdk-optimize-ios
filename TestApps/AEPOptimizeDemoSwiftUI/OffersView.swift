@@ -160,8 +160,8 @@ struct OffersView: View {
                         htmlDecisionScope,
                         jsonDecisionScope,
                         targetScope
-                    ], with: ["xdmKey": "1234"],
-                        and: data)
+                    ], withXdm: ["xdmKey": "1234"],
+                       andData: data)
                 }
                 
                 CustomButtonView(buttonTitle: "Get Propositions") {

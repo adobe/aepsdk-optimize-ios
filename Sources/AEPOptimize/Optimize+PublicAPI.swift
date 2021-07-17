@@ -23,7 +23,7 @@ public extension Optimize {
     /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
     @objc(updatePropositions:withXdm:andData:)
-    static func updatePropositions(for decisionScopes: [DecisionScope], with xdm: [String: Any]?, and data: [String: Any]? = nil) {
+    static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil) {
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
@@ -110,10 +110,10 @@ public extension Optimize {
     /// This API registers a permanent callback which will be invoked whenever the Edge extension dispatches an Event handle,
     /// upon a personalization decisions response from the Experience Edge Network.
     ///
-    /// The personalization query requests can be triggered by the `updatePropositions(for:with:)` API,
+    /// The personalization query requests can be triggered by the `updatePropositions(for:withXdm:andData:)` API,
     /// Edge extension `sendEvent(experienceEvent:_:)` API or launch rules consequence.
     ///
-    /// - Parameter completion: The completion handler to be invoked with the decision propositions.
+    /// - Parameter action: The completion handler to be invoked with the decision propositions.
     @objc(onPropositionsUpdate:)
     static func onPropositionsUpdate(perform action: @escaping ([DecisionScope: Proposition]?) -> Void) {
         MobileCore.registerEventListener(type: EventType.optimize,
