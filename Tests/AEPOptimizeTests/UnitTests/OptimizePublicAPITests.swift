@@ -308,35 +308,7 @@ class OptimizePublicAPITests: XCTestCase {
         // setup
         let expectation = XCTestExpectation(description: "getPropositions should dispatch an event with expected data.")
         expectation.assertForOverFulfill = true
-        
-        ///
-        let testEvent2 = Event(name: "Personalization Notification",
-                              type: "com.adobe.eventType.optimize",
-                              source: "com.adobe.eventSource.notification",
-                              data: [
-                                "propositions": [
-                                    [
-                                    "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
-                                    ],
-                                    [
-                                        "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-                                        "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
-                                        "items": [
-                                            [
-                                                "id": "xcore:personalized-offer:1111111111111111",
-                                                "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
-                                                "data": [
-                                                    "id": "xcore:personalized-offer:1111111111111111",
-                                                    "type": 2,
-                                                    "content": "This is a plain text content!"
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                              ])
 
-        ///
         let testEventData: [String: Any] = [
             "requesttype": "getpropositions",
             "decisionscopes": [
