@@ -10,17 +10,17 @@ on:
         default: '1.0.0'
       
       action_tag:
-        description: 'create tag ("no" to skip)'     
+        description: 'create tag? ("no" to skip)'     
         required: true
         default: 'yes'
         
-      release_AEPEdgePersonalization:
-        description: 'release AEPEdgePersonalization Pod("no" to skip)'
+      release_AEPOptimize:
+        description: 'release AEPOptimize Pod? ("no" to skip)'
         required: true
         default: 'yes'
 
 jobs:
-  release_edgepersonalization:
+  release_optimize:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
@@ -63,11 +63,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Publish Pods - AEPEdgePersonalization
-      if: ${{ github.event.inputs.release_AEPEdgePersonalization == 'yes' }}
+    - name: Publish Pods - AEPOptimize
+      if: ${{ github.event.inputs.release_AEPOptimize == 'yes' }}
       run: |
         set -eo pipefail
-        pod trunk push AEPEdgePersonalization.podspec --allow-warnings --synchronous --swift-version=5.1
+        pod trunk push AEPOptimize.podspec --allow-warnings --synchronous --swift-version=5.1
         pod repo update
       env:
         COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
