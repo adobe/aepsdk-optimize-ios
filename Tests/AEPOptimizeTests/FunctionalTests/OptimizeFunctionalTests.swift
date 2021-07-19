@@ -33,7 +33,7 @@ class OptimizeFunctionalTests: XCTestCase {
     func testOnRegistered() {
         // setup
         // onRegistered() invoked in setUp()
-                
+
         // verify
         XCTAssertEqual(5, mockRuntime.listeners.count)
         XCTAssertNotNil(mockRuntime.listeners["com.adobe.eventType.generic.identity-com.adobe.eventSource.requestReset"])
@@ -56,14 +56,14 @@ class OptimizeFunctionalTests: XCTestCase {
                                     ]
                                 ]
                               ])
-        
+
         mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration"),
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
 
         // test
         let result = optimize.readyForEvent(testEvent)
-        
+
         // verify
         XCTAssertTrue(result)
     }
@@ -90,6 +90,23 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // verify
         XCTAssertFalse(result)
+    }
+
+    func testReadyForEvent_configNotAvailableAndNotRequestEvent() {
+        // setup
+        let testEvent = Event(name: "Optimize Clear Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestReset",
+                              data: nil)
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration"),
+                                        data: (nil, .pending))
+
+        // test
+        let result = optimize.readyForEvent(testEvent)
+
+        // verify
+        XCTAssertTrue(result)
     }
 
     func testUpdatePropositions_validDecisionScope() {
@@ -495,37 +512,43 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertTrue(optimize.cachedPropositions.isEmpty)
     }
 
-    func testEdgeResponse_unsupportedEventHandle() {
+    func testEdgeResponse_missingEventHandleInData() {
         // setup
         let testEvent = Event(name: "AEP Response Event Handle",
                               type: "com.adobe.eventType.edge",
-                              source: "state:store",
+                              source: "personalization:decisions",
                               data: [
-                                "payload": [
+                                  "payload": [
                                     [
-                                        "key": "kndctr_906E3A095DC834230A495FD6_AdobeOrg_consent",
-                                        "value": "general=in",
-                                        "maxAge": 15552000
-                                    ],
-                                    [
-                                        "key": "kndctr_906E3A095DC834230A495FD6_AdobeOrg_personalization_sessionId",
-                                        "value": "a004bb48-a6ff-4751-ab9b-1dc7e26d28f8",
-                                        "maxAge": 1800
-                                    ],
-                                    [
-                                        "key": "kndctr_906E3A095DC834230A495FD6_AdobeOrg_consent_check",
-                                        "value": "1",
-                                        "maxAge": 7200
-                                    ],
-                                    [
-                                        "key": "kndctr_906E3A095DC834230A495FD6_AdobeOrg_identity",
-                                        "value": "CiYxNTM2NTA0NTA2NjA2MzM1NzY2Nzk2NTI1MTU0OTAyNjgzOTMyMFILCPvW2_GrLxgBIAfwAfvW2_GrLw==",
-                                        "maxAge" : 34128000
+                                        "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+                                        "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
+                                        "activity": [
+                                            "etag": "8",
+                                            "id": "xcore:offer-activity:1111111111111111"
+                                        ],
+                                        "placement": [
+                                            "etag": "1",
+                                            "id": "xcore:offer-placement:1111111111111111"
+                                        ],
+                                        "items": [
+                                            [
+                                                "id": "xcore:personalized-offer:1111111111111111",
+                                                "etag": "10",
+                                                "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",
+                                                "data": [
+                                                    "id": "xcore:personalized-offer:1111111111111111",
+                                                    "format": "text/html",
+                                                    "content": "<h1>This is HTML content</h1>",
+                                                    "characteristics": [
+                                                        "testing": "true"
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
                                     ]
-                                ],
+                                  ],
                                 "requestEventId": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
-                                "requestId": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB",
-                                "type": "state:store"
+                                "requestId": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB"
                               ])
 
         mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
@@ -537,7 +560,6 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // verify
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
-        XCTAssertTrue(optimize.cachedPropositions.isEmpty)
     }
 
     func testEdgeErrorResponse() {
@@ -728,11 +750,14 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
         XCTAssertEqual(1, propositionsDictionary.count)
+        
+        let scope1 = DecisionScope(name: "myMbox")
+        XCTAssertNil(propositionsDictionary[scope1])
 
-        let scope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
-        XCTAssertNotNil(propositionsDictionary[scope])
+        let scope2 = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
+        XCTAssertNotNil(propositionsDictionary[scope2])
 
-        let proposition = propositionsDictionary[scope]
+        let proposition = propositionsDictionary[scope2]
         XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
         XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
         XCTAssertEqual(1, proposition?.offers.count)
@@ -1219,7 +1244,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         let item = try XCTUnwrap(items[0])
         XCTAssertEqual("246315", item["id"] as? String)
-        
+
         let datasetId = try XCTUnwrap(dispatchedEvent.data?["datasetId"] as? String)
         XCTAssertEqual("111111111111111111111111", datasetId)
     }

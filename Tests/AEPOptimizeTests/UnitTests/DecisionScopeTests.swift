@@ -136,30 +136,37 @@ class DecisionScopeTests: XCTestCase {
 
         let decisionScope2 = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
                                            placementId: "xcore:offer-placement:1111111111111111")
-        XCTAssertTrue(decisionScope1 == decisionScope2)
+        XCTAssertTrue([decisionScope1] == [decisionScope2])
     }
 
-    func testIsEqual_withItemCount() {
+    func testIsEqual_decisionScopeObjectsContainItemCount() {
         let decisionScope1 = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEiLCJpdGVtQ291bnQiOjEwMH0=")
 
         let decisionScope2 = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
                                            placementId: "xcore:offer-placement:1111111111111111",
                                            itemCount: 100)
-        XCTAssertTrue(decisionScope1 == decisionScope2)
+        XCTAssertTrue([decisionScope1] == [decisionScope2])
     }
 
-    func testIsEqual_scopesNotEqual() {
+    func testIsEqual_decisionScopeObjectsNotEqual() {
         let decisionScope1 = DecisionScope(name: "myMbox")
 
         let decisionScope2 = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
                                            placementId: "xcore:offer-placement:1111111111111111")
-        XCTAssertFalse(decisionScope1 == decisionScope2)
+        XCTAssertFalse([decisionScope1] == [decisionScope2])
     }
 
-    func testIsEqual_scopesNotEqualWhenNotDecisionScopeObject() {
-        let decisionScope1 = "myMbox" as NSObject
+    func testIsEqual_otherNotDecisionScopeObject() {
+        let decisionScope1 = DecisionScope(name: "myMbox")
+        let decisionScope2 = "myMbox" as NSObject
 
-        let decisionScope2 = DecisionScope(name: "myMbox")
-        XCTAssertFalse(decisionScope1 == decisionScope2)
+        XCTAssertFalse([decisionScope1] == [decisionScope2])
+    }
+
+    func testIsEqual_otherDecisionScopeObjectIsNil() {
+        let decisionScope1 = DecisionScope(name: "myMbox")
+        let decisionScope2: DecisionScope? = nil
+        
+        XCTAssertFalse([decisionScope1] == [decisionScope2])
     }
 }

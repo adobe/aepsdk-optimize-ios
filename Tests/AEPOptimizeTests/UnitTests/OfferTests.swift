@@ -299,5 +299,4 @@ class OfferTests: XCTestCase {
         let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
         XCTAssertNil(offer)
     }
-    
 }
