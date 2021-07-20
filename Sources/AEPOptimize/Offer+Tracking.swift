@@ -15,6 +15,7 @@ import Foundation
 
 // MARK: Offer extension
 
+@objc
 public extension Offer {
     /// Creates a dictionary containing XDM formatted data for `Experience Event - Proposition Interactions` field group from the given proposition option.
     ///

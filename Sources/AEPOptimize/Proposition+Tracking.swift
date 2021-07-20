@@ -15,6 +15,7 @@ import Foundation
 
 // MARK: Proposition extension
 
+@objc
 public extension Proposition {
     /// Creates a dictionary containing XDM formatted data for `Experience Event - Proposition Reference` field group from the given proposition.
     ///
