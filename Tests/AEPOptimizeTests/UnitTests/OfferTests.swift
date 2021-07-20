@@ -117,12 +117,12 @@ class OfferTests: XCTestCase {
     "data": {\
         "id": "xcore:personalized-offer:2222222222222222",\
         "format": "text/plain",\
-        "content": "This is a plain text content!",\
+        "content": "This is a plain text content!"\
     }\
 }
 """
 
-    private let OFFER_INVALID =
+    private let OFFER_INVALID_NO_CONTENT =
 """
 {\
     "id": "xcore:personalized-offer:2222222222222222",\
@@ -135,7 +135,35 @@ class OfferTests: XCTestCase {
 }
 """
 
-    func testJsonOffer() throws {
+    private let OFFER_INVALID_ID_MISMATCH =
+"""
+{\
+    "id": "xcore:personalized-offer:3333333333333333",\
+    "etag": "8",\
+    "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",\
+    "data": {\
+        "id": "xcore:personalized-offer:1111111111111111",\
+        "format": "text/html",\
+        "content": "<h1>Hello, Welcome!</h1>"\
+    }\
+}
+"""
+
+    private let OFFER_INVALID_CONTENT_UNEXPECTED =
+"""
+{\
+    "id": "xcore:personalized-offer:1111111111111111",\
+    "etag": "8",\
+    "schema": "https://ns.adobe.com/experience/offer-management/content-component-json",\
+    "data": {\
+        "id": "xcore:personalized-offer:1111111111111111",\
+        "format": "application/json",\
+        "content": ["123", "456"]\
+    }\
+}
+"""
+
+    func testJsonOffer() {
         guard let offerData = JSON_OFFER.data(using: .utf8),
               let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
         else {
@@ -154,7 +182,7 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("true", offer.characteristics?["mobile"])
     }
 
-    func testTextOffer() throws {
+    func testTextOffer() {
         guard let offerData = TEXT_OFFER.data(using: .utf8),
               let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
         else {
@@ -173,7 +201,7 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("true", offer.characteristics?["mobile"])
     }
 
-    func testHtmlOffer() throws {
+    func testHtmlOffer() {
         guard let offerData = HTML_OFFER.data(using: .utf8),
               let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
         else {
@@ -192,7 +220,7 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("true", offer.characteristics?["mobile"])
     }
 
-    func testImageOffer() throws {
+    func testImageOffer() {
         guard let offerData = IMAGE_OFFER.data(using: .utf8),
               let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
         else {
@@ -211,7 +239,7 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("true", offer.characteristics?["mobile"])
     }
 
-    func testOffer_validFromTarget() throws {
+    func testOffer_validFromTarget() {
         guard let offerData = TARGET_OFFER.data(using: .utf8),
               let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
         else {
@@ -228,7 +256,7 @@ class OfferTests: XCTestCase {
         XCTAssertNil(offer.characteristics)
     }
 
-    func testOffer_minimal() throws {
+    func testOffer_minimal() {
         guard let offerData = OFFER_MINIMAL.data(using: .utf8),
               let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
         else {
@@ -245,8 +273,26 @@ class OfferTests: XCTestCase {
         XCTAssertNil(offer.characteristics)
     }
 
-    func testOffer_invalid() throws {
-        guard let offerData = OFFER_INVALID.data(using: .utf8) else {
+    func testOffer_invalidNoContent() {
+        guard let offerData = OFFER_INVALID_NO_CONTENT.data(using: .utf8) else {
+            XCTFail("Offer json data should be valid.")
+            return
+        }
+        let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
+        XCTAssertNil(offer)
+    }
+
+    func testOffer_invalidIdMismatch() {
+        guard let offerData = OFFER_INVALID_ID_MISMATCH.data(using: .utf8) else {
+            XCTFail("Offer json data should be valid.")
+            return
+        }
+        let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
+        XCTAssertNil(offer)
+    }
+
+    func testOffer_invalidContentUnexpected() {
+        guard let offerData = OFFER_INVALID_CONTENT_UNEXPECTED.data(using: .utf8) else {
             XCTFail("Offer json data should be valid.")
             return
         }
