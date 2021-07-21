@@ -94,8 +94,8 @@ enum OptimizeConstants {
     }
 
     enum JsonValues {
-        static let EXPERIENCE_EVENT_TYPE_PERSONALIZATION = "personalization.request"
-        static let EXPERIENCE_EVENT_TYPE_DISPLAY = "display"
-        static let EXPERIENCE_EVENT_TYPE_CLICK = "click"
+        static let EE_EVENT_TYPE_PERSONALIZATION = "personalization.request"
+        static let EE_EVENT_TYPE_PROPOSITION_DISPLAY = "decisioning.propositionDisplay"
+        static let EE_EVENT_TYPE_PROPOSITION_INTERACT = "decisioning.propositionInteract"
     }
 }

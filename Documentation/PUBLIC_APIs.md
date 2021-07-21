@@ -8,7 +8,7 @@ This API reference guide provides usage information for the Optimize extension's
 - [extensionVersion](#extensionVersion)
 - [getPropositions](#getPropositions)
 - [onPropositionsUpdate](#onPropositionsUpdate)
-- [registerExtension](#registerExtension)
+- [registerExtensions](#registerExtensions)
 - [resetIdentities](#resetIdentities)
 - [updatePropositions](#updatePropositions)
 
@@ -129,7 +129,7 @@ Optimize.getPropositions(for: [decisionScope1, decisionScope2]) { propositionsDi
 
 ```objc
 + (void) getPropositions: (NSArray<AEPDecisionScope*>* _Nonnull) decisionScopes 
-              completion: (void (^)(NSDictionary<AEPDecisionScope*, AEPProposition*>* _Nullable propositionsDict, NSError* _Nullable error)) completion;
+              completion: (void (^ _Nonnull)(NSDictionary<AEPDecisionScope*, AEPProposition*>* _Nullable propositionsDict, NSError* _Nullable error)) completion;
 ```
 
 ##### Example
@@ -184,7 +184,7 @@ Optimize.onPropositionsUpdate { propositionsDict in
 ##### Syntax
 
 ```objc
-+ (void) onPropositionsUpdate: (void (^)(NSDictionary<AEPDecisionScope*, AEPProposition*>* _Nullable)) action;
++ (void) onPropositionsUpdate: (void (^ _Nonnull)(NSDictionary<AEPDecisionScope*, AEPProposition*>* _Nullable)) action;
 ```
 
 ##### Example
@@ -197,7 +197,7 @@ Optimize.onPropositionsUpdate { propositionsDict in
 
 ---
 
-### registerExtension
+### registerExtensions
 
 This `MobileCore` API can be invoked to register the Optimize extension.
 
@@ -224,7 +224,7 @@ MobileCore.registerExtensions([Optimize.self, ...]) {
 
 ```objc
 + (void) registerExtensions: (NSArray<Class*>* _Nonnull) extensions 
-                 completion: (void (^)(void)) completion;
+                 completion: (void (^ _Nullable)(void)) completion;
 ```
 
 ##### Example
