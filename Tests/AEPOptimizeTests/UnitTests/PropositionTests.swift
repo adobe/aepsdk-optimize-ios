@@ -50,6 +50,7 @@ class PropositionTests: XCTestCase {
         "schema": "https://ns.adobe.com/personalization/json-content-item",\
         "data": {\
             "id": "246315",\
+            "format": "application/json",
             "content": {\"device\": \"mobile\"}\
         }\
     }],\
@@ -157,7 +158,7 @@ class PropositionTests: XCTestCase {
         XCTAssertEqual("246315", offer.id)
         XCTAssertTrue(offer.etag.isEmpty)
         XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", offer.schema)
-        XCTAssertEqual(OfferType.init(rawValue: 0), offer.type)
+        XCTAssertEqual(OfferType.init(rawValue: 3), offer.type)
         XCTAssertEqual("{\"device\":\"mobile\"}", offer.content)
         XCTAssertNil(offer.language)
         XCTAssertNil(offer.characteristics)

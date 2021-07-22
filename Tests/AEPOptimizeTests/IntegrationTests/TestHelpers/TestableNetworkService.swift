@@ -38,4 +38,9 @@ class TestableNetworkService: Networking {
     func mock(resolver: @escaping RequestResolver) {
         resolvers += [resolver]
     }
+    
+    func clear() {
+        resolvers = []
+        requests = []
+    }
 }
