@@ -49,7 +49,7 @@ extension PropositionTests {
 
         let propositionInteractionXdm = offer.generateDisplayInteractionXdm()
         let eventType = try XCTUnwrap(propositionInteractionXdm["eventType"] as? String)
-        XCTAssertEqual("display", eventType)
+        XCTAssertEqual("decisioning.propositionDisplay", eventType)
 
         let experience = try XCTUnwrap(propositionInteractionXdm["_experience"] as? [String: Any])
         let decisioning = try XCTUnwrap(experience["decisioning"] as? [String: Any])
@@ -99,7 +99,7 @@ extension PropositionTests {
 
         let propositionInteractionXdm = offer.generateDisplayInteractionXdm()
         let eventType = try XCTUnwrap(propositionInteractionXdm["eventType"] as? String)
-        XCTAssertEqual("display", eventType)
+        XCTAssertEqual("decisioning.propositionDisplay", eventType)
 
         let experience = try XCTUnwrap(propositionInteractionXdm["_experience"] as? [String: Any])
         let decisioning = try XCTUnwrap(experience["decisioning"] as? [String: Any])
@@ -141,7 +141,7 @@ extension PropositionTests {
 
         let propositionInteractionXdm = offer.generateTapInteractionXdm()
         let eventType = try XCTUnwrap(propositionInteractionXdm["eventType"] as? String)
-        XCTAssertEqual("click", eventType)
+        XCTAssertEqual("decisioning.propositionInteract", eventType)
 
         let experience = try XCTUnwrap(propositionInteractionXdm["_experience"] as? [String: Any])
         let decisioning = try XCTUnwrap(experience["decisioning"] as? [String: Any])
@@ -191,7 +191,7 @@ extension PropositionTests {
 
         let propositionInteractionXdm = offer.generateTapInteractionXdm()
         let eventType = try XCTUnwrap(propositionInteractionXdm["eventType"] as? String)
-        XCTAssertEqual("click", eventType)
+        XCTAssertEqual("decisioning.propositionInteract", eventType)
 
         let experience = try XCTUnwrap(propositionInteractionXdm["_experience"] as? [String: Any])
         let decisioning = try XCTUnwrap(experience["decisioning"] as? [String: Any])
@@ -219,7 +219,7 @@ extension PropositionTests {
         let testEventData: [String: Any] = [
             "requesttype": "trackpropositions",
             "propositioninteractions": [
-                "eventType": "display",
+                "eventType": "decisioning.propositionDisplay",
                 "decisioning": [
                     "propositions": [
                         [
@@ -251,7 +251,7 @@ extension PropositionTests {
                 XCTAssertEqual("trackpropositions", event.data?["requesttype"] as? String)
 
                 let propositioninteractions = event.data?["propositioninteractions"] as? [String: Any]
-                XCTAssertEqual("display", propositioninteractions?["eventType"] as? String)
+                XCTAssertEqual("decisioning.propositionDisplay", propositioninteractions?["eventType"] as? String)
 
                 let experience = propositioninteractions?["_experience"] as? [String: Any]
                 let decisioning = experience?["decisioning"] as? [String: Any]
@@ -317,7 +317,7 @@ extension PropositionTests {
         let testEventData: [String: Any] = [
             "requesttype": "trackpropositions",
             "propositioninteractions": [
-                "eventType": "display",
+                "eventType": "decisioning.propositionDisplay",
                 "decisioning": [
                     "propositions": [
                         [
@@ -349,7 +349,7 @@ extension PropositionTests {
                 XCTAssertEqual("trackpropositions", event.data?["requesttype"] as? String)
 
                 let propositioninteractions = event.data?["propositioninteractions"] as? [String: Any]
-                XCTAssertEqual("display", propositioninteractions?["eventType"] as? String)
+                XCTAssertEqual("decisioning.propositionDisplay", propositioninteractions?["eventType"] as? String)
 
                 let experience = propositioninteractions?["_experience"] as? [String: Any]
                 let decisioning = experience?["decisioning"] as? [String: Any]
@@ -398,7 +398,7 @@ extension PropositionTests {
         let testEventData: [String: Any] = [
             "requesttype": "trackpropositions",
             "propositioninteractions": [
-                "eventType": "click",
+                "eventType": "decisioning.propositionInteract",
                 "decisioning": [
                     "propositions": [
                         [
@@ -430,7 +430,7 @@ extension PropositionTests {
                 XCTAssertEqual("trackpropositions", event.data?["requesttype"] as? String)
 
                 let propositioninteractions = event.data?["propositioninteractions"] as? [String: Any]
-                XCTAssertEqual("click", propositioninteractions?["eventType"] as? String)
+                XCTAssertEqual("decisioning.propositionInteract", propositioninteractions?["eventType"] as? String)
 
                 let experience = propositioninteractions?["_experience"] as? [String: Any]
                 let decisioning = experience?["decisioning"] as? [String: Any]
@@ -496,7 +496,7 @@ extension PropositionTests {
         let testEventData: [String: Any] = [
             "requesttype": "trackpropositions",
             "propositioninteractions": [
-                "eventType": "click",
+                "eventType": "decisioning.propositionInteract",
                 "decisioning": [
                     "propositions": [
                         [
@@ -528,7 +528,7 @@ extension PropositionTests {
                 XCTAssertEqual("trackpropositions", event.data?["requesttype"] as? String)
 
                 let propositioninteractions = event.data?["propositioninteractions"] as? [String: Any]
-                XCTAssertEqual("click", propositioninteractions?["eventType"] as? String)
+                XCTAssertEqual("decisioning.propositionInteract", propositioninteractions?["eventType"] as? String)
 
                 let experience = propositioninteractions?["_experience"] as? [String: Any]
                 let decisioning = experience?["decisioning"] as? [String: Any]

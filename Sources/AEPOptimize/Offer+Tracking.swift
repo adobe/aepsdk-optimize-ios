@@ -21,22 +21,22 @@ public extension Offer {
     ///
     /// The Edge `sendEvent(experienceEvent:_:)` API can be used to dispatch this data in an Experience Event along with any additional XDM, free-form data, or override dataset identifier.
     ///
-    /// - Note: The returned XDM data also contains the `eventType` for the Experience Event with value `display`.
+    /// - Note: The returned XDM data also contains the `eventType` for the Experience Event with value `decisioning.propositionDisplay`.
     /// - Returns A dictionary containing XDM data for the propositon interactions.
     /// - SeeAlso: `interactionXdm(for:)`
     func generateDisplayInteractionXdm() -> [String: Any] {
-        generateInteractionXdm(for: OptimizeConstants.JsonValues.EXPERIENCE_EVENT_TYPE_DISPLAY)
+        generateInteractionXdm(for: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_DISPLAY)
     }
 
     /// Creates a dictionary containing XDM formatted data for `Experience Event - Proposition Interactions` field group from the given proposition option.
     ///
     /// The Edge `sendEvent(experienceEvent:_:)` API can be used to dispatch this data in an Experience Event along with any additional XDM, free-form data, or override dataset identifier.
     ///
-    /// - Note: The returned XDM data also contains the `eventType` for the Experience Event with value `click`.
+    /// - Note: The returned XDM data also contains the `eventType` for the Experience Event with value `decisioning.propositionInteract`.
     /// - Returns A dictionary containing XDM data for the propositon interactions.
     /// - SeeAlso: `interactionXdm(for:)`
     func generateTapInteractionXdm() -> [String: Any] {
-        generateInteractionXdm(for: OptimizeConstants.JsonValues.EXPERIENCE_EVENT_TYPE_CLICK)
+        generateInteractionXdm(for: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_INTERACT)
     }
 
     /// Dispatches an event for the Edge extension to send an Experience Event to the Edge network with the display interaction data for the given proposition item.
