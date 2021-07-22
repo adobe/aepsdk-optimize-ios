@@ -158,7 +158,7 @@ class PropositionTests: XCTestCase {
         XCTAssertEqual("246315", offer.id)
         XCTAssertTrue(offer.etag.isEmpty)
         XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", offer.schema)
-        XCTAssertEqual(OfferType.init(rawValue: 3), offer.type)
+        XCTAssertEqual(OfferType.init(rawValue: 1), offer.type)
         XCTAssertEqual("{\"device\":\"mobile\"}", offer.content)
         XCTAssertNil(offer.language)
         XCTAssertNil(offer.characteristics)
