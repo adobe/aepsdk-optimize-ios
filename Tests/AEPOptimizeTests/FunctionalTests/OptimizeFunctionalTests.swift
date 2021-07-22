@@ -1024,7 +1024,7 @@ class OptimizeFunctionalTests: XCTestCase {
                               data: [
                                 "requesttype": "trackpropositions",
                                 "propositioninteractions": [
-                                    "eventType": "display",
+                                    "eventType": "decisioning.propositionDisplay",
                                     "_experience": [
                                         "decisioning": [
                                             "propositions": [
@@ -1060,7 +1060,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         let xdm = try XCTUnwrap(dispatchedEvent.data?["xdm"] as? [String: Any])
         let eventType = try XCTUnwrap(xdm["eventType"] as? String)
-        XCTAssertEqual("display", eventType)
+        XCTAssertEqual("decisioning.propositionDisplay", eventType)
 
         let experience = try XCTUnwrap(xdm["_experience"] as? [String: Any])
         let decisioning = try XCTUnwrap(experience["decisioning"] as? [String: Any])
@@ -1106,7 +1106,7 @@ class OptimizeFunctionalTests: XCTestCase {
                               data: [
                                 "requesttype": "trackpropositions",
                                 "propositioninteractions": [
-                                    "eventType": "click",
+                                    "eventType": "decisioning.propositionInteract",
                                     "_experience": [
                                         "decisioning": [
                                             "propositions": [
@@ -1142,7 +1142,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         let xdm = try XCTUnwrap(dispatchedEvent.data?["xdm"] as? [String: Any])
         let eventType = try XCTUnwrap(xdm["eventType"] as? String)
-        XCTAssertEqual("click", eventType)
+        XCTAssertEqual("decisioning.propositionInteract", eventType)
 
         let experience = try XCTUnwrap(xdm["_experience"] as? [String: Any])
         let decisioning = try XCTUnwrap(experience["decisioning"] as? [String: Any])
@@ -1187,7 +1187,7 @@ class OptimizeFunctionalTests: XCTestCase {
                               data: [
                                 "requesttype": "trackpropositions",
                                 "propositioninteractions": [
-                                    "eventType": "click",
+                                    "eventType": "decisioning.propositionInteract",
                                     "_experience": [
                                         "decisioning": [
                                             "propositions": [
@@ -1225,7 +1225,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         let xdm = try XCTUnwrap(dispatchedEvent.data?["xdm"] as? [String: Any])
         let eventType = try XCTUnwrap(xdm["eventType"] as? String)
-        XCTAssertEqual("click", eventType)
+        XCTAssertEqual("decisioning.propositionInteract", eventType)
 
         let experience = try XCTUnwrap(xdm["_experience"] as? [String: Any])
         let decisioning = try XCTUnwrap(experience["decisioning"] as? [String: Any])
@@ -1256,7 +1256,7 @@ class OptimizeFunctionalTests: XCTestCase {
                               source: "com.adobe.eventSource.requestContent",
                               data: [
                                 "propositioninteractions": [
-                                    "eventType": "display",
+                                    "eventType": "decisioning.propositionDisplay",
                                     "_experience": [
                                         "decisioning": [
                                             "propositions": [
@@ -1295,7 +1295,7 @@ class OptimizeFunctionalTests: XCTestCase {
                               data: [
                                 "requesttype": "trackpropositions",
                                 "propositioninteractions": [
-                                    "eventType": "display",
+                                    "eventType": "decisioning.propositionDisplay",
                                     "_experience": [
                                         "decisioning": [
                                             "propositions": [

@@ -99,7 +99,7 @@ make test
 
 ## Documentation
 
-Check out the extension documentation [here](https://github.com/adobe/aepsdk-optimize-ios/Documentation/README.md).
+Check out the [Documentation](./Documentation/README.md) directory to learn more about the Optimize extension.
 
 ## Related Projects
 

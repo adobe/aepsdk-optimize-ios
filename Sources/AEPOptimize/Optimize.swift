@@ -121,7 +121,7 @@ public class Optimize: NSObject, Extension {
 
         // Add xdm
         var xdmData: [String: Any] = [
-            OptimizeConstants.JsonKeys.EXPERIENCE_EVENT_TYPE: OptimizeConstants.JsonValues.EXPERIENCE_EVENT_TYPE_PERSONALIZATION
+            OptimizeConstants.JsonKeys.EXPERIENCE_EVENT_TYPE: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PERSONALIZATION
         ]
         if let additionalXdmData = event.data?[OptimizeConstants.EventDataKeys.XDM] as? [String: Any] {
             xdmData.merge(additionalXdmData) { old, _ in old }
