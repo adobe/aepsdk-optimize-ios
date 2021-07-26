@@ -99,10 +99,11 @@ class OfferTests: XCTestCase {
     private let TARGET_OFFER =
 """
 {\
-    "id": "0",\
+    "id": "222429",\
     "schema": "https://ns.adobe.com/personalization/json-content-item",\
     "data": {\
-        "id": "0",\
+        "id": "222429",\
+        "format": "text/html",
         "content": {\"device\": \"mobile\"}\
     }\
 }
@@ -247,10 +248,10 @@ class OfferTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual("0", offer.id)
+        XCTAssertEqual("222429", offer.id)
         XCTAssertTrue(offer.etag.isEmpty)
         XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", offer.schema)
-        XCTAssertEqual(OfferType.init(rawValue: 0), offer.type)
+        XCTAssertEqual(OfferType.init(rawValue: 3), offer.type)
         XCTAssertEqual("{\"device\":\"mobile\"}", offer.content)
         XCTAssertNil(offer.language)
         XCTAssertNil(offer.characteristics)

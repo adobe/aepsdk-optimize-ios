@@ -20,6 +20,12 @@ target 'FunctionalTests' do
   pod 'AEPCore'
 end
 
+target 'IntegrationTests' do
+  pod 'AEPCore'
+  pod 'AEPEdge'
+  pod 'AEPIdentity'
+end
+
 abstract_target 'shared' do
   pod 'AEPCore'
   pod 'AEPLifecycle'
