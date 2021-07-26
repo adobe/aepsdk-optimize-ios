@@ -33,7 +33,7 @@ class OptimizeIntegrationTests: XCTestCase {
         MobileCore.unregisterExtension(Optimize.self) {
             unregisterExpectation.fulfill()
         }
-        wait(for: [unregisterExpectation], timeout: 2)
+        wait(for: [unregisterExpectation], timeout: 1)
     }
 
     func initExtensionsAndWait() {
