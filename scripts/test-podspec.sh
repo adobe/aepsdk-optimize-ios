@@ -28,11 +28,6 @@ echo "
 platform :ios, '10.0'
 target '$PROJECT_NAME' do
   use_frameworks!
-  pod 'AEPCore'
-  pod 'AEPIdentity'
-  pod 'AEPLifecycle'
-  pod 'AEPSignal'
-  pod 'AEPEdge'
   pod 'AEPOptimize', :path => '../AEPOptimize.podspec'
 end
 " >>Podfile

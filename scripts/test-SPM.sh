@@ -28,7 +28,6 @@ echo "// swift-tools-version:5.1
 import PackageDescription
 let package = Package(
     name: \"TestProject\",
-    defaultLocalization: \"en-US\",
     platforms: [
         .iOS(.v10)
     ],
@@ -39,9 +38,9 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(name: \"AEPCore\", url: \"https://github.com/adobe/aepsdk-core-ios.git\", .upToNextMajor(from:\"3.2.0\")),
-        .package(name: \"AEPEdge\", url: \"https://github.com/adobe/aepsdk-edge-ios.git\", .upToNextMajor(from:\"1.1.0\")),
-        .package(name: \"AEPOptimize\", path: \"../\"),
+        .package(url: \"https://github.com/adobe/aepsdk-core-ios.git\", .upToNextMajor(from:\"3.2.0\")),
+        .package(url: \"https://github.com/adobe/aepsdk-edge-ios.git\", .upToNextMajor(from:\"1.1.0\")),
+        .package(path: \"../\"),
     ],
     targets: [
         .target(
@@ -51,6 +50,7 @@ let package = Package(
                 .product(name: \"AEPIdentity\", package: \"AEPCore\"),
                 .product(name: \"AEPLifecycle\", package: \"AEPCore\"),
                 .product(name: \"AEPSignal\", package: \"AEPCore\"),
+                .product(name: \"AEPServices\", package: \"AEPCore\"),
                 .product(name: \"AEPEdge\", package: \"AEPEdge\"),
                 .product(name: \"AEPOptimize\", package: \"AEPOptimize\"),
             ])
