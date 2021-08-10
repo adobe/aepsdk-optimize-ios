@@ -11,7 +11,7 @@ governing permissions and limitations under the License.
 */
 
 @testable import AEPCore
-import AEPOptimize
+@testable import AEPOptimize
 import XCTest
 
 extension PropositionTests {
@@ -47,7 +47,12 @@ extension PropositionTests {
         let offer = proposition.offers[0]
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
 
-        let propositionInteractionXdm = offer.generateDisplayInteractionXdm()
+        guard let propositionInteractionXdm = offer.generateDisplayInteractionXdm() else {
+            XCTFail("Generated proposition display interaction XDM should be valid.")
+            return
+            
+        }
+        
         let eventType = try XCTUnwrap(propositionInteractionXdm["eventType"] as? String)
         XCTAssertEqual("decisioning.propositionDisplay", eventType)
 
@@ -97,7 +102,11 @@ extension PropositionTests {
         let offer = proposition.offers[0]
         XCTAssertEqual("246315", offer.id)
 
-        let propositionInteractionXdm = offer.generateDisplayInteractionXdm()
+        guard let propositionInteractionXdm = offer.generateDisplayInteractionXdm() else {
+            XCTFail("Generated proposition display interaction XDM should be valid.")
+            return
+        }
+    
         let eventType = try XCTUnwrap(propositionInteractionXdm["eventType"] as? String)
         XCTAssertEqual("decisioning.propositionDisplay", eventType)
 
@@ -120,6 +129,31 @@ extension PropositionTests {
         XCTAssertEqual("246315", item["id"] as? String)
     }
 
+    func testGenerateDisplayInteractionXdm_nilPropositionReference() throws {
+
+        guard
+            let propositionData = PROPOSITION_VALID.data(using: .utf8),
+            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+        else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+        XCTAssertEqual("de03ac85-802a-4331-a905-a57053164d35", proposition.id)
+        XCTAssertEqual("eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition.scope)
+
+        // To fix, once https://jira.corp.adobe.com/browse/CSMO-12405 is resolved.
+        XCTAssertTrue(proposition.scopeDetails.isEmpty)
+
+        XCTAssertEqual(1, proposition.offers.count)
+        let offer = proposition.offers[0]
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
+
+        offer.proposition = nil // set proposition reference to nil
+        let propositionInteractionXdm = offer.generateDisplayInteractionXdm()
+        
+        XCTAssertNil(propositionInteractionXdm)
+    }
+
     func testGenerateTapInteractionXdm_validProposition() throws {
 
         guard
@@ -139,7 +173,10 @@ extension PropositionTests {
         let offer = proposition.offers[0]
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
 
-        let propositionInteractionXdm = offer.generateTapInteractionXdm()
+        guard let propositionInteractionXdm = offer.generateTapInteractionXdm() else {
+            XCTFail("Generated proposition tap interaction XDM should be valid.")
+            return
+        }
         let eventType = try XCTUnwrap(propositionInteractionXdm["eventType"] as? String)
         XCTAssertEqual("decisioning.propositionInteract", eventType)
 
@@ -189,7 +226,11 @@ extension PropositionTests {
         let offer = proposition.offers[0]
         XCTAssertEqual("246315", offer.id)
 
-        let propositionInteractionXdm = offer.generateTapInteractionXdm()
+        guard let propositionInteractionXdm = offer.generateTapInteractionXdm() else {
+            XCTFail("Generated proposition tap interaction XDM should be valid.")
+            return
+        }
+        
         let eventType = try XCTUnwrap(propositionInteractionXdm["eventType"] as? String)
         XCTAssertEqual("decisioning.propositionInteract", eventType)
 
@@ -210,6 +251,31 @@ extension PropositionTests {
 
         let item = items[0]
         XCTAssertEqual("246315", item["id"] as? String)
+    }
+
+    func testGenerateTapInteractionXdm_nilPropositionReference() throws {
+
+        guard
+            let propositionData = PROPOSITION_VALID.data(using: .utf8),
+            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+        else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+        XCTAssertEqual("de03ac85-802a-4331-a905-a57053164d35", proposition.id)
+        XCTAssertEqual("eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition.scope)
+
+        // To fix, once https://jira.corp.adobe.com/browse/CSMO-12405 is resolved.
+        XCTAssertTrue(proposition.scopeDetails.isEmpty)
+
+        XCTAssertEqual(1, proposition.offers.count)
+        let offer = proposition.offers[0]
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
+
+        offer.proposition = nil // set proposition reference to nil
+        let propositionInteractionXdm = offer.generateTapInteractionXdm()
+        
+        XCTAssertNil(propositionInteractionXdm)
     }
 
     func testDisplayed_validProposition() throws {
@@ -391,6 +457,36 @@ extension PropositionTests {
         wait(for: [expectation], timeout: 1)
     }
 
+    func testDisplayed_nilPropositionReference() throws {
+        let expectation = XCTestExpectation(description: "Offer displayed should dispatch an event.")
+        expectation.isInverted = true
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?
+            .registerListener(type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent") { _ in
+                expectation.fulfill()
+            }
+
+        guard
+            let propositionData = PROPOSITION_VALID.data(using: .utf8),
+            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+        else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+
+        XCTAssertEqual(1, proposition.offers.count)
+        let offer = proposition.offers[0]
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
+
+        offer.proposition = nil // set proposition reference to nil.
+        offer.displayed()
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
     func testTapped_validProposition() throws {
         let expectation = XCTestExpectation(description: "Offer tap should dispatch an event.")
         expectation.assertForOverFulfill = true
@@ -565,6 +661,36 @@ extension PropositionTests {
         let offer = proposition.offers[0]
         XCTAssertEqual("246315", offer.id)
 
+        offer.tapped()
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testTapped_nilPropositionReference() throws {
+        let expectation = XCTestExpectation(description: "Offer tapped should dispatch an event.")
+        expectation.isInverted = true
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?
+            .registerListener(type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent") { _ in
+                expectation.fulfill()
+            }
+
+        guard
+            let propositionData = PROPOSITION_VALID.data(using: .utf8),
+            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+        else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+
+        XCTAssertEqual(1, proposition.offers.count)
+        let offer = proposition.offers[0]
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
+
+        offer.proposition = nil // set proposition reference to nil.
         offer.tapped()
 
         // verify
