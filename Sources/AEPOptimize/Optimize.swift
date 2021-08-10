@@ -12,6 +12,7 @@
 
 import AEPCore
 import AEPServices
+import Foundation
 
 @objc(AEPMobileOptimize)
 public class Optimize: NSObject, Extension {
