@@ -484,7 +484,7 @@ extension PropositionTests {
         offer.displayed()
 
         // verify
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 2)
     }
 
     func testTapped_validProposition() throws {
@@ -694,7 +694,7 @@ extension PropositionTests {
         offer.tapped()
 
         // verify
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 2)
     }
 
     // MARK: Helper functions

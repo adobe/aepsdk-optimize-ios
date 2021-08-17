@@ -66,7 +66,7 @@ public extension Offer {
         var propositionDetailsData: [String: Any] = [:]
         guard let proposition = self.proposition else {
             Log.debug(label: OptimizeConstants.LOG_TAG,
-                      "Cannot send proposition interaction event - \(eventType) for option \(id), proposition reference is not available.")
+                      "Cannot send proposition interaction event (\(eventType)) for option \(id), proposition reference is not available.")
             return nil
         }
 
