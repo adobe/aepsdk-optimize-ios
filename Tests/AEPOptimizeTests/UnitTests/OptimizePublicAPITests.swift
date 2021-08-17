@@ -452,10 +452,6 @@ class OptimizePublicAPITests: XCTestCase {
 
         // test
         Optimize.onPropositionsUpdate { propositionsDictionary in
-            guard let propositionsDictionary = propositionsDictionary else {
-                XCTFail("Propositions should be valid.")
-                return
-            }
             XCTAssertEqual(1, propositionsDictionary.count)
 
             let scope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")

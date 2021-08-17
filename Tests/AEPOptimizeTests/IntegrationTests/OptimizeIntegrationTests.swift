@@ -356,10 +356,6 @@ class OptimizeIntegrationTests: XCTestCase {
 
         let updateExpectation = XCTestExpectation(description: "onPropositionsUpdate should be invoked upon a valid personalization query response from the Edge network.")
         Optimize.onPropositionsUpdate { propositionsDictionary in
-            guard let propositionsDictionary = propositionsDictionary else {
-                XCTFail("Propositions dictionary should be valid.")
-                return
-            }
             XCTAssertEqual(1, propositionsDictionary.count)
             
             let proposition = propositionsDictionary[decisionScope]

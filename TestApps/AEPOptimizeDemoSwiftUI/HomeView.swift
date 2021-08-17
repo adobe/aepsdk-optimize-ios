@@ -40,9 +40,7 @@ struct HomeView: View {
                 viewDidLoad = true
 
                 Optimize.onPropositionsUpdate { propositionsDict in
-                    guard let propositionsDict = propositionsDict else {
-                        return
-                    }
+                    
                     DispatchQueue.main.async {
                         if let textProposition = propositionsDict[DecisionScope(name: self.odeSettings.textEncodedDecisionScope)] {
                             self.propositions.textProposition = textProposition
