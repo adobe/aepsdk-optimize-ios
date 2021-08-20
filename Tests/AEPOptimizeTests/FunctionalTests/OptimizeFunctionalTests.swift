@@ -487,6 +487,109 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(1, proposition?.offers[0].characteristics?.count)
         XCTAssertEqual("true", proposition?.offers[0].characteristics?["testing"])
     }
+    
+    func testEdgeResponse_validPropositionFromTargetWithClickTracking() {
+        // setup
+        let testScopeDetails: [String: Any] = [
+            "decisionProvider": "TGT",
+            "activity": [
+                "id": "111111"
+            ],
+            "experience": [
+                "id": "0"
+            ],
+            "strategies": [
+                [
+                    "algorithmID": "0",
+                    "trafficType": "0"
+                ]
+            ]
+        ]
+
+        let testEvent = Event(name: "AEP Response Event Handle",
+                              type: "com.adobe.eventType.edge",
+                              source: "personalization:decisions",
+                              data: [
+                                  "payload": [
+                                    [
+                                        "id": "AT:eyJhY3Rpdml0eUlkIjoiMTExMTExIiwiZXhwZXJpZW5jZUlkIjoiMCJ9",
+                                        "scope": "myMbox1",
+                                        "scopeDetails": testScopeDetails,
+                                        "items": [
+                                            [
+                                                "id": "0",
+                                                "schema": "https://ns.adobe.com/personalization/json-content-item",
+                                                "data": [
+                                                    "id": "0",
+                                                    "format": "application/json",
+                                                    "content": [
+                                                        "device": "mobile"
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ],
+                                    [
+                                        "id": "AT:eyJhY3Rpdml0eUlkIjoiMTExMTExIiwiZXhwZXJpZW5jZUlkIjoiMCJ9",
+                                        "scope": "myMbox1",
+                                        "scopeDetails": [
+                                            "activity": [
+                                                "id": "111111"
+                                            ],
+                                            "decisionProvider": "TGT"
+                                        ],
+                                        "items": [
+                                            [
+                                                "id": "111111",
+                                                "schema": "https://ns.adobe.com/personalization/measurement",
+                                                "data": [
+                                                    "type": "click",
+                                                    "format": "application/vnd.adobe.target.metric"
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                  ],
+                                "requestEventId": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
+                                "requestId": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB",
+                                "type": "personalization:decisions"
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
+
+        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions dictionary should be valid.")
+            return
+        }
+        let scope = DecisionScope(name: "myMbox1")
+        XCTAssertNotNil(propositionsDictionary[scope])
+
+        let proposition = propositionsDictionary[scope]
+        XCTAssertEqual("AT:eyJhY3Rpdml0eUlkIjoiMTExMTExIiwiZXhwZXJpZW5jZUlkIjoiMCJ9", proposition?.id)
+        XCTAssertEqual("myMbox1", proposition?.scope)
+        let scopeDetails = proposition?.scopeDetails ?? [:]
+        XCTAssertTrue(testScopeDetails == scopeDetails)
+        
+        XCTAssertEqual(1, proposition?.offers.count)
+        XCTAssertEqual("0", proposition?.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", proposition?.offers[0].schema)
+        XCTAssertEqual(.json, proposition?.offers[0].type)
+        XCTAssertEqual("{\"device\":\"mobile\"}", proposition?.offers[0].content)
+        XCTAssertNil(proposition?.offers[0].characteristics)
+        XCTAssertNil(proposition?.offers[0].language)
+    }
 
     func testEdgeResponse_emptyProposition() {
         // setup
@@ -495,6 +598,51 @@ class OptimizeFunctionalTests: XCTestCase {
                               source: "personalization:decisions",
                               data: [
                                 "payload": [],
+                                "requestEventId": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
+                                "requestId": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB",
+                                "type": "personalization:decisions"
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+        XCTAssertTrue(optimize.cachedPropositions.isEmpty)
+    }
+
+    func testEdgeResponse_unsupportedItemInProposition() {
+        // setup
+        let testEvent = Event(name: "AEP Response Event Handle",
+                              type: "com.adobe.eventType.edge",
+                              source: "personalization:decisions",
+                              data: [
+                                "payload": [
+                                    [
+                                        "id": "AT:eyJhY3Rpdml0eUlkIjoiMTExMTExIiwiZXhwZXJpZW5jZUlkIjoiMCJ9",
+                                        "scope": "myMbox1",
+                                        "scopeDetails": [
+                                            "activity": [
+                                                "id": "111111"
+                                            ],
+                                            "decisionProvider": "TGT"
+                                        ],
+                                        "items": [
+                                            [
+                                                "id": "111111",
+                                                "schema": "https://ns.adobe.com/personalization/measurement",
+                                                "data": [
+                                                    "type": "click",
+                                                    "format": "application/vnd.adobe.target.metric"
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ],
                                 "requestEventId": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
                                 "requestId": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB",
                                 "type": "personalization:decisions"
