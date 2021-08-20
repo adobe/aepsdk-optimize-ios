@@ -166,7 +166,21 @@ public class Optimize: NSObject, Extension {
             return
         }
 
-        let propositionsDict = propositions.toDictionary { DecisionScope(name: $0.scope) }
+        let propositionsDict = propositions
+            .filter { !$0.offers.isEmpty }
+            .toDictionary { DecisionScope(name: $0.scope) }
+
+        if propositionsDict.isEmpty {
+            Log.debug(label: OptimizeConstants.LOG_TAG,
+                      """
+                      No propositions with valid offers are present in the Edge response event for the provided scopes(\
+                      \(propositions
+                          .map { $0.scope }
+                          .joined(separator: ","))
+                      ).
+                      """)
+            return
+        }
 
         // Update propositions cache
         cachedPropositions.merge(propositionsDict) { _, new in new }

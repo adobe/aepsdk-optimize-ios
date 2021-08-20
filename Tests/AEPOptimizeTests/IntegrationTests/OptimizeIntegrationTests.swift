@@ -204,6 +204,142 @@ class OptimizeIntegrationTests: XCTestCase {
         wait(for: [retrieveExpectation], timeout: 2)
     }
 
+    func testGetPropositions_propositionsInCacheFromTargetWithClickTracking() {
+        // setup
+        let validResponse = HTTPURLResponse(url: URL(string: "https://edge.adobedc.net/ee/v1/interact?configId=configId&requestId=requestId")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let responseString = """
+                {\
+                   "requestId": "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF",\
+                   "handle": [\
+                      {\
+                         "payload": [\
+                            {\
+                               "id": "AT:eyJhY3Rpdml0eUlkIjoiMTExMTExIiwiZXhwZXJpZW5jZUlkIjoiMCJ9",\
+                               "scope": "myMbox1",\
+                               "scopeDetails": {\
+                                    "activity": {\
+                                        "id": "111111"\
+                                    },\
+                                    "experience": {\
+                                        "id": "0"\
+                                    },\
+                                    "decisionProvider": "TGT",\
+                                    "strategies": [\
+                                        {\
+                                            "algorithmID": "0",\
+                                            "trafficType": "0"\
+                                        }\
+                                    ]\
+                               },\
+                               "items": [\
+                                  {\
+                                     "id": "0",\
+                                     "schema": "https://ns.adobe.com/personalization/json-content-item",\
+                                     "data": {\
+                                        "id": "0",\
+                                        "format": "application/json",\
+                                        "content": {\"device\": \"mobile\"}\
+                                     }\
+                                  }\
+                               ]\
+                            },\
+                            { \
+                                "id": "AT:eyJhY3Rpdml0eUlkIjoiMTExMTExIiwiZXhwZXJpZW5jZUlkIjoiMCJ9",\
+                                "scope": "myMbox1",\
+                                "scopeDetails": {\
+                                    "activity": {\
+                                        "id": "111111"\
+                                    },\
+                                    "decisionProvider": "TGT"\
+                                },\
+                                "items": [\
+                                   {\
+                                      "id": "111111",\
+                                      "schema": "https://ns.adobe.com/personalization/measurement",\
+                                      "data": {\
+                                         "type": "click",\
+                                         "format": "application/vnd.adobe.target.metric"\
+                                      }\
+                                   }\
+                                ]\
+                             }\
+                         ],\
+                         "type":"personalization:decisions",\
+                         "eventIndex":0\
+                      }\
+                   ]\
+                }
+        """
+
+        // mock edge response
+        let requestExpectation = XCTestExpectation(description: "updatePropositions should result in a valid personalization query request to the Edge network.")
+        let mockNetworkService = TestableNetworkService()
+        ServiceProvider.shared.networkService = mockNetworkService
+        mockNetworkService.mock { request in
+            if request.url.absoluteString.contains("edge.adobedc.net/ee/v1/interact?configId=configId") {
+                requestExpectation.fulfill()
+                return (data: responseString.data(using: .utf8), response: validResponse, error: nil)
+            }
+            return (data: nil, response: validResponse, error: nil)
+        }
+
+        // init extensions
+        initExtensionsAndWait()
+        
+        // update configuration
+        MobileCore.updateConfigurationWith(configDict: [
+                                            "experienceCloud.org": "orgid",
+                                            "experienceCloud.server": "test.com",
+                                            "global.privacy": "optedin",
+                                            "edge.configId": "configId"])
+
+        let decisionScope = DecisionScope(name: "myMbox1")
+
+        // update propositions
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil)
+        wait(for: [requestExpectation], timeout: 2)
+
+        sleep(2)
+        
+        // get propositions
+        let retrieveExpectation = XCTestExpectation(description: "getPropositions should return the fetched propositions from the extension propositions cache.")
+        Optimize.getPropositions(for: [decisionScope]) { propositionsDictionary, _ in
+            guard let propositionsDictionary = propositionsDictionary else {
+                XCTFail("Propositions dictionary should be valid.")
+                return
+            }
+            XCTAssertEqual(1, propositionsDictionary.count)
+            
+            let proposition = propositionsDictionary[decisionScope]
+            XCTAssertNotNil(proposition)
+            
+            XCTAssertEqual("AT:eyJhY3Rpdml0eUlkIjoiMTExMTExIiwiZXhwZXJpZW5jZUlkIjoiMCJ9", proposition?.id)
+            XCTAssertEqual("myMbox1", proposition?.scope)
+            
+            XCTAssertEqual(4, proposition?.scopeDetails.count)
+            XCTAssertEqual("TGT", proposition?.scopeDetails["decisionProvider"] as? String)
+            let sdActivity = proposition?.scopeDetails["activity"] as? [String: Any]
+            XCTAssertEqual("111111", sdActivity?["id"] as? String)
+            let sdExperience = proposition?.scopeDetails["experience"] as? [String: Any]
+            XCTAssertEqual("0", sdExperience?["id"] as? String)
+            let sdStrategies = proposition?.scopeDetails["strategies"] as? [[String: Any]]
+            XCTAssertEqual(1, sdStrategies?.count)
+            XCTAssertEqual("0", sdStrategies?[0]["algorithmID"] as? String)
+            XCTAssertEqual("0", sdStrategies?[0]["trafficType"] as? String)
+            
+            XCTAssertEqual(1, proposition?.offers.count)
+            XCTAssertEqual("0", proposition?.offers[0].id)
+            XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", proposition?.offers[0].schema)
+            XCTAssertEqual(.json, proposition?.offers[0].type)
+            XCTAssertEqual("{\"device\":\"mobile\"}", proposition?.offers[0].content)
+            XCTAssertNil(proposition?.offers[0].language)
+            XCTAssertNil(proposition?.offers[0].characteristics)
+
+            retrieveExpectation.fulfill()
+        }
+        wait(for: [retrieveExpectation], timeout: 2)
+    }
+
     func testGetPropositions_propositionNotInCache() {
         // init extensions
         initExtensionsAndWait()
@@ -655,7 +791,7 @@ class OptimizeIntegrationTests: XCTestCase {
                                "items": [\
                                   {\
                                      "id": "246315",\
-                                     "schema": "https://ns.adobe.com/personalization/json-content-item",\
+                                     "schema": "https://ns.adobe.com/personalization/html-content-item",\
                                      "data": {\
                                         "id": "246315",\
                                         "format": "text/html",\
@@ -719,7 +855,7 @@ class OptimizeIntegrationTests: XCTestCase {
             XCTAssertEqual("myMbox", proposition?.scope)
             XCTAssertEqual(1, proposition?.offers.count)
             XCTAssertEqual("246315", proposition?.offers[0].id)
-            XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", proposition?.offers[0].schema)
+            XCTAssertEqual("https://ns.adobe.com/personalization/html-content-item", proposition?.offers[0].schema)
             XCTAssertEqual(.html, proposition?.offers[0].type)
             XCTAssertEqual("<h1>Hello, Welcome!</h1>", proposition?.offers[0].content)
 
