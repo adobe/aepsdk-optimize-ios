@@ -397,7 +397,7 @@ The `Proposition` class extension provides a method for generating XDM data for 
 
 ```swift
 /// `Proposition` extension
-@obj
+@objc
 public extension Proposition {
     /// Creates a dictionary containing XDM formatted data for `Experience Event - Proposition Reference` field group from the given proposition.
     ///
