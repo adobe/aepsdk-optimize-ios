@@ -51,7 +51,9 @@ class PropositionTests: XCTestCase {
         "data": {\
             "id": "246315",\
             "format": "application/json",
-            "content": {\"device\": \"mobile\"}\
+            "content": {\
+                "device": "mobile"\
+            }\
         }\
     }],\
     "scope": "myMbox",\

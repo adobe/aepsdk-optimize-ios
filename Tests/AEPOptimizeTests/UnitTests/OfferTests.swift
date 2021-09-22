@@ -103,8 +103,10 @@ class OfferTests: XCTestCase {
     "schema": "https://ns.adobe.com/personalization/json-content-item",\
     "data": {\
         "id": "222429",\
-        "format": "text/html",
-        "content": {\"device\": \"mobile\"}\
+        "format": "application/json",
+        "content": {\
+            "device": "mobile"\
+        }\
     }\
 }
 """
@@ -251,7 +253,7 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("222429", offer.id)
         XCTAssertTrue(offer.etag.isEmpty)
         XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", offer.schema)
-        XCTAssertEqual(OfferType.init(rawValue: 3), offer.type)
+        XCTAssertEqual(OfferType.init(rawValue: 1), offer.type)
         XCTAssertEqual("{\"device\":\"mobile\"}", offer.content)
         XCTAssertNil(offer.language)
         XCTAssertNil(offer.characteristics)
