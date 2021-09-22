@@ -22,7 +22,7 @@ extension Event {
     func getTypedData<T: Decodable>(for key: String? = nil) -> T? {
         let key = key ?? ""
         guard
-            let jsonObject = !key.isEmpty ? data?[key]: data as Any,
+            let jsonObject = !key.isEmpty ? data?[key] : data as Any,
             let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject)
         else {
             return nil
