@@ -238,7 +238,9 @@ class OptimizeIntegrationTests: XCTestCase {
                                      "data": {\
                                         "id": "0",\
                                         "format": "application/json",\
-                                        "content": {\"device\": \"mobile\"}\
+                                        "content": {\
+                                            "device": "mobile"\
+                                        }\
                                      }\
                                   }\
                                ]\
