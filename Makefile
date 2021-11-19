@@ -27,9 +27,6 @@ ci-pod-install:
 pod-update: pod-repo-update
 	(pod update)
 
-pod-lint:
-	(pod lib lint --allow-warnings --verbose --swift-version=5.1)
-
 open:
 	open $(PROJECT_NAME).xcworkspace
 
