@@ -123,4 +123,92 @@ public class Offer: NSObject, Codable {
         try data.encode(content, forKey: .content)
         try data.encode(characteristics, forKey: .characteristics)
     }
+    
+    public static func fromEventData(eventData: [String: Any]) -> Offer?{
+        guard !eventData.isEmpty else {
+            Log.warning(label: OptimizeConstants.LOG_TAG,
+                      "Cannot create Offer object, provided data Dictionary is empty or null.")
+            return nil
+        }
+        
+
+        
+        guard let data = try? JSONSerialization.data(withJSONObject: eventData, options: .prettyPrinted) else {
+            Log.debug(label: OptimizeConstants.LOG_TAG,
+                      "Cannot create Offer object, unable to parse the  data dictionary.")
+            return nil
+        }
+        
+        guard let offer = try? JSONDecoder().decode(Offer.self, from: data) as? Offer else {
+            Log.debug(label: OptimizeConstants.LOG_TAG,
+                      "Cannot create Offer object, unable to convert the  data dictionary to Offer.")
+            return nil
+        }
+                        
+        return offer
+    }
 }
+
+
+//static Offer fromEventData(final Map<String, Object> data) {
+//        if (OptimizeUtils.isNullOrEmpty(data)) {
+//            MobileCore.log(LoggingMode.DEBUG, LOG_TAG, "Cannot create Offer object, provided data Map is empty or null.");
+//            return null;
+//        }
+//
+//        try {
+//            final String id = (String) data.get(OptimizeConstants.JsonKeys.PAYLOAD_ITEM_ID);
+//            final String etag = (String) data.get(OptimizeConstants.JsonKeys.PAYLOAD_ITEM_ETAG);
+//            final String schema = (String) data.get(OptimizeConstants.JsonKeys.PAYLOAD_ITEM_SCHEMA);
+//
+//            final Map<String, Object> offerData = (Map<String, Object>) data.get(OptimizeConstants.JsonKeys.PAYLOAD_ITEM_DATA);
+//            if (OptimizeUtils.isNullOrEmpty(offerData)) {
+//                MobileCore.log(LoggingMode.DEBUG, LOG_TAG, "Cannot create Offer object, provided data Map doesn't contain valid item data.");
+//                return null;
+//            }
+//
+//            final String nestedId = (String) offerData.get(OptimizeConstants.JsonKeys.PAYLOAD_ITEM_DATA_ID);
+//            if (OptimizeUtils.isNullOrEmpty(id) || !nestedId.equals(id)) {
+//                MobileCore.log(LoggingMode.DEBUG, LOG_TAG, "Cannot create Offer object, provided item id is null or empty or it doesn't match item data id.");
+//                return null;
+//            }
+//
+//            final String format = (String) offerData.get(OptimizeConstants.JsonKeys.PAYLOAD_ITEM_DATA_FORMAT);
+//            if (OptimizeUtils.isNullOrEmpty(format)) {
+//                MobileCore.log(LoggingMode.DEBUG, LOG_TAG, "Cannot create Offer object, provided data Map doesn't contain valid item data format.");
+//                return null;
+//            }
+//
+//            final List<String> language = (List<String>) offerData.get(OptimizeConstants.JsonKeys.PAYLOAD_ITEM_DATA_LANGUAGE);
+//            final Map<String, String> characteristics = (Map<String, String>) offerData.get(OptimizeConstants.JsonKeys.PAYLOAD_ITEM_DATA_CHARACTERISTICS);
+//
+//
+//            String content = null;
+//            if (offerData.containsKey(OptimizeConstants.JsonKeys.PAYLOAD_ITEM_DATA_CONTENT)) {
+//                final Object offerContent = offerData.get(OptimizeConstants.JsonKeys.PAYLOAD_ITEM_DATA_CONTENT);
+//                if (offerContent instanceof String) {
+//                    content = (String) offerContent;
+//                } else {
+//                    final JSONObject offerContentJson = new JSONObject((Map<String, Object>)offerContent);
+//                    content = offerContentJson.toString();
+//                }
+//            } else if (offerData.containsKey(OptimizeConstants.JsonKeys.PAYLOAD_ITEM_DATA_DELIVERYURL)) {
+//                content = (String) offerData.get(OptimizeConstants.JsonKeys.PAYLOAD_ITEM_DATA_DELIVERYURL);
+//            }
+//            if (content == null) {
+//                MobileCore.log(LoggingMode.DEBUG, LOG_TAG, "Cannot create Offer object, provided data Map doesn't contain valid item data content or deliveryURL.");
+//                return null;
+//            }
+//
+//            return new Builder(id, OfferType.from(format), content)
+//                    .setEtag(etag)
+//                    .setSchema(schema)
+//                    .setLanguage(language)
+//                    .setCharacteristics(characteristics)
+//                    .build();
+//
+//        } catch (Exception e) {
+//            MobileCore.log(LoggingMode.WARNING, LOG_TAG, "Cannot create Offer object, provided data contains invalid fields.");
+//            return null;
+//        }
+//    }
