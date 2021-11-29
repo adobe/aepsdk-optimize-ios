@@ -7,6 +7,8 @@ use_frameworks!
 workspace 'AEPOptimize'
 project 'AEPOptimize.xcodeproj'
 
+pod 'SwiftLint', '0.44.0'
+
 target 'AEPOptimize' do
   # Pods for AEPOptimize
   pod 'AEPCore'

@@ -1,3 +1,6 @@
+included: # paths to include during linting. `--path` is ignored if present.
+  - Sources/AEPOptimize
+
 # A rule that is not enabled by default. Rules conforming to this need to be explicitly enabled by users.
 opt_in_rules:
 - attributes
