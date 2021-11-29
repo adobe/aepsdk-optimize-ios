@@ -64,7 +64,7 @@ public extension Offer {
     /// - Returns A dictionary containing XDM data for the propositon interactions.
     private func generateInteractionXdm(for eventType: String) -> [String: Any]? {
         var propositionDetailsData: [String: Any] = [:]
-        guard let proposition = self.proposition else {
+        guard let proposition = proposition else {
             Log.debug(label: OptimizeConstants.LOG_TAG,
                       "Cannot send proposition interaction event (\(eventType)) for option \(id), proposition reference is not available.")
             return nil
