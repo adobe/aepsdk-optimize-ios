@@ -3,8 +3,17 @@ PROJECT_NAME = $(EXTENSION_NAME)
 TARGET_NAME_XCFRAMEWORK = $(EXTENSION_NAME).xcframework
 SCHEME_NAME_XCFRAMEWORK = AEPOptimize
 
+CURR_DIR := ${CURDIR}
 SIMULATOR_ARCHIVE_PATH = ./build/ios_simulator.xcarchive/Products/Library/Frameworks/
+SIMULATOR_ARCHIVE_DSYM_PATH = $(CURR_DIR)/build/ios_simulator.xcarchive/dSYMs/
 IOS_ARCHIVE_PATH = ./build/ios.xcarchive/Products/Library/Frameworks/
+IOS_ARCHIVE_DSYM_PATH = $(CURR_DIR)/build/ios.xcarchive/dSYMs/
+
+lint-autocorrect:
+	./Pods/SwiftLint/swiftlint autocorrect --format
+
+lint:
+	./Pods/SwiftLint/swiftlint lint
 
 pod-install:
 	(pod install --repo-update)
@@ -17,9 +26,6 @@ ci-pod-install:
 
 pod-update: pod-repo-update
 	(pod update)
-
-pod-lint:
-	(pod lib lint --allow-warnings --verbose --swift-version=5.1)
 
 open:
 	open $(PROJECT_NAME).xcworkspace
@@ -36,7 +42,7 @@ test: clean
 archive:
 	xcodebuild archive -workspace $(PROJECT_NAME).xcworkspace -scheme $(SCHEME_NAME_XCFRAMEWORK) -archivePath "./build/ios.xcarchive" -sdk iphoneos -destination="iOS" SKIP_INSTALL=NO BUILD_LIBRARIES_FOR_DISTRIBUTION=YES
 	xcodebuild archive -workspace $(PROJECT_NAME).xcworkspace -scheme $(SCHEME_NAME_XCFRAMEWORK) -archivePath "./build/ios_simulator.xcarchive" -sdk iphonesimulator -destination="iOS Simulator" SKIP_INSTALL=NO BUILD_LIBRARIES_FOR_DISTRIBUTION=YES
-	xcodebuild -create-xcframework -framework $(SIMULATOR_ARCHIVE_PATH)$(EXTENSION_NAME).framework -framework $(IOS_ARCHIVE_PATH)$(EXTENSION_NAME).framework -output ./build/$(TARGET_NAME_XCFRAMEWORK)
+	xcodebuild -create-xcframework -framework $(SIMULATOR_ARCHIVE_PATH)$(EXTENSION_NAME).framework -debug-symbols $(SIMULATOR_ARCHIVE_DSYM_PATH)$(EXTENSION_NAME).framework.dSYM -framework $(IOS_ARCHIVE_PATH)$(EXTENSION_NAME).framework -debug-symbols $(IOS_ARCHIVE_DSYM_PATH)$(EXTENSION_NAME).framework.dSYM -output ./build/$(TARGET_NAME_XCFRAMEWORK)
 	
 # Usage: make check-version VERSION=1.0.0
 check-version:
@@ -47,15 +53,6 @@ test-SPM-integration:
 
 test-podspec:
 	(sh ./Scripts/test-podspec.sh)
-
-install-swiftlint:
-	brew update-reset && brew install swiftlint && brew cleanup swiftlint
-
-lint-autocorrect:
-	(swiftlint autocorrect --format)
-
-lint:
-	(swiftlint lint Sources/$(PROJECT_NAME))
 
 install-swiftformat:
 	(brew install swiftformat) 
