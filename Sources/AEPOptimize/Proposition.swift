@@ -41,7 +41,7 @@ public class Proposition: NSObject, Codable {
         case scope
         case scopeDetails
     }
-    
+
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -61,27 +61,5 @@ public class Proposition: NSObject, Codable {
         try container.encode(scope, forKey: .scope)
         try container.encode(AnyCodable.from(dictionary: scopeDetails), forKey: .scopeDetails)
         try container.encode(offers, forKey: .items)
-    }
-    
-    public static func fromEventData(eventData: [String: Any]) -> Proposition? {
-        guard !eventData.isEmpty else {
-            Log.warning(label: OptimizeConstants.LOG_TAG,
-                      "Cannot create Proposition object, provided data Dictionary is empty or null.")
-            return nil
-        }
-        
-        guard let data = try? JSONSerialization.data(withJSONObject: eventData, options: .prettyPrinted) else {
-            Log.debug(label: OptimizeConstants.LOG_TAG,
-                      "Cannot create Proposition object, unable to parse the  data dictionary.")
-            return nil
-        }
-        
-        guard let proposition = try? JSONDecoder().decode(Proposition.self, from: data) as? Proposition else {
-            Log.debug(label: OptimizeConstants.LOG_TAG,
-                      "Cannot create Proposition object, unable to convert the  data dictionary to Proposition.")
-            return nil
-        }
-                        
-        return proposition
     }
 }

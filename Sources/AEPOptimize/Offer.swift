@@ -123,28 +123,4 @@ public class Offer: NSObject, Codable {
         try data.encode(content, forKey: .content)
         try data.encode(characteristics, forKey: .characteristics)
     }
-    
-    public static func fromEventData(eventData: [String: Any]) -> Offer?{
-        guard !eventData.isEmpty else {
-            Log.warning(label: OptimizeConstants.LOG_TAG,
-                      "Cannot create Offer object, provided data Dictionary is empty or null.")
-            return nil
-        }
-        
-
-        
-        guard let data = try? JSONSerialization.data(withJSONObject: eventData, options: .prettyPrinted) else {
-            Log.debug(label: OptimizeConstants.LOG_TAG,
-                      "Cannot create Offer object, unable to parse the  data dictionary.")
-            return nil
-        }
-        
-        guard let offer = try? JSONDecoder().decode(Offer.self, from: data) as? Offer else {
-            Log.debug(label: OptimizeConstants.LOG_TAG,
-                      "Cannot create Offer object, unable to convert the  data dictionary to Offer.")
-            return nil
-        }
-                        
-        return offer
-    }
 }

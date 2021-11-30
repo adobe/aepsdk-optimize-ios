@@ -91,13 +91,7 @@ enum OptimizeConstants {
         static let DECISIONING_PROPOSITIONS_SCOPEDETAILS = "scopeDetails"
         static let DECISIONING_PROPOSITIONS_ITEMS = "items"
         static let DECISIONING_PROPOSITIONS_ITEMS_ID = "id"
-        static let DECISIONING_PROPOSITIONS_ITEMS_FORMAT = "format"
-        static let DECISIONING_PROPOSITIONS_ITEMS_LANGUAGE = "language"
-        static let DECISIONING_PROPOSITIONS_ITEMS_CHARACTERISTICS = "characteristics"
-        static let DECISIONING_PROPOSITIONS_ETAG = "etag"
-        static let DECISIONING_PROPOSITIONS_SCHEMA = "schema"
-        
-}
+    }
 
     enum JsonValues {
         static let EE_EVENT_TYPE_PERSONALIZATION = "personalization.request"
