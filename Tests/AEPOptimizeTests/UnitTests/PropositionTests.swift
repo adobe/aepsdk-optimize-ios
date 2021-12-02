@@ -183,4 +183,28 @@ class PropositionTests: XCTestCase {
         let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
         XCTAssertNil(proposition)
     }
+    
+    func testInitFromData() throws {
+        guard let propositionData = PROPOSITION_VALID.data(using: .utf8) else {
+            XCTFail("Proposition json data should be valid.")
+            return
+        }
+        
+        guard let data = try? JSONSerialization.jsonObject(with: propositionData, options: []) as? [String: Any] else {
+            XCTFail("Unable to convert proposition json data to Dictionary.")
+            return
+        }
+        
+        let proposition = Proposition.initFromData(data: data)
+        XCTAssertNotNil(proposition)
+        XCTAssertEqual("de03ac85-802a-4331-a905-a57053164d35", proposition?.id)
+        XCTAssertEqual("eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
+        XCTAssertEqual(1, proposition?.offers.count)
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
+        XCTAssertEqual("10", proposition?.offers[0].etag)
+        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", proposition?.offers[0].schema)
+        XCTAssertEqual(OfferType.html, proposition?.offers[0].type)
+        XCTAssertEqual("<h1>This is a HTML content</h1>", proposition?.offers[0].content)
+
+    }
 }
