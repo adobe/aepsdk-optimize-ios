@@ -63,24 +63,25 @@ public class Proposition: NSObject, Codable {
         try container.encode(offers, forKey: .items)
     }
 
-    /// Creates Object of `Proposition` type from given data `Dictionary`
+    /// Creates Object of `Proposition` type from given data dictionary.
     /// - Parameters:
-    ///       - data: Data dictionary containing data for instantiating `Proposition`
+    ///       - data: A dictionary containing data for instantiating `Proposition`
     /// - Returns: instance of `Proposition`
-    public static func initFromData(data: [String: Any]) -> Proposition? {
+    public static func initFromData(_ data: [String: Any]) -> Proposition? {
         guard !data.isEmpty else {
-            Log.warning(label: OptimizeConstants.LOG_TAG, "Cannot create Proposition object, provided data Dictionary is empty or null.")
+            Log.warning(label: OptimizeConstants.LOG_TAG, "Cannot create Proposition object, provided data dictionary is empty.")
             return nil
         }
         guard let jsonData = try? JSONSerialization.data(withJSONObject: data) else {
             Log.warning(label: OptimizeConstants.LOG_TAG, "Cannot create Proposition object, unable to parse the data dictionary.")
             return nil
         }
-        let proposition = try? JSONDecoder().decode(Proposition.self, from: jsonData)
-        if proposition == nil {
+        guard let proposition = try? JSONDecoder().decode(Proposition.self, from: jsonData) else {
             Log.warning(label: OptimizeConstants.LOG_TAG,
                         "Cannot create Proposition object, unable to decode Proposition from data.")
+            return nil
         }
+        
         return proposition
     }
 }
