@@ -242,4 +242,16 @@ class PropositionTests: XCTestCase {
         XCTAssertEqual("true", proposition?.offers[0].characteristics?["mobile"])
 
     }
+    
+    func testInitFromData_emptyData() throws {
+        let data = [String: Any]()
+        let proposition = Proposition.initFromData(data)
+        XCTAssertNil(proposition)
+    }        
+    
+    func testInitFromData_missingData() throws {
+        let data = ["fake_key": "fake_value"] //Should return nil since Proposition id is missing
+        let proposition = Proposition.initFromData(data)
+        XCTAssertNil(proposition)
+    }
 }
