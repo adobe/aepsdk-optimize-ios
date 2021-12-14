@@ -81,7 +81,7 @@ public class Proposition: NSObject, Codable {
                         "Cannot create Proposition object, unable to decode Proposition from data.")
             return nil
         }
-        
+
         return proposition
     }
 }
