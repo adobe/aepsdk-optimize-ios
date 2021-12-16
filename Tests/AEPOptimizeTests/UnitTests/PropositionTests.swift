@@ -40,6 +40,38 @@ class PropositionTests: XCTestCase {
     "scope": "eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="\
 }
 """
+    
+    let PROPOSITION_VALID_WITH_LANGUAGE_AND_CHARACTERISTICS =
+ """
+ {\
+     "id": "de03ac85-802a-4331-a905-a57053164d35",\
+     "items": [{\
+         "id": "xcore:personalized-offer:1111111111111111",\
+         "etag": "10",\
+         "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",\
+         "data": {\
+             "id": "xcore:personalized-offer:1111111111111111",\
+             "format": "text/html",\
+             "content": "<h1>This is a HTML content</h1>",\
+             "language": [\
+                 "en-us"\
+             ],\
+             "characteristics": {\
+                 "mobile": "true"\
+             }\
+         }\
+     }],\
+     "placement": {\
+         "etag": "1",\
+         "id": "xcore:offer-placement:1111111111111111"\
+     },\
+     "activity": {\
+         "etag": "8",\
+         "id": "xcore:offer-activity:1111111111111111"\
+     },\
+     "scope": "eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="\
+ }
+ """
 
     let PROPOSITION_VALID_TARGET =
 """
@@ -181,6 +213,45 @@ class PropositionTests: XCTestCase {
             return
         }
         let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+        XCTAssertNil(proposition)
+    }
+    
+    func testInitFromData() throws {
+        guard let propositionData = PROPOSITION_VALID_WITH_LANGUAGE_AND_CHARACTERISTICS.data(using: .utf8) else {
+            XCTFail("Proposition json data should be valid.")
+            return
+        }
+        
+        guard let data = try? JSONSerialization.jsonObject(with: propositionData, options: []) as? [String: Any] else {
+            XCTFail("Unable to convert proposition json data to Dictionary.")
+            return
+        }
+        
+        let proposition = Proposition.initFromData(data)
+        XCTAssertNotNil(proposition)
+        XCTAssertEqual("de03ac85-802a-4331-a905-a57053164d35", proposition?.id)
+        XCTAssertEqual("eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
+        XCTAssertEqual(1, proposition?.offers.count)
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
+        XCTAssertTrue(proposition?.scopeDetails.isEmpty ?? false)
+        XCTAssertEqual("10", proposition?.offers[0].etag)
+        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", proposition?.offers[0].schema)
+        XCTAssertEqual(OfferType.html, proposition?.offers[0].type)
+        XCTAssertEqual("<h1>This is a HTML content</h1>", proposition?.offers[0].content)
+        XCTAssertEqual("en-us", proposition?.offers[0].language?[0])
+        XCTAssertEqual("true", proposition?.offers[0].characteristics?["mobile"])
+
+    }
+    
+    func testInitFromData_emptyData() throws {
+        let data = [String: Any]()
+        let proposition = Proposition.initFromData(data)
+        XCTAssertNil(proposition)
+    }
+    
+    func testInitFromData_missingData() throws {
+        let data = ["fake_key": "fake_value"] //Should return nil since Proposition id is missing
+        let proposition = Proposition.initFromData(data)
         XCTAssertNil(proposition)
     }
 }
