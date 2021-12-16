@@ -41,7 +41,7 @@ class PropositionTests: XCTestCase {
 }
 """
     
-    let PROPOSITION_VALID_WITH_LANGUAGE_AND_CHARACTERISTIC =
+    let PROPOSITION_VALID_WITH_LANGUAGE_AND_CHARACTERISTICS =
  """
  {\
      "id": "de03ac85-802a-4331-a905-a57053164d35",\
@@ -217,7 +217,7 @@ class PropositionTests: XCTestCase {
     }
     
     func testInitFromData() throws {
-        guard let propositionData = PROPOSITION_VALID_WITH_LANGUAGE_AND_CHARACTERISTIC.data(using: .utf8) else {
+        guard let propositionData = PROPOSITION_VALID_WITH_LANGUAGE_AND_CHARACTERISTICS.data(using: .utf8) else {
             XCTFail("Proposition json data should be valid.")
             return
         }
@@ -233,7 +233,7 @@ class PropositionTests: XCTestCase {
         XCTAssertEqual("eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
         XCTAssertEqual(1, proposition?.offers.count)
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
-        XCTAssertEqual(0, proposition?.scopeDetails.count)
+        XCTAssertTrue(proposition?.scopeDetails.isEmpty ?? false)
         XCTAssertEqual("10", proposition?.offers[0].etag)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", proposition?.offers[0].schema)
         XCTAssertEqual(OfferType.html, proposition?.offers[0].type)
@@ -247,7 +247,7 @@ class PropositionTests: XCTestCase {
         let data = [String: Any]()
         let proposition = Proposition.initFromData(data)
         XCTAssertNil(proposition)
-    }        
+    }
     
     func testInitFromData_missingData() throws {
         let data = ["fake_key": "fake_value"] //Should return nil since Proposition id is missing
