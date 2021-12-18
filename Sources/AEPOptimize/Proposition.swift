@@ -67,7 +67,8 @@ public class Proposition: NSObject, Codable {
     /// - Parameters:
     ///       - data: A dictionary containing data for instantiating `Proposition`
     /// - Returns: instance of `Proposition`
-    @objc public static func initFromData(_ data: [String: Any]) -> Proposition? {
+    @objc
+    public static func initFromData(_ data: [String: Any]) -> Proposition? {
         guard !data.isEmpty else {
             Log.warning(label: OptimizeConstants.LOG_TAG, "Cannot create Proposition object, provided data dictionary is empty.")
             return nil
