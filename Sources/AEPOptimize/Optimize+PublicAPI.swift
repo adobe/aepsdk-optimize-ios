@@ -116,8 +116,7 @@ public extension Optimize {
     /// - Parameter action: The completion handler to be invoked with the decision propositions.
     @objc(onPropositionsUpdate:)
     static func onPropositionsUpdate(perform action: @escaping ([DecisionScope: Proposition]) -> Void) {
-        MobileCore.registerEventListener(type: EventType.optimize,
-                                         source: EventSource.notification) { event in
+        MobileCore.registerEventListener(type: EventType.optimize, source: EventSource.notification) { event in
             guard
                 let propositions: [DecisionScope: Proposition] = event.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS),
                 !propositions.isEmpty
