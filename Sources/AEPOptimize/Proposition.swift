@@ -73,8 +73,12 @@ public class Proposition: NSObject, Codable {
             Log.warning(label: OptimizeConstants.LOG_TAG, "Cannot create Proposition object, provided data dictionary is empty.")
             return nil
         }
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: data), let proposition = try? JSONDecoder().decode(Proposition.self, from: jsonData) else {
-            Log.warning(label: OptimizeConstants.LOG_TAG, "Cannot create Proposition object, unable to serialize dictionary to JSON data or decode Proposition from JSON.")
+        guard
+            let jsonData = try? JSONSerialization.data(withJSONObject: data),
+            let proposition = try? JSONDecoder().decode(Proposition.self, from: jsonData)
+        else {
+            Log.warning(label: OptimizeConstants.LOG_TAG,
+                        "Cannot create Proposition object, unable to serialize dictionary to JSON data or decode Proposition from JSON.")
             return nil
         }
 

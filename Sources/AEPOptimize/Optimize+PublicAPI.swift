@@ -117,9 +117,7 @@ public extension Optimize {
     @objc(onPropositionsUpdate:)
     static func onPropositionsUpdate(perform action: @escaping ([DecisionScope: Proposition]) -> Void) {
         MobileCore.registerEventListener(type: EventType.optimize,
-                                         source: EventSource.notification)
-        { event in
-
+                                         source: EventSource.notification) { event in
             guard
                 let propositions: [DecisionScope: Proposition] = event.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS),
                 !propositions.isEmpty
