@@ -25,6 +25,9 @@ public class Offer: NSObject, Codable {
     /// Offer schema string
     @objc public let schema: String
 
+    /// Offer metadata
+    @objc public let meta: [String: Any]?
+
     /// Offer type as represented in enum `OfferType`
     @objc public let type: OfferType
 
@@ -44,6 +47,7 @@ public class Offer: NSObject, Codable {
         case id
         case etag
         case schema
+        case meta
         case data
     }
 
@@ -65,6 +69,8 @@ public class Offer: NSObject, Codable {
         etag = try container.decodeIfPresent(String.self, forKey: .etag) ?? ""
 
         schema = try container.decode(String.self, forKey: .schema)
+
+        meta = AnyCodable.toAnyDictionary(dictionary: try container.decodeIfPresent([String: AnyCodable].self, forKey: .meta))
 
         let nestedContainer = try container.nestedContainer(keyedBy: DataKeys.self, forKey: .data)
         let nestedId = try nestedContainer.decode(String.self, forKey: .id)
@@ -115,6 +121,7 @@ public class Offer: NSObject, Codable {
         try container.encode(id, forKey: .id)
         try container.encode(etag, forKey: .etag)
         try container.encode(schema, forKey: .schema)
+        try container.encode(AnyCodable.from(dictionary: meta), forKey: .meta)
 
         var data = container.nestedContainer(keyedBy: DataKeys.self, forKey: .data)
         try data.encode(id, forKey: .id)

@@ -101,6 +101,11 @@ class OfferTests: XCTestCase {
 {\
     "id": "222429",\
     "schema": "https://ns.adobe.com/personalization/json-content-item",\
+    "meta" : {\
+        "activity.name" : "Demo AB Activity",\
+        "experience.name" : "Experience A",\
+        "profile.marketingCloudVisitorId" : "67706174319866856517739865618220416768"\
+    },
     "data": {\
         "id": "222429",\
         "format": "application/json",
@@ -255,6 +260,11 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 1), offer.type)
         XCTAssertEqual("{\"device\":\"mobile\"}", offer.content)
+        XCTAssertNotNil(offer.meta)
+        XCTAssertEqual(3, offer.meta?.count)
+        XCTAssertEqual("Demo AB Activity", offer.meta?["activity.name"] as? String)
+        XCTAssertEqual("Experience A", offer.meta?["experience.name"] as? String)
+        XCTAssertEqual("67706174319866856517739865618220416768", offer.meta?["profile.marketingCloudVisitorId"] as? String)
         XCTAssertNil(offer.language)
         XCTAssertNil(offer.characteristics)
     }
