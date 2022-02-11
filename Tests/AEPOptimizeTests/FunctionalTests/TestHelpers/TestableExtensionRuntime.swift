@@ -137,6 +137,8 @@ class TestableExtensionRuntime: ExtensionRuntime {
         createdSharedStates = []
         createdXdmSharedStates = []
     }
+    
+    func getHistoricalEvents(_ events: [EventHistoryRequest], enforceOrder: Bool, handler: @escaping ([EventHistoryResult]) -> Void) {}
 }
 
 extension TestableExtensionRuntime {

@@ -116,7 +116,8 @@ public class Optimize: NSObject, Extension {
         // Add query
         eventData[OptimizeConstants.JsonKeys.QUERY] = [
             OptimizeConstants.JsonKeys.QUERY_PERSONALIZATION: [
-                OptimizeConstants.JsonKeys.DECISION_SCOPES: targetDecisionScopes
+                OptimizeConstants.JsonKeys.DECISION_SCOPES: targetDecisionScopes,
+                OptimizeConstants.JsonKeys.QUERY_SCHEMAS: getSupportedSchemasForQuery()
             ]
         ]
 
@@ -281,5 +282,24 @@ public class Optimize: NSObject, Extension {
     private func processClearPropositions(event _: Event) {
         // Clear propositions cache
         cachedPropositions.removeAll()
+    }
+
+    /// Fetches the schemas for the proposition items supported by the SDK.
+    ///
+    /// The schemas' array returned by this method can be used to request supported proposition items from the Experience Edge network during personalization query requests.
+    /// - Returns An array containing the SDK supported schema strings for personalization query.
+    private func getSupportedSchemasForQuery() -> [String] {
+        [
+            // Target schemas
+            OptimizeConstants.JsonValues.QUERY_SCHEMA_TARGET_HTML,
+            OptimizeConstants.JsonValues.QUERY_SCHEMA_TARGET_JSON,
+            OptimizeConstants.JsonValues.QUERY_SCHEMA_TARGET_DEFAULT,
+
+            // Offer Decisioning schemas
+            OptimizeConstants.JsonValues.QUERY_SCHEMA_OFFER_HTML,
+            OptimizeConstants.JsonValues.QUERY_SCHEMA_OFFER_JSON,
+            OptimizeConstants.JsonValues.QUERY_SCHEMA_OFFER_IMAGE,
+            OptimizeConstants.JsonValues.QUERY_SCHEMA_OFFER_TEXT
+        ]
     }
 }

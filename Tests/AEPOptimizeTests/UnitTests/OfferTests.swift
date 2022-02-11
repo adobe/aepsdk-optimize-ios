@@ -115,6 +115,19 @@ class OfferTests: XCTestCase {
     }\
 }
 """
+    
+    private let TARGET_OFFER_DEFAULT_CONTENT =
+"""
+{\
+    "id": "222429",\
+    "schema": "https://ns.adobe.com/personalization/default-content-item",\
+    "meta" : {\
+        "activity.name" : "Demo AB Activity",\
+        "experience.name" : "Experience A",\
+        "profile.marketingCloudVisitorId" : "67706174319866856517739865618220416768"\
+    }
+}
+"""
 
     private let OFFER_MINIMAL =
 """
@@ -260,6 +273,28 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 1), offer.type)
         XCTAssertEqual("{\"device\":\"mobile\"}", offer.content)
+        XCTAssertNotNil(offer.meta)
+        XCTAssertEqual(3, offer.meta?.count)
+        XCTAssertEqual("Demo AB Activity", offer.meta?["activity.name"] as? String)
+        XCTAssertEqual("Experience A", offer.meta?["experience.name"] as? String)
+        XCTAssertEqual("67706174319866856517739865618220416768", offer.meta?["profile.marketingCloudVisitorId"] as? String)
+        XCTAssertNil(offer.language)
+        XCTAssertNil(offer.characteristics)
+    }
+    
+    func testOffer_defaultContentFromTarget() {
+        guard let offerData = TARGET_OFFER_DEFAULT_CONTENT.data(using: .utf8),
+              let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
+        else {
+            XCTFail("Offer should be valid.")
+            return
+        }
+
+        XCTAssertEqual("222429", offer.id)
+        XCTAssertTrue(offer.etag.isEmpty)
+        XCTAssertEqual("https://ns.adobe.com/personalization/default-content-item", offer.schema)
+        XCTAssertEqual(OfferType.init(rawValue: 0), offer.type)
+        XCTAssertEqual("", offer.content)
         XCTAssertNotNil(offer.meta)
         XCTAssertEqual(3, offer.meta?.count)
         XCTAssertEqual("Demo AB Activity", offer.meta?["activity.name"] as? String)
