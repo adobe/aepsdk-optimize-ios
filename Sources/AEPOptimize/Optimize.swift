@@ -24,6 +24,20 @@ public class Optimize: NSObject, Extension {
     public let metadata: [String: String]? = nil
     public let runtime: ExtensionRuntime
 
+    /// Array containing the schema strings for the proposition items supported by the SDK, sent in the personalization query request.
+    static let supportedSchemas = [
+        // Target schemas
+        OptimizeConstants.JsonValues.SCHEMA_TARGET_HTML,
+        OptimizeConstants.JsonValues.SCHEMA_TARGET_JSON,
+        OptimizeConstants.JsonValues.SCHEMA_TARGET_DEFAULT,
+
+        // Offer Decisioning schemas
+        OptimizeConstants.JsonValues.SCHEMA_OFFER_HTML,
+        OptimizeConstants.JsonValues.SCHEMA_OFFER_JSON,
+        OptimizeConstants.JsonValues.SCHEMA_OFFER_IMAGE,
+        OptimizeConstants.JsonValues.SCHEMA_OFFER_TEXT
+    ]
+
     /// Dictionary containing decision propositions currently cached in-memory in the SDK.
     #if DEBUG
         var cachedPropositions: [DecisionScope: Proposition]
@@ -116,8 +130,8 @@ public class Optimize: NSObject, Extension {
         // Add query
         eventData[OptimizeConstants.JsonKeys.QUERY] = [
             OptimizeConstants.JsonKeys.QUERY_PERSONALIZATION: [
-                OptimizeConstants.JsonKeys.DECISION_SCOPES: targetDecisionScopes,
-                OptimizeConstants.JsonKeys.QUERY_SCHEMAS: getSupportedSchemasForQuery()
+                OptimizeConstants.JsonKeys.SCHEMAS: Optimize.supportedSchemas,
+                OptimizeConstants.JsonKeys.DECISION_SCOPES: targetDecisionScopes
             ]
         ]
 
@@ -282,24 +296,5 @@ public class Optimize: NSObject, Extension {
     private func processClearPropositions(event _: Event) {
         // Clear propositions cache
         cachedPropositions.removeAll()
-    }
-
-    /// Fetches the schemas for the proposition items supported by the SDK.
-    ///
-    /// The schemas' array returned by this method can be used to request supported proposition items from the Experience Edge network during personalization query requests.
-    /// - Returns An array containing the SDK supported schema strings for personalization query.
-    private func getSupportedSchemasForQuery() -> [String] {
-        [
-            // Target schemas
-            OptimizeConstants.JsonValues.QUERY_SCHEMA_TARGET_HTML,
-            OptimizeConstants.JsonValues.QUERY_SCHEMA_TARGET_JSON,
-            OptimizeConstants.JsonValues.QUERY_SCHEMA_TARGET_DEFAULT,
-
-            // Offer Decisioning schemas
-            OptimizeConstants.JsonValues.QUERY_SCHEMA_OFFER_HTML,
-            OptimizeConstants.JsonValues.QUERY_SCHEMA_OFFER_JSON,
-            OptimizeConstants.JsonValues.QUERY_SCHEMA_OFFER_IMAGE,
-            OptimizeConstants.JsonValues.QUERY_SCHEMA_OFFER_TEXT
-        ]
     }
 }

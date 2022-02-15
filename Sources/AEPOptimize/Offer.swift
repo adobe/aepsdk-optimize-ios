@@ -113,8 +113,10 @@ public class Offer: NSObject, Codable {
                                              DecodingError.Context(codingPath: decoder.codingPath,
                                                                    debugDescription: "Offer content is not of an expected type."))
         } else {
-            if schema == OptimizeConstants.JsonValues.QUERY_SCHEMA_TARGET_DEFAULT {
+            if schema == OptimizeConstants.JsonValues.SCHEMA_TARGET_DEFAULT {
                 // Target "default content" decision scope doesn't return data object in the items, set content to empty string.
+                Log.trace(label: OptimizeConstants.LOG_TAG,
+                          "Received default content proposition item, Offer content will be set to empty string.")
                 type = .unknown
                 language = nil
                 characteristics = nil
