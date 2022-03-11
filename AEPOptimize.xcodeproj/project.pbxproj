@@ -23,6 +23,8 @@
 		C80920F42655CD4200E37005 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C82A60452655A6300062E70A /* Main.storyboard */; };
 		C80920FD2655CD4500E37005 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C82A60432655A6300062E70A /* LaunchScreen.storyboard */; };
 		C80921162655CDAB00E37005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C82A60402655A6300062E70A /* Assets.xcassets */; };
+		C8227C7527DA5BD6005A7703 /* KeyedDecodingContainer+Optimize.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8227C7427DA5BD6005A7703 /* KeyedDecodingContainer+Optimize.swift */; };
+		C8227C7727DAD19C005A7703 /* KeyedDecodingContainer+OptimizeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8227C7627DAD19C005A7703 /* KeyedDecodingContainer+OptimizeTests.swift */; };
 		C8276BE4261EC74F00508873 /* Array+Optimize.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8276BE3261EC74F00508873 /* Array+Optimize.swift */; };
 		C82A5EF226533A250062E70A /* CustomButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82A5EEA265339A30062E70A /* CustomButtonView.swift */; };
 		C82A5EF7265347060062E70A /* TextOfferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82A5EF6265347040062E70A /* TextOfferView.swift */; };
@@ -147,6 +149,8 @@
 		C8076C3F265EE768006BEC5D /* TargetProduct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetProduct.swift; sourceTree = "<group>"; };
 		C8076C45265EE776006BEC5D /* DictionaryRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryRowView.swift; sourceTree = "<group>"; };
 		C8076C46265EE776006BEC5D /* TargetOrder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetOrder.swift; sourceTree = "<group>"; };
+		C8227C7427DA5BD6005A7703 /* KeyedDecodingContainer+Optimize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyedDecodingContainer+Optimize.swift"; sourceTree = "<group>"; };
+		C8227C7627DAD19C005A7703 /* KeyedDecodingContainer+OptimizeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyedDecodingContainer+OptimizeTests.swift"; sourceTree = "<group>"; };
 		C8276BE3261EC74F00508873 /* Array+Optimize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Optimize.swift"; sourceTree = "<group>"; };
 		C82A5EEA265339A30062E70A /* CustomButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonView.swift; sourceTree = "<group>"; };
 		C82A5EF6265347040062E70A /* TextOfferView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextOfferView.swift; sourceTree = "<group>"; };
@@ -456,6 +460,7 @@
 				C88C5F4026187F0A003AE3DE /* String+Optimize.swift */,
 				C8276BE3261EC74F00508873 /* Array+Optimize.swift */,
 				C8CA1653261EF29E005B09A0 /* Event+Optimize.swift */,
+				C8227C7427DA5BD6005A7703 /* KeyedDecodingContainer+Optimize.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -519,6 +524,7 @@
 				C8CA16D92624BDA5005B09A0 /* Event+OptimizeTests.swift */,
 				C8CA16DA2624BDA5005B09A0 /* String+OptimizeTests.swift */,
 				C8CA16DB2624BDA5005B09A0 /* StringInterpolation+OptimizeTests.swift */,
+				C8227C7627DAD19C005A7703 /* KeyedDecodingContainer+OptimizeTests.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -1075,6 +1081,7 @@
 			files = (
 				C88C5EDD2614F640003AE3DE /* Offer.swift in Sources */,
 				C8DE6BEF2686848B0076623F /* Proposition+Tracking.swift in Sources */,
+				C8227C7527DA5BD6005A7703 /* KeyedDecodingContainer+Optimize.swift in Sources */,
 				C88C5F3326185EF8003AE3DE /* StringInterpolation+Optimize.swift in Sources */,
 				C8CA1654261EF29E005B09A0 /* Event+Optimize.swift in Sources */,
 				C88C5F7A261D06A6003AE3DE /* Optimize+PublicAPI.swift in Sources */,
@@ -1106,6 +1113,7 @@
 				C88C5FDA261D8EE3003AE3DE /* OptimizePublicAPITests.swift in Sources */,
 				C88C5FEA261D9AD0003AE3DE /* EventHub+OptimizeTests.swift in Sources */,
 				C8DE6C052689502E0076623F /* PropositionTrackingTests.swift in Sources */,
+				C8227C7727DAD19C005A7703 /* KeyedDecodingContainer+OptimizeTests.swift in Sources */,
 				C8DE6C0F26895A260076623F /* OfferTrackingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
