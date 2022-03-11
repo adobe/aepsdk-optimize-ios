@@ -116,7 +116,7 @@ class OfferTests: XCTestCase {
 }
 """
     
-    private let TARGET_OFFER_DEFAULT_CONTENT =
+    private let TARGET_OFFER_VALID_DEFAULT_CONTENT =
 """
 {\
     "id": "222429",\
@@ -283,7 +283,7 @@ class OfferTests: XCTestCase {
     }
     
     func testOffer_defaultContentFromTarget() {
-        guard let offerData = TARGET_OFFER_DEFAULT_CONTENT.data(using: .utf8),
+        guard let offerData = TARGET_OFFER_VALID_DEFAULT_CONTENT.data(using: .utf8),
               let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
         else {
             XCTFail("Offer should be valid.")
@@ -293,7 +293,7 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("222429", offer.id)
         XCTAssertTrue(offer.etag.isEmpty)
         XCTAssertEqual("https://ns.adobe.com/personalization/default-content-item", offer.schema)
-        XCTAssertEqual(OfferType.init(rawValue: 0), offer.type)
+        XCTAssertEqual(OfferType.unknown, offer.type)
         XCTAssertEqual("", offer.content)
         XCTAssertNotNil(offer.meta)
         XCTAssertEqual(3, offer.meta?.count)
