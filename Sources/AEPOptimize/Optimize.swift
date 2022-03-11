@@ -24,6 +24,20 @@ public class Optimize: NSObject, Extension {
     public let metadata: [String: String]? = nil
     public let runtime: ExtensionRuntime
 
+    /// Array containing the schema strings for the proposition items supported by the SDK, sent in the personalization query request.
+    static let supportedSchemas = [
+        // Target schemas
+        OptimizeConstants.JsonValues.SCHEMA_TARGET_HTML,
+        OptimizeConstants.JsonValues.SCHEMA_TARGET_JSON,
+        OptimizeConstants.JsonValues.SCHEMA_TARGET_DEFAULT,
+
+        // Offer Decisioning schemas
+        OptimizeConstants.JsonValues.SCHEMA_OFFER_HTML,
+        OptimizeConstants.JsonValues.SCHEMA_OFFER_JSON,
+        OptimizeConstants.JsonValues.SCHEMA_OFFER_IMAGE,
+        OptimizeConstants.JsonValues.SCHEMA_OFFER_TEXT
+    ]
+
     /// Dictionary containing decision propositions currently cached in-memory in the SDK.
     #if DEBUG
         var cachedPropositions: [DecisionScope: Proposition]
@@ -116,6 +130,7 @@ public class Optimize: NSObject, Extension {
         // Add query
         eventData[OptimizeConstants.JsonKeys.QUERY] = [
             OptimizeConstants.JsonKeys.QUERY_PERSONALIZATION: [
+                OptimizeConstants.JsonKeys.SCHEMAS: Optimize.supportedSchemas,
                 OptimizeConstants.JsonKeys.DECISION_SCOPES: targetDecisionScopes
             ]
         ]

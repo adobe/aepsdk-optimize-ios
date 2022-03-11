@@ -72,47 +72,61 @@ public class Offer: NSObject, Codable {
 
         meta = AnyCodable.toAnyDictionary(dictionary: try container.decodeIfPresent([String: AnyCodable].self, forKey: .meta))
 
-        let nestedContainer = try container.nestedContainer(keyedBy: DataKeys.self, forKey: .data)
-        let nestedId = try nestedContainer.decode(String.self, forKey: .id)
+        if let nestedContainer = try? container.nestedContainer(keyedBy: DataKeys.self, forKey: .data) {
+            let nestedId = try nestedContainer.decode(String.self, forKey: .id)
+            if nestedId != id {
+                throw DecodingError.dataCorruptedError(forKey: DataKeys.id, in: nestedContainer, debugDescription: "Data id should be same as items id.")
+            }
 
-        if nestedId != id {
-            throw DecodingError.dataCorruptedError(forKey: DataKeys.id, in: nestedContainer, debugDescription: "Data id should be same as items id.")
-        }
+            // Try and decode format, if present, usually in Edge response. Optimize extension parses format into a public
+            // enum for customers to easily identify how to parse the decision content. Thereon, type field is encoded in EventData
+            // for events dispatched by this extension indicating the type of content.
+            if let format = try nestedContainer.decodeIfPresent(String.self, forKey: .format) {
+                type = OfferType(from: format)
+            } else {
+                type = try nestedContainer.decodeIfPresent(OfferType.self, forKey: .type) ?? .unknown
+            }
 
-        // Try and decode format, if present, usually in Edge response. Optimize extension parses format into a public
-        // enum for customers to easily identify how to parse the decision content. Thereon, type field is encoded in EventData
-        // for events dispatched by this extension indicating the type of content.
-        if let format = try nestedContainer.decodeIfPresent(String.self, forKey: .format) {
-            type = OfferType(from: format)
+            language = try nestedContainer.decodeIfPresent([String].self, forKey: .language)
+            characteristics = try nestedContainer.decodeIfPresent([String: String].self, forKey: .characteristics)
+
+            guard let data = try? nestedContainer.decode(AnyCodable.self, forKey: .content) else {
+                // For image type offer, deliveryURL contains the image link.
+                content = try nestedContainer.decode(String.self, forKey: .deliveryURL)
+                return
+            }
+
+            if let offerContent = data.stringValue {
+                content = offerContent
+                return
+            }
+
+            if
+                let jsonData = data.dictionaryValue,
+                let encodedData = try? JSONSerialization.data(withJSONObject: jsonData),
+                let offerContent = String(data: encodedData, encoding: .utf8)
+            {
+                content = offerContent
+                return
+            }
+            throw DecodingError.typeMismatch(Offer.self,
+                                             DecodingError.Context(codingPath: decoder.codingPath,
+                                                                   debugDescription: "Offer content is not of an expected type."))
         } else {
-            type = try nestedContainer.decodeIfPresent(OfferType.self, forKey: .type) ?? .unknown
+            if schema == OptimizeConstants.JsonValues.SCHEMA_TARGET_DEFAULT {
+                // Target "default content" decision scope doesn't return data object in the items, set content to empty string.
+                Log.trace(label: OptimizeConstants.LOG_TAG,
+                          "Received default content proposition item, Offer content will be set to empty string.")
+                type = .unknown
+                language = nil
+                characteristics = nil
+                content = ""
+                return
+            }
+            throw DecodingError.keyNotFound(CodingKeys.data,
+                                            DecodingError.Context(codingPath: decoder.codingPath,
+                                                                  debugDescription: "Items data object is missing."))
         }
-
-        language = try nestedContainer.decodeIfPresent([String].self, forKey: .language)
-        characteristics = try nestedContainer.decodeIfPresent([String: String].self, forKey: .characteristics)
-
-        guard let data = try? nestedContainer.decode(AnyCodable.self, forKey: .content) else {
-            // For image type offer, deliveryURL contains the image link.
-            content = try nestedContainer.decode(String.self, forKey: .deliveryURL)
-            return
-        }
-
-        if let offerContent = data.stringValue {
-            content = offerContent
-            return
-        }
-
-        if
-            let jsonData = data.dictionaryValue,
-            let encodedData = try? JSONSerialization.data(withJSONObject: jsonData),
-            let offerContent = String(data: encodedData, encoding: .utf8)
-        {
-            content = offerContent
-            return
-        }
-        throw DecodingError.typeMismatch(Offer.self,
-                                         DecodingError.Context(codingPath: decoder.codingPath,
-                                                               debugDescription: "Offer content is not of an expected type."))
     }
 
     public func encode(to encoder: Encoder) throws {

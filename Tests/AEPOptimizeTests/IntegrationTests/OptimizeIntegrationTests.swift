@@ -20,6 +20,16 @@ import AEPOptimize
 import XCTest
 
 class OptimizeIntegrationTests: XCTestCase {
+    static let supportedSchemas = [
+        "https://ns.adobe.com/personalization/html-content-item",
+        "https://ns.adobe.com/personalization/json-content-item",
+        "https://ns.adobe.com/personalization/default-content-item",
+        "https://ns.adobe.com/experience/offer-management/content-component-html",
+        "https://ns.adobe.com/experience/offer-management/content-component-json",
+        "https://ns.adobe.com/experience/offer-management/content-component-imagelink",
+        "https://ns.adobe.com/experience/offer-management/content-component-text"
+    ]
+    
     override func setUp() {
         UserDefaults.clear()
         FileManager.default.clearCache()
@@ -65,6 +75,9 @@ class OptimizeIntegrationTests: XCTestCase {
                     // query
                     let query = event?["query"] as? [String: Any]
                     let personalization = query?["personalization"] as? [String: Any]
+                    let schemas = personalization?["schemas"] as? [String]
+                    XCTAssertEqual(7, schemas?.count)
+                    XCTAssertEqual(OptimizeIntegrationTests.supportedSchemas, schemas)
                     let decisionScopes = personalization?["decisionScopes"] as? [String]
                     XCTAssertEqual(1, decisionScopes?.count)
                     XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", decisionScopes?[0])
