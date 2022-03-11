@@ -1,14 +1,14 @@
 /*
-Copyright 2022 Adobe. All rights reserved.
-This file is licensed to you under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License. You may obtain a copy
-of the License at http://www.apache.org/licenses/LICENSE-2.0
+ Copyright 2022 Adobe. All rights reserved.
+ This file is licensed to you under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License. You may obtain a copy
+ of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software distributed under
-the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
-OF ANY KIND, either express or implied. See the License for the specific language
-governing permissions and limitations under the License.
-*/
+ Unless required by applicable law or agreed to in writing, software distributed under
+ the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+ OF ANY KIND, either express or implied. See the License for the specific language
+ governing permissions and limitations under the License.
+ */
 
 import Foundation
 
@@ -24,10 +24,7 @@ extension KeyedDecodingContainer {
     ///   and convertible to the requested type.
     /// - throws: `DecodingError.typeMismatch` if the encountered encoded value
     ///   is not convertible to the requested type.
-    func decode<T: Decodable>(_ type: [T].Type,
-                              forKey key: Key,
-                              ignoreInvalid: Bool = false) throws -> [T] {
-
+    func decode<T: Decodable>(_: [T].Type, forKey key: Key, ignoreInvalid: Bool = false) throws -> [T] {
         var container = try nestedUnkeyedContainer(forKey: key)
         var elements = [T]()
 
