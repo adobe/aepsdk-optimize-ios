@@ -44,13 +44,28 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct AEPOptimizeDemoSwiftUIApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-
+    @Environment(\.scenePhase) private var scenePhase
+    
     var body: some Scene {
         WindowGroup {
             HomeView()
                 .onOpenURL{ url in
                     Assurance.startSession(url: url)
                 }
+        }
+        .onChange(of: scenePhase) { phase in
+            switch phase {
+                case .background:
+                    print("Scene phase changed to background.")
+                    MobileCore.lifecyclePause()
+                case .active:
+                    print("Scene phase changed to active.")
+                    MobileCore.lifecycleStart(additionalContextData: nil)
+                case .inactive:
+                    print("Scene phase changed to inactive.")
+                @unknown default:
+                    print("Unknown scene phase.")
+            }
         }
     }
 }

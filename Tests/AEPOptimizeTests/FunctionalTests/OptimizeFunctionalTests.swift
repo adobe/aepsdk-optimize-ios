@@ -139,6 +139,9 @@ class OptimizeFunctionalTests: XCTestCase {
         let query = dispatchedEvent?.data?["query"] as? [String: Any]
         let personalization = query?["personalization"] as? [String: Any]
         let decisionScopes = personalization?["decisionScopes"] as? [String]
+        let schemas = personalization?["schemas"] as? [String]
+        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(Optimize.supportedSchemas, schemas)
         XCTAssertEqual(1, decisionScopes?.count)
         XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", decisionScopes?[0])
     }
@@ -180,6 +183,9 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
         let query = dispatchedEvent?.data?["query"] as? [String: Any]
         let personalization = query?["personalization"] as? [String: Any]
+        let schemas = personalization?["schemas"] as? [String]
+        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(Optimize.supportedSchemas, schemas)
         let decisionScopes = personalization?["decisionScopes"] as? [String]
         XCTAssertEqual(1, decisionScopes?.count)
         XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", decisionScopes?[0])
@@ -232,6 +238,9 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
         let query = dispatchedEvent?.data?["query"] as? [String: Any]
         let personalization = query?["personalization"] as? [String: Any]
+        let schemas = personalization?["schemas"] as? [String]
+        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(Optimize.supportedSchemas, schemas)
         let decisionScopes = personalization?["decisionScopes"] as? [String]
         XCTAssertEqual(1, decisionScopes?.count)
         XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", decisionScopes?[0])
@@ -281,6 +290,9 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
         let query = dispatchedEvent?.data?["query"] as? [String: Any]
         let personalization = query?["personalization"] as? [String: Any]
+        let schemas = personalization?["schemas"] as? [String]
+        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(Optimize.supportedSchemas, schemas)
         let decisionScopes = personalization?["decisionScopes"] as? [String]
         XCTAssertEqual(2, decisionScopes?.count)
         XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", decisionScopes?[0])
@@ -410,6 +422,9 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
         let query = dispatchedEvent?.data?["query"] as? [String: Any]
         let personalization = query?["personalization"] as? [String: Any]
+        let schemas = personalization?["schemas"] as? [String]
+        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(Optimize.supportedSchemas, schemas)
         let decisionScopes = personalization?["decisionScopes"] as? [String]
         XCTAssertEqual(1, decisionScopes?.count)
         XCTAssertEqual("myMbox", decisionScopes?[0])

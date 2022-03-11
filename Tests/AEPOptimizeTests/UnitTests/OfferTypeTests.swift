@@ -70,23 +70,23 @@ class OfferTypeTests: XCTestCase {
         XCTAssertEqual(.unknown, offerType)
     }
     
-    func testHtmlOfferTypeToString() {
+    func testToString_htmlOfferType() {
         XCTAssertEqual("text/html", OfferType.html.toString())
     }
     
-    func testJsonOfferTypeToString() {
+    func testToString_jsonOfferType() {
         XCTAssertEqual("application/json", OfferType.json.toString())
     }
     
-    func testPlainOfferTypeToString() {
+    func testToString_textOfferType() {
         XCTAssertEqual("text/plain", OfferType.text.toString())
     }
     
-    func testImageOfferTypeToString() {
+    func testToString_imageOfferType() {
         XCTAssertEqual("image/*", OfferType.image.toString())
     }
     
-    func testUnknownOfferTypeToString() {
-        XCTAssertEqual("image/*", OfferType.unknown.toString())
+    func testToString_unknownOfferType() {
+        XCTAssertTrue(OfferType.unknown.toString().isEmpty)
     }
 }

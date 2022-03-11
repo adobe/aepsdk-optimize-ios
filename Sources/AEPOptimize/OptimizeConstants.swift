@@ -79,6 +79,7 @@ enum OptimizeConstants {
         static let XDM = "xdm"
         static let QUERY = "query"
         static let QUERY_PERSONALIZATION = "personalization"
+        static let SCHEMAS = "schemas"
         static let DATA = "data"
         static let DATASET_ID = "datasetId"
         static let EXPERIENCE_EVENT_TYPE = "eventType"
@@ -97,5 +98,16 @@ enum OptimizeConstants {
         static let EE_EVENT_TYPE_PERSONALIZATION = "personalization.request"
         static let EE_EVENT_TYPE_PROPOSITION_DISPLAY = "decisioning.propositionDisplay"
         static let EE_EVENT_TYPE_PROPOSITION_INTERACT = "decisioning.propositionInteract"
+
+        // Target schemas
+        static let SCHEMA_TARGET_HTML = "https://ns.adobe.com/personalization/html-content-item"
+        static let SCHEMA_TARGET_JSON = "https://ns.adobe.com/personalization/json-content-item"
+        static let SCHEMA_TARGET_DEFAULT = "https://ns.adobe.com/personalization/default-content-item"
+
+        // Offer Decisioning schemas
+        static let SCHEMA_OFFER_HTML = "https://ns.adobe.com/experience/offer-management/content-component-html"
+        static let SCHEMA_OFFER_JSON = "https://ns.adobe.com/experience/offer-management/content-component-json"
+        static let SCHEMA_OFFER_IMAGE = "https://ns.adobe.com/experience/offer-management/content-component-imagelink"
+        static let SCHEMA_OFFER_TEXT = "https://ns.adobe.com/experience/offer-management/content-component-text"
     }
 }
