@@ -239,10 +239,23 @@ class OptimizeIntegrationTests: XCTestCase {
                                     "decisionProvider": "TGT",\
                                     "strategies": [\
                                         {\
+                                            "step": "entry",\
+                                            "algorithmID": "0",\
+                                            "trafficType": "0"\
+                                        },\
+                                        {\
+                                            "step": "display",\
                                             "algorithmID": "0",\
                                             "trafficType": "0"\
                                         }\
-                                    ]\
+                                    ],\
+                                    "characteristics": {\
+                                        "stateToken": "SGFZpwAqaqFTayhAT2xsgzG3+2fw4m+O9FK8c0QoOHfxVkH1ttT1PGBX3/jV8a5uFF0fAox6CXpjJ1PGRVQBjHl9Zc6mRxY9NQeM7rs/3Es1RHPkzBzyhpVS6eg9q+kw",\
+                                        "eventTokens": {\
+                                            "display": "MmvRrL5aB4Jz36JappRYg2qipfsIHvVzTQxHolz2IpSCnQ9Y9OaLL2gsdrWQTvE54PwSz67rmXWmSnkXpSSS2Q==",\
+                                            "click": "EZDMbI2wmAyGcUYLr3VpmA=="\
+                                        }\
+                                    }\
                                },\
                                "items": [\
                                   {\
@@ -255,29 +268,17 @@ class OptimizeIntegrationTests: XCTestCase {
                                             "device": "mobile"\
                                         }\
                                      }\
-                                  }\
-                               ]\
-                            },\
-                            { \
-                                "id": "AT:eyJhY3Rpdml0eUlkIjoiMTExMTExIiwiZXhwZXJpZW5jZUlkIjoiMCJ9",\
-                                "scope": "myMbox1",\
-                                "scopeDetails": {\
-                                    "activity": {\
-                                        "id": "111111"\
-                                    },\
-                                    "decisionProvider": "TGT"\
-                                },\
-                                "items": [\
-                                   {\
+                                  },\
+                                  {\
                                       "id": "111111",\
                                       "schema": "https://ns.adobe.com/personalization/measurement",\
                                       "data": {\
                                          "type": "click",\
                                          "format": "application/vnd.adobe.target.metric"\
                                       }\
-                                   }\
-                                ]\
-                             }\
+                                  }\
+                               ]\
+                            }\
                          ],\
                          "type":"personalization:decisions",\
                          "eventIndex":0\
@@ -331,16 +332,29 @@ class OptimizeIntegrationTests: XCTestCase {
             XCTAssertEqual("AT:eyJhY3Rpdml0eUlkIjoiMTExMTExIiwiZXhwZXJpZW5jZUlkIjoiMCJ9", proposition?.id)
             XCTAssertEqual("myMbox1", proposition?.scope)
             
-            XCTAssertEqual(4, proposition?.scopeDetails.count)
+            XCTAssertEqual(5, proposition?.scopeDetails.count)
             XCTAssertEqual("TGT", proposition?.scopeDetails["decisionProvider"] as? String)
             let sdActivity = proposition?.scopeDetails["activity"] as? [String: Any]
             XCTAssertEqual("111111", sdActivity?["id"] as? String)
             let sdExperience = proposition?.scopeDetails["experience"] as? [String: Any]
             XCTAssertEqual("0", sdExperience?["id"] as? String)
             let sdStrategies = proposition?.scopeDetails["strategies"] as? [[String: Any]]
-            XCTAssertEqual(1, sdStrategies?.count)
+            XCTAssertEqual(2, sdStrategies?.count)
+            XCTAssertEqual("entry", sdStrategies?[0]["step"] as? String)
             XCTAssertEqual("0", sdStrategies?[0]["algorithmID"] as? String)
             XCTAssertEqual("0", sdStrategies?[0]["trafficType"] as? String)
+            
+            XCTAssertEqual("display", sdStrategies?[1]["step"] as? String)
+            XCTAssertEqual("0", sdStrategies?[1]["algorithmID"] as? String)
+            XCTAssertEqual("0", sdStrategies?[1]["trafficType"] as? String)
+            
+            let sdCharacteristics = proposition?.scopeDetails["characteristics"] as? [String: Any]
+            XCTAssertEqual(2, sdCharacteristics?.count)
+            XCTAssertEqual("SGFZpwAqaqFTayhAT2xsgzG3+2fw4m+O9FK8c0QoOHfxVkH1ttT1PGBX3/jV8a5uFF0fAox6CXpjJ1PGRVQBjHl9Zc6mRxY9NQeM7rs/3Es1RHPkzBzyhpVS6eg9q+kw", sdCharacteristics?["stateToken"] as? String)
+            let eventTokens = sdCharacteristics?["eventTokens"] as? [String: Any]
+            XCTAssertEqual(2, eventTokens?.count)
+            XCTAssertEqual("MmvRrL5aB4Jz36JappRYg2qipfsIHvVzTQxHolz2IpSCnQ9Y9OaLL2gsdrWQTvE54PwSz67rmXWmSnkXpSSS2Q==", eventTokens?["display"] as? String)
+            XCTAssertEqual("EZDMbI2wmAyGcUYLr3VpmA==", eventTokens?["click"] as? String)
             
             XCTAssertEqual(1, proposition?.offers.count)
             XCTAssertEqual("0", proposition?.offers[0].id)

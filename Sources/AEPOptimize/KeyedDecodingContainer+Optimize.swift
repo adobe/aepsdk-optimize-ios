@@ -19,10 +19,10 @@ extension KeyedDecodingContainer {
 
     /// Decodes a value of the given type.
     ///
-    /// - parameter type: The type of value to decode.
-    /// - returns: A value of the requested type, if present for the given key
+    /// - Parameter type: The type of value to decode.
+    /// - Returns: A value of the requested type, if present for the given key
     ///   and convertible to the requested type.
-    /// - throws: `DecodingError.typeMismatch` if the encountered encoded value
+    /// - Throws: `DecodingError.typeMismatch` if the encountered encoded value
     ///   is not convertible to the requested type.
     func decode<T: Decodable>(_: [T].Type, forKey key: Key, ignoreInvalid: Bool = false) throws -> [T] {
         var container = try nestedUnkeyedContainer(forKey: key)
