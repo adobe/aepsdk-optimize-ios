@@ -51,7 +51,7 @@ public class Proposition: NSObject, Codable {
         // Fix this once ODE supports scopeDetails in personalization query response,
         // refer to https://jira.corp.adobe.com/browse/CSMO-12405
         scopeDetails = AnyCodable.toAnyDictionary(dictionary: anyCodableDict) ?? [:]
-        items = (try? container.decode([Offer].self, forKey: .items)) ?? []
+        items = (try? container.decode([Offer].self, forKey: .items, ignoreInvalid: true)) ?? []
     }
 
     public func encode(to encoder: Encoder) throws {

@@ -515,8 +515,21 @@ class OptimizeFunctionalTests: XCTestCase {
             ],
             "strategies": [
                 [
+                    "step": "entry",
                     "algorithmID": "0",
                     "trafficType": "0"
+                ],
+                [
+                    "step": "display",
+                    "algorithmID": "0",
+                    "trafficType": "0"
+                ]
+            ],
+            "characteristics": [
+                "stateToken": "SGFZpwAqaqFTayhAT2xsgzG3+2fw4m+O9FK8c0QoOHfxVkH1ttT1PGBX3/jV8a5uFF0fAox6CXpjJ1PGRVQBjHl9Zc6mRxY9NQeM7rs/3Es1RHPkzBzyhpVS6eg9q+kw",
+                "eventTokens": [
+                    "display": "MmvRrL5aB4Jz36JappRYg2qipfsIHvVzTQxHolz2IpSCnQ9Y9OaLL2gsdrWQTvE54PwSz67rmXWmSnkXpSSS2Q==",
+                    "click": "EZDMbI2wmAyGcUYLr3VpmA=="
                 ]
             ]
         ]
@@ -541,19 +554,7 @@ class OptimizeFunctionalTests: XCTestCase {
                                                         "device": "mobile"
                                                     ]
                                                 ]
-                                            ]
-                                        ]
-                                    ],
-                                    [
-                                        "id": "AT:eyJhY3Rpdml0eUlkIjoiMTExMTExIiwiZXhwZXJpZW5jZUlkIjoiMCJ9",
-                                        "scope": "myMbox1",
-                                        "scopeDetails": [
-                                            "activity": [
-                                                "id": "111111"
                                             ],
-                                            "decisionProvider": "TGT"
-                                        ],
-                                        "items": [
                                             [
                                                 "id": "111111",
                                                 "schema": "https://ns.adobe.com/personalization/measurement",
