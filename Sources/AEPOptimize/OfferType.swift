@@ -47,4 +47,21 @@ public enum OfferType: Int, Codable {
             self = format.starts(with: "image/") ? .image : .unknown
         }
     }
+
+    /// Returns the format String of `OfferType`.
+    /// - Returns: A string representing the format of OfferType
+    public func toString() -> String {
+        switch self {
+        case .html:
+            return "text/html"
+        case .json:
+            return "application/json"
+        case .text:
+            return "text/plain"
+        case .image:
+            return "image/*"
+        default:
+            return ""
+        }
+    }
 }
