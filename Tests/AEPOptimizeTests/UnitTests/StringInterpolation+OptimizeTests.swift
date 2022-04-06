@@ -18,6 +18,7 @@ class StringInterpolation_OptimizeTests: XCTestCase {
     private let ACTIVITY_ID = "xcore:offer-activity:1111111111111111"
     private let PLACEMENT_ID = "xcore:offer-placement:1111111111111111"
     private let DEFAULT_ITEM_COUNT: UInt = 1
+    private let NAME = "com.adobe.SampleApp"
 
     func testAppendInterpolation_defaultItemCount() {
         let message = "\(activityId: ACTIVITY_ID, placementId: PLACEMENT_ID, itemCount: DEFAULT_ITEM_COUNT)"
@@ -32,5 +33,10 @@ class StringInterpolation_OptimizeTests: XCTestCase {
     func testAppendInterpolation_withZeroItemCount() {
         let message = "\(activityId: ACTIVITY_ID, placementId: PLACEMENT_ID, itemCount: 0)"
         XCTAssertEqual("{\"activityId\":\"xcore:offer-activity:1111111111111111\",\"placementId\":\"xcore:offer-placement:1111111111111111\",\"itemCount\":0}", message)
+    }
+    
+    func testAppendInterpolation_withName() {
+        let message = "\(name: NAME)"
+        XCTAssertEqual("{\"xdm:name\":\"com.adobe.SampleApp\"}", message)
     }
 }

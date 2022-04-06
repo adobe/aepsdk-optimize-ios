@@ -100,7 +100,7 @@ class DecisionScopeTests: XCTestCase {
                                           itemCount: 0)
         XCTAssertFalse(decisionScope.isValid)
     }
-
+    
     func testIsValid_encodedScopeWithDefaultItemCount() {
         let decisionScope = DecisionScope(name: "eyJ4ZG06YWN0aXZpdHlJZCI6Inhjb3JlOm9mZmVyLWFjdGl2aXR5OjExMTExMTExMTExMTExMTEiLCJ4ZG06cGxhY2VtZW50SWQiOiJ4Y29yZTpvZmZlci1wbGFjZW1lbnQ6MTExMTExMTExMTExMTExMSJ9")
         XCTAssertTrue(decisionScope.isValid)
@@ -111,6 +111,16 @@ class DecisionScopeTests: XCTestCase {
         XCTAssertTrue(decisionScope.isValid)
     }
 
+    func testIsValid_encodedScopeWithValidName() {
+        let decisionScope = DecisionScope(name: "eyJ4ZG06bmFtZSI6ImNvbS5hZG9iZS5TYW1wbGVBcHAifQ==")
+        XCTAssertTrue(decisionScope.isValid)
+    }
+    
+    func testIsValid_encodedScopeWithEmptyName() {
+        let decisionScope = DecisionScope(name: "eyJ4ZG06bmFtZSI6IiJ9")
+        XCTAssertFalse(decisionScope.isValid)
+    }
+    
     func testIsValid_encodedScopeWithEmptyActivityId() {
         let decisionScope = DecisionScope(name: "eyJ4ZG06YWN0aXZpdHlJZCI6IiIsInhkbTpwbGFjZW1lbnRJZCI6Inhjb3JlOm9mZmVyLXBsYWNlbWVudDoxMTExMTExMTExMTExMTExIn0=")
         XCTAssertFalse(decisionScope.isValid)

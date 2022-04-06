@@ -19,6 +19,7 @@ enum OptimizeConstants {
     static let DECISION_SCOPE_NAME = "name"
     static let ACTIVITY_ID = "activityId"
     static let XDM_ACTIVITY_ID = "xdm:activityId"
+    static let XDM_NAME = "xdm:name"
     static let PLACEMENT_ID = "placementId"
     static let XDM_PLACEMENT_ID = "xdm:placementId"
     static let ITEM_COUNT = "itemCount"

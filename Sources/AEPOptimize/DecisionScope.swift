@@ -21,10 +21,17 @@ public class DecisionScope: NSObject, Codable {
 
     /// Creates a new decision scope using the given scope `name`.
     ///
-    /// - Parameter name: string representation for the decision scope.
+    /// If the provided `name` should be used to create the scope JSON strings which is Base64 encoded, set `shouldEncode` to true.
+    /// - Parameters:
+    ///     - name: string representation for the decision scope.
+    ///     - shouldEncode: boolean value indicating whether name should be encoded.
     @objc
-    public init(name: String) {
-        self.name = name
+    public init(name: String, shouldEncode: Bool = false) {
+        if !shouldEncode {
+            self.name = name
+        } else {
+            self.name = "\(name: name)".base64Encode() ?? ""
+        }
     }
 
     /// Creates a new decision scope using the given `activityId`, `placementId` and `itemCount`.
@@ -64,7 +71,13 @@ public class DecisionScope: NSObject, Codable {
                 return false
             }
 
-            if dictionary.keys.contains(OptimizeConstants.XDM_ACTIVITY_ID) {
+            if dictionary.keys.contains(OptimizeConstants.XDM_NAME) {
+                guard let scopeName = dictionary[OptimizeConstants.XDM_NAME] as? String,
+                      !scopeName.isEmpty else {
+                    Log.debug(label: OptimizeConstants.LOG_TAG, "Invalid scope \(name)! Scope name is nil or empty.")
+                    return false
+                }
+            } else if dictionary.keys.contains(OptimizeConstants.XDM_ACTIVITY_ID) {
                 // Validate xdm:activityId, xdm:placementId and xdm:itemCount
                 guard let activityId = dictionary[OptimizeConstants.XDM_ACTIVITY_ID] as? String,
                       !activityId.isEmpty
