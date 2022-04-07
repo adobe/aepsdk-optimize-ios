@@ -22,8 +22,4 @@ extension String.StringInterpolation {
             appendInterpolation("{\"activityId\":\"\(activityId)\",\"placementId\":\"\(placementId)\",\"itemCount\":\(itemCount)}")
         }
     }
-
-    mutating func appendInterpolation(name: String) {
-        appendInterpolation("{\"xdm:name\":\"\(name)\"}")
-    }
 }

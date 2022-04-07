@@ -21,17 +21,10 @@ public class DecisionScope: NSObject, Codable {
 
     /// Creates a new decision scope using the given scope `name`.
     ///
-    /// If the provided `name` should be used to create the scope JSON strings which is Base64 encoded, set `shouldEncode` to true.
-    /// - Parameters:
-    ///     - name: string representation for the decision scope.
-    ///     - shouldEncode: boolean value indicating whether name should be encoded.
+    /// - Parameter name: string representation for the decision scope.
     @objc
-    public init(name: String, shouldEncode: Bool = false) {
-        if !shouldEncode {
-            self.name = name
-        } else {
-            self.name = "\(name: name)".base64Encode() ?? ""
-        }
+    public init(name: String) {
+        self.name = name
     }
 
     /// Creates a new decision scope using the given `activityId`, `placementId` and `itemCount`.
