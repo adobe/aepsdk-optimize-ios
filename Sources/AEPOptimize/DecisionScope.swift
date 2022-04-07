@@ -73,7 +73,8 @@ public class DecisionScope: NSObject, Codable {
 
             if dictionary.keys.contains(OptimizeConstants.XDM_NAME) {
                 guard let scopeName = dictionary[OptimizeConstants.XDM_NAME] as? String,
-                      !scopeName.isEmpty else {
+                      !scopeName.isEmpty
+                else {
                     Log.debug(label: OptimizeConstants.LOG_TAG, "Invalid scope \(name)! Scope name is nil or empty.")
                     return false
                 }
