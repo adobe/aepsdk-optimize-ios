@@ -64,7 +64,14 @@ public class DecisionScope: NSObject, Codable {
                 return false
             }
 
-            if dictionary.keys.contains(OptimizeConstants.XDM_ACTIVITY_ID) {
+            if dictionary.keys.contains(OptimizeConstants.XDM_NAME) {
+                guard let scopeName = dictionary[OptimizeConstants.XDM_NAME] as? String,
+                      !scopeName.isEmpty
+                else {
+                    Log.debug(label: OptimizeConstants.LOG_TAG, "Invalid scope \(name)! Scope name is nil or empty.")
+                    return false
+                }
+            } else if dictionary.keys.contains(OptimizeConstants.XDM_ACTIVITY_ID) {
                 // Validate xdm:activityId, xdm:placementId and xdm:itemCount
                 guard let activityId = dictionary[OptimizeConstants.XDM_ACTIVITY_ID] as? String,
                       !activityId.isEmpty
