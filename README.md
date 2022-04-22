@@ -4,7 +4,7 @@
 
 The AEP Mobile Optimize SDK Extension provides APIs to enable real-time personalization workflows in Adobe Experience Platform SDKs using the Edge decisioning services. It depends on AEPCore and requires AEPEdge Extension to send personalization query Events to the Experience Edge network.
 
-> This library is currently in public Beta. Please be aware that the public APIs, SDK Events and the code here is subject to change until the final v1.0.0 release is available. 
+> This library is currently in public beta. Please be aware that the public APIs, SDK events and the code here are subject to change when version 1.0.0 is released. 
 
 ## Requirements
 
