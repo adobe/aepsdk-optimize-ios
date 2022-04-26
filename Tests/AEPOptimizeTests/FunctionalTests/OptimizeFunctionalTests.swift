@@ -771,6 +771,7 @@ class OptimizeFunctionalTests: XCTestCase {
                   {
                       "id": "xcore:personalized-offer:1111111111111111",
                       "etag": "10",
+                      "score": 1,
                       "schema": "https://ns.adobe.com/experience/offer-management/content-component-json",
                       "data": {
                           "id": "xcore:personalized-offer:1111111111111111",
@@ -835,6 +836,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(1, proposition?.offers.count)
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-json", proposition?.offers[0].schema)
+        XCTAssertEqual(1, proposition?.offers[0].score)
         XCTAssertEqual(.json, proposition?.offers[0].type)
         XCTAssertEqual("{\"key\":\"value\"}", proposition?.offers[0].content)
         XCTAssertEqual(1, proposition?.offers[0].characteristics?.count)

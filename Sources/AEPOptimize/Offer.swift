@@ -22,6 +22,9 @@ public class Offer: NSObject, Codable {
     /// Offer revision detail at the time of the request
     @objc public let etag: String
 
+    /// Offer priority score
+    @objc public let score: Int
+
     /// Offer schema string
     @objc public let schema: String
 
@@ -46,6 +49,7 @@ public class Offer: NSObject, Codable {
     enum CodingKeys: String, CodingKey {
         case id
         case etag
+        case score
         case schema
         case meta
         case data
@@ -67,6 +71,8 @@ public class Offer: NSObject, Codable {
 
         // Try and decode format, if present. Target response doesn't contain etag, so setting the default value to empty string.
         etag = try container.decodeIfPresent(String.self, forKey: .etag) ?? ""
+
+        score = try container.decodeIfPresent(Int.self, forKey: .score) ?? 0
 
         schema = try container.decode(String.self, forKey: .schema)
 
@@ -134,6 +140,7 @@ public class Offer: NSObject, Codable {
 
         try container.encode(id, forKey: .id)
         try container.encode(etag, forKey: .etag)
+        try container.encode(score, forKey: .score)
         try container.encode(schema, forKey: .schema)
         try container.encode(AnyCodable.from(dictionary: meta), forKey: .meta)
 

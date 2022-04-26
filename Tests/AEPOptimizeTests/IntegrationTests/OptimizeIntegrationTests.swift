@@ -134,6 +134,7 @@ class OptimizeIntegrationTests: XCTestCase {
                                   {\
                                      "id": "xcore:personalized-offer:2222222222222222",\
                                      "etag": "39",\
+                                     "score": 1,\
                                      "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",\
                                      "data": {\
                                         "id": "xcore:personalized-offer:2222222222222222",\
@@ -207,6 +208,7 @@ class OptimizeIntegrationTests: XCTestCase {
             XCTAssertEqual("xcore:personalized-offer:2222222222222222", proposition?.offers[0].id)
             XCTAssertEqual("39", proposition?.offers[0].etag)
             XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-text", proposition?.offers[0].schema)
+            XCTAssertEqual(1, proposition?.offers[0].score)
             XCTAssertEqual(.text, proposition?.offers[0].type)
             XCTAssertEqual("This is a plain text content!", proposition?.offers[0].content)
             XCTAssertEqual(["en-us"], proposition?.offers[0].language)
