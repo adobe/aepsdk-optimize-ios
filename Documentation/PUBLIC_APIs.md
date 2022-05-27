@@ -423,8 +423,14 @@ public class Offer: NSObject, Codable {
     /// Offer revision detail at the time of the request
     @objc public let etag: String
 
+    /// Offer priority score
+    @objc public let score: Int
+
     /// Offer schema string
     @objc public let schema: String
+
+    /// Offer metadata
+    @objc public let meta: [String: Any]?
 
     /// Offer type as represented in enum `OfferType`
     @objc public let type: OfferType
