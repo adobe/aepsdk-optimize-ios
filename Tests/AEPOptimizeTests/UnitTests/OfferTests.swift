@@ -95,7 +95,6 @@ class OfferTests: XCTestCase {
 }
 """
 
-    // PDCL-4528 & PDCL-4703
     private let TARGET_OFFER =
 """
 {\

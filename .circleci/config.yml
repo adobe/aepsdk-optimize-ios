@@ -86,12 +86,12 @@ jobs:
               shasum -a $i -c --ignore-missing <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM") ||
               shasum -a $i -c <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM" | grep -w "codecov")
             done  
-            bash ./codecov -v -X s3 -c -D "./build/out" -J "AEPOptimize" -t ${CODECOV_TOKEN}
+            bash ./codecov -v -X s3 -c -D "./build/out" -J "AEPOptimize"
 
         # verify XCFramework archive builds
       - run:
           name: Build XCFramework
           command: |
-            if [ "${CIRCLE_BRANCH}" == "main" ]; then
+            if [ "${CIRCLE_BRANCH}" == "main" || "${CIRCLE_BRANCH}" == "staging" ]; then
               make archive
             fi
