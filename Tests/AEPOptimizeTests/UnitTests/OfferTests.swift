@@ -95,7 +95,6 @@ class OfferTests: XCTestCase {
 }
 """
 
-    // PDCL-4528 & PDCL-4703
     private let TARGET_OFFER =
 """
 {\
@@ -139,6 +138,27 @@ class OfferTests: XCTestCase {
         "id": "xcore:personalized-offer:2222222222222222",\
         "format": "text/plain",\
         "content": "This is a plain text content!"\
+    }\
+}
+"""
+
+    private let OFFER_WITH_SCORE =
+"""
+{\
+    "id": "xcore:personalized-offer:2222222222222222",\
+    "etag": "7",\
+    "score": 2,\
+    "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",\
+    "data": {\
+        "id": "xcore:personalized-offer:2222222222222222",\
+        "format": "text/plain",\
+        "content": "This is a plain text content!",\
+        "language": [\
+            "en-us"\
+        ],\
+        "characteristics": {\
+            "mobile": "true"\
+        }\
     }\
 }
 """
@@ -194,6 +214,7 @@ class OfferTests: XCTestCase {
 
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
         XCTAssertEqual("8", offer.etag)
+        XCTAssertEqual(0, offer.score)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-json", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 1), offer.type)
         XCTAssertEqual("{\"testing\":\"ho-ho\"}", offer.content)
@@ -213,6 +234,7 @@ class OfferTests: XCTestCase {
 
         XCTAssertEqual("xcore:personalized-offer:2222222222222222", offer.id)
         XCTAssertEqual("7", offer.etag)
+        XCTAssertEqual(0, offer.score)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-text", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 2), offer.type)
         XCTAssertEqual("This is a plain text content!", offer.content)
@@ -232,6 +254,7 @@ class OfferTests: XCTestCase {
 
         XCTAssertEqual("xcore:personalized-offer:3333333333333333", offer.id)
         XCTAssertEqual("8", offer.etag)
+        XCTAssertEqual(0, offer.score)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 3), offer.type)
         XCTAssertEqual("<h1>Hello, Welcome!</h1>", offer.content)
@@ -251,6 +274,7 @@ class OfferTests: XCTestCase {
 
         XCTAssertEqual("xcore:personalized-offer:4444444444444444", offer.id)
         XCTAssertEqual("8", offer.etag)
+        XCTAssertEqual(0, offer.score)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-imagelink", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 4), offer.type)
         XCTAssertEqual("https://example.com/avatar1.png?alt=media", offer.content)
@@ -321,6 +345,26 @@ class OfferTests: XCTestCase {
         XCTAssertNil(offer.characteristics)
     }
 
+    func testOffer_withScore() {
+        guard let offerData = OFFER_WITH_SCORE.data(using: .utf8),
+              let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
+        else {
+            XCTFail("Offer should be valid.")
+            return
+        }
+
+        XCTAssertEqual("xcore:personalized-offer:2222222222222222", offer.id)
+        XCTAssertEqual("7", offer.etag)
+        XCTAssertEqual(2, offer.score)
+        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-text", offer.schema)
+        XCTAssertEqual(OfferType.text, offer.type)
+        XCTAssertEqual("This is a plain text content!", offer.content)
+        XCTAssertEqual(1, offer.language?.count)
+        XCTAssertEqual("en-us", offer.language?[0])
+        XCTAssertEqual(1, offer.characteristics?.count)
+        XCTAssertEqual("true", offer.characteristics?["mobile"])
+    }
+    
     func testOffer_invalidNoContent() {
         guard let offerData = OFFER_INVALID_NO_CONTENT.data(using: .utf8) else {
             XCTFail("Offer json data should be valid.")

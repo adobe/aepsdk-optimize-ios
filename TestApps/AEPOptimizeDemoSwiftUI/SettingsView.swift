@@ -16,7 +16,6 @@ import AEPOptimize
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var appId = ""
     @State private var assuranceSessionURL = ""
    
     @EnvironmentObject var odeSettings: OdeSettings
@@ -29,9 +28,6 @@ struct SettingsView: View {
         VStack {
             HeaderView(text: "Settings")
             Form {
-                Section(header: Text("Launch Environment File ID")) {
-                    TextField("Enter your appId", text: $appId)
-                }
                 Section(header: Text("AEP Assurance Start URL")) {
                     TextField("Enter Assurance start URL", text: $assuranceSessionURL)
                         .onChange(of: assuranceSessionURL) {
