@@ -27,7 +27,7 @@ jobs:
       # make sure we're on the right version of cocoapods
       - run:
           name: Verify Cocoapods Version
-          command: bundle check || bundle install --path vendor/bundle
+          command: echo Test; bundle check || bundle install --path vendor/bundle
 
       # save cocoapods version gem data
       - save_cache:
