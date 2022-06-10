@@ -1,8 +1,8 @@
-# Adobe Experience Platform Optimize Mobile SDK
+# Adobe Experience Platform Mobile SDKs - Optimize extension
 
 ## About this project
 
-The AEPOptimize mobile SDK extension provides APIs to enable real-time personalization workflows in the Adobe Experience Platform SDKs using Adobe Target or Adobe Journey Optimizer Offer Decisioning. It depends on AEPCore and requires AEPEdge Extension to send personalization query events to the Experience Edge network.
+The AEPOptimize extension provides APIs to enable real-time personalization workflows in the Adobe Experience Platform Mobile SDKs using Adobe Target or Adobe Journey Optimizer Offer Decisioning. It requires AEPCore and AEPEdge extensions to send personalization query events to the Experience Edge network.
 
 ## Requirements
 
