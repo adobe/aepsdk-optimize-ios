@@ -22,6 +22,12 @@ import AEPEdgeIdentity
 
 import AEPOptimize
 
+///
+/// This Share Extension is set up to handle sharing Images from the camera roll.
+/// To test, simply run the app extension and select the Photos app on device or simulator.
+/// Then attempt to share a photo and select the AEPOptimizeAppExtension from the share menu
+/// This shareViewController will then be presented and can be handled appropriately.
+/// 
 class ShareViewController: SLComposeServiceViewController {
 
     private let LAUNCH_ENVIRONMENT_FILE_ID = ""

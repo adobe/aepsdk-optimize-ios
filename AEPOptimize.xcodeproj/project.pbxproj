@@ -1316,7 +1316,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FKGEE875K4;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AEPOptimizeDemoAppExtension/Info.plist;
+				INFOPLIST_FILE = TestApps/AEPOptimizeDemoAppExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AEPOptimizeDemoAppExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
@@ -1344,7 +1344,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FKGEE875K4;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = AEPOptimizeDemoAppExtension/Info.plist;
+				INFOPLIST_FILE = TestApps/AEPOptimizeDemoAppExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AEPOptimizeDemoAppExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
