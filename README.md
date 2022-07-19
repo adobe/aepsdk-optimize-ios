@@ -1,5 +1,7 @@
 # Adobe Experience Platform Mobile SDKs - Optimize extension
 
+[![Cocoapods](https://img.shields.io/cocoapods/v/AEPOptimize.svg?color=orange&label=AEPOptimize&logo=apple&logoColor=white)](https://cocoapods.org/pods/AEPOptimize)[![SPM](https://img.shields.io/badge/SPM-Supported-orange.svg?logo=apple&logoColor=white)](https://swift.org/package-manager/)[![CircleCI](https://img.shields.io/circleci/project/github/adobe/aepsdk-optimize-ios/main.svg?logo=circleci)](https://circleci.com/gh/adobe/workflows/aepsdk-optimize-ios)[![Code Coverage](https://img.shields.io/codecov/c/github/adobe/aepsdk-optimize-ios/main.svg?logo=codecov)](https://codecov.io/gh/adobe/aepsdk-optimize-ios/branch/main)
+
 ## About this project
 
 The AEPOptimize extension provides APIs to enable real-time personalization workflows in the Adobe Experience Platform Mobile SDKs using Adobe Target or Adobe Journey Optimizer Offer Decisioning. It requires AEPCore and AEPEdge extensions to send personalization query events to the Experience Edge network.
