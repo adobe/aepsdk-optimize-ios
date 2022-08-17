@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		048957B1B953F5E65058436F /* Pods_AEPOptimize.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6530E7CDA75EFA93DD6318C /* Pods_AEPOptimize.framework */; };
+		0969EAEA28AD14E700E6E470 /* AEPOptimize.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPOptimize.framework */; };
+		0969EAEB28AD14E700E6E470 /* AEPOptimize.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPOptimize.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		25A7F16F9547EE83F5734E3C /* Pods_shared_AEPOptimizeDemoAppExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9756675167E8274119439EC8 /* Pods_shared_AEPOptimizeDemoAppExtension.framework */; };
 		3AEB05F692581AAC67BB2B85 /* Pods_FunctionalTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EE07424FC1DD074D8B9FD0C /* Pods_FunctionalTests.framework */; };
 		41CB4F5069B6936944DDB6B1 /* Pods_UnitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9C2F3CA52295A7E3D1705 /* Pods_UnitTests.framework */; };
@@ -16,7 +18,6 @@
 		78AF6DBF284FD9AA0022EB24 /* AEPOptimizeDemoAppExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 78AF6DB5284FD9AA0022EB24 /* AEPOptimizeDemoAppExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		79D02C3280BC519B410D8D12 /* Pods_IntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 621A2487FEB22E135935BFC9 /* Pods_IntegrationTests.framework */; };
 		C8076C07265E10A7006BEC5D /* Pods_shared_AEPOptimizeDemoSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6DE1D78747B6856E34BE1F /* Pods_shared_AEPOptimizeDemoSwiftUI.framework */; };
-		C8076C08265E10A7006BEC5D /* Pods_shared_AEPOptimizeDemoSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6DE1D78747B6856E34BE1F /* Pods_shared_AEPOptimizeDemoSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C8076C4D265EE786006BEC5D /* TargetProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8076C3F265EE768006BEC5D /* TargetProduct.swift */; };
 		C8076C52265EE789006BEC5D /* TargetOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8076C46265EE776006BEC5D /* TargetOrder.swift */; };
 		C8076C57265EE78E006BEC5D /* DictionaryRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8076C45265EE776006BEC5D /* DictionaryRowView.swift */; };
@@ -35,7 +36,6 @@
 		C82A5EFF26535ACB0062E70A /* HtmlOfferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82A5EFE26535ACB0062E70A /* HtmlOfferView.swift */; };
 		C82A5F0726535F5E0062E70A /* ImageOfferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82A5F0626535F5E0062E70A /* ImageOfferView.swift */; };
 		C82A5F122653A88D0062E70A /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82A5F112653A88A0062E70A /* HeaderView.swift */; };
-		C82A607D2655A6830062E70A /* AEPOptimize.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPOptimize.framework */; };
 		C863BE9D26458371004B90A0 /* AEPOptimizeDemoSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C863BE9C26458371004B90A0 /* AEPOptimizeDemoSwiftUIApp.swift */; };
 		C863BE9F26458371004B90A0 /* OffersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C863BE9E26458371004B90A0 /* OffersView.swift */; };
 		C863BEA126458373004B90A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C863BEA026458373004B90A0 /* Assets.xcassets */; };
@@ -131,6 +131,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		0969EAEC28AD14E700E6E470 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				0969EAEB28AD14E700E6E470 /* AEPOptimize.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		78AF6DC3284FD9AA0022EB24 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -149,7 +160,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				C863BF332647B577004B90A0 /* AEPOptimize.framework in Embed Frameworks */,
-				C8076C08265E10A7006BEC5D /* Pods_shared_AEPOptimizeDemoSwiftUI.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -270,7 +280,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C82A607D2655A6830062E70A /* AEPOptimize.framework in Frameworks */,
+				0969EAEA28AD14E700E6E470 /* AEPOptimize.framework in Frameworks */,
 				FC30C5C029BE3E006D5D4F28 /* Pods_shared_AEPOptimizeDemoObjC.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -651,6 +661,7 @@
 				C82A605B2655A6480062E70A /* Frameworks */,
 				C82A605C2655A6480062E70A /* Resources */,
 				4E8D6AEF0B7EEDAE2AE7486E /* [CP] Embed Pods Frameworks */,
+				0969EAEC28AD14E700E6E470 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
