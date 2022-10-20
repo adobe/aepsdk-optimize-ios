@@ -1,3 +1,11 @@
-# AEPOptimize Documentation
+# Optimize Mobile SDK Extension Documentation
 
-- [Public APIs](PUBLIC_APIs.md)
+## Contents
+
+### Overview
+* [API Reference](api-reference.md)
+
+### Tutorials
+* [Optimize Tutorial](/Tutorials/README.md)
+
+### Advanced

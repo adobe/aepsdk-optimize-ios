@@ -1,5 +1,5 @@
 
-# Intro
+# Introduction
 
 Doc repository for aepsdk-optimize and tutorials. 
 
