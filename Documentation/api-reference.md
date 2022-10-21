@@ -18,7 +18,9 @@ This API reference guide provides usage information for the Optimize extension's
 
 This API clears out the client-side in-memory propositions cache.
 
-#### Swift
+<!-- tabs:start -->
+
+#### **Swift**
 
 ##### Syntax
 
@@ -32,7 +34,7 @@ static func clearCachedPropositions()
 Optimize.clearCachedPropositions()
 ```
 
-#### Objective-C
+#### **Objective-C**
 
 ##### Syntax
 
@@ -46,13 +48,16 @@ Optimize.clearCachedPropositions()
 [AEPMobileOptimize clearCachedPropositions];
 ```
 
+<!-- tabs:end -->
 ---
 
 ### extensionVersion
 
 This property contains the version information for currently installed AEPOptimize extension.
 
-#### Swift
+<!-- tabs:start -->
+
+#### **Swift**
 
 ##### Syntax
 
@@ -66,7 +71,7 @@ static var extensionVersion: String
 let extensionVersion = Optimize.extensionVersion
 ```
 
-#### Objective-C
+#### **Objective-C**
 
 ##### Syntax
 
@@ -80,13 +85,16 @@ let extensionVersion = Optimize.extensionVersion
 NSString *extensionVersion = [AEPMobileOptimize extensionVersion];
 ```
 
+<!-- tabs:end -->
 ---
 
 ### getPropositions
 
 This API retrieves the previously fetched propositions, for the provided decision scopes, from the in-memory extension propositions cache. The completion handler is invoked with the decision propositions corresponding to the given decision scopes. If a certain decision scope has not already been fetched prior to this API call, it will not be contained in the returned propositions.
 
-#### Swift
+<!-- tabs:start -->
+
+#### **Swift**
 
 ##### Syntax
 
@@ -123,7 +131,7 @@ Optimize.getPropositions(for: [decisionScope1, decisionScope2]) { propositionsDi
 }
 ```
 
-#### Objective-C
+#### **Objective-C**
 
 ##### Syntax
 
@@ -155,13 +163,16 @@ AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc] initWithName: @"myS
 }];
 ```
 
+<!-- tabs:end -->
 ---
 
 ### onPropositionsUpdate
 
 This API registers a permanent callback which is invoked whenever the Edge extension dispatches a response Event received from the Experience Edge Network upon a personalization query. The personalization query requests can be triggered by the `updatePropositions(for:withXdm:andData:)` API, Edge extension `sendEvent(experienceEvent:_:)` API or launch consequence rules.
 
-#### Swift
+<!-- tabs:start -->
+
+#### **Swift**
 
 ##### Syntax
 
@@ -179,7 +190,7 @@ Optimize.onPropositionsUpdate { propositionsDict in
 }
 ```
 
-#### Objective-C
+#### **Objective-C**
 
 ##### Syntax
 
@@ -195,13 +206,16 @@ Optimize.onPropositionsUpdate { propositionsDict in
 }];
 ```
 
+<!-- tabs:end -->
 ---
 
 ### registerExtensions
 
 This `MobileCore` API can be invoked to register the Optimize extension.
 
-#### Swift
+<!-- tabs:start -->
+
+#### **Swift**
 
 ##### Syntax
 
@@ -218,7 +232,7 @@ MobileCore.registerExtensions([Optimize.self, ...]) {
 }
 ```
 
-#### Objective-C
+#### **Objective-C**
 
 ##### Syntax
 
@@ -235,13 +249,16 @@ MobileCore.registerExtensions([Optimize.self, ...]) {
 }];
 ```
 
+<!-- tabs:end -->
 ---
 
 ### resetIdentities
 
 This `MobileCore` API can also be invoked to clear out the client-side data for Optimize extension, e.g. in-memory propositions cache.
 
-#### Swift
+<!-- tabs:start -->
+
+#### **Swift**
 
 ##### Syntax
 
@@ -255,7 +272,7 @@ static func resetIdentities()
 MobileCore.resetIdentities()
 ```
 
-#### Objective-C
+#### **Objective-C**
 
 ##### Syntax
 
@@ -269,13 +286,16 @@ MobileCore.resetIdentities()
 [AEPMobileCore resetIdentities];
 ```
 
+<!-- tabs:end -->
 ---
 
 ### updatePropositions
 
 This API dispatches an Event for the Edge network extension to fetch decision propositions, for the provided decision scopes array, from the decisioning services enabled in the Experience Edge. The returned decision propositions are cached in-memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
 
-#### Swift
+<!-- tabs:start -->
+
+#### **Swift**
 
 ##### Syntax
 ```swift
@@ -296,7 +316,7 @@ Optimize.updatePropositions(for: [decisionScope1, decisionScope2]
                             andData: ["dataKey": "dataValue"])
 ```
 
-#### Objective-C
+#### **Objective-C**
 
 ##### Syntax
 ```objc
@@ -317,6 +337,7 @@ AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc] initWithName: @"myS
                               andData: @{@"dataKey": @"dataValue"}];
 ```
 
+<!-- tabs:end -->
 ---
 
 ## Public classes
