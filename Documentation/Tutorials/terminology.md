@@ -1,1 +1,5 @@
 # Terminology
+
+`Decision Scope`: 
+
+`Proposition`: 

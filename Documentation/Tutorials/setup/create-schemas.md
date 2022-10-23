@@ -1,0 +1,1 @@
+# Create a Schema on Adobe Experience Platform UI
