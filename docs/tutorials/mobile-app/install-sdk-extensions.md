@@ -176,7 +176,7 @@ targets: [
 
 ## Manual Install
 
-From the [Optimize project root directory](https://github.com/adobe/aepsdk-optimize-ios), run the following `Makefile` target to generate `AEPOptimize.framework`
+From the [Optimize project root directory](https://github.com/adobe/aepsdk-optimize-ios), run the following `Makefile` target to generate `AEPOptimize.xcframework`
 
 ```text
 $ make archive
