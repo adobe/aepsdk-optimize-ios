@@ -11,7 +11,9 @@ In order to send data to the Edge Network, the datastream must be configured wit
 
 Select **Datastreams** (**1**) under **DATA COLLECTION** in the left side navigation panel . Select **New Datastream** (**2**) in the top right .
 
-<img src="../../assets/datastreams-main-view.png?raw=true" alt="Create new datastream" width="1100"/>  
+| ![Create new datastream](../../assets/datastreams-main-view.png?raw=true) |
+| :---: |
+| **Create new datastream** |
 
 Give the datastream an identifying name and description (**1**), then pick the schema created in the previous section using the dropdown menu (**2**). Then select **Save** (**3**).
 
