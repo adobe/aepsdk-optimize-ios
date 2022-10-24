@@ -1,7 +1,7 @@
 # Optimize Mobile SDK Extension Documentation
 
 
-| ![Optimize Extension](../assets/optimize-extension.png?raw=true) |
+| ![Optimize Extension](assets/optimize-extension.png?raw=true) |
 | :---: |
 | **Optimize Extension** |
 
