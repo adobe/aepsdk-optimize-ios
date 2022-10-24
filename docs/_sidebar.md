@@ -7,7 +7,7 @@
     - [Frequently Asked Questions](faqs.md)
 
 - Tutorials
-    - [Optimize Tutorial](/Tutorials/README.md)
+    - [Optimize Tutorial](/tutorials/README.md)
 
 - Advanced
     - Architecture
