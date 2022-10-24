@@ -8,13 +8,13 @@ At a high level, a schema is a definition for the structure of your data; what p
 1. Go to the [Adobe Experience Platform](https://experience.adobe.com/#/platform), using your Adobe ID credentials to log in if prompted.
 
 2. Navigate to the Data Collection UI by selecting the nine-dot menu in the top right (**1**), and selecting `Data Collection` (**2**)  
-<img src="../../assets/aep-data-collection.png" alt="Going from Assurance to Data Collection" width="1100"/>
+<img src="../../assets/aep-data-collection.png?raw=true" alt="Going from Assurance to Data Collection" width="1100"/>
 
 3. Select **Schemas** in the left navigation window  
-<img src="../../assets/data-collection-tags.png" alt="Going from Assurance to Data Collection" width="1100"/>
+<img src="../../assets/data-collection-tags.png?raw=true" alt="Going from Assurance to Data Collection" width="1100"/>
 
 4. In the schemas view, select the **+ Create schema** button (**1**) in the top right, then select `XDM ExperienceEvent` (**2**)
-<img src="../../assets/data-collection-schemas.png" alt="Creating new XDM ExperienceEvent schema" width="1100"/>
+<img src="../../assets/data-collection-schemas.png?raw=true" alt="Creating new XDM ExperienceEvent schema" width="1100"/>
 
 Once in the new schema creation view, notice the schema class is `XDM ExperienceEvent` (**1**); schemas adhere to specific class types which just means that they have some predefined properties and behaviors within the Edge platform. In this case, `XDM ExperienceEvent` creates the base properties you see in the `Structure` section that help define some baseline data for each Experience Event. 
 
@@ -42,7 +42,7 @@ See the [Field Groups section in the Basics of schema composition](https://exper
 
 </p></details>
 
-<img src="../../assets/schema-creation.png" alt="Initial schema creation view" width="1100"/>
+<img src="../../assets/schema-creation.png?raw=true" alt="Initial schema creation view" width="1100"/>
 
 Add the following Adobe defined field group to the schema:  
 - Experience Event - Proposition Interactions 
@@ -50,7 +50,7 @@ Add the following Adobe defined field group to the schema:
 Use the search box (**1**) to look up the name (**2**) of the field group required for this section. Note the owner of the schemas should be **Adobe** (**3**).
 
 Verify that all the required field groups are present in the right side info panel (**4**), then select **Add field groups** (**5**). 
-<img src="../../assets/schema-field-group-selected.png" alt="Add required field groups" width="1100"/>  
+<img src="../../assets/schema-field-group-selected.png?raw=true" alt="Add required field groups" width="1100"/>  
 
 Verify that the required field groups are present under the **Field groups** section (**1**) and the properties associated with those field groups are present under the **Structure** section (**2**), then select **Save** (**3**).
-<img src="../../assets/schema-with-field-groups.png" alt="Schema with required field groups" width="1100"/>
+<img src="../../assets/schema-with-field-groups.png?raw=true" alt="Schema with required field groups" width="1100"/>
