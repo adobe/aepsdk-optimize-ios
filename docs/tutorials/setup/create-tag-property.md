@@ -4,23 +4,33 @@ Next, create a property for mobile. A property is basically the configuration se
 
 Select **Tags** (**1**) under **DATA COLLECTION** in the left-side navigation panel. Select **New Property** (**2**) to create a new property.
 
-<img src="../../assets/tags-main-view.png?raw=true" alt="Navigating to tags" width="1100"/>  
+| ![Navigating to tags](../../assets/tags-main-view.png?raw=true) |
+| :---: |
+| **Accessing Data Collection** |
 
 Enter an identifying name for the new property in the **Name** textfield (**1**), select **Mobile** (**2**) under **Platform**, then select **Save** (**3**).
 
-<img src="../../assets/tags-create-property.png?raw=true" alt="Navigating to tags" width="1100"/>  
+| ![Creating a mobile property](../../assets/tags-create-property.png?raw=true) |
+| :---: |
+| **Creating a mobile property** |
 
 Find and select the mobile property for this tutorial (**2**), optionally using the search box to help quickly narrow down the search (**1**).
 
-<img src="../../assets/property-search.png?raw=true" alt="Finding desired mobile property" width="1100"/>  
+| ![Finding the desired mobile property](../../assets/property-search.png?raw=true) |
+| :---: |
+| **Finding the desired mobile property** |
 
 Select **Extensions** (**2**) in the left-side navigation panel, under **AUTHORING**. Notice there are some extensions are that installed by default (**1**).
 
-<img src="../../assets/mobile-property-extensions.png?raw=true" alt="Finding desired mobile property" width="1100"/>  
+| ![Mobile property default extensions](../../assets/mobile-property-extensions?raw=true) |
+| :---: |
+| **Mobile property default extensions** |
 
 Select **Catalog** (**1**) and (optionally) use the search box (**2**) to find the required extensions; select the **Install** button in an extension card to install the extension. 
 
-<img src="../../assets/mobile-property-catalog.png?raw=true" alt="Catalog search example" width="1100"/>  
+| ![Extension Catalog search example](../../assets/mobile-property-catalog.png?raw=true) |
+| :---: |
+| **Extension Catalog search example** |
 
 Install the AEP extensions with the following configurations:
 
@@ -29,7 +39,9 @@ Install the AEP extensions with the following configurations:
 
 Open the **Catalog** and install the `AEP Assurance` extension configuration.
 
-<img src="../../assets/mobile-property-catalog-assurance.png?raw=true" alt="Catalog search for Adobe Experience Platform Edge Network" width="1100"/>  
+| ![Extension Catalog search for AEP Assurance](../../assets/mobile-property-catalog-assurance.png?raw=true) |
+| :---: |
+| **Extension Catalog search for AEP Assurance** |
 
 </p></details>
 
@@ -38,11 +50,15 @@ Open the **Catalog** and install the `AEP Assurance` extension configuration.
 
 Open the **Catalog** and install the `Adobe Experience Platform Edge Network` extension configuration.
 
-<img src="../../assets/mobile-property-catalog-edge.png?raw=true" alt="Catalog search for Adobe Experience Platform Edge Network" width="1100"/>  
+| ![Extension Catalog search for Adobe Experience Platform Edge Network](../../assets/mobile-property-catalog-edge.png?raw=true) |
+| :---: |
+| **Extension Catalog search for Adobe Experience Platform Edge Network** |
 
 In the extension configuration settings window, set the datastream for each environment (**1**) to the one created for this tutorial. Then select `Save` (**2**)
 
-<img src="../../assets/mobile-property-edge-settings.png?raw=true" alt="Edge extension settings" width="1100"/>  
+| ![Edge Network extension settings](../../assets/mobile-property-edge-settings.png?raw=true) |
+| :---: |
+| **Edge Network extension settings** |
 
 </p></details>
 
@@ -51,7 +67,9 @@ In the extension configuration settings window, set the datastream for each envi
 
 Open the **Catalog** and install the **Identity** extension configuration. There are no settings for this extension.
 
-<img src="../../assets/mobile-property-catalog-identity.png?raw=true" alt="Catalog search for Identity" width="1100"/>  
+| ![Extension Catalog search for Identity for Edge Network](../../assets/mobile-property-catalog-identity.png?raw=true) |
+| :---: |
+| **Extension Catalog search for Identity for Edge Network** |
 
 </p></details>
 
@@ -60,11 +78,15 @@ Open the **Catalog** and install the **Identity** extension configuration. There
 
 Open the **Catalog** and install the **Consent** extension configuration.
 
-<img src="../../assets/mobile-property-catalog-consent.png?raw=true" alt="Catalog search for Consent" width="1100"/>  
+| ![Extension Catalog search for Consent](../../assets/mobile-property-catalog-consent.png?raw=true) |
+| :---: |
+| **Extension Catalog search for Consent** |
 
 In the extension configuration settings window, the **Default Consent Level** should be set to **Yes** by default (**1**); for the tutorial app this setting is fine as-is, however when using this configuration in production apps, it should reflect the requirements of the company's actual data collection policy for the app. 
 
-<img src="../../assets/mobile-property-consent-settings.png?raw=true" alt="Consent extension settings" width="1100"/>  
+| ![Consent extension settings](../../assets/mobile-property-consent-settings.png?raw=true) |
+| :---: |
+| **Consent extension settings** |
 
 </p></details>
 
@@ -73,13 +95,17 @@ In the extension configuration settings window, the **Default Consent Level** sh
 
 Open the **Catalog** and install the `Adobe Journey Optimizer - Decisioning` extension configuration.
 
-<img src="../../assets/mobile-property-catalog-decisioning.png?raw=true" alt="Catalog search for Adobe Experience Platform Edge Network" width="1100"/>  
+| ![Extension Catalog search for Adobe Journey Optimizer - Decisioning](../../assets/mobile-property-catalog-decisioning.png?raw=true) |
+| :---: |
+| **Extension Catalog search for Adobe Journey Optimizer - Decisioning** |
 
 </p></details>
 
 You should see the following after all the extensions are installed: 
 
-<img src="../../assets/mobile-property-edge-extensions.png?raw=true" alt="All installed extensions" width="1100"/>  
+| ![All required extensions](../../assets/mobile-property-edge-extensions.png?raw=true) |
+| :---: |
+| **All required extensions** |
 
 ### 4. Configure a Rule to forward Lifecycle metrics to Target 
 
@@ -89,12 +115,16 @@ To send mobile Lifecycle metrics to Target for creating audiences, a rule needs 
 1. On the Rules tab, select **Create New Rule**.
    - If your property already has rules, the button will be in the top right of the screen.
 
-<img src="../../assets/mobile-property-create-rule.png?raw=true" alt="All installed extensions" width="1100"/>  
+| ![Navigating to rules](../../assets/mobile-property-create-rule.png?raw=true) |
+| :---: |
+| **Navigating to rules** |
 
 2. Give your rule an easily recognizable name (**1**) in your list of rules. In this example, the rule is named "Forward Lifecycle metrics to Target".
 3. Under the **EVENTS** section, select **Add** (**2**).
 
-<img src="../../assets/mobile-property-rule-1.png?raw=true" alt="All installed extensions" width="1100"/>  
+| ![Adding Event to rule](../../assets/mobile-property-rule-1.png?raw=true) |
+| :---: |
+| **Adding Event to Rule** |
 
 #### Select an event <!-- omit in toc -->
 
@@ -103,17 +133,21 @@ To send mobile Lifecycle metrics to Target for creating audiences, a rule needs 
 4. On the right pane, click on + to specify XDM Event Type **equals**  (**3**) **personalization.request**  (**4**).
 5. Select **Keep Changes** (**5**).
 
-<img src="../../assets/mobile-property-rule-2.png?raw=true" alt="All installed extensions" width="1100"/>  
+| ![Event for Lifecycle metrics rule](../../assets/mobile-property-rule-2.png?raw=true) |
+| :---: |
+| **Event for Lifecycle metrics rule** |
 
 #### Define the action <!-- omit in toc -->
 1. Under the Actions section, select **+ Add** (**1**).
 
-<img src="../../assets/mobile-property-rule-5.png?raw=true" alt="All installed extensions" width="1100"/>  
+| ![Adding Action to rule](../../assets/mobile-property-rule-5.png?raw=true) |
+| :---: |
+| **Adding Action to rule** |
 
 2. From the **Extension** dropdown list (**1**), select **Mobile Core**.
 3. From the **Action Type** dropdown list (**2**), select **Attach Data**.
 4. On the right pane, specify the **JSON Payload** (**3**) containing metrics of interest. An example JSON Payload containing all of the mobile Lifecycle metrics is shown below.
-```javascript
+```json
 {
     "data": {
         "__adobe": {
@@ -148,13 +182,17 @@ To send mobile Lifecycle metrics to Target for creating audiences, a rule needs 
 ```
 5. Select **Keep Changes** (**4**).
 
-<img src="../../assets/mobile-property-rule-6.png?raw=true" alt="All installed extensions" width="1100"/>  
+| ![Lifecycle metrics to be sent to Target](../../assets/mobile-property-rule-6.png?raw=true) |
+| :---: |
+| **Lifecycle metrics to be sent to Target** |
 
 #### Save the rule and rebuild your property <!-- omit in toc -->
 1. After you complete your configuration, verify that your rule looks like the following:
 2. Select **Save** (**1**).
 
-<img src="../../assets/mobile-property-rule-7.png?raw=true" alt="All installed extensions" width="1100"/>  
+| ![Final rule to send Lifecycle metrics to Target](../../assets/mobile-property-rule-7.png?raw=true) |
+| :---: |
+| **Final rule to send Lifecycle metrics to Target** |
 
 ### 5. Publish changes
 1. Select **Publishing Flow** under **PUBLISHING** in the left-side navigation window.
@@ -163,12 +201,16 @@ To send mobile Lifecycle metrics to Target for creating audiences, a rule needs 
 4. Select **Add All Changed Resources** (**3**)
 5. Select **Save & Build to Development** (**4**)
 
-<img src="../../assets/mobile-property-publish.png?raw=true" alt="All installed extensions" width="1100"/>  
+| ![Publishing mobile property](../../assets/mobile-property-publish.png?raw=true) |
+| :---: |
+| **Publishing mobile property** |
 
 #### Getting the mobile property ID <!-- omit in toc -->
 Once the mobile property is published to the **Development** environment:  
 1. Select the box icon next to the environment dropdown (**5**, from above)
 2. Select the double overlapping box (**1**) to the right of the property ID to copy it. Save this unique ID (in a text file, or other easily accessible place), as it is required when setting up the app in the next section.
 
-<img src="../../assets/mobile-property-id.png?raw=true" alt="All installed extensions" width="500"/>  
+| ![Accessing mobile property id](../../assets/mobile-property-id.png?raw=true) |
+| :---: |
+| **Accessing mobile property id** |
 

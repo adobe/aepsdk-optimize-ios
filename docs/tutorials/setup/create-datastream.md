@@ -11,20 +11,26 @@ In order to send data to the Edge Network, the datastream must be configured wit
 
 Select **Datastreams** (**1**) under **DATA COLLECTION** in the left side navigation panel . Select **New Datastream** (**2**) in the top right .
 
-| ![Create new datastream](../../assets/datastreams-main-view.png?raw=true) |
+| ![Create new Datastream](../../assets/datastreams-main-view.png?raw=true) |
 | :---: |
-| **Create new datastream** |
+| **Create new Datastream** |
 
 Give the datastream an identifying name and description (**1**), then pick the schema created in the previous section using the dropdown menu (**2**). Then select **Save** (**3**).
 
-<img src="../../assets/datastreams-new-datastream.png?raw=true" alt="Set datastream values" width="1100"/>  
+| ![Set Datastream values](../../assets/datastreams-new-datastream.png?raw=true) |
+| :---: |
+| **Set Datastream values** |
 
 With the datastream set up, data can be directed to its destination by adding services. In this case, Adobe Target:
 1. Select **Add Service** (**1**)
 
-<img src="../../assets/datastreams-add-service.png?raw=true" alt="Set datastream values" width="1100"/>  
+| ![Add Datastream Service](../../assets/datastreams-add-service.png?raw=true) |
+| :---: |
+| **Add Datastream Service** |
 
 2. From the **Service (required)** dropdown (**1**), select **Adobe Target**.
 3. Select **Save**.
 
-<img src="../../assets/datastreams-add-target.png?raw=true" alt="Set datastream values" width="1100"/> 
+| ![Add Target to Datastream](../../assets/datastreams-add-target.png?raw=true) |
+| :---: |
+| **Add Target to Datastream** |
