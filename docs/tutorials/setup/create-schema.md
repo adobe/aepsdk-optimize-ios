@@ -8,7 +8,7 @@ At a high level, a schema is a definition for the structure of your data; what p
 1. Go to the [Adobe Experience Platform](https://experience.adobe.com/#/platform), using your Adobe ID credentials to log in if prompted.
 
 2. Navigate to the Data Collection UI by selecting the nine-dot menu in the top right (**1**), and selecting `Data Collection` (**2**)  
-<img src="../../../assets/aep-data-collection.png" alt="Going from Assurance to Data Collection" width="1100"/>
+<img src="../../assets/aep-data-collection.png" alt="Going from Assurance to Data Collection" width="1100"/>
 
 3. Select **Schemas** in the left navigation window  
 <img src="../../assets/data-collection-tags.png" alt="Going from Assurance to Data Collection" width="1100"/>
