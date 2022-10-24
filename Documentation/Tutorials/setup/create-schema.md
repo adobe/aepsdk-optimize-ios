@@ -1,0 +1,1 @@
+# Create an Experience Event based Schema on Adobe Experience Platform UI

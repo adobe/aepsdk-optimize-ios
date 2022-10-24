@@ -3,7 +3,11 @@
 - [Home](/)
 - Tutorials
     - [Introduction](/Tutorials/README.md)
-    - [Target UI (Prerequisite)](/Tutorials/setup/create-target-activity.md)
+    - Adobe Target (Prerequisite)
+        - [Set up a Target property](/Tutorials/setup/setup-target-property.md)
+        - [Create a Target Activity](/Tutorials/setup/create-target-activity.md)
+    - Adobe Experience Platform
+        - [Create a Schema](/Tutorials/setup/create-schema.md)
     - Data Collection
         - [Create a Datastream](/Tutorials/setup/create-datastream.md)
         - [Create a Tag Property](/Tutorials/setup/create-tag-property.md)
