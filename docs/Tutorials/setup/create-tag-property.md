@@ -1,4 +1,4 @@
-### Create a Tag property
+# Create a Tag property
 
 Next, create a property for mobile. A property is basically the configuration settings for AEP extensions, allowing you to control their functionality. 
 

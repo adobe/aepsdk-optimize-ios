@@ -37,6 +37,7 @@ governing permissions and limitations under the License.
     // Override point for customization after application launch.
     
     [AEPMobileCore setLogLevel:AEPLogLevelTrace];
+    [AEPMobileCore configureWithAppId: @""];
 
     [AEPMobileCore registerExtensions:@[
         AEPMobileIdentity.class,
@@ -49,8 +50,6 @@ governing permissions and limitations under the License.
         AEPMobileOptimize.class
     ] completion:^{
         [AEPMobileCore lifecycleStart:@{}];
-        
-        [AEPMobileCore configureWithAppId: @""];
     }];
 
     
