@@ -2,18 +2,18 @@
 
 - [Home](/)
 - Tutorials
-    - [Introduction](/tutorials/README.md)
+    - [Introduction](/Tutorials/README.md)
     - Adobe Target (Prerequisite)
-        - [Set up a Target property](/tutorials/setup/setup-target-property.md)
-        - [Create a Target Activity](/tutorials/setup/create-target-activity.md)
+        - [Set up a Target property](/Tutorials/setup/setup-target-property.md)
+        - [Create a Target Activity](/Tutorials/setup/create-target-activity.md)
     - Adobe Experience Platform
-        - [Create a Schema](/tutorials/setup/create-schema.md)
+        - [Create a Schema](/Tutorials/setup/create-schema.md)
     - Data Collection
-        - [Create a Datastream](/tutorials/setup/create-datastream.md)
-        - [Create a Tag Property](/tutorials/setup/create-tag-property.md)
+        - [Create a Datastream](/Tutorials/setup/create-datastream.md)
+        - [Create a Tag Property](/Tutorials/setup/create-tag-property.md)
     - Mobile App
-        - [Install SDK Extensions](/tutorials/mobile-app/install-sdk-extensions.md)
-        - [Initialize SDK](/tutorials/mobile-app/init-sdk.md)
-    - [Optimize Tutorial - Target](/tutorials/optimize-target-tutorial.md "Optimize Tutorial: Fetch and track Target Offers")
-    - [Optimize Assurance Validation](/tutorials/assurance-validation.md)
-    - [Terminology](/tutorials/terminology.md)
+        - [Install SDK Extensions](/Tutorials/mobile-app/install-sdk-extensions.md)
+        - [Initialize SDK](/Tutorials/mobile-app/init-sdk.md)
+    - [Optimize Tutorial - Target](/Tutorials/optimize-target-tutorial.md "Optimize Tutorial: Fetch and track Target Offers")
+    - [Optimize Assurance Validation](/Tutorials/assurance-validation.md)
+    - [Terminology](/Tutorials/terminology.md)
