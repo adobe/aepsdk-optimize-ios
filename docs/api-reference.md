@@ -9,7 +9,6 @@ This API reference guide provides usage information for the Optimize extension's
 - [getPropositions](#getPropositions)
 - [onPropositionsUpdate](#onPropositionsUpdate)
 - [registerExtensions](#registerExtensions)
-- [resetIdentities](#resetIdentities)
 - [updatePropositions](#updatePropositions)
 
 ---
@@ -247,43 +246,6 @@ MobileCore.registerExtensions([Optimize.self, ...]) {
 [AEPMobileCore registerExtensions:@[AEPMobileOptimize.class, ...] completion:^{
   // Processing upon registration completion
 }];
-```
-
-<!-- tabs:end -->
----
-
-### resetIdentities
-
-This `MobileCore` API can also be invoked to clear out the client-side data for Optimize extension, e.g. in-memory propositions cache.
-
-<!-- tabs:start -->
-
-#### **Swift**
-
-##### Syntax
-
-```swift
-static func resetIdentities()
-```
-
-##### Example
-
-```swift
-MobileCore.resetIdentities()
-```
-
-#### **Objective-C**
-
-##### Syntax
-
-```objc
-+ (void) resetIdentities;
-```
-
-##### Example
-
-```objc
-[AEPMobileCore resetIdentities];
 ```
 
 <!-- tabs:end -->
