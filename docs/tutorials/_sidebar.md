@@ -8,6 +8,7 @@
         - [Create a Target Activity](/tutorials/setup/create-target-activity.md)
     - Adobe Experience Platform
         - [Create a Schema](/tutorials/setup/create-schema.md)
+        - [Create a Dataset](/tutorials/setup/create-dataset.md)
     - Data Collection
         - [Create a Datastream](/tutorials/setup/create-datastream.md)
         - [Create a Tag Property](/tutorials/setup/create-tag-property.md)

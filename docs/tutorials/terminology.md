@@ -7,3 +7,5 @@
 `Proposition`: It encapsulates the offers proposed for a given scope based on certain eligibility rules and constraints.
 
 `Offer`: An offer is a marketing message that may have rules associated with it that specify who is eligible to see the offer.
+
+`Datastream` : A datastream is a server-side configuration on Platform Edge Network that controls where data goes. Datastreams ensure that incoming data is routed to the Adobe Experience Platform application and services (like Target) appropriatel. For more information, see the [datastreams documentation](https://experienceleague.adobe.com/docs/experience-platform/edge/datastreams/overview.html?lang=en) or this [video](https://experienceleague.adobe.com/docs/platform-learn/data-collection/edge-network/configure-datastreams.html?lang=en).
