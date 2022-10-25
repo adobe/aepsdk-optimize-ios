@@ -2,15 +2,20 @@
 
 This API reference guide provides usage information for the Optimize extension's public functions, classes and enums. 
 
+Table of Contents
+- [Static Functions](#static-functions)
+- [Public Classes](#public-classes)
+- [Public Enums](#public-enums)
+
 ## Static Functions
 
-- [clearCachedPropositions](#clearCachedPropositions)
-- [extensionVersion](#extensionVersion)
-- [getPropositions](#getPropositions)
-- [onPropositionsUpdate](#onPropositionsUpdate)
-- [registerExtensions](#registerExtensions)
-- [resetIdentities](#resetIdentities)
-- [updatePropositions](#updatePropositions)
+- [clearCachedPropositions](#clearcachedpropositions)
+- [extensionVersion](#extensionversion)
+- [getPropositions](#getpropositions)
+- [onPropositionsUpdate](#onpropositionsupdate)
+- [registerExtensions](#registerextensions)
+- [resetIdentities](#resetidentities)
+- [updatePropositions](#updatepropositions)
 
 ---
 
@@ -92,6 +97,9 @@ NSString *extensionVersion = [AEPMobileOptimize extensionVersion];
 
 This API retrieves the previously fetched propositions, for the provided decision scopes, from the in-memory extension propositions cache. The completion handler is invoked with the decision propositions corresponding to the given decision scopes. If a certain decision scope has not already been fetched prior to this API call, it will not be contained in the returned propositions.
 
+> [!WARNING]
+> This API does NOT make a network call to the Experience Platform Edge network to fetch propositions for any decision scopes which are not present in the extension propositions cache.
+
 <!-- tabs:start -->
 
 #### **Swift**
@@ -102,6 +110,8 @@ This API retrieves the previously fetched propositions, for the provided decisio
 static func getPropositions(for decisionScopes: [DecisionScope], 
                             _ completion: @escaping ([DecisionScope: Proposition]?, Error?) -> Void)
 ```
+* decisionScopes: an array of decision scopes for which cached propositions need to be retrieved from the SDK.
+* completion: a callback method that is invoked with propositions dictionary if the request is successful or an `Error` instance otherwise.
 
 ##### Example
 
@@ -139,6 +149,8 @@ Optimize.getPropositions(for: [decisionScope1, decisionScope2]) { propositionsDi
 + (void) getPropositions: (NSArray<AEPDecisionScope*>* _Nonnull) decisionScopes 
               completion: (void (^ _Nonnull)(NSDictionary<AEPDecisionScope*, AEPProposition*>* _Nullable propositionsDict, NSError* _Nullable error)) completion;
 ```
+* decisionScopes: an array of decision scopes for which cached propositions need to be retrieved from the SDK.
+* completion: a callback method that is invoked with propositions dictionary if the request is successful or an `Error` instance otherwise.
 
 ##### Example
 
@@ -168,7 +180,7 @@ AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc] initWithName: @"myS
 
 ### onPropositionsUpdate
 
-This API registers a permanent callback which is invoked whenever the Edge extension dispatches a response Event received from the Experience Edge Network upon a personalization query. The personalization query requests can be triggered by the `updatePropositions(for:withXdm:andData:)` API, Edge extension `sendEvent(experienceEvent:_:)` API or launch consequence rules.
+This API registers a permanent callback which is invoked whenever the Edge network extension dispatches a personalization:decisions event, with the decision propositions received from the Experience Platform Edge Network, upon a personalization query request. E.g. a personalization query request can be triggered by the `updatePropositions(for:withXdm:andData:)` API.
 
 <!-- tabs:start -->
 
@@ -179,6 +191,7 @@ This API registers a permanent callback which is invoked whenever the Edge exten
 ```swift
 static func onPropositionsUpdate(perform action: @escaping ([DecisionScope: Proposition]?) -> Void)
 ```
+* action: a callback method that is invoked with propositions dictionary when propositions are received from the Experience Platform Edge network.
 
 ##### Example
 
@@ -197,6 +210,7 @@ Optimize.onPropositionsUpdate { propositionsDict in
 ```objc
 + (void) onPropositionsUpdate: (void (^ _Nonnull)(NSDictionary<AEPDecisionScope*, AEPProposition*>* _Nullable)) action;
 ```
+* action: a callback method that is invoked with propositions dictionary when propositions are received from the Experience Platform Edge network.
 
 ##### Example
 
@@ -211,7 +225,10 @@ Optimize.onPropositionsUpdate { propositionsDict in
 
 ### registerExtensions
 
-This `MobileCore` API can be invoked to register the Optimize extension.
+This API is invoked by the extensions to register with the `Mobile Core`. It allows them to dispatch and receive SDK events and to share their data with other extensions. For more details, see [MobileCore - documentation](https://github.com/adobe/aepsdk-core-ios/tree/main/Documentation).
+
+> [!WARNING]
+> It is **mandatory** to register the Optimize extension otherwise extension-specific API calls will not be processed and it will lead to unexpected behavior. 
 
 <!-- tabs:start -->
 
@@ -223,6 +240,8 @@ This `MobileCore` API can be invoked to register the Optimize extension.
 static func registerExtensions(_ extensions: [NSObject.Type], 
                                _ completion: (() -> Void)? = nil)
 ```
+* extensions: an array of metatype of NSObject class from which all mobile SDK extensions inherit.
+* completion: a callback method that is invoked when all the given extensions have been successfully registered with the Mobile Core.
 
 ##### Example
 
@@ -240,6 +259,8 @@ MobileCore.registerExtensions([Optimize.self, ...]) {
 + (void) registerExtensions: (NSArray<Class*>* _Nonnull) extensions 
                  completion: (void (^ _Nullable)(void)) completion;
 ```
+* extensions: an array of opaque type that represents a mobile SDK extension class.
+* completion: a callback method that is invoked when all the given extensions have been successfully registered with the Mobile Core.
 
 ##### Example
 
@@ -254,7 +275,10 @@ MobileCore.registerExtensions([Optimize.self, ...]) {
 
 ### resetIdentities
 
-This `MobileCore` API can also be invoked to clear out the client-side data for Optimize extension, e.g. in-memory propositions cache.
+This `MobileCore` API is a request to each extension to reset its identities. Every extension responds to this request in it's own unique manner. For example, Optimize extension uses this API call to clear out its client-side in-memory propositions cache. For more details, see [MobileCore - documentation](https://github.com/adobe/aepsdk-core-ios/tree/main/Documentation).
+
+> [!WARNING]
+> This is a **destructive** API call and can lead to unintended behavior, e.g. resetting of Experience Cloud ID (ECID). It should be sparingly used and extreme caution should be followed!
 
 <!-- tabs:start -->
 
@@ -291,7 +315,7 @@ MobileCore.resetIdentities()
 
 ### updatePropositions
 
-This API dispatches an Event for the Edge network extension to fetch decision propositions, for the provided decision scopes array, from the decisioning services enabled in the Experience Edge. The returned decision propositions are cached in-memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
+This API dispatches an event for the Edge network extension to fetch decision propositions, for the provided decision scopes, from the personalization solutions enabled in the datastream in Experience Platform Data Collection. The returned decision propositions are cached in-memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
 
 <!-- tabs:start -->
 
@@ -303,6 +327,9 @@ static func updatePropositions(for decisionScopes: [DecisionScope],
                                withXdm xdm: [String: Any]?,
                                andData data: [String: Any]? = nil)
 ```
+* decisionScopes: an array of decision scopes for which personalization query request needs to be sent to the Experience Platform Edge network.
+* xdm: a dictionary containing additional XDM-formatted data to be attached to the personalization query request.
+* data: a dictionary containing additional freeform data to be attached to the personalization query request.
 
 ##### Example
 ```swift
@@ -324,6 +351,9 @@ Optimize.updatePropositions(for: [decisionScope1, decisionScope2]
                     withXdm: (NSDictionary<NSString*, id>* _Nullable) xdm
                     andData: (NSDictionary<NSString*, id>* _Nullable) data;
 ```
+* decisionScopes: an array of decision scopes for which personalization query request needs to be sent to the Experience Platform Edge network.
+* xdm: a dictionary containing additional XDM-formatted data to be attached to the personalization query request.
+* data: a dictionary containing additional freeform data to be attached to the personalization query request.
 
 ##### Example
 ```objc
@@ -341,6 +371,10 @@ AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc] initWithName: @"myS
 ---
 
 ## Public classes
+
+- [DecisionScope](#decisionscope)
+- [Proposition](#proposition)
+- [Offer](#offer)
 
 | Type | Swift | Objective-C |
 | ---- | ----- | ----------- |
@@ -503,6 +537,8 @@ public extension Offer {
 ```
 
 ## Public enums
+
+- [OfferType](#offertype)
 
 | Type | Swift | Objective-C |
 | ---- | ----- | ----------- |
