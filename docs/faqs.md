@@ -14,7 +14,7 @@ No, Optimize extension only supports the prefetch mode when using the personaliz
 
 **Does Optimize extension support Target parameters (mbox, profile, product and order parameters)?**
 
-Target parameters such as mbox parameters, profile parameters, order and product parameters can be provided in a personalization query request by send them as freeform data under data->__adobe->target. Currently, these parameters are only supported at the request level and not per mbox (scope) level!
+Target parameters such as mbox parameters, profile parameters, order and product parameters can be provided in a personalization query request by sending them as freeform data under data->__adobe->target. Currently, these parameters are only supported at the request level and not per mbox (scope) level!
 
 **Does Optimize extension automatically attach mobile Lifecycle metrics to mbox parameters similar to the Target extension?**
 
