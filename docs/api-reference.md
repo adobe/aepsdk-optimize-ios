@@ -14,6 +14,7 @@ Table of Contents
 - [getPropositions](#getpropositions)
 - [onPropositionsUpdate](#onpropositionsupdate)
 - [registerExtensions](#registerextensions)
+- [resetIdentities](#resetidentities)
 - [updatePropositions](#updatepropositions)
 
 ---
@@ -96,6 +97,9 @@ NSString *extensionVersion = [AEPMobileOptimize extensionVersion];
 
 This API retrieves the previously fetched propositions, for the provided decision scopes, from the in-memory extension propositions cache. The completion handler is invoked with the decision propositions corresponding to the given decision scopes. If a certain decision scope has not already been fetched prior to this API call, it will not be contained in the returned propositions.
 
+> [!WARNING]
+> This API does NOT make a network call to the Experience Platform Edge network to fetch propositions for any decision scopes which are not present in the extension propositions cache.
+
 <!-- tabs:start -->
 
 #### **Swift**
@@ -176,7 +180,7 @@ AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc] initWithName: @"myS
 
 ### onPropositionsUpdate
 
-This API registers a permanent callback which is invoked whenever the Edge extension dispatches a response Event received from the Experience Edge Network upon a personalization query. The personalization query requests can be triggered by the `updatePropositions(for:withXdm:andData:)` API, Edge extension `sendEvent(experienceEvent:_:)` API or launch consequence rules.
+This API registers a permanent callback which is invoked whenever the Edge network extension dispatches a personalization:decisions event, with the decision propositions received from the Experience Platform Edge Network, upon a personalization query request. E.g. a personalization query request can be triggered by the `updatePropositions(for:withXdm:andData:)` API.
 
 <!-- tabs:start -->
 
@@ -221,7 +225,10 @@ Optimize.onPropositionsUpdate { propositionsDict in
 
 ### registerExtensions
 
-This `MobileCore` API can be invoked to register the Optimize extension.
+This API is invoked by the extensions to register with the `Mobile Core`. It allows them to dispatch and receive SDK events and to share their data with other extensions. For more details, see [MobileCore - documentation](https://github.com/adobe/aepsdk-core-ios/tree/main/Documentation).
+
+> [!WARNING]
+> It is **mandatory** to register the Optimize extension otherwise extension-specific API calls will not be processed and it will lead to unexpected behavior. 
 
 <!-- tabs:start -->
 
@@ -234,7 +241,7 @@ static func registerExtensions(_ extensions: [NSObject.Type],
                                _ completion: (() -> Void)? = nil)
 ```
 * extensions: an array of metatype of NSObject class from which all mobile SDK extensions inherit.
-* completion: a callback method that is invoked when all the given extensions have been successfully registered with the SDK.
+* completion: a callback method that is invoked when all the given extensions have been successfully registered with the Mobile Core.
 
 ##### Example
 
@@ -253,7 +260,7 @@ MobileCore.registerExtensions([Optimize.self, ...]) {
                  completion: (void (^ _Nullable)(void)) completion;
 ```
 * extensions: an array of opaque type that represents a mobile SDK extension class.
-* completion: a callback method that is invoked when all the given extensions have been successfully registered with the SDK.
+* completion: a callback method that is invoked when all the given extensions have been successfully registered with the Mobile Core.
 
 ##### Example
 
@@ -266,9 +273,49 @@ MobileCore.registerExtensions([Optimize.self, ...]) {
 <!-- tabs:end -->
 ---
 
+### resetIdentities
+
+This `MobileCore` API is a request to each extension to reset its identities. Every extension responds to this request in it's own unique manner. For example, Optimize extension uses this API call to clear out its client-side in-memory propositions cache. For more details, see [MobileCore - documentation](https://github.com/adobe/aepsdk-core-ios/tree/main/Documentation).
+
+> [!WARNING]
+> This is a **destructive** API call and can lead to unintended behavior, e.g. resetting of Experience Cloud ID (ECID). It should be sparingly used and extreme caution should be followed!
+
+<!-- tabs:start -->
+
+#### **Swift**
+
+##### Syntax
+
+```swift
+static func resetIdentities()
+```
+
+##### Example
+
+```swift
+MobileCore.resetIdentities()
+```
+
+#### **Objective-C**
+
+##### Syntax
+
+```objc
++ (void) resetIdentities;
+```
+
+##### Example
+
+```objc
+[AEPMobileCore resetIdentities];
+```
+
+<!-- tabs:end -->
+---
+
 ### updatePropositions
 
-This API dispatches an Event for the Edge network extension to fetch decision propositions, for the provided decision scopes array, from the decisioning services enabled in the Experience Edge. The returned decision propositions are cached in-memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
+This API dispatches an event for the Edge network extension to fetch decision propositions, for the provided decision scopes, from the personalization solutions enabled in the datastream in Experience Platform Data Collection. The returned decision propositions are cached in-memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
 
 <!-- tabs:start -->
 
