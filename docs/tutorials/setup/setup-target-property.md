@@ -31,4 +31,4 @@ Follow the steps below to set up a Target property in Adobe Target:
 | **Copy Target Property** |
 
 > [!NOTE]
-> You will need to specify this property in your datatstream configuration for Adobe Target (Property Token field). For more details, see [Create a datastream](https://opensource.adobe.com/aepsdk-optimize-ios/#/tutorials/setup/create-datastream)
+> You will need to specify this property in your datatstream configuration for Adobe Target (Property Token field). For more details, see [Adobe Target Datastream configuration](https://opensource.adobe.com/aepsdk-optimize-ios/#/tutorials/setup/create-datastream?id=adobe-target-datastream-configuration)
