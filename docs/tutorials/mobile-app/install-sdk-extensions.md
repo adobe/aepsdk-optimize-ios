@@ -107,18 +107,21 @@ COCOAPODS: 1.11.3
 </details>
 <br/>
 
-**Troubleshooting**
+<details>
+<summary>
+<b>Troubleshooting</b>
+</summary>
 
-**When using macbook running M1 processor, issues are seen with pod install and pod update commands. How can I resolve these issues?**
+<b>When using macbook running M1 processor, issues are seen with pod install and pod update commands. How can I resolve these issues?</b>
 
 There are a couple of solutions to the pod install and update issues seen when using M1 Mac:
 
-**Option 1**: Install gem `ffi` and run pod commands with prefix `arch -x86_64`.
+<b>Option 1</b>: Install gem `ffi` and run pod commands with prefix `arch -x86_64`.
 ```text
 $ sudo arch -x86_64 gem install ffi
 $ arch -x86_64 pod install
 ```
-**Option 2**: Uninstall cocoapods gems and install cocoapods using homebrew.
+<b>Option 2</b>: Uninstall cocoapods gems and install cocoapods using homebrew.
 ```text
 $ gem list —-local | grep cocoapods
 $ sudo gem uninstall <substitute with each cocoapods related gem in the above list>
@@ -129,6 +132,7 @@ If homebrew is not installed, use the below command on the terminal to install i
 $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 For more details, see [CocoaPods - issue 10518](https://github.com/CocoaPods/CocoaPods/issues/10518)
+</details>
 
 ## Swift Package Manager
 

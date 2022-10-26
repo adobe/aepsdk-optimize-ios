@@ -20,7 +20,7 @@ Find and select the mobile property for this tutorial (**2**), optionally using 
 | :---: |
 | **Finding the desired mobile property** |
 
-Select **Extensions** (**2**) in the left-side navigation panel, under **AUTHORING**. Notice there are some extensions are that installed by default (**1**).
+Notice there are some extensions are that installed by default (**1**). Select **Extensions** (**2**) in the left-side navigation panel, under **AUTHORING**.
 
 | ![Mobile property default extensions](../../assets/mobile-property-extensions.png?raw=true) |
 | :---: |
@@ -129,9 +129,9 @@ To send mobile Lifecycle metrics to Target for creating audiences, a rule needs 
 #### Select an event <!-- omit in toc -->
 
 2. From the **Extension** dropdown list (**1**), select **Adobe Experience Platform Edge Network**.
-3. From the **Event Type** dropdown list (**2**), select **AEP Request Event**.
-4. On the right pane, click on + to specify XDM Event Type **equals**  (**3**) **personalization.request**  (**4**).
-5. Select **Keep Changes** (**5**).
+3. From the **Event Type** dropdown list (**2**), select **AEP Request Event**. Verify the event has a name (**3**) 
+4. On the right pane, click on + to specify XDM Event Type. Select **equals**  from the dropdown (**4**) and **type** in **personalization.request** in the rightmost dropdown. (**5**).
+5. Select **Keep Changes** (**6**).
 
 | ![Event for Lifecycle metrics rule](../../assets/mobile-property-rule-2.png?raw=true) |
 | :---: |
@@ -146,7 +146,7 @@ To send mobile Lifecycle metrics to Target for creating audiences, a rule needs 
 
 2. From the **Extension** dropdown list (**1**), select **Mobile Core**.
 3. From the **Action Type** dropdown list (**2**), select **Attach Data**.
-4. On the right pane, specify the **JSON Payload** (**3**) containing metrics of interest. An example JSON Payload containing all of the mobile Lifecycle metrics is shown below.
+4. On the right pane, specify the **JSON Payload** (**3**) containing metrics of interest. An example JSON Payload containing all of the mobile Lifecycle metrics is shown below which you can copy paste into the **JSON Payload** field.
 ```json
 {
     "data": {
@@ -186,7 +186,7 @@ To send mobile Lifecycle metrics to Target for creating audiences, a rule needs 
 | :---: |
 | **Lifecycle metrics to be sent to Target** |
 
-#### Save the rule and rebuild your property <!-- omit in toc -->
+#### Save the rule <!-- omit in toc -->
 1. After you complete your configuration, verify that your rule looks like the following:
 2. Select **Save** (**1**).
 
@@ -205,12 +205,12 @@ To send mobile Lifecycle metrics to Target for creating audiences, a rule needs 
 | :---: |
 | **Publishing mobile property** |
 
-#### Getting the mobile property ID <!-- omit in toc -->
+#### Getting the environment file ID <!-- omit in toc -->
 Once the mobile property is published to the **Development** environment:  
 1. Select the box icon next to the environment dropdown (**5**, from above)
 2. Select the double overlapping box (**1**) to the right of the property ID to copy it. Save this unique ID (in a text file, or other easily accessible place), as it is required when setting up the app in the next section.
 
-| ![Accessing mobile property id](../../assets/mobile-property-id.png?raw=true) |
+| ![Accessing environment file ID ](../../assets/mobile-property-id.png?raw=true) |
 | :---: |
-| **Accessing mobile property id** |
+| **Accessing environment file ID** |
 
