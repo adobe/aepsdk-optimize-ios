@@ -1,4 +1,4 @@
-# Create a Schema
+# Create a Dataset
 
  A dataset is a storage and management construct for a collection of data, typically a table, that contains a schema (columns) and fields (rows). Datasets also contain metadata that describes various aspects of the data they store.
 
