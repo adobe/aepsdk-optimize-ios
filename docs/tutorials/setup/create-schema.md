@@ -1,7 +1,5 @@
 # Create a Schema
-Before any app changes, some configuration items on the Adobe Experience Platform (AEP) side need to be set up. The end goal of this section is to create a mobile property that controls the configuration settings for the various AEP extensions used in this tutorial.
-
-First, create an XDM schema (the format for data that the Edge Network uses) and configure a datastream (controls where the data will go). 
+Before any app changes, some configuration items on the Adobe Experience Platform (AEP) side need to be set up. First, create an XDM schema (the format for data that the Edge Network uses).
  
 At a high level, a schema is a definition for the structure of your data; what properties you are expecting, what format they should be in, and checks for the actual values coming in.  
 
@@ -11,13 +9,13 @@ At a high level, a schema is a definition for the structure of your data; what p
 
 | ![Navigating to Data Collection](../../assets/aep-data-collection.png?raw=true) |
 | :---: |
-| **Accessing Data Collection** |
+| **Navigating to Data Collection** |
 
-3. Select **Schemas** in the left navigation window
+3. Select **Schemas** (**1**) in the left navigation window
 
 | ![Navigating to Schemas in Data Collection](../../assets/data-collection-tags.png?raw=true) |
 | :---: |
-| **Accessing Schemas Data Collection** |
+| **Navigating to Schemas Data Collection** |
 
 4. In the schemas view, select the **+ Create schema** button (**1**) in the top right, then select `XDM ExperienceEvent` (**2**)
 

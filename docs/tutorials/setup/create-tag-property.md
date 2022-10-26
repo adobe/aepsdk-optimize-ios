@@ -6,7 +6,7 @@ Select **Tags** (**1**) under **DATA COLLECTION** in the left-side navigation pa
 
 | ![Navigating to tags](../../assets/tags-main-view.png?raw=true) |
 | :---: |
-| **Accessing Data Collection** |
+| **Navigating to tags** |
 
 Enter an identifying name for the new property in the **Name** textfield (**1**), select **Mobile** (**2**) under **Platform**, then select **Save** (**3**).
 
@@ -22,7 +22,7 @@ Find and select the mobile property for this tutorial (**2**), optionally using 
 
 Select **Extensions** (**2**) in the left-side navigation panel, under **AUTHORING**. Notice there are some extensions are that installed by default (**1**).
 
-| ![Mobile property default extensions](../../assets/mobile-property-extensions?raw=true) |
+| ![Mobile property default extensions](../../assets/mobile-property-extensions.png?raw=true) |
 | :---: |
 | **Mobile property default extensions** |
 
