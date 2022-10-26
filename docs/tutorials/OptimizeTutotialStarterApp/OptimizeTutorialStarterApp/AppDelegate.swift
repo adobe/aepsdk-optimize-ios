@@ -12,21 +12,17 @@ governing permissions and limitations under the License.
 
 /* Optimize Tutorial: CODE SECTION 1/10 BEGINS
 import AEPCore
-import AEPIdentity
 import AEPLifecycle
-
-import AEPAssurance
-
 import AEPEdge
 import AEPEdgeConsent
 import AEPEdgeIdentity
-
+import AEPAssurance
 import AEPOptimize
 // Optimize Tutorial: CODE SECTION 1 ENDS */
 import SwiftUI
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
-    private let LAUNCH_ENVIRONMENT_FILE_ID = ""
+    private let DATA_COLLECTION_ENVIRONMENT_FILE_ID = ""
     private let OVERRIDE_DATASET_ID = ""
     
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -35,10 +31,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         MobileCore.configureWith(appId: self.LAUNCH_ENVIRONMENT_FILE_ID)
 
         MobileCore.registerExtensions([
-                AEPEdgeIdentity.Identity.self,
-                AEPIdentity.Identity.self,
-                Lifecycle.self,
                 Edge.self,
+                AEPEdgeIdentity.Identity.self,
+                Consent.self,
+                Lifecycle.self,
                 Optimize.self,
                 Assurance.self ]) {
             

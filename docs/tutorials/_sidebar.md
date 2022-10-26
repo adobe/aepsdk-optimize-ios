@@ -15,6 +15,6 @@
     - Mobile App
         - [Install SDK Extensions](/tutorials/mobile-app/install-sdk-extensions.md)
         - [Initialize SDK](/tutorials/mobile-app/init-sdk.md)
-    - [Optimize Tutorial - Target](/tutorials/optimize-target-tutorial.md "Optimize Tutorial: Fetch and track Target Offers")
+        - [Optimize Tutorial App](/tutorials/mobile-app/optimize-tutorial-app.md)
     - [Optimize Assurance Validation](/tutorials/assurance-validation.md)
     - [Terminology](/tutorials/terminology.md)
