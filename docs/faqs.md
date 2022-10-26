@@ -26,7 +26,10 @@ No, `global.privacy` setting applies only to the direct Adobe Solution extension
 
 **What is the effect of calling Mobile Core's `resetIdentities` API on Optimize extension?**
 
-Upon calling `resetIdentities` SDK API, all previously cached propositions, in the Optimize extension, are cleared from the in-memory cache. Invoking Optimize extensions's `clearCachedPropositions` API also helps clear any previously cached propositions in the extension.
+Mobile Core's `resetIdentities` API is a request to each extension to reset its identities. Each extension responds to this request in its own unique manner. For example, Optimize extension clears all previously cached propositions from the in-memory cache. This behavior is similar to invoking Optimize extensions's `clearCachedPropositions` API, which also helps clear any previously cached propositions in the extension.
+
+> [!WARNING]
+> This API call can lead to unintended SDK behavior, e.g. resetting of Experience Cloud ID (ECID). So it should be sparingly used and extreme caution should be followed!
 
 **Does Optimize extension support Analytics for Target (A4T)? If yes, is the A4T support similar to the Target extension?**
 
@@ -40,3 +43,12 @@ Yes, Optimize extension supports A4T. The A4T support differs from direct Target
 __Server-side A4T logging__: When Adobe Analytics is enabled in the datastream and report suite is configured on Data Collection UI, A4T logging is assumed to be server-side. No analytics payload is returned to the client in this case, upon a personalization query request. A4T works out of the box and Experience Platform Edge network handles forwarding any Analytics payload to Adobe Analytics server-side. 
 
 __Client-side A4T logging__: When Adobe Analytics is not enabled/configured in the datastream on Data Collection UI, A4T logging is assumed to be client-side. In this case, Target upstream returns the analytics payload, upon a personalization query request, under scopeDetails->characteristics->analyticsToken(s). The client can then decide if they want to send data to Adobe Analytics, say use data insertion API.
+
+**How can I read Target response tokens from the Optimize extension API response`?**
+
+Optimize extension's `getPropositions` and `onPropositionsUpdate` APIs return a dictionary of type `[DecisionScope: Proposition]`. The `Proposition` instance, corresponding to the requested decision scope, contains an array of one of more offers. The `Offer` instance's `metadata` field contains the activated [Adobe Target - Response Tokens](https://experienceleague.adobe.com/docs/target/using/administer/response-tokens.html?lang=en), returned from the Target upstream service, in Experience Platform Edge network personalization query response.
+
+**How can I send offer interaction events to a different Event dataset in Adobe Experience Platform than the one configured in datastream on Data Collection UI?**
+
+Optimize extension provides a configuration setting `optimize.datasetId`, which can currently be **only** programmatically configured using Mobile Core's `updateConfiguration` API. This setting can be used to provide the Event datasetId where all subsequent offer interaction events will be sent in Adobe Experience Platform. Also, the schema for the dataset should include the `Experience Event - Proposition Interactions` field group which is used for offer interaction tracking.
+
