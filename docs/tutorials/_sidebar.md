@@ -14,5 +14,5 @@
         - [Create a Tag Property](/tutorials/setup/create-tag-property.md)
     - Mobile App
         - [Optimize Tutorial - Target](/tutorials/mobile-app/optimize-tutorial-target.md)
-    - [Optimize Assurance Validation](/tutorials/assurance-validation.md)
+    - [Assurance Validation](/tutorials/assurance-validation.md)
     - [Terminology](/tutorials/terminology.md)

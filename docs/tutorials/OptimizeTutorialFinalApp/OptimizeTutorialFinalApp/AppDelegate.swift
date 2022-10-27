@@ -12,15 +12,11 @@ governing permissions and limitations under the License.
 
 //* Optimize Tutorial: CODE SECTION 1/10 BEGINS
 import AEPCore
-import AEPIdentity
 import AEPLifecycle
-
-import AEPAssurance
-
 import AEPEdge
 import AEPEdgeConsent
 import AEPEdgeIdentity
-
+import AEPAssurance
 import AEPOptimize
 // Optimize Tutorial: CODE SECTION 1 ENDS */
 import SwiftUI
@@ -35,13 +31,16 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         MobileCore.configureWith(appId: self.LAUNCH_ENVIRONMENT_FILE_ID)
 
         MobileCore.registerExtensions([
-                AEPEdgeIdentity.Identity.self,
-                AEPIdentity.Identity.self,
-                Lifecycle.self,
                 Edge.self,
+                AEPEdgeIdentity.Identity.self,
+                Consent.self,
+                Lifecycle.self,
                 Optimize.self,
                 Assurance.self ]) {
-            
+                
+            // FOR DEMO PURPOSE ONLY: Update Configuration with reduced lifecycle timeout.
+            MobileCore.updateConfigurationWith(configDict: ["lifecycle.sessionTimeout": 10])
+
             // Update Configuration with override dataset identifier
             MobileCore.updateConfigurationWith(configDict: ["optimize.datasetId": self.OVERRIDE_DATASET_ID])
         }
