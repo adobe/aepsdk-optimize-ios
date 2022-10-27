@@ -28,7 +28,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
 /* Optimize Tutorial: CODE SECTION 2/10 BEGINS
         MobileCore.setLogLevel(.trace)
-        MobileCore.configureWith(appId: self.LAUNCH_ENVIRONMENT_FILE_ID)
+        MobileCore.configureWith(appId: self.DATA_COLLECTION_ENVIRONMENT_FILE_ID)
 
         MobileCore.registerExtensions([
                 Edge.self,
@@ -38,8 +38,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
                 Optimize.self,
                 Assurance.self ]) {
             
+            // FOR DEMO PURPOSE ONLY: Update Configuration with reduced lifecycle timeout.
+            MobileCore.updateConfigurationWith(configDict: ["lifecycle.sessionTimeout": 10])
+ 
             // Update Configuration with override dataset identifier
-            MobileCore.updateConfigurationWith(configDict: ["optimize.datasetId": self.OVERRIDE_DATASET_ID])
+            // MobileCore.updateConfigurationWith(configDict: ["optimize.datasetId": self.OVERRIDE_DATASET_ID])
         }
 // Optimize Tutorial: CODE SECTION 2 ENDS */
         return true

@@ -16,29 +16,29 @@ Follow the steps below to download the Optimize Tutorial Starter App from the [O
 
 **Command-line command**
 ```text
-$ mv ~/Downloads/aepsdk-optimize-ios-optimize-target-tutorial.zip ~/
+mv ~/Downloads/aepsdk-optimize-ios-optimize-target-tutorial.zip ~/
 ```
 
 4. Unzip the file in the target location.
 
 **Command-line command**
 ```text
-$ cd ~/
-$ unzip aepsdk-optimize-ios-optimize-target-tutorial.zip ~/
+cd ~/
+unzip aepsdk-optimize-ios-optimize-target-tutorial.zip
 ```
 
 5. Change directory to the `OptimizeTutorialStarterApp`
 
 **Command-line command**
 ```text
-$ cd aepsdk-optimize-ios-optimize-target-tutorial/docs/tutorials/OptimizeTutotialStarterApp
+cd aepsdk-optimize-ios-optimize-target-tutorial/docs/tutorials/OptimizeTutotialStarterApp
 ```
 
 6. Open Xcode workspace file `OptimizeTutorialStarterApp.xcworkspace` in Xcode.
 
 **Command-line command**
 ```text
-$ open OptimizeTutorialStarterApp.xcworkspace
+open OptimizeTutorialStarterApp.xcworkspace
 ```
 
 ## Install AEPOptimize SDK Extension in your mobile application
@@ -57,7 +57,7 @@ For this tutorial, initlization code is already implemented in `OptimizeTutorial
 
 Follow the steps below to enable the SDK implementation code:
 
-1. In Xcode, expand `OptimizeTutorialStarterApp` project. You will see all the `.swift` source files in `OptimizeTutorialStarterApp` folder. Select `AppDelegate.swift` file and provide your `DATA_COLLECTION_ENVIRONMENT_FILE_ID` value. For more details, see [Getting the mobile property ID guide](https://opensource.adobe.com/aepsdk-optimize-ios/#/tutorials/setup/create-tag-property?id=getting-the-mobile-property-id-).
+1. In Xcode, expand `OptimizeTutorialStarterApp` project. You will see all the `.swift` source files in `OptimizeTutorialStarterApp` folder. Select `AppDelegate.swift` file and provide your `DATA_COLLECTION_ENVIRONMENT_FILE_ID` value. For more details, see [Getting the Environment File ID guide](https://opensource.adobe.com/aepsdk-optimize-ios/#/tutorials/setup/create-tag-property?id=getting-the-environment-file-id).
 
 | ![AppDelegate - Configure Data Collection Environment File ID](../../assets/mobile-app-appdelegate.png?raw=true) |
 | :---: |
@@ -99,5 +99,8 @@ Follow the steps below to run the `OptimizeTutorialStarterApp` app:
 | :---: |
 | **Run Mobile App** |
 
+2. You should see the mobile app running on your simulator device.
 
-
+|![Offers View](../../assets/mobile-app-offers-view.png?raw=true) | ![Settings View](../../assets/mobile-app-settings-view.png?raw=true) |
+| :---------: | :------------: |
+| **Offers View** |  **Settings View** |
