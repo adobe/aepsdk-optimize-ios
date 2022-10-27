@@ -13,8 +13,6 @@
         - [Create a Datastream](/tutorials/setup/create-datastream.md)
         - [Create a Tag Property](/tutorials/setup/create-tag-property.md)
     - Mobile App
-        - [Install SDK Extensions](/tutorials/mobile-app/install-sdk-extensions.md)
-        - [Initialize SDK](/tutorials/mobile-app/init-sdk.md)
-        - [Optimize Tutorial App](/tutorials/mobile-app/optimize-tutorial-app.md)
+        - [Optimize Tutorial - Target](/tutorials/mobile-app/optimize-tutorial-target.md)
     - [Optimize Assurance Validation](/tutorials/assurance-validation.md)
     - [Terminology](/tutorials/terminology.md)
