@@ -16,7 +16,7 @@ Follow the steps below to set up an Experience Targeting activity in Adobe Targe
 | :---: |
 | **Create Target Activity** |
 
-3. Click on **rename (1)** in the top bar to provide an activity name `Optimize Tutorial Activity` for the Untitled Activity. Specify the **Location (2)** name `optimize-tutorial-loc` where personalized content will be rendered in your mobile app. Then click on **+ Add Experience Targeting (3)** to create experiences targeted to different audiences.
+3. Click on **rename (1)** in the top bar to provide an activity name as `Optimize Tutorial Activity` for the Untitled Activity. Specify the **Location (2)** name as `optimize-tutorial-loc`, where personalized content will be rendered in your mobile app. Then click on **+ Add Experience Targeting (3)** to create experiences targeted to different audiences.
 
 | ![Specify Target Activity Details](../../assets/target-activity-create-details.png?raw=true) |
 | :---: |
@@ -28,7 +28,7 @@ Follow the steps below to set up an Experience Targeting activity in Adobe Targe
 | :---: |
 | **Experience B - Add Audiences** |
 
-5. In the **Create Audience** dialog, select **Custom (1)** attributes to set up an Audience rule. Specify the rule using mobile Lifecycle parameter `a.Launches`, sent as mbox parameter to Adobe Target, as shown in (2). Select the option to save the audience to **This activity only (3)**. Provide a **Name (4)** `Lifecycle Launches Gt 1`. Click **Done (5)**.
+5. In the **Create Audience** dialog, select **Custom (1)** under **Attributes**, then drag and drop it to the central pane to set up an Audience rule. Specify the rule using mobile Lifecycle parameter `a.Launches`, sent as mbox parameter to Adobe Target, by selecting `Is greater than` operator and setting Values `1` as shown in (2). Select the option to save the audience to **This activity only (3)**. Provide a **Name (4)** `Lifecycle Launches Gt 1`. Click **Done (5)**.
 
 | ![Experience B - Create Audience](../../assets/target-experienceB-audience-create.png?raw=true) |
 | :---: |
@@ -80,7 +80,7 @@ Target will then provide a confirmation dialog to <b>Create new parameter</b>. C
 | :---: |
 | **Experience A - Add Audiences** |
 
-10. In the **Create Audience** dialog that follows (similar to step 5), select **Custom (1)** attributes to set up an Audience rule. Specify the rule using mobile Lifecycle parameter `a.Launches`, sent as mbox parameter to Adobe Target, as shown in (2). Select the option to save the audience to **This activity only (3)**. Provide a **Name (4)** `Lifecycle Launches Eq 1`. Click **Done (5)**.
+10. In the **Create Audience** dialog that follows (similar to step 5), select **Custom (1)** under **Attributes**, then drag and drop it to the central pane to set up an Audience rule. Specify the rule using mobile Lifecycle parameter `a.Launches`, sent as mbox parameter to Adobe Target, by selecting `Equals` operator and setting Values `1` as shown in (2). Select the option to save the audience to **This activity only (3)**. Provide a **Name (4)** `Lifecycle Launches Eq 1`. Click **Done (5)**.
 
 | ![Experience A - Create Audience](../../assets/target-experienceA-audience-create.png?raw=true) |
 | :---: |
