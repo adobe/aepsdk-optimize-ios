@@ -1,0 +1,6 @@
+framework module AEPOptimize {
+  umbrella header "AEPOptimize-umbrella.h"
+
+  export *
+  module * { export * }
+}
