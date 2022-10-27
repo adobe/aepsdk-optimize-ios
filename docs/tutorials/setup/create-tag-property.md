@@ -205,12 +205,12 @@ To send mobile Lifecycle metrics to Target for creating audiences, a rule needs 
 | :---: |
 | **Publishing mobile property** |
 
-#### Getting the environment file ID <!-- omit in toc -->
+#### Getting the Environment File ID
 Once the mobile property is published to the **Development** environment:  
 1. Select the box icon next to the environment dropdown (**5**, from above)
-2. Select the double overlapping box (**1**) to the right of the property ID to copy it. Save this unique ID (in a text file, or other easily accessible place), as it is required when setting up the app in the next section.
+2. Select the double overlapping box (**1**) to the right of the Environment File ID to copy it. Save this unique ID (in a text file, or other easily accessible place), as it is required when setting up the app in the next section.
 
-| ![Accessing environment file ID ](../../assets/mobile-property-id.png?raw=true) |
+| ![Accessing Environment File ID ](../../assets/mobile-property-id.png?raw=true) |
 | :---: |
-| **Accessing environment file ID** |
+| **Accessing Environment File ID** |
 
