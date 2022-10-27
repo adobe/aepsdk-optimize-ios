@@ -5,7 +5,7 @@ Initialize the Experience Platform Mobile SDKs by adding the below code in your 
 > [!TIP]
 > You can find your Environment File ID and also the mobile SDK initialization code in your tag property on Experience Platform Data Collection UI. Navigate to Environments (select your environment - Production, Staging, or Development), click <small>INSTALL<small>.
 
-| ![SDK Initialization Code](../../assets/sdk-init-code.png?raw=true) |
+| ![SDK Initialization Code](../assets/sdk-init-code.png?raw=true) |
 | :---: |
 | **SDK Initialization Code** |
 

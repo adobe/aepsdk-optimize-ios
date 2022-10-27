@@ -147,19 +147,19 @@ File > Add Packages...
 
 1. Enter the URL for the AEPOptimize package repository: https://github.com/adobe/aepsdk-optimize-ios.git.
 
-| ![Specify AEPOptimize package repo URL](../../assets/spm-search-package.png?raw=true) |
+| ![Specify AEPOptimize package repo URL](../assets/spm-search-package.png?raw=true) |
 | :---: |
 | **Specify AEPOptimize package repository URL** |
 
 2. Specify the **Dependency Rule**, by selecting an exact version, a range of versions or a version rule.
 
-| ![Specify Dependency Rule](../../assets/spm-select-dependency-rule.png?raw=true) |
+| ![Specify Dependency Rule](../assets/spm-select-dependency-rule.png?raw=true) |
 | :---: |
 | **Specify dependency version rule** |
 
 3. Click on **Add Package**.
 
-| ![Add Package](../../assets/spm-add-package.png?raw=true) |
+| ![Add Package](../assets/spm-add-package.png?raw=true) |
 | :---: |
 | **Add Package** |
 
