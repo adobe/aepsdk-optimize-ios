@@ -5,7 +5,7 @@ The AEPOptimize Mobile SDK extension is an open-source Swift extension. The exte
 
 The extension provides APIs to:
 
-1. Fetch personalization decisions from the Experience Platform Edge network, and cache locally in the SDK.
+1. Fetch personalization decisions from the Experience Platform Edge network, and cache them locally in the SDK.
 2. Retrieve previously cached propositions from the SDK.
 3. Track interactions (e.g. display, tap) with the propositions.
 

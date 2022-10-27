@@ -28,6 +28,9 @@ Follow the steps below to create an Assurance session:
 | :---: |
 | **Create Assurance Session - Provide Details** |
 
+>[!NOTE]
+> For more details on `BASE URL`, see article [Defining custom URL scheme for your app](https://developer.apple.com/documentation/xcode/defining-a-custom-url-scheme-for-your-app).
+
 4. A new Assurance session is created and the provided QR Code or Link can be used to connect to the session. Select **Copy Link (1)** and 
 click on the copy icon (2) to select the link. Make a note of the the <small>PIN</small> (3). Click **Done (4)**.
 
@@ -66,4 +69,24 @@ Follow the setps below to connect to a created Assurance Session:
 | :---: |
 | **Assurance Session - Client Connected** |
 
-## Setup Validation
+## SDK Events Validation
+
+### Edge Transactions View
+
+Select the **Event Transactions (1)** view under <small>ADOBE EXPERIENCE PLATFORM EDGE</small> in the left navigation bar. This view helps visualize the events as they flow from Client Side -> Edge Network -> Upstream Services.
+
+| ![Assurance Edge Transactions View - Personalization Query](../../assets/assurance-edge-transactions-personalization-query.png?raw=true) |
+| :---: |
+| **Assurance Edge Transactions View - Personalization Query** |
+
+The example above illustrates a personalization query request (sent usually upon `updatePropositions` API call) from the client-side (2) was successfully received and processed by the Edge Network (3). It passed the streaming validation (3) and the upstream request sent to Target returned a successful response (4). Also, the `AEP response Event Handle`s (1) containing `personalization:decisions` were successfully received by the client.
+
+### Events View
+
+The raw **Events (1)** view can be used to inspect and verify the SDK events dispatched by the various extensions. You can also use the search bar to filter and inspect any events of interest.
+
+| ![Assurance Events View - Optimize Update Propositions Request](../../assets/assurance-events-update-propositions.png?raw=true) |
+| :---: |
+| **Assurance Events View - Optimize Update Propositions Request** |
+
+The example above illustrates use of search bar to search for `Update Propositions` request (2). The view filters and displays the corresponding event(s) (3). Clicking on the event displays the event details in the right panel. The arrow next to <small>RAW EVENT</small> can be clicked (4), to display the event data for verification.

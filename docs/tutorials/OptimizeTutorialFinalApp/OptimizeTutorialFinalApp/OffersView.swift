@@ -53,15 +53,6 @@ struct OffersView: View {
             Divider()
             HStack {
                 CustomButtonView(buttonTitle: "Update Propositions") {
-//* Optimize Tutorial: CODE SECTION (optional) 6/10 BEGINS
-                    // Send a custom Identity in IdentityMap as primary identifier to Edge network in personalization query request.
-                    let identityMap = IdentityMap()
-                    identityMap.add(item: IdentityItem(id: "1111",
-                                                       authenticatedState: AuthenticatedState.authenticated,
-                                                       primary: true),
-                                    withNamespace: "userCRMID")
-                    Identity.updateIdentities(with: identityMap)
-// Optimize Tutorial: CODE SECTION (optional) 6 ENDS */
 //* Optimize Tutorial: CODE SECTION 6/10 BEGINS
                     let targetScope = DecisionScope(name: targetSettings.targetMbox)
                     
