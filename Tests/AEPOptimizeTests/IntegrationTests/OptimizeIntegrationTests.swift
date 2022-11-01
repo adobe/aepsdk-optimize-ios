@@ -762,6 +762,8 @@ class OptimizeIntegrationTests: XCTestCase {
                     
                     let experience = xdm?["_experience"] as? [String: Any]
                     let decisioning = experience?["decisioning"] as? [String: Any]
+                    let propositionEventType = decisioning?["propositionEventType"] as? [String: Any]
+                    XCTAssertEqual(1, propositionEventType?["display"] as? Int)
                     let propositionDetailsArray = decisioning?["propositions"] as? [[String: Any]]
                     
                     let propositionDetailsData = propositionDetailsArray?[0]
@@ -911,6 +913,8 @@ class OptimizeIntegrationTests: XCTestCase {
 
                     let experience = xdm?["_experience"] as? [String: Any]
                     let decisioning = experience?["decisioning"] as? [String: Any]
+                    let propositionEventType = decisioning?["propositionEventType"] as? [String: Any]
+                    XCTAssertEqual(1, propositionEventType?["interact"] as? Int)
                     let propositionDetailsArray = decisioning?["propositions"] as? [[String: Any]]
                     
                     let propositionDetailsData = propositionDetailsArray?[0]
