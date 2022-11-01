@@ -82,11 +82,10 @@ public extension Offer {
         ]
 
         var propositionEventType: [String: Any] = [:]
-        if eventType == OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_DISPLAY {
-            propositionEventType[OptimizeConstants.JsonKeys.PROPOSITION_EVENT_TYPE_DISPLAY] = 1
-        } else {
-            propositionEventType[OptimizeConstants.JsonKeys.PROPOSITION_EVENT_TYPE_INTERACT] = 1
-        }
+        let propEventType = (eventType == OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_DISPLAY) ?
+            OptimizeConstants.JsonKeys.PROPOSITION_EVENT_TYPE_DISPLAY :
+            OptimizeConstants.JsonKeys.PROPOSITION_EVENT_TYPE_INTERACT
+        propositionEventType[propEventType] = 1
 
         let xdmData: [String: Any] = [
             OptimizeConstants.JsonKeys.EXPERIENCE_EVENT_TYPE: eventType,
