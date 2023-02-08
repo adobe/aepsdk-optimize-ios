@@ -101,7 +101,9 @@ make test
 
 ## Documentation
 
-Check out the [Documentation](./Documentation/README.md) directory to learn more about the Optimize extension.
+Check out the [Documentation](./Documentation/README.md) directory to learn more about the Optimize extension. 
+
+Try out this [sample tutorial](https://opensource.adobe.com/aepsdk-optimize-ios/#/tutorials/README) to retrieve and track Adobe Target offers fetched via Experience Edge network using the provided sample application.
 
 ## Related Projects
 
