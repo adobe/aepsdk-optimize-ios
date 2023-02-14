@@ -1662,4 +1662,210 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
         XCTAssertTrue(optimize.cachedPropositions.isEmpty)
     }
+    
+    func testUpdatePropositions_validSurface() {
+        // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "surfaces": [
+                                    "/myView#htmlElement"
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
+        let query = dispatchedEvent?.data?["query"] as? [String: Any]
+        let personalization = query?["personalization"] as? [String: Any]
+        let surfaces = personalization?["surfaces"] as? [String]
+        let schemas = personalization?["schemas"] as? [String]
+        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(Optimize.supportedSchemas, schemas)
+        XCTAssertEqual(1, surfaces?.count)
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", surfaces?[0])
+    }
+
+    func testUpdatePropositions_validSurfaceWithXdmAndDataAndDatasetId() {
+        // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "surfaces": [
+                                    "/myView#featureJson"
+                                ],
+                                "xdm": [
+                                    "myXdmKey": "myXdmValue"
+                                ],
+                                "data": [
+                                    "myKey": "myValue"
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+                                            "optimize.datasetId": "111111111111111111111111"
+                                        ] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
+        let query = dispatchedEvent?.data?["query"] as? [String: Any]
+        let personalization = query?["personalization"] as? [String: Any]
+        let schemas = personalization?["schemas"] as? [String]
+        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(Optimize.supportedSchemas, schemas)
+        let surfaces = personalization?["surfaces"] as? [String]
+        XCTAssertEqual(1, surfaces?.count)
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#featureJson", surfaces?[0])
+
+        let xdm = dispatchedEvent?.data?["xdm"] as? [String: Any]
+        XCTAssertEqual(2, xdm?.count)
+        XCTAssertEqual("personalization.request", xdm?["eventType"] as? String)
+        XCTAssertEqual("myXdmValue", xdm?["myXdmKey"] as? String)
+
+        let data = dispatchedEvent?.data?["data"] as? [String: Any]
+        XCTAssertEqual(1, data?.count)
+        XCTAssertEqual("myValue", data?["myKey"] as? String)
+
+        XCTAssertEqual("111111111111111111111111", dispatchedEvent?.data?["datasetId"] as? String)
+    }
+
+    func testUpdatePropositions_multipleValidSurfaces() {
+        // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "surfaces": [
+                                    "/myView/mySubview1",
+                                    "/myView/mySubview2"
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
+        let query = dispatchedEvent?.data?["query"] as? [String: Any]
+        let personalization = query?["personalization"] as? [String: Any]
+        let schemas = personalization?["schemas"] as? [String]
+        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(Optimize.supportedSchemas, schemas)
+        let surfaces = personalization?["surfaces"] as? [String]
+        XCTAssertEqual(2, surfaces?.count)
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView/mySubview1", surfaces?[0])
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView/mySubview2", surfaces?[1])
+    }
+
+    func testUpdatePropositions_noSurfaces() {
+        // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "surfaces": []
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+    }
+
+    func testUpdatePropositions_invalidSurface() {
+            // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "surfaces": [
+                                    "/myView/mySubviews/\\*/home.html"
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+    }
+
+    func testUpdatePropositions_validAndInvalidSurfaces() {
+        // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "surfaces": [
+                                    "/myView#htmlElement",
+                                    "/myView/mySubviews/[0-9]{2,6}$"
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
+        let query = dispatchedEvent?.data?["query"] as? [String: Any]
+        let personalization = query?["personalization"] as? [String: Any]
+        let schemas = personalization?["schemas"] as? [String]
+        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(Optimize.supportedSchemas, schemas)
+        let surfaces = personalization?["surfaces"] as? [String]
+        XCTAssertEqual(1, surfaces?.count)
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", surfaces?[0])
+    }
 }

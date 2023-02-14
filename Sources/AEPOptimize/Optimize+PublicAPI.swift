@@ -22,6 +22,7 @@ public extension Optimize {
     /// - Parameter decisionScopes: An array of decision scopes.
     /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
+    @available(*, deprecated, message: "Use updatePropositions(for: [String], withXdm: [String: Any]?, andData: [String: Any]?) instead")
     @objc(updatePropositions:withXdm:andData:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil) {
         let flattenedDecisionScopes = decisionScopes
@@ -37,6 +38,46 @@ public extension Optimize {
         var eventData: [String: Any] = [
             OptimizeConstants.EventDataKeys.REQUEST_TYPE: OptimizeConstants.EventDataValues.REQUEST_TYPE_UPDATE,
             OptimizeConstants.EventDataKeys.DECISION_SCOPES: flattenedDecisionScopes
+        ]
+
+        // Add XDM data
+        if let xdm = xdm {
+            eventData[OptimizeConstants.EventDataKeys.XDM] = xdm
+        }
+
+        // Add free-form data
+        if let data = data {
+            eventData[OptimizeConstants.EventDataKeys.DATA] = data
+        }
+
+        let event = Event(name: OptimizeConstants.EventNames.UPDATE_PROPOSITIONS_REQUEST,
+                          type: EventType.optimize,
+                          source: EventSource.requestContent,
+                          data: eventData)
+
+        MobileCore.dispatch(event: event)
+    }
+
+    /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided mobile surfaces from the decisioning Services enabled behind Experience Edge.
+    ///
+    /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
+    /// - Parameter surfaces: An array of mobile surfaces.
+    /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
+    /// - Parameter data: Additional free-form data to be sent in the personalization request.
+    @objc(updatePropositionsForSurfaces:withXdm:andData:)
+    static func updatePropositions(for surfaces: [String], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil) {
+        let targetSurfaces = surfaces
+            .filter { !$0.isEmpty }
+
+        guard !targetSurfaces.isEmpty else {
+            Log.warning(label: OptimizeConstants.LOG_TAG,
+                        "Cannot update propositions, provided surfaces array is empty or has invalid items.")
+            return
+        }
+
+        var eventData: [String: Any] = [
+            OptimizeConstants.EventDataKeys.REQUEST_TYPE: OptimizeConstants.EventDataValues.REQUEST_TYPE_UPDATE,
+            OptimizeConstants.EventDataKeys.SURFACES: targetSurfaces
         ]
 
         // Add XDM data

@@ -952,4 +952,57 @@ class OptimizeIntegrationTests: XCTestCase {
         
         wait(for: [trackExpectation], timeout: 2)
     }
+    
+    func testUpdatePropositions_validEdgeRequestWithSurfaces() {
+        // setup
+        let requestExpectation = XCTestExpectation(description: "updatePropositions should result in a valid personalization query request to the Edge network.")
+        let mockNetworkService = TestableNetworkService()
+        ServiceProvider.shared.networkService = mockNetworkService
+        mockNetworkService.mock { request in
+            if request.url.absoluteString.contains("edge.adobedc.net/ee/v1/interact?configId=configId") {
+                let data = request.connectPayload
+                if let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] {
+                    let events = json["events"] as? [[String: Any]]
+                    let event = events?[0]
+                    
+                    // xdm
+                    let xdm = event?["xdm"] as? [String: Any]
+                    let eventType = xdm?["eventType"] as? String
+                    XCTAssertEqual("personalization.request", eventType)
+                    
+                    // query
+                    let query = event?["query"] as? [String: Any]
+                    let personalization = query?["personalization"] as? [String: Any]
+                    let schemas = personalization?["schemas"] as? [String]
+                    XCTAssertEqual(7, schemas?.count)
+                    XCTAssertEqual(OptimizeIntegrationTests.supportedSchemas, schemas)
+                    let surfaces = personalization?["surfaces"] as? [String]
+                    XCTAssertEqual(1, surfaces?.count)
+                    XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", surfaces?[0])
+                } else {
+                    XCTFail("Personalization query request to Edge network should be valid.")
+                }
+
+                requestExpectation.fulfill()
+            }
+            return nil
+        }
+
+        // init extensions
+        initExtensionsAndWait()
+        
+        // update configuration
+        MobileCore.updateConfigurationWith(configDict: [
+                                            "experienceCloud.org": "orgid",
+                                            "experienceCloud.server": "test.com",
+                                            "global.privacy": "optedin",
+                                            "edge.configId": "configId"
+        ])
+        
+        // update propositions
+        Optimize.updatePropositions(for: ["/myView#htmlElement"], withXdm: nil)
+
+        wait(for: [requestExpectation], timeout: 2)
+    }
+
 }

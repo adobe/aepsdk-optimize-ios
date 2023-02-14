@@ -24,6 +24,7 @@ enum OptimizeConstants {
     static let XDM_PLACEMENT_ID = "xdm:placementId"
     static let ITEM_COUNT = "itemCount"
     static let XDM_ITEM_COUNT = "xdm:itemCount"
+    static let SURFACE_BASE = "mobileapp://"
 
     static let ERROR_UNKNOWN = "unknown"
 
@@ -51,6 +52,7 @@ enum OptimizeConstants {
         static let PROPOSITIONS = "propositions"
         static let RESPONSE_ERROR = "responseerror"
         static let PROPOSITION_INTERACTIONS = "propositioninteractions"
+        static let SURFACES = "surfaces"
     }
 
     enum EventDataValues {
@@ -77,6 +79,7 @@ enum OptimizeConstants {
 
     enum JsonKeys {
         static let DECISION_SCOPES = "decisionScopes"
+        static let SURFACES = "surfaces"
         static let XDM = "xdm"
         static let QUERY = "query"
         static let QUERY_PERSONALIZATION = "personalization"

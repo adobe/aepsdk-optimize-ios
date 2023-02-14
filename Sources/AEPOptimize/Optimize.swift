@@ -109,19 +109,32 @@ public class Optimize: NSObject, Extension {
             return
         }
 
-        guard let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
-              !decisionScopes.isEmpty
-        else {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
+        var targetDecisionScopes = [String]()
+        var targetSurfaces = [String]()
+        if
+            let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
+            !decisionScopes.isEmpty
+        {
+            targetDecisionScopes = decisionScopes
+                .filter { $0.isValid }
+                .compactMap { $0.name }
+        } else if
+            let surfaces: [String] = event.getTypedData(for: OptimizeConstants.EventDataKeys.SURFACES),
+            !surfaces.isEmpty
+        {
+            targetSurfaces = surfaces
+                .map { !$0.isEmpty ? ($0.prefixedSurface() ?? "") : $0 }
+                .filter { $0.isValidSurface() }
+        } else {
+            Log.debug(label: OptimizeConstants.LOG_TAG, """
+                      Cannot process the update propositions request event, \
+                      surfaces or decision scopes in the event data are either not present or empty.
+            """)
             return
         }
 
-        let targetDecisionScopes = decisionScopes
-            .filter { $0.isValid }
-            .compactMap { $0.name }
-
-        if targetDecisionScopes.isEmpty {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "No valid decision scopes found for the Edge personalization request!")
+        if targetDecisionScopes.isEmpty && targetSurfaces.isEmpty {
+            Log.debug(label: OptimizeConstants.LOG_TAG, "No valid decision scopes or surfaces found for the Edge personalization request!")
             return
         }
 
@@ -131,7 +144,8 @@ public class Optimize: NSObject, Extension {
         eventData[OptimizeConstants.JsonKeys.QUERY] = [
             OptimizeConstants.JsonKeys.QUERY_PERSONALIZATION: [
                 OptimizeConstants.JsonKeys.SCHEMAS: Optimize.supportedSchemas,
-                OptimizeConstants.JsonKeys.DECISION_SCOPES: targetDecisionScopes
+                OptimizeConstants.JsonKeys.DECISION_SCOPES: targetDecisionScopes,
+                OptimizeConstants.JsonKeys.SURFACES: targetSurfaces
             ]
         ]
 

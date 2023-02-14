@@ -40,4 +40,28 @@ extension String {
         }
         return String(data: data, encoding: .utf8)
     }
+
+    func isValidSurface() -> Bool {
+        if isEmpty {
+            return false
+        }
+
+        guard URL(string: self) != nil else {
+            return false
+        }
+
+        return true
+    }
+
+    func prefixedSurface() -> String? {
+        if isEmpty {
+            return nil
+        }
+
+        guard let bundleIdentifier = Bundle.main.bundleIdentifier, !bundleIdentifier.isEmpty else {
+            return nil
+        }
+
+        return OptimizeConstants.SURFACE_BASE + bundleIdentifier + self
+    }
 }
