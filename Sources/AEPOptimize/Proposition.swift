@@ -46,7 +46,15 @@ public class Proposition: NSObject, Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         id = try container.decode(String.self, forKey: .id)
-        scope = try container.decode(String.self, forKey: .scope)
+        let scopeString = try container.decode(String.self, forKey: .scope)
+
+        let prefix = Bundle.main.mobileappSurface ?? ""
+        if !prefix.isEmpty, scopeString.hasPrefix(prefix) {
+            scope = String(scopeString.dropFirst(Bundle.main.mobileappSurface?.count ?? 0))
+        } else {
+            scope = scopeString
+        }
+
         let anyCodableDict = try? container.decode([String: AnyCodable].self, forKey: .scopeDetails)
         // Fix this once ODE supports scopeDetails in personalization query response,
         // refer to https://jira.corp.adobe.com/browse/CSMO-12405

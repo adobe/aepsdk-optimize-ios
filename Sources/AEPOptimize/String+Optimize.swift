@@ -53,15 +53,15 @@ extension String {
         return true
     }
 
-    func prefixedSurface() -> String? {
+    func prefixedSurface(_ prefix: String) -> String {
         if isEmpty {
-            return nil
+            return ""
         }
 
-        guard let bundleIdentifier = Bundle.main.bundleIdentifier, !bundleIdentifier.isEmpty else {
-            return nil
+        if prefix.isEmpty {
+            return self
         }
 
-        return OptimizeConstants.SURFACE_BASE + bundleIdentifier + self
+        return prefix + self
     }
 }

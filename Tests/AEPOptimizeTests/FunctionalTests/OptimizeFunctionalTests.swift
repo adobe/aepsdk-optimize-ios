@@ -484,23 +484,22 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
-            XCTFail("Propositions dictionary should be valid.")
+        guard let propositionsArray: [Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions array should be valid.")
             return
         }
-        let scope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
-        XCTAssertNotNil(propositionsDictionary[scope])
+        XCTAssertNotNil(propositionsArray[0])
 
-        let proposition = propositionsDictionary[scope]
-        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
-        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
-        XCTAssertEqual(1, proposition?.offers.count)
-        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
-        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", proposition?.offers[0].schema)
-        XCTAssertEqual(.html, proposition?.offers[0].type)
-        XCTAssertEqual("<h1>This is HTML content</h1>", proposition?.offers[0].content)
-        XCTAssertEqual(1, proposition?.offers[0].characteristics?.count)
-        XCTAssertEqual("true", proposition?.offers[0].characteristics?["testing"])
+        let proposition = propositionsArray[0]
+        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition.id)
+        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition.scope)
+        XCTAssertEqual(1, proposition.offers.count)
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", proposition.offers[0].schema)
+        XCTAssertEqual(.html, proposition.offers[0].type)
+        XCTAssertEqual("<h1>This is HTML content</h1>", proposition.offers[0].content)
+        XCTAssertEqual(1, proposition.offers[0].characteristics?.count)
+        XCTAssertEqual("true", proposition.offers[0].characteristics?["testing"])
     }
     
     func testEdgeResponse_validPropositionFromTargetWithClickTracking() {
@@ -585,26 +584,25 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
-            XCTFail("Propositions dictionary should be valid.")
+        guard let propositionsArray: [Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions array should be valid.")
             return
         }
-        let scope = DecisionScope(name: "myMbox1")
-        XCTAssertNotNil(propositionsDictionary[scope])
+        XCTAssertNotNil(propositionsArray[0])
 
-        let proposition = propositionsDictionary[scope]
-        XCTAssertEqual("AT:eyJhY3Rpdml0eUlkIjoiMTExMTExIiwiZXhwZXJpZW5jZUlkIjoiMCJ9", proposition?.id)
-        XCTAssertEqual("myMbox1", proposition?.scope)
-        let scopeDetails = proposition?.scopeDetails ?? [:]
+        let proposition = propositionsArray[0]
+        XCTAssertEqual("AT:eyJhY3Rpdml0eUlkIjoiMTExMTExIiwiZXhwZXJpZW5jZUlkIjoiMCJ9", proposition.id)
+        XCTAssertEqual("myMbox1", proposition.scope)
+        let scopeDetails = proposition.scopeDetails ?? [:]
         XCTAssertTrue(testScopeDetails == scopeDetails)
         
-        XCTAssertEqual(1, proposition?.offers.count)
-        XCTAssertEqual("0", proposition?.offers[0].id)
-        XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", proposition?.offers[0].schema)
-        XCTAssertEqual(.json, proposition?.offers[0].type)
-        XCTAssertEqual("{\"device\":\"mobile\"}", proposition?.offers[0].content)
-        XCTAssertNil(proposition?.offers[0].characteristics)
-        XCTAssertNil(proposition?.offers[0].language)
+        XCTAssertEqual(1, proposition.offers.count)
+        XCTAssertEqual("0", proposition.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", proposition.offers[0].schema)
+        XCTAssertEqual(.json, proposition.offers[0].type)
+        XCTAssertEqual("{\"device\":\"mobile\"}", proposition.offers[0].content)
+        XCTAssertNil(proposition.offers[0].characteristics)
+        XCTAssertNil(proposition.offers[0].language)
     }
 
     func testEdgeResponse_emptyProposition() {
@@ -791,7 +789,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")] = propositions
+        optimize.cachedPropositions["eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -821,26 +819,24 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
-            XCTFail("Propositions dictionary should be valid.")
+        guard let propositionsArray: [Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions array should be valid.")
             return
         }
-        XCTAssertEqual(1, propositionsDictionary.count)
+        XCTAssertEqual(1, propositionsArray.count)
+        XCTAssertNotNil(propositionsArray[0])
 
-        let scope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
-        XCTAssertNotNil(propositionsDictionary[scope])
-
-        let proposition = propositionsDictionary[scope]
-        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
-        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
-        XCTAssertEqual(1, proposition?.offers.count)
-        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
-        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-json", proposition?.offers[0].schema)
-        XCTAssertEqual(1, proposition?.offers[0].score)
-        XCTAssertEqual(.json, proposition?.offers[0].type)
-        XCTAssertEqual("{\"key\":\"value\"}", proposition?.offers[0].content)
-        XCTAssertEqual(1, proposition?.offers[0].characteristics?.count)
-        XCTAssertEqual("true", proposition?.offers[0].characteristics?["testing"])
+        let proposition = propositionsArray[0]
+        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition.id)
+        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition.scope)
+        XCTAssertEqual(1, proposition.offers.count)
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-json", proposition.offers[0].schema)
+        XCTAssertEqual(1, proposition.offers[0].score)
+        XCTAssertEqual(.json, proposition.offers[0].type)
+        XCTAssertEqual("{\"key\":\"value\"}", proposition.offers[0].content)
+        XCTAssertEqual(1, proposition.offers[0].characteristics?.count)
+        XCTAssertEqual("true", proposition.offers[0].characteristics?["testing"])
     }
 
     func testGetPropositions_notAllDecisionScopesInCache() {
@@ -878,7 +874,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")] = propositions
+        optimize.cachedPropositions["eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -911,26 +907,21 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
-            XCTFail("Propositions dictionary should be valid.")
+        guard let propositionsArray: [Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions array should be valid.")
             return
         }
-        XCTAssertEqual(1, propositionsDictionary.count)
-        
-        let scope1 = DecisionScope(name: "myMbox")
-        XCTAssertNil(propositionsDictionary[scope1])
+        XCTAssertEqual(1, propositionsArray.count)
+        XCTAssertNotNil(propositionsArray[0])
 
-        let scope2 = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
-        XCTAssertNotNil(propositionsDictionary[scope2])
-
-        let proposition = propositionsDictionary[scope2]
-        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
-        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
-        XCTAssertEqual(1, proposition?.offers.count)
-        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
-        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-text", proposition?.offers[0].schema)
-        XCTAssertEqual(.text, proposition?.offers[0].type)
-        XCTAssertEqual("This is a plain text content.", proposition?.offers[0].content)
+        let proposition = propositionsArray[0]
+        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition.id)
+        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition.scope)
+        XCTAssertEqual(1, proposition.offers.count)
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-text", proposition.offers[0].schema)
+        XCTAssertEqual(.text, proposition.offers[0].type)
+        XCTAssertEqual("This is a plain text content.", proposition.offers[0].content)
     }
 
     func testGetPropositions_noDecisionScopeInCache() {
@@ -968,7 +959,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")] = propositions
+        optimize.cachedPropositions["eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -1043,7 +1034,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")] = propositions
+        optimize.cachedPropositions["eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -1157,7 +1148,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")] = propositions
+        optimize.cachedPropositions["eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -1585,7 +1576,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions[DecisionScope(name: "myScope")] = propositions
+        optimize.cachedPropositions["myScope"] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Clear Propositions Request",
@@ -1643,7 +1634,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions[DecisionScope(name: "myScope")] = propositions
+        optimize.cachedPropositions["myScope"] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Reset Identities Request",

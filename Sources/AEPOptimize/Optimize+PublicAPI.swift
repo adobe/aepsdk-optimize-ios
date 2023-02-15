@@ -22,7 +22,7 @@ public extension Optimize {
     /// - Parameter decisionScopes: An array of decision scopes.
     /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
-    @available(*, deprecated, message: "Use updatePropositions(for: [String], withXdm: [String: Any]?, andData: [String: Any]?) instead")
+    @available(*, deprecated, message: "Use updatePropositions(for: [String], withXdm: [String: Any]?, andData: [String: Any]? = nil) instead")
     @objc(updatePropositions:withXdm:andData:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil) {
         let flattenedDecisionScopes = decisionScopes
@@ -57,6 +57,93 @@ public extension Optimize {
 
         MobileCore.dispatch(event: event)
     }
+
+    /// This API retrieves the previously fetched decisions for the provided decision scopes from the in-memory extension cache.
+    ///
+    /// The completion handler will be invoked with the decision propositions corresponding to the given decision scopes. If a certain decision scope has not already been fetched prior to this API call, it will not be contained in the returned propositions.
+    /// - Parameters:
+    ///   - decisionScopes: An array of decision scopes.
+    ///   - completion: The completion handler to be invoked when the decisions are retrieved from cache.
+    @available(*, deprecated, message: "Use getPropositions(for: [String], _: @escaping ([String: Proposition]?, Error?) -> Void instead")
+    @objc(getPropositions:completion:)
+    static func getPropositions(for decisionScopes: [DecisionScope], _ completion: @escaping ([DecisionScope: Proposition]?, Error?) -> Void) {
+        let flattenedDecisionScopes = decisionScopes
+            .filter { $0.isValid }
+            .compactMap { $0.asDictionary() }
+
+        guard !flattenedDecisionScopes.isEmpty else {
+            completion(nil, AEPError.invalidRequest)
+            Log.warning(label: OptimizeConstants.LOG_TAG,
+                        "Cannot get propositions, provided decision scopes array is empty or has invalid items.")
+            return
+        }
+
+        let eventData: [String: Any] = [
+            OptimizeConstants.EventDataKeys.REQUEST_TYPE: OptimizeConstants.EventDataValues.REQUEST_TYPE_GET,
+            OptimizeConstants.EventDataKeys.DECISION_SCOPES: flattenedDecisionScopes
+        ]
+
+        let event = Event(name: OptimizeConstants.EventNames.GET_PROPOSITIONS_REQUEST,
+                          type: EventType.optimize,
+                          source: EventSource.requestContent,
+                          data: eventData)
+
+        MobileCore.dispatch(event: event) { responseEvent in
+            guard let responseEvent = responseEvent else {
+                completion(nil, AEPError.callbackTimeout)
+                return
+            }
+
+            if let error = responseEvent.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR] as? AEPError {
+                completion(nil, error)
+                return
+            }
+
+            guard
+                let propositions: [Proposition] = responseEvent.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS)
+            else {
+                completion(nil, AEPError.unexpected)
+                return
+            }
+            completion(propositions.toDictionary { DecisionScope(name: $0.scope) }, .none)
+        }
+    }
+
+    /// This API registers a permanent callback which will be invoked whenever the Edge extension dispatches an Event handle,
+    /// upon a personalization decisions response from the Experience Edge Network.
+    ///
+    /// The personalization query requests can be triggered by the `updatePropositions(for:withXdm:andData:)` API,
+    /// Edge extension `sendEvent(experienceEvent:_:)` API or launch rules consequence.
+    ///
+    /// - Parameter action: The completion handler to be invoked with the decision propositions.
+    @available(*, deprecated, message: "Use onPropositionsUpdate(perform: @escaping ([String: Proposition]) -> Void) instead")
+    @objc(onPropositionsUpdate:)
+    static func onPropositionsUpdate(perform action: @escaping ([DecisionScope: Proposition]) -> Void) {
+        MobileCore.registerEventListener(type: EventType.optimize, source: EventSource.notification) { event in
+            guard
+                let propositions: [Proposition] = event.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS),
+                !propositions.isEmpty
+            else {
+                Log.warning(label: OptimizeConstants.LOG_TAG, "No valid propositions found in the notification event.")
+                return
+            }
+
+            action(propositions.toDictionary { DecisionScope(name: $0.scope) })
+        }
+    }
+
+    /// This API clears the in-memory propositions cache.
+    @objc(clearCachedPropositions)
+    static func clearCachedPropositions() {
+        let event = Event(name: OptimizeConstants.EventNames.CLEAR_PROPOSITIONS_REQUEST,
+                          type: EventType.optimize,
+                          source: EventSource.requestReset,
+                          data: nil)
+
+        MobileCore.dispatch(event: event)
+    }
+
+    // MARK: - Mobile Surface Support
 
     /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided mobile surfaces from the decisioning Services enabled behind Experience Edge.
     ///
@@ -98,28 +185,27 @@ public extension Optimize {
         MobileCore.dispatch(event: event)
     }
 
-    /// This API retrieves the previously fetched decisions for the provided decision scopes from the in-memory extension cache.
+    /// This API retrieves the previously fetched decisions for the provided mobile surfaces from the in-memory extension cache.
     ///
-    /// The completion handler will be invoked with the decision propositions corresponding to the given decision scopes. If a certain decision scope has not already been fetched prior to this API call, it will not be contained in the returned propositions.
+    /// The completion handler will be invoked with the decision propositions corresponding to the given surface strings. If a certain surface has not already been fetched prior to this API call, it will not be contained in the returned propositions.
     /// - Parameters:
-    ///   - decisionScopes: An array of decision scopes.
+    ///   - decisionScopes: An array of mobile surfaces.
     ///   - completion: The completion handler to be invoked when the decisions are retrieved from cache.
-    @objc(getPropositions:completion:)
-    static func getPropositions(for decisionScopes: [DecisionScope], _ completion: @escaping ([DecisionScope: Proposition]?, Error?) -> Void) {
-        let flattenedDecisionScopes = decisionScopes
-            .filter { $0.isValid }
-            .compactMap { $0.asDictionary() }
+    @objc(getPropositionsForSurfaces:completion:)
+    static func getPropositions(for surfaces: [String], _ completion: @escaping ([String: Proposition]?, Error?) -> Void) {
+        let targetSurfaces = surfaces
+            .filter { !$0.isEmpty }
 
-        guard !flattenedDecisionScopes.isEmpty else {
+        guard !targetSurfaces.isEmpty else {
             completion(nil, AEPError.invalidRequest)
             Log.warning(label: OptimizeConstants.LOG_TAG,
-                        "Cannot get propositions, provided decision scopes array is empty or has invalid items.")
+                        "Cannot get propositions, provided surfaces array is empty or has invalid items.")
             return
         }
 
         let eventData: [String: Any] = [
             OptimizeConstants.EventDataKeys.REQUEST_TYPE: OptimizeConstants.EventDataValues.REQUEST_TYPE_GET,
-            OptimizeConstants.EventDataKeys.DECISION_SCOPES: flattenedDecisionScopes
+            OptimizeConstants.EventDataKeys.SURFACES: targetSurfaces
         ]
 
         let event = Event(name: OptimizeConstants.EventNames.GET_PROPOSITIONS_REQUEST,
@@ -139,12 +225,12 @@ public extension Optimize {
             }
 
             guard
-                let propositions: [DecisionScope: Proposition] = responseEvent.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS)
+                let propositions: [Proposition] = responseEvent.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS)
             else {
                 completion(nil, AEPError.unexpected)
                 return
             }
-            completion(propositions, .none)
+            completion(propositions.toDictionary { $0.scope }, .none)
         }
     }
 
@@ -155,29 +241,18 @@ public extension Optimize {
     /// Edge extension `sendEvent(experienceEvent:_:)` API or launch rules consequence.
     ///
     /// - Parameter action: The completion handler to be invoked with the decision propositions.
-    @objc(onPropositionsUpdate:)
-    static func onPropositionsUpdate(perform action: @escaping ([DecisionScope: Proposition]) -> Void) {
+    @objc(onPropositionsUpdateForSurfaces:)
+    static func onPropositionsUpdate(perform action: @escaping ([String: Proposition]) -> Void) {
         MobileCore.registerEventListener(type: EventType.optimize, source: EventSource.notification) { event in
             guard
-                let propositions: [DecisionScope: Proposition] = event.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS),
+                let propositions: [Proposition] = event.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS),
                 !propositions.isEmpty
             else {
                 Log.warning(label: OptimizeConstants.LOG_TAG, "No valid propositions found in the notification event.")
                 return
             }
 
-            action(propositions)
+            action(propositions.toDictionary { $0.scope })
         }
-    }
-
-    /// This API clears the in-memory propositions cache.
-    @objc(clearCachedPropositions)
-    static func clearCachedPropositions() {
-        let event = Event(name: OptimizeConstants.EventNames.CLEAR_PROPOSITIONS_REQUEST,
-                          type: EventType.optimize,
-                          source: EventSource.requestReset,
-                          data: nil)
-
-        MobileCore.dispatch(event: event)
     }
 }

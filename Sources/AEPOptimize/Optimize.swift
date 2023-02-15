@@ -40,9 +40,9 @@ public class Optimize: NSObject, Extension {
 
     /// Dictionary containing decision propositions currently cached in-memory in the SDK.
     #if DEBUG
-        var cachedPropositions: [DecisionScope: Proposition]
+        var cachedPropositions: [String: Proposition]
     #else
-        private(set) var cachedPropositions: [DecisionScope: Proposition]
+        private(set) var cachedPropositions: [String: Proposition]
     #endif
 
     public required init?(runtime: ExtensionRuntime) {
@@ -123,7 +123,7 @@ public class Optimize: NSObject, Extension {
             !surfaces.isEmpty
         {
             targetSurfaces = surfaces
-                .map { !$0.isEmpty ? ($0.prefixedSurface() ?? "") : $0 }
+                .map { $0.prefixedSurface(Bundle.main.mobileappSurface ?? "") }
                 .filter { $0.isValidSurface() }
         } else {
             Log.debug(label: OptimizeConstants.LOG_TAG, """
@@ -197,7 +197,7 @@ public class Optimize: NSObject, Extension {
 
         let propositionsDict = propositions
             .filter { !$0.offers.isEmpty }
-            .toDictionary { DecisionScope(name: $0.scope) }
+            .toDictionary { $0.scope }
 
         if propositionsDict.isEmpty {
             Log.debug(label: OptimizeConstants.LOG_TAG,
@@ -214,7 +214,7 @@ public class Optimize: NSObject, Extension {
         // Update propositions cache
         cachedPropositions.merge(propositionsDict) { _, new in new }
 
-        let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
+        let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict.map { $0.value }].asDictionary()
 
         let event = Event(name: OptimizeConstants.EventNames.OPTIMIZE_NOTIFICATION,
                           type: EventType.optimize,
@@ -245,17 +245,24 @@ public class Optimize: NSObject, Extension {
     ///  It returns previously cached propositions for the requested decision scopes. Any decision scope(s) not already present in the cache are ignored.
     /// - Parameter event: Get propositions request event
     private func processGetPropositions(event: Event) {
-        guard let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
-              !decisionScopes.isEmpty
-        else {
+        let propositionsDict: [String: Proposition]
+        if
+            let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
+            !decisionScopes.isEmpty
+        {
+            propositionsDict = cachedPropositions.filter { decisionScopes.contains(DecisionScope(name: $0.key)) }
+        } else if
+            let surfaces: [String] = event.getTypedData(for: OptimizeConstants.EventDataKeys.SURFACES),
+            !surfaces.isEmpty
+        {
+            propositionsDict = cachedPropositions.filter { surfaces.contains($0.key) }
+        } else {
             Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
             dispatch(event: event.createErrorResponseEvent(AEPError.invalidRequest))
             return
         }
 
-        let propositionsDict = cachedPropositions.filter { decisionScopes.contains($0.key) }
-
-        let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
+        let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict.map { $0.value }].asDictionary()
 
         let responseEvent = event.createResponseEvent(
             name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,

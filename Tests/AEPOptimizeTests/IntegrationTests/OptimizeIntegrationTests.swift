@@ -953,6 +953,8 @@ class OptimizeIntegrationTests: XCTestCase {
         wait(for: [trackExpectation], timeout: 2)
     }
     
+    // MARK: - Mobile Surface Support Tests
+    
     func testUpdatePropositions_validEdgeRequestWithSurfaces() {
         // setup
         let requestExpectation = XCTestExpectation(description: "updatePropositions should result in a valid personalization query request to the Edge network.")
@@ -1005,4 +1007,89 @@ class OptimizeIntegrationTests: XCTestCase {
         wait(for: [requestExpectation], timeout: 2)
     }
 
+    func testGetPropositions_propositionsInCacheForSurfaces() {
+        // setup
+        let validResponse = HTTPURLResponse(url: URL(string: "https://edge.adobedc.net/ee/v1/interact?configId=configId&requestId=requestId")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let responseString = """
+                {\
+                   "requestId": "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF",\
+                   "handle": [\
+                      {\
+                         "payload": [\
+                            { \
+                               "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",\
+                               "scope": "/myView#htmlElement",\
+                               "items": [\
+                                  {\
+                                     "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",\
+                                     "schema": "https://ns.adobe.com/personalization/html-content-item",\
+                                     "data": {\
+                                        "content": "<h2>This is a HTML content!</h2>",\
+                                     }\
+                                  }\
+                               ]\
+                            }\
+                         ],\
+                         "type":"personalization:decisions",\
+                         "eventIndex":0\
+                      }\
+                   ]\
+                }
+        """
+
+        // mock edge response
+        let requestExpectation = XCTestExpectation(description: "updatePropositions should result in a valid personalization query request to the Edge network.")
+        let mockNetworkService = TestableNetworkService()
+        ServiceProvider.shared.networkService = mockNetworkService
+        mockNetworkService.mock { request in
+            if request.url.absoluteString.contains("edge.adobedc.net/ee/v1/interact?configId=configId") {
+                requestExpectation.fulfill()
+                return (data: responseString.data(using: .utf8), response: validResponse, error: nil)
+            }
+            return (data: nil, response: validResponse, error: nil)
+        }
+
+        // init extensions
+        initExtensionsAndWait()
+        
+        // update configuration
+        MobileCore.updateConfigurationWith(configDict: [
+                                            "experienceCloud.org": "orgid",
+                                            "experienceCloud.server": "test.com",
+                                            "global.privacy": "optedin",
+                                            "edge.configId": "configId"])
+
+        let surface = "/myView#htmlElement"
+
+        // update propositions
+        Optimize.updatePropositions(for: [surface], withXdm: nil)
+        wait(for: [requestExpectation], timeout: 2)
+
+        sleep(2)
+        
+        // get propositions
+        let retrieveExpectation = XCTestExpectation(description: "getPropositions should return the fetched propositions from the extension propositions cache.")
+        Optimize.getPropositions(for: [surface]) { propositionsDictionary, _ in
+            guard let propositionsDictionary = propositionsDictionary else {
+                XCTFail("Propositions dictionary should be valid.")
+                return
+            }
+            XCTAssertEqual(1, propositionsDictionary.count)
+            
+            let proposition = propositionsDictionary[surface]
+            XCTAssertNotNil(proposition)
+            
+            XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
+            XCTAssertEqual("/myView#htmlElement", proposition?.scope)
+            
+            XCTAssertEqual(1, proposition?.offers.count)
+            XCTAssertEqual("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb", proposition?.offers[0].id)
+            XCTAssertEqual("https://ns.adobe.com/personalization/html-content-item", proposition?.offers[0].schema)
+            // XCTAssertEqual(.text, proposition?.offers[0].type)
+            XCTAssertEqual("<h2>This is a HTML content!</h2>", proposition?.offers[0].content)
+
+            retrieveExpectation.fulfill()
+        }
+        wait(for: [retrieveExpectation], timeout: 2)
+    }
 }
