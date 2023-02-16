@@ -110,7 +110,11 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
+#if SURFACES_SUPPORT_ENABLED
+            .environmentObject(SurfaceSettings())
+#else
             .environmentObject(OdeSettings())
             .environmentObject(TargetSettings())
+#endif
     }
 }

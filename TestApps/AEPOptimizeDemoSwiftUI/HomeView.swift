@@ -78,7 +78,7 @@ struct HomeView: View {
 #endif
             }
         }
-#if SURFACES_SUPPORT
+#if SURFACES_SUPPORT_ENABLED
         .environmentObject(surfaceSettings)
 #else
         .environmentObject(odeSettings)
