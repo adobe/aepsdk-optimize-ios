@@ -1435,6 +1435,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D SURFACES_SUPPORT_ENABLED";
 				PRODUCT_BUNDLE_IDENTIFIER = com.adobe.aep.AEPOptimizeDemoSwiftUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -1459,6 +1460,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D SURFACES_SUPPORT_ENABLED";
 				PRODUCT_BUNDLE_IDENTIFIER = com.adobe.aep.AEPOptimizeDemoSwiftUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

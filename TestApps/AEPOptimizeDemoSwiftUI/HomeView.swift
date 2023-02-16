@@ -14,8 +14,12 @@ import AEPOptimize
 import SwiftUI
 
 struct HomeView: View {
+#if SURFACES_SUPPORT_ENABLED
+    @StateObject var surfaceSettings = SurfaceSettings()
+#else
     @StateObject var odeSettings = OdeSettings()
     @StateObject var targetSettings = TargetSettings()
+#endif
     @StateObject var propositions = Propositions()
     
     @State private var viewDidLoad = false
@@ -38,8 +42,20 @@ struct HomeView: View {
         .onAppear {
             if viewDidLoad == false {
                 viewDidLoad = true
-
-                Optimize.onPropositionsUpdate { propositionsDict in
+#if SURFACES_SUPPORT_ENABLED
+                Optimize.onPropositionsUpdate { (propositionsDict: [String: Proposition]) in
+                    
+                    DispatchQueue.main.async {
+                        if let htmlProposition = propositionsDict[self.surfaceSettings.htmlSurface] {
+                            self.propositions.htmlProposition = htmlProposition
+                        }
+                        if let jsonProposition = propositionsDict[self.surfaceSettings.jsonSurface] {
+                            self.propositions.jsonProposition = jsonProposition
+                        }
+                    }
+                }
+#else
+                Optimize.onPropositionsUpdate { (propositionsDict: [DecisionScope: Proposition]) in
                     
                     DispatchQueue.main.async {
                         if let textProposition = propositionsDict[DecisionScope(name: self.odeSettings.textEncodedDecisionScope)] {
@@ -59,13 +75,24 @@ struct HomeView: View {
                         }
                     }
                 }
+#endif
             }
         }
+#if SURFACES_SUPPORT
+        .environmentObject(surfaceSettings)
+#else
         .environmentObject(odeSettings)
         .environmentObject(targetSettings)
+#endif
     }
 }
 
+#if SURFACES_SUPPORT_ENABLED
+class SurfaceSettings: ObservableObject {
+    @Published var htmlSurface = ""
+    @Published var jsonSurface = ""
+}
+#else
 class OdeSettings: ObservableObject {
     @Published var textEncodedDecisionScope = ""
     @Published var imageEncodedDecisionScope = ""
@@ -89,15 +116,18 @@ class TargetSettings: ObservableObject {
         product = TargetProduct(productId: "", categoryId: "")
     }
 }
+#endif
 
 class Propositions: ObservableObject {
-    @Published var textProposition: Proposition?
-    @Published var imageProposition: Proposition?
-    @Published var htmlProposition: Proposition?
-    @Published var jsonProposition: Proposition?
-    @Published var targetProposition: Proposition?
+    @Published var textProposition: Proposition? = nil
+    @Published var imageProposition: Proposition? = nil
+    @Published var htmlProposition: Proposition? = nil
+    @Published var jsonProposition: Proposition? = nil
+    @Published var targetProposition: Proposition? = nil
     
-    init() {
+    init() {}
+    
+    func reset() {
         textProposition = nil
         imageProposition = nil
         htmlProposition = nil
@@ -109,7 +139,11 @@ class Propositions: ObservableObject {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
+#if SURFACES_SUPPORT_ENABLED
+            .environmentObject(SurfaceSettings())
+#else
             .environmentObject(OdeSettings())
             .environmentObject(TargetSettings())
+#endif
     }
 }

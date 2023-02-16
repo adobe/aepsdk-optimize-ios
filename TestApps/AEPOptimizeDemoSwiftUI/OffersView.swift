@@ -19,8 +19,12 @@ import SwiftUI
 import Foundation
 
 struct OffersView: View {
+#if SURFACES_SUPPORT_ENABLED
+    @EnvironmentObject var surfaceSettings: SurfaceSettings
+#else
     @EnvironmentObject var odeSettings: OdeSettings
     @EnvironmentObject var targetSettings: TargetSettings
+#endif
     @ObservedObject var propositions: Propositions
     
     @State private var errorAlert = false
@@ -109,13 +113,22 @@ struct OffersView: View {
             Divider()
             HStack {
                 CustomButtonView(buttonTitle: "Update Propositions") {
+#if SURFACES_SUPPORT_ENABLED
+                    let htmlSurface = surfaceSettings.htmlSurface
+                    let jsonSurface = surfaceSettings.jsonSurface
                     
+                    Optimize.updatePropositions(for: [
+                        htmlSurface,
+                        jsonSurface
+                    ], withXdm: ["xdmKey": "1234"],
+                        andData: ["someDataKey": "someDataValue"])
+#else
                     let textDecisionScope = DecisionScope(name: odeSettings.textEncodedDecisionScope)
                     let imageDecisionScope = DecisionScope(name: odeSettings.imageEncodedDecisionScope)
                     let htmlDecisionScope = DecisionScope(name: odeSettings.htmlEncodedDecisionScope)
                     let jsonDecisionScope = DecisionScope(name: odeSettings.jsonEncodedDecisionScope)
                     let targetScope = DecisionScope(name: targetSettings.targetMbox)
-
+                    
                     // Send a custom Identity in IdentityMap as primary identifier to Edge network in personalization query request.
                     let identityMap = IdentityMap()
                     identityMap.add(item: IdentityItem(id: "1111",
@@ -153,7 +166,7 @@ struct OffersView: View {
                         }
                     }
                     data["dataKey"] = "5678"
-
+                    
                     Optimize.updatePropositions(for: [
                         textDecisionScope,
                         imageDecisionScope,
@@ -161,11 +174,50 @@ struct OffersView: View {
                         jsonDecisionScope,
                         targetScope
                     ], withXdm: ["xdmKey": "1234"],
-                       andData: data)
+                        andData: data)
+#endif
                 }
                 
                 CustomButtonView(buttonTitle: "Get Propositions") {
                     
+#if SURFACES_SUPPORT_ENABLED
+                    let htmlSurface = surfaceSettings.htmlSurface
+                    let jsonSurface = surfaceSettings.jsonSurface
+                    
+                    Optimize.getPropositions(for: [
+                        htmlSurface,
+                        jsonSurface
+                    ]) {
+                            propositionsDict, error in
+    
+                            if let error = error {
+                                errorAlert = true
+                                errorMessage = error.localizedDescription
+                            } else {
+                                
+                                guard let propositionsDict = propositionsDict else {
+                                    return
+                                }
+                                
+                                DispatchQueue.main.async {
+                                    
+                                    if propositionsDict.isEmpty {
+                                        propositions.htmlProposition = nil
+                                        propositions.jsonProposition = nil
+                                        return
+                                    }
+                                    
+                                    if let htmlProposition = propositionsDict[htmlSurface] {
+                                        propositions.htmlProposition = htmlProposition
+                                    }
+                                    
+                                    if let jsonProposition = propositionsDict[jsonSurface] {
+                                        propositions.jsonProposition = jsonProposition
+                                    }
+                                }
+                            }
+                    }
+#else
                     let textDecisionScope = DecisionScope(name: odeSettings.textEncodedDecisionScope)
                     let imageDecisionScope = DecisionScope(name: odeSettings.imageEncodedDecisionScope)
                     let htmlDecisionScope = DecisionScope(name: odeSettings.htmlEncodedDecisionScope)
@@ -223,6 +275,7 @@ struct OffersView: View {
                                 }
                             }
                     }
+#endif
                 }
                 .alert(isPresented: $errorAlert) {
                     Alert(title: Text("Error: Get Propositions"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
