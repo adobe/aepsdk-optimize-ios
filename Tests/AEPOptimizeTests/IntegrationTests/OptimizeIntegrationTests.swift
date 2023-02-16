@@ -522,7 +522,7 @@ class OptimizeIntegrationTests: XCTestCase {
                                           placementId: "xcore:offer-placement:1111111111111111")
 
         let updateExpectation = XCTestExpectation(description: "onPropositionsUpdate should be invoked upon a valid personalization query response from the Edge network.")
-        Optimize.onPropositionsUpdate { propositionsDictionary in
+        Optimize.onPropositionsUpdate { (propositionsDictionary: [DecisionScope: Proposition]) in
             XCTAssertEqual(1, propositionsDictionary.count)
             
             let proposition = propositionsDictionary[decisionScope]
@@ -1198,7 +1198,7 @@ class OptimizeIntegrationTests: XCTestCase {
         let surface = "/myView#htmlElement"
 
         let updateExpectation = XCTestExpectation(description: "onPropositionsUpdate should be invoked upon a valid personalization query response from the Edge network.")
-        Optimize.onPropositionsUpdate { propositionsDictionary in
+        Optimize.onPropositionsUpdate { (propositionsDictionary: [String: Proposition]) in
             
             XCTAssertEqual(1, propositionsDictionary.count)
             
