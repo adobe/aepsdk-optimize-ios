@@ -930,7 +930,7 @@ class OptimizePublicAPITests: XCTestCase {
                                                 "id": "fd125be6-f505-4640-ba26-9527c682e1a8",
                                                 "schema": "https://ns.adobe.com/personalization/html-content-item",
                                                 "data": [
-                                                    // "type": 2,
+                                                    "type": 0, // Offer format is not returned in Edge response
                                                     "content": "<h3>This is a HTML content!</h3>"
                                                 ]
                                             ]
@@ -952,7 +952,7 @@ class OptimizePublicAPITests: XCTestCase {
             XCTAssertEqual(1, proposition?.offers.count)
             XCTAssertEqual("fd125be6-f505-4640-ba26-9527c682e1a8", proposition?.offers[0].id)
             XCTAssertEqual("https://ns.adobe.com/personalization/html-content-item", proposition?.offers[0].schema)
-            // XCTAssertEqual(.text, proposition?.offers[0].type)
+            XCTAssertEqual(.unknown, proposition?.offers[0].type) // Offer format is not returned in Edge response
             XCTAssertEqual("<h3>This is a HTML content!</h3>", proposition?.offers[0].content)
 
             expectation.fulfill()

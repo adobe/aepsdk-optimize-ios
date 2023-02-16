@@ -257,7 +257,10 @@ public class Optimize: NSObject, Extension {
         {
             propositionsDict = cachedPropositions.filter { surfaces.contains($0.key) }
         } else {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
+            Log.debug(label: OptimizeConstants.LOG_TAG, """
+                Cannot process the get propositions request event,\
+                decision scopes or surfaces in event data are either not present or empty.
+            """)
             dispatch(event: event.createErrorResponseEvent(AEPError.invalidRequest))
             return
         }
