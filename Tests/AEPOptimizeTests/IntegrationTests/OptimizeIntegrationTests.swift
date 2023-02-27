@@ -1002,7 +1002,7 @@ class OptimizeIntegrationTests: XCTestCase {
         ])
         
         // update propositions
-        Optimize.updatePropositions(for: ["/myView#htmlElement"], withXdm: nil)
+        Optimize.updatePropositions(for: ["myView#htmlElement"], withXdm: nil)
 
         wait(for: [requestExpectation], timeout: 2)
     }
@@ -1018,7 +1018,7 @@ class OptimizeIntegrationTests: XCTestCase {
                          "payload": [\
                             { \
                                "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",\
-                               "scope": "/myView#htmlElement",\
+                               "scope": "myView#htmlElement",\
                                "scopeDetails": {\
                                    "correlationID": "cccccccc-cccc-cccc-cccc-cccccccccccc",\
                                    "characteristics": {\
@@ -1069,7 +1069,7 @@ class OptimizeIntegrationTests: XCTestCase {
                                             "global.privacy": "optedin",
                                             "edge.configId": "configId"])
 
-        let surface = "/myView#htmlElement"
+        let surface = "myView#htmlElement"
 
         // update propositions
         Optimize.updatePropositions(for: [surface], withXdm: nil)
@@ -1090,7 +1090,7 @@ class OptimizeIntegrationTests: XCTestCase {
             XCTAssertNotNil(proposition)
             
             XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
-            XCTAssertEqual("/myView#htmlElement", proposition?.scope)
+            XCTAssertEqual("myView#htmlElement", proposition?.scope)
             
             XCTAssertEqual(4, proposition?.scopeDetails.count)
             XCTAssertEqual("cccccccc-cccc-cccc-cccc-cccccccccccc", proposition?.scopeDetails["correlationID"] as? String)
@@ -1123,7 +1123,7 @@ class OptimizeIntegrationTests: XCTestCase {
                                             "edge.configId": "configId"
         ])
         
-        let surface = "/myView#htmlElement"
+        let surface = "myView#htmlElement"
 
         let retrieveExpectation = XCTestExpectation(description: "getPropositions should not return propositions, if not previously cached.")
         Optimize.getPropositions(for: [surface]) { propositionsDictionary, _ in
@@ -1144,7 +1144,7 @@ class OptimizeIntegrationTests: XCTestCase {
                          "payload": [\
                             { \
                                "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",\
-                               "scope": "/myView#htmlElement",\
+                               "scope": "myView#htmlElement",\
                                "scopeDetails": {\
                                    "correlationID": "cccccccc-cccc-cccc-cccc-cccccccccccc",\
                                    "characteristics": {\
@@ -1195,7 +1195,7 @@ class OptimizeIntegrationTests: XCTestCase {
                                             "global.privacy": "optedin",
                                             "edge.configId": "configId"])
 
-        let surface = "/myView#htmlElement"
+        let surface = "myView#htmlElement"
 
         let updateExpectation = XCTestExpectation(description: "onPropositionsUpdate should be invoked upon a valid personalization query response from the Edge network.")
         Optimize.onPropositionsUpdate { (propositionsDictionary: [String: Proposition]) in
@@ -1206,7 +1206,7 @@ class OptimizeIntegrationTests: XCTestCase {
             XCTAssertNotNil(proposition)
             
             XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
-            XCTAssertEqual("/myView#htmlElement", proposition?.scope)
+            XCTAssertEqual("myView#htmlElement", proposition?.scope)
             
             XCTAssertEqual(4, proposition?.scopeDetails.count)
             XCTAssertEqual("cccccccc-cccc-cccc-cccc-cccccccccccc", proposition?.scopeDetails["correlationID"] as? String)

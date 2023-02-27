@@ -571,7 +571,7 @@ class OptimizePublicAPITests: XCTestCase {
         let testEventData: [String: Any] = [
             "requesttype": "updatepropositions",
             "surfaces": [
-                "/myView#htmlElement"
+                "myView#htmlElement"
             ]
         ]
         let testEvent = Event(name: "Optimize Update Propositions Request",
@@ -589,7 +589,7 @@ class OptimizePublicAPITests: XCTestCase {
                 return
             }
             XCTAssertEqual(1, surfaces.count)
-            XCTAssertEqual("/myView#htmlElement", surfaces[0])
+            XCTAssertEqual("myView#htmlElement", surfaces[0])
 
             XCTAssertNil(event.data?["xdm"])
             XCTAssertNil(event.data?["data"])
@@ -597,7 +597,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositions(for: ["/myView#htmlElement"], withXdm: nil)
+        Optimize.updatePropositions(for: ["myView#htmlElement"], withXdm: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -611,7 +611,7 @@ class OptimizePublicAPITests: XCTestCase {
         let testEventData: [String: Any] = [
             "requesttype": "updatepropositions",
             "decisionscopes": [
-                [ "name": "/myView#featureJson"
+                [ "name": "myView#featureJson"
                 ]
             ],
             "xdm": [
@@ -636,7 +636,7 @@ class OptimizePublicAPITests: XCTestCase {
                 return
             }
             XCTAssertEqual(1, surfaces.count)
-            XCTAssertEqual("/myView#featureJson", surfaces[0])
+            XCTAssertEqual("myView#featureJson", surfaces[0])
 
             guard let xdm = event.data?["xdm"] as? [String: Any] else {
                 XCTFail("Xdm data should be valid.")
@@ -656,7 +656,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositions(for: ["/myView#featureJson"],
+        Optimize.updatePropositions(for: ["myView#featureJson"],
                                     withXdm: ["myXdmKey": "myXdmValue"] as [String: Any],
                                     andData: ["myKey": "myValue"] as [String: Any])
 
@@ -673,10 +673,10 @@ class OptimizePublicAPITests: XCTestCase {
             "requesttype": "updatepropositions",
             "decisionscopes": [
                 [
-                    "name": "/myView/mySubview1"
+                    "name": "myView/mySubview1"
                 ],
                 [
-                    "name": "/myView/mySubview2"
+                    "name": "myView/mySubview2"
                 ]
             ]
         ]
@@ -695,13 +695,13 @@ class OptimizePublicAPITests: XCTestCase {
                 return
             }
             XCTAssertEqual(2, surfaces.count)
-            XCTAssertEqual("/myView/mySubview1", surfaces[0])
-            XCTAssertEqual("/myView/mySubview2", surfaces[1])
+            XCTAssertEqual("myView/mySubview1", surfaces[0])
+            XCTAssertEqual("myView/mySubview2", surfaces[1])
             expectation.fulfill()
         }
 
         // test
-        Optimize.updatePropositions(for: ["/myView/mySubview1", "/myView/mySubview2"], withXdm: nil)
+        Optimize.updatePropositions(for: ["myView/mySubview1", "myView/mySubview2"], withXdm: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -762,7 +762,7 @@ class OptimizePublicAPITests: XCTestCase {
             "requesttype": "updatepropositions",
             "decisionscopes": [
                 [
-                    "name": "/myImageView#imageHtml"
+                    "name": "myImageView#imageHtml"
                 ]
             ]
         ]
@@ -781,12 +781,12 @@ class OptimizePublicAPITests: XCTestCase {
                 return
             }
             XCTAssertEqual(1, surfaces.count)
-            XCTAssertEqual("/myImageView#imageHtml", surfaces[0])
+            XCTAssertEqual("myImageView#imageHtml", surfaces[0])
             expectation.fulfill()
         }
 
         // test
-        Optimize.updatePropositions(for: ["", "/myImageView#imageHtml"], withXdm: nil)
+        Optimize.updatePropositions(for: ["", "myImageView#imageHtml"], withXdm: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -800,7 +800,7 @@ class OptimizePublicAPITests: XCTestCase {
         let testEventData: [String: Any] = [
             "requesttype": "getpropositions",
             "surfaces": [
-                "/myView#htmlElement"
+                "myView#htmlElement"
             ]
         ]
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -818,12 +818,12 @@ class OptimizePublicAPITests: XCTestCase {
                 return
             }
             XCTAssertEqual(1, surfaces.count)
-            XCTAssertEqual("/myView#htmlElement", surfaces[0])
+            XCTAssertEqual("myView#htmlElement", surfaces[0])
             expectation.fulfill()
         }
 
         // test
-        Optimize.getPropositions(for: ["/myView#htmlElement"]) { _, _ in }
+        Optimize.getPropositions(for: ["myView#htmlElement"]) { _, _ in }
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -883,7 +883,7 @@ class OptimizePublicAPITests: XCTestCase {
         let testEventData: [String: Any] = [
             "requesttype": "getpropositions",
             "surfaces": [
-                "/myView#htmlElement"
+                "myView#htmlElement"
             ]
         ]
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -901,12 +901,12 @@ class OptimizePublicAPITests: XCTestCase {
                 return
             }
             XCTAssertEqual(1, surfaces.count)
-            XCTAssertEqual("/myView#htmlElement", surfaces[0])
+            XCTAssertEqual("myView#htmlElement", surfaces[0])
             expectation.fulfill()
         }
 
         // test
-        Optimize.getPropositions(for: ["", "/myView#htmlElement"]) { _, _ in }
+        Optimize.getPropositions(for: ["", "myView#htmlElement"]) { _, _ in }
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -924,7 +924,7 @@ class OptimizePublicAPITests: XCTestCase {
                                 "propositions": [
                                     [
                                         "id": "2cceff23-5eea-4bad-af5f-abb1aca1ea2e",
-                                        "scope": "/myView#htmlElement",
+                                        "scope": "myView#htmlElement",
                                         "items": [
                                             [
                                                 "id": "fd125be6-f505-4640-ba26-9527c682e1a8",
@@ -943,12 +943,12 @@ class OptimizePublicAPITests: XCTestCase {
         Optimize.onPropositionsUpdate { (propositionsDictionary :[String: Proposition]) in
             XCTAssertEqual(1, propositionsDictionary.count)
 
-            let scope = "/myView#htmlElement"
+            let scope = "myView#htmlElement"
             XCTAssertNotNil(propositionsDictionary[scope])
 
             let proposition = propositionsDictionary[scope]
             XCTAssertEqual("2cceff23-5eea-4bad-af5f-abb1aca1ea2e", proposition?.id)
-            XCTAssertEqual("/myView#htmlElement", proposition?.scope)
+            XCTAssertEqual("myView#htmlElement", proposition?.scope)
             XCTAssertEqual(1, proposition?.offers.count)
             XCTAssertEqual("fd125be6-f505-4640-ba26-9527c682e1a8", proposition?.offers[0].id)
             XCTAssertEqual("https://ns.adobe.com/personalization/html-content-item", proposition?.offers[0].schema)

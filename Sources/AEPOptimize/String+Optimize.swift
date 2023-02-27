@@ -62,6 +62,6 @@ extension String {
             return self
         }
 
-        return prefix + self
+        return prefix + "/" + self
     }
 }

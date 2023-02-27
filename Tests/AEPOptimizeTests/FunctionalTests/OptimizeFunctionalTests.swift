@@ -1664,7 +1664,7 @@ class OptimizeFunctionalTests: XCTestCase {
                               data: [
                                 "requesttype": "updatepropositions",
                                 "surfaces": [
-                                    "/myView#htmlElement"
+                                    "myView#htmlElement"
                                 ]
                               ])
 
@@ -1699,7 +1699,7 @@ class OptimizeFunctionalTests: XCTestCase {
                               data: [
                                 "requesttype": "updatepropositions",
                                 "surfaces": [
-                                    "/myView#featureJson"
+                                    "myView#featureJson"
                                 ],
                                 "xdm": [
                                     "myXdmKey": "myXdmValue"
@@ -1753,8 +1753,8 @@ class OptimizeFunctionalTests: XCTestCase {
                               data: [
                                 "requesttype": "updatepropositions",
                                 "surfaces": [
-                                    "/myView/mySubview1",
-                                    "/myView/mySubview2"
+                                    "myView/mySubview1",
+                                    "myView/mySubview2"
                                 ]
                               ])
 
@@ -1834,8 +1834,8 @@ class OptimizeFunctionalTests: XCTestCase {
                               data: [
                                 "requesttype": "updatepropositions",
                                 "surfaces": [
-                                    "/myView#htmlElement",
-                                    "/myView/mySubviews/[0-9]{2,6}$"
+                                    "myView#htmlElement",
+                                    "myView/mySubviews/[0-9]{2,6}$"
                                 ]
                               ])
 

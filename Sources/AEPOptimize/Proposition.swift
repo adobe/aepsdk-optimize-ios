@@ -48,9 +48,9 @@ public class Proposition: NSObject, Codable {
         id = try container.decode(String.self, forKey: .id)
         let scopeString = try container.decode(String.self, forKey: .scope)
 
-        let prefix = Bundle.main.mobileappSurface ?? ""
-        if !prefix.isEmpty, scopeString.hasPrefix(prefix) {
-            scope = String(scopeString.dropFirst(Bundle.main.mobileappSurface?.count ?? 0))
+        if let prefix = Bundle.main.mobileappSurface,
+            !prefix.isEmpty, scopeString.hasPrefix(prefix) {
+            scope = String(scopeString.dropFirst(prefix.count + 1))
         } else {
             scope = scopeString
         }
