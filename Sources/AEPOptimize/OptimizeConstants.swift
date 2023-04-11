@@ -53,6 +53,7 @@ enum OptimizeConstants {
         static let RESPONSE_ERROR = "responseerror"
         static let PROPOSITION_INTERACTIONS = "propositioninteractions"
         static let SURFACES = "surfaces"
+        static let REQUEST_EVENT_ID = "requestEventId"
     }
 
     enum EventDataValues {

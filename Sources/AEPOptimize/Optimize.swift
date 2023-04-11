@@ -24,6 +24,8 @@ public class Optimize: NSObject, Extension {
     public let metadata: [String: String]? = nil
     public let runtime: ExtensionRuntime
 
+    private var personalizationRequestEventId: String = ""
+
     /// Array containing the schema strings for the proposition items supported by the SDK, sent in the personalization query request.
     static let supportedSchemas = [
         // Target schemas
@@ -172,19 +174,28 @@ public class Optimize: NSObject, Extension {
                           type: EventType.edge,
                           source: EventSource.requestContent,
                           data: eventData)
+
+        // In AEP Response Event handle, `requestEventId` corresponds to the UUID for the Edge request.
+        // Storing the request event UUID to compare and process only the anticipated response in the extension.
+        personalizationRequestEventId = event.id.uuidString
+
         dispatch(event: event)
     }
 
-    /// Processes the Edge response event, dispatched with type `EventType.edge` and source `personalization: decisions`.
+    /// Processes the Edge response event, dispatched with type `EventType.edge` and source `personalization:decisions`.
     ///
     /// It dispatches a personalization notification event with the propositions received from the decisioning services configured behind
     /// Experience Edge network.
     /// - Parameter event: Edge response event.
     private func processEdgeResponse(event: Event) {
-        guard let eventType = event.data?[OptimizeConstants.Edge.EVENT_HANDLE] as? String,
-              eventType == OptimizeConstants.Edge.EVENT_HANDLE_TYPE_PERSONALIZATION
+        guard event.isPersonalizationDecisionResponse,
+              personalizationRequestEventId == event.requestEventId
         else {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "Ignoring Edge event, handle type is not personalization:decisions.")
+            Log.debug(label: OptimizeConstants.LOG_TAG,
+                      """
+                        Ignoring Edge response event, either response handle is not personalization:decisions, \
+                      or the response is not for a request the extension issued.
+                      """)
             return
         }
 
