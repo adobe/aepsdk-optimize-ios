@@ -474,6 +474,8 @@ class OptimizeFunctionalTests: XCTestCase {
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
 
+        optimize.setPersonalizationRequestEventId(testEvent.data?["requestEventId"] as? String ?? "")
+
         // test
         mockRuntime.simulateComingEvents(testEvent)
 
@@ -573,6 +575,8 @@ class OptimizeFunctionalTests: XCTestCase {
         mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        optimize.setPersonalizationRequestEventId(testEvent.data?["requestEventId"] as? String ?? "")
 
         // test
         mockRuntime.simulateComingEvents(testEvent)
@@ -1901,6 +1905,8 @@ class OptimizeFunctionalTests: XCTestCase {
         mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        optimize.setPersonalizationRequestEventId(testEvent.data?["requestEventId"] as? String ?? "")
 
         // test
         mockRuntime.simulateComingEvents(testEvent)
