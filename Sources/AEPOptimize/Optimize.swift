@@ -332,11 +332,11 @@ public class Optimize: NSObject, Extension {
         // Clear propositions cache
         cachedPropositions.removeAll()
     }
-    
+
     #if DEBUG
-    /// Used for testing purposes only
-    internal func setPersonalizationRequestEventId(_ id: String) {
-        personalizationRequestEventId = id
-    }
+        /// Used for testing purposes only
+        internal func setPersonalizationRequestEventId(_ id: String) {
+            personalizationRequestEventId = id
+        }
     #endif
 }
