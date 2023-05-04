@@ -111,32 +111,37 @@ public class Optimize: NSObject, Extension {
             return
         }
 
-        var targetDecisionScopes = [String]()
-        var targetSurfaces = [String]()
+        var validDecisionScopes = [String]()
+        var validSurfaces = [String]()
         if
             let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
             !decisionScopes.isEmpty
         {
-            targetDecisionScopes = decisionScopes
+            validDecisionScopes = decisionScopes
                 .filter { $0.isValid }
                 .compactMap { $0.name }
+
+            if validDecisionScopes.isEmpty {
+                Log.debug(label: OptimizeConstants.LOG_TAG, "No valid decision scopes found for the Edge personalization request!")
+                return
+            }
         } else if
-            let surfaces: [String] = event.getTypedData(for: OptimizeConstants.EventDataKeys.SURFACES),
-            !surfaces.isEmpty
+            let surfacePaths: [String] = event.getTypedData(for: OptimizeConstants.EventDataKeys.SURFACES),
+            !surfacePaths.isEmpty
         {
-            targetSurfaces = surfaces
-                .map { $0.prefixedSurface(Bundle.main.mobileappSurface ?? "") }
+            validSurfaces = surfacePaths
+                .map { $0.prefixedSurface(Bundle.main.mobileappSurface) }
                 .filter { $0.isValidSurface() }
+
+            if validSurfaces.isEmpty {
+                Log.debug(label: OptimizeConstants.LOG_TAG, "No valid surfaces found for the Edge personalization request!")
+                return
+            }
         } else {
             Log.debug(label: OptimizeConstants.LOG_TAG, """
                       Cannot process the update propositions request event, \
                       surfaces or decision scopes in the event data are either not present or empty.
             """)
-            return
-        }
-
-        if targetDecisionScopes.isEmpty && targetSurfaces.isEmpty {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "No valid decision scopes or surfaces found for the Edge personalization request!")
             return
         }
 
@@ -146,8 +151,8 @@ public class Optimize: NSObject, Extension {
         eventData[OptimizeConstants.JsonKeys.QUERY] = [
             OptimizeConstants.JsonKeys.QUERY_PERSONALIZATION: [
                 OptimizeConstants.JsonKeys.SCHEMAS: Optimize.supportedSchemas,
-                OptimizeConstants.JsonKeys.DECISION_SCOPES: targetDecisionScopes,
-                OptimizeConstants.JsonKeys.SURFACES: targetSurfaces
+                OptimizeConstants.JsonKeys.DECISION_SCOPES: validDecisionScopes,
+                OptimizeConstants.JsonKeys.SURFACES: validSurfaces
             ]
         ]
 
@@ -256,17 +261,25 @@ public class Optimize: NSObject, Extension {
     ///  It returns previously cached propositions for the requested decision scopes. Any decision scope(s) not already present in the cache are ignored.
     /// - Parameter event: Get propositions request event
     private func processGetPropositions(event: Event) {
-        let propositionsDict: [String: Proposition]
+        var propositionsDict: [String: Proposition] = [:]
         if
             let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
             !decisionScopes.isEmpty
         {
             propositionsDict = cachedPropositions.filter { decisionScopes.contains(DecisionScope(name: $0.key)) }
         } else if
-            let surfaces: [String] = event.getTypedData(for: OptimizeConstants.EventDataKeys.SURFACES),
-            !surfaces.isEmpty
+            let surfacePaths: [String] = event.getTypedData(for: OptimizeConstants.EventDataKeys.SURFACES),
+            !surfacePaths.isEmpty
         {
-            propositionsDict = cachedPropositions.filter { surfaces.contains($0.key) }
+            for surfacePath in surfacePaths {
+                let prefixedSurface = surfacePath.prefixedSurface(Bundle.main.mobileappSurface)
+                if
+                    prefixedSurface.isValidSurface(),
+                    let cachedProposition = cachedPropositions[prefixedSurface]
+                {
+                    propositionsDict[surfacePath] = cachedProposition
+                }
+            }
         } else {
             Log.debug(label: OptimizeConstants.LOG_TAG, """
                 Cannot process the get propositions request event,\

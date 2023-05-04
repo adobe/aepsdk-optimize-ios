@@ -1660,7 +1660,7 @@ class OptimizeFunctionalTests: XCTestCase {
     
     // MARK: - Mobile Surface Support Tests
 
-    func testUpdatePropositions_validSurface() {
+    func testUpdatePropositionsForSurfacePaths_validSurface() {
         // setup
         let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
@@ -1695,7 +1695,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", surfaces?[0])
     }
 
-    func testUpdatePropositions_validSurfaceWithXdmAndDataAndDatasetId() {
+    func testUpdatePropositionsForSurfacePaths_validSurfaceWithXdmAndDataAndDatasetId() {
         // setup
         let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
@@ -1749,7 +1749,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("111111111111111111111111", dispatchedEvent?.data?["datasetId"] as? String)
     }
 
-    func testUpdatePropositions_multipleValidSurfaces() {
+    func testUpdatePropositionsForSurfacePaths_multipleValidSurfaces() {
         // setup
         let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
@@ -1786,7 +1786,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView/mySubview2", surfaces?[1])
     }
 
-    func testUpdatePropositions_noSurfaces() {
+    func testUpdatePropositionsForSurfacePaths_noSurfaces() {
         // setup
         let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
@@ -1807,7 +1807,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
     }
 
-    func testUpdatePropositions_invalidSurface() {
+    func testUpdatePropositionsForSurfacePaths_invalidSurface() {
             // setup
         let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
@@ -1815,7 +1815,7 @@ class OptimizeFunctionalTests: XCTestCase {
                               data: [
                                 "requesttype": "updatepropositions",
                                 "surfaces": [
-                                    "/myView/mySubviews/\\*/home.html"
+                                    "myView/mySubviews/\\*/home.html"
                                 ]
                               ])
 
@@ -1830,7 +1830,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
     }
 
-    func testUpdatePropositions_validAndInvalidSurfaces() {
+    func testUpdatePropositionsForSurfacePaths_validAndInvalidSurfaces() {
         // setup
         let testEvent = Event(name: "Optimize Update Propositions Request",
                               type: "com.adobe.eventType.optimize",
@@ -1875,7 +1875,7 @@ class OptimizeFunctionalTests: XCTestCase {
                                   "payload": [
                                     [
                                         "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-                                        "scope": "/myView#htmlElement",
+                                        "scope": "mobileapp://com.apple.dt.xctest.tool/myView#htmlElement",
                                         "scopeDetails": [
                                             "correlationID": "cccccccc-cccc-cccc-cccc-cccccccccccc",
                                             "characteristics": [
@@ -1926,7 +1926,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         let proposition = propositionsArray[0]
         XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition.id)
-        XCTAssertEqual("/myView#htmlElement", proposition.scope)
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", proposition.scope)
         
         XCTAssertEqual(4, proposition.scopeDetails.count)
         XCTAssertEqual("cccccccc-cccc-cccc-cccc-cccccccccccc", proposition.scopeDetails["correlationID"] as? String)
@@ -1943,13 +1943,13 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("<h1>This is a HTML content</h1>", proposition.offers[0].content)
     }
     
-    func testGetPropositions_surfaceInCache() {
+    func testGetPropositionsForSurfacePaths_surfaceInCache() {
         // setup
         let propositionsData =
         """
           {
               "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-              "scope": "/myView#htmlElement",
+              "scope": "mobileapp://com.apple.dt.xctest.tool/myView#htmlElement",
               "scopeDetails": {
                   "correlationID": "cccccccc-cccc-cccc-cccc-cccccccccccc",
                   "characteristics": {
@@ -1977,7 +1977,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions["/myView#htmlElement"] = propositions
+        optimize.cachedPropositions["mobileapp://com.apple.dt.xctest.tool/myView#htmlElement"] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -1986,7 +1986,7 @@ class OptimizeFunctionalTests: XCTestCase {
                               data: [
                                 "requesttype": "getpropositions",
                                 "surfaces": [
-                                    "/myView#htmlElement"
+                                    "myView#htmlElement"
                                 ]
                               ])
 
@@ -2014,7 +2014,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         let proposition = propositionsArray[0]
         XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition.id)
-        XCTAssertEqual("/myView#htmlElement", proposition.scope)
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", proposition.scope)
         
         XCTAssertEqual(4, proposition.scopeDetails.count)
         XCTAssertEqual("cccccccc-cccc-cccc-cccc-cccccccccccc", proposition.scopeDetails["correlationID"] as? String)
@@ -2031,13 +2031,13 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("<h1>This is a HTML content</h1>", proposition.offers[0].content)
     }
 
-    func testGetPropositions_notAllSurfacesInCache() {
+    func testGetPropositionsForSurfacePaths_notAllSurfacesInCache() {
         // setup
         let propositionsData =
         """
           {
               "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-              "scope": "/myView#htmlElement",
+              "scope": "mobileapp://com.apple.dt.xctest.tool/myView#htmlElement",
               "scopeDetails": {
                   "correlationID": "cccccccc-cccc-cccc-cccc-cccccccccccc",
                   "characteristics": {
@@ -2065,7 +2065,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions["/myView#htmlElement"] = propositions
+        optimize.cachedPropositions["mobileapp://com.apple.dt.xctest.tool/myView#htmlElement"] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -2074,8 +2074,8 @@ class OptimizeFunctionalTests: XCTestCase {
                               data: [
                                 "requesttype": "getpropositions",
                                 "surfaces": [
-                                    "/myView#htmlElement",
-                                    "/myView#jsonElement"
+                                    "myView#htmlElement",
+                                    "myView#jsonElement"
                                 ]
                               ])
 
@@ -2103,7 +2103,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         let proposition = propositionsArray[0]
         XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition.id)
-        XCTAssertEqual("/myView#htmlElement", proposition.scope)
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", proposition.scope)
         
         XCTAssertEqual(4, proposition.scopeDetails.count)
         XCTAssertEqual("cccccccc-cccc-cccc-cccc-cccccccccccc", proposition.scopeDetails["correlationID"] as? String)
@@ -2120,13 +2120,13 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("<h1>This is a HTML content</h1>", proposition.offers[0].content)
     }
 
-    func testGetPropositions_noSurfaceInCache() {
+    func testGetPropositionsForSurfacePaths_noSurfaceInCache() {
         // setup
         let propositionsData =
         """
           {
               "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-              "scope": "/myView#htmlElement",
+              "scope": "mobileapp://com.apple.dt.xctest.tool/myView#htmlElement",
               "scopeDetails": {
                   "correlationID": "cccccccc-cccc-cccc-cccc-cccccccccccc",
                   "characteristics": {
@@ -2154,7 +2154,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions["/myView#htmlElement"] = propositions
+        optimize.cachedPropositions["mobileapp://com.apple.dt.xctest.tool/myView#htmlElement"] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -2163,8 +2163,8 @@ class OptimizeFunctionalTests: XCTestCase {
                               data: [
                                 "requesttype": "getpropositions",
                                 "surfaces": [
-                                    "/myView#jsonElement1",
-                                    "/myView#jsonElement2"
+                                    "myView#jsonElement1",
+                                    "myView#jsonElement2"
                                 ]
                               ])
 
@@ -2190,13 +2190,13 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertTrue(propositionsArray.isEmpty)
     }
 
-    func testGetPropositions_emptySurfacesArray() {
+    func testGetPropositionsForSurfacePaths_emptySurfacesArray() {
         // setup
         let propositionsData =
                 """
                   {
                       "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-                      "scope": "/myView#htmlElement",
+                      "scope": "mobileapp://com.apple.dt.xctest.tool/myView#htmlElement",
                       "scopeDetails": {
                           "correlationID": "cccccccc-cccc-cccc-cccc-cccccccccccc",
                           "characteristics": {
@@ -2224,7 +2224,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions["/myView#htmlElement"] = propositions
+        optimize.cachedPropositions["mobileapp://com.apple.dt.xctest.tool/myView#htmlElement"] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Get Propositions Request",

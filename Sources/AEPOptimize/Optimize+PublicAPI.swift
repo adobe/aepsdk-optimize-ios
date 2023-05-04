@@ -16,6 +16,14 @@ import Foundation
 
 @objc
 public extension Optimize {
+    #if DEBUG
+        /// Checks whether Optimize notification listener is registered with Mobile Core.
+        static var isPropositionsListenerRegistered = false
+    #else
+        /// Checks whether Optimize notification listener is registered with Mobile Core.
+        private static var isPropositionsListenerRegistered = false
+    #endif
+
     /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the decisioning Services enabled behind Experience Edge.
     ///
     /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
@@ -147,16 +155,16 @@ public extension Optimize {
 
     /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided mobile surfaces from the decisioning Services enabled behind Experience Edge.
     ///
-    /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
+    /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositionsForSurfacePaths(for:_:)` API.
     /// - Parameter surfaces: An array of mobile surfaces.
     /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
-    @objc(updatePropositionsForSurfaces:withXdm:andData:)
-    static func updatePropositions(for surfaces: [String], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil) {
-        let targetSurfaces = surfaces
+    @objc(updatePropositionsForSurfacePaths:withXdm:andData:)
+    static func updatePropositionsForSurfacePaths(for surfacePaths: [String], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil) {
+        let surfacePaths = surfacePaths
             .filter { !$0.isEmpty }
 
-        guard !targetSurfaces.isEmpty else {
+        guard !surfacePaths.isEmpty else {
             Log.warning(label: OptimizeConstants.LOG_TAG,
                         "Cannot update propositions, provided surfaces array is empty or has invalid items.")
             return
@@ -164,7 +172,7 @@ public extension Optimize {
 
         var eventData: [String: Any] = [
             OptimizeConstants.EventDataKeys.REQUEST_TYPE: OptimizeConstants.EventDataValues.REQUEST_TYPE_UPDATE,
-            OptimizeConstants.EventDataKeys.SURFACES: targetSurfaces
+            OptimizeConstants.EventDataKeys.SURFACES: surfacePaths
         ]
 
         // Add XDM data
@@ -191,12 +199,12 @@ public extension Optimize {
     /// - Parameters:
     ///   - decisionScopes: An array of mobile surfaces.
     ///   - completion: The completion handler to be invoked when the decisions are retrieved from cache.
-    @objc(getPropositionsForSurfaces:completion:)
-    static func getPropositions(for surfaces: [String], _ completion: @escaping ([String: Proposition]?, Error?) -> Void) {
-        let targetSurfaces = surfaces
+    @objc(getPropositionsForSurfacePaths:completion:)
+    static func getPropositionsForSurfacePaths(for surfacePaths: [String], _ completion: @escaping ([String: Proposition]?, Error?) -> Void) {
+        let surfacePaths = surfacePaths
             .filter { !$0.isEmpty }
 
-        guard !targetSurfaces.isEmpty else {
+        guard !surfacePaths.isEmpty else {
             completion(nil, AEPError.invalidRequest)
             Log.warning(label: OptimizeConstants.LOG_TAG,
                         "Cannot get propositions, provided surfaces array is empty or has invalid items.")
@@ -205,7 +213,7 @@ public extension Optimize {
 
         let eventData: [String: Any] = [
             OptimizeConstants.EventDataKeys.REQUEST_TYPE: OptimizeConstants.EventDataValues.REQUEST_TYPE_GET,
-            OptimizeConstants.EventDataKeys.SURFACES: targetSurfaces
+            OptimizeConstants.EventDataKeys.SURFACES: surfacePaths
         ]
 
         let event = Event(name: OptimizeConstants.EventNames.GET_PROPOSITIONS_REQUEST,
@@ -230,29 +238,37 @@ public extension Optimize {
                 completion(nil, AEPError.unexpected)
                 return
             }
-            completion(propositions.toDictionary { $0.scope }, .none)
+
+            completion(propositions.toDictionary {
+                $0.scope.hasPrefix(Bundle.main.mobileappSurface) ?
+                    String($0.scope.dropFirst(Bundle.main.mobileappSurface.count + 1)) :
+                    $0.scope
+            }, .none)
         }
     }
 
     /// This API registers a permanent callback which will be invoked whenever the Edge extension dispatches an Event handle,
     /// upon a personalization decisions response from the Experience Edge Network.
     ///
-    /// The personalization query requests can be triggered by the `updatePropositions(for:withXdm:andData:)` API,
+    /// The personalization query requests can be triggered by the `updatePropositionsForSurfacePaths(for:withXdm:andData:)` API,
     /// Edge extension `sendEvent(experienceEvent:_:)` API or launch rules consequence.
     ///
     /// - Parameter action: The completion handler to be invoked with the decision propositions.
-    @objc(onPropositionsUpdateForSurfaces:)
-    static func onPropositionsUpdate(perform action: @escaping ([String: Proposition]) -> Void) {
-        MobileCore.registerEventListener(type: EventType.optimize, source: EventSource.notification) { event in
-            guard
-                let propositions: [Proposition] = event.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS),
-                !propositions.isEmpty
-            else {
-                Log.warning(label: OptimizeConstants.LOG_TAG, "No valid propositions found in the notification event.")
-                return
-            }
+    @objc(setPropositonsHandler:)
+    static func setPropositionsHandler(_ completion: @escaping ([String: Proposition]) -> Void) {
+        if !isPropositionsListenerRegistered {
+            MobileCore.registerEventListener(type: EventType.optimize, source: EventSource.notification) { event in
+                guard
+                    let propositions: [Proposition] = event.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS),
+                    !propositions.isEmpty
+                else {
+                    Log.warning(label: OptimizeConstants.LOG_TAG, "No valid propositions found in the notification event.")
+                    return
+                }
 
-            action(propositions.toDictionary { $0.scope })
+                completion(propositions.toDictionary { $0.scope })
+            }
+            isPropositionsListenerRegistered = true
         }
     }
 }

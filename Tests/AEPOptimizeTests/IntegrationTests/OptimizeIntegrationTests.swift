@@ -955,9 +955,9 @@ class OptimizeIntegrationTests: XCTestCase {
     
     // MARK: - Mobile Surface Support Tests
     
-    func testUpdatePropositions_validEdgeRequestWithSurface() {
+    func testUpdatePropositionsForSurfacePaths_validEdgeRequestWithSurface() {
         // setup
-        let requestExpectation = XCTestExpectation(description: "updatePropositions should result in a valid personalization query request to the Edge network.")
+        let requestExpectation = XCTestExpectation(description: "updatePropositionsForSurfacePaths should result in a valid personalization query request to the Edge network.")
         let mockNetworkService = TestableNetworkService()
         ServiceProvider.shared.networkService = mockNetworkService
         mockNetworkService.mock { request in
@@ -1002,12 +1002,12 @@ class OptimizeIntegrationTests: XCTestCase {
         ])
         
         // update propositions
-        Optimize.updatePropositions(for: ["myView#htmlElement"], withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths(for: ["myView#htmlElement"], withXdm: nil)
 
         wait(for: [requestExpectation], timeout: 2)
     }
 
-    func testGetPropositions_propositionsInCacheForSurface() {
+    func testGetPropositionsForSurfacePaths_propositionsInCacheForSurface() {
         // setup
         let validResponse = HTTPURLResponse(url: URL(string: "https://edge.adobedc.net/ee/v1/interact?configId=configId&requestId=requestId")!, statusCode: 200, httpVersion: nil, headerFields: nil)
         let responseString = """
@@ -1018,7 +1018,7 @@ class OptimizeIntegrationTests: XCTestCase {
                          "payload": [\
                             { \
                                "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",\
-                               "scope": "myView#htmlElement",\
+                               "scope": "mobileapp://com.apple.dt.xctest.tool/myView#htmlElement",\
                                "scopeDetails": {\
                                    "correlationID": "cccccccc-cccc-cccc-cccc-cccccccccccc",\
                                    "characteristics": {\
@@ -1048,7 +1048,7 @@ class OptimizeIntegrationTests: XCTestCase {
         """
 
         // mock edge response
-        let requestExpectation = XCTestExpectation(description: "updatePropositions should result in a valid personalization query request to the Edge network.")
+        let requestExpectation = XCTestExpectation(description: "updatePropositionsForSurfacePaths should result in a valid personalization query request to the Edge network.")
         let mockNetworkService = TestableNetworkService()
         ServiceProvider.shared.networkService = mockNetworkService
         mockNetworkService.mock { request in
@@ -1069,28 +1069,28 @@ class OptimizeIntegrationTests: XCTestCase {
                                             "global.privacy": "optedin",
                                             "edge.configId": "configId"])
 
-        let surface = "myView#htmlElement"
+        let surfacePath = "myView#htmlElement"
 
         // update propositions
-        Optimize.updatePropositions(for: [surface], withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths(for: [surfacePath], withXdm: nil)
         wait(for: [requestExpectation], timeout: 2)
 
         sleep(2)
         
         // get propositions
-        let retrieveExpectation = XCTestExpectation(description: "getPropositions should return the fetched propositions from the extension propositions cache.")
-        Optimize.getPropositions(for: [surface]) { propositionsDictionary, _ in
+        let retrieveExpectation = XCTestExpectation(description: "getPropositionsForSurfacePaths should return the fetched propositions from the extension propositions cache.")
+        Optimize.getPropositionsForSurfacePaths(for: [surfacePath]) { propositionsDictionary, _ in
             guard let propositionsDictionary = propositionsDictionary else {
                 XCTFail("Propositions dictionary should be valid.")
                 return
             }
             XCTAssertEqual(1, propositionsDictionary.count)
             
-            let proposition = propositionsDictionary[surface]
+            let proposition = propositionsDictionary[surfacePath]
             XCTAssertNotNil(proposition)
             
             XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
-            XCTAssertEqual("myView#htmlElement", proposition?.scope)
+            XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", proposition?.scope)
             
             XCTAssertEqual(4, proposition?.scopeDetails.count)
             XCTAssertEqual("cccccccc-cccc-cccc-cccc-cccccccccccc", proposition?.scopeDetails["correlationID"] as? String)
@@ -1111,7 +1111,7 @@ class OptimizeIntegrationTests: XCTestCase {
         wait(for: [retrieveExpectation], timeout: 2)
     }
 
-    func testGetPropositions_propositionNotInCacheForSurface() {
+    func testGetPropositionsForSurfacePaths_propositionNotInCacheForSurface() {
         // init extensions
         initExtensionsAndWait()
 
@@ -1123,17 +1123,17 @@ class OptimizeIntegrationTests: XCTestCase {
                                             "edge.configId": "configId"
         ])
         
-        let surface = "myView#htmlElement"
+        let surfacePath = "myView#htmlElement"
 
-        let retrieveExpectation = XCTestExpectation(description: "getPropositions should not return propositions, if not previously cached.")
-        Optimize.getPropositions(for: [surface]) { propositionsDictionary, _ in
+        let retrieveExpectation = XCTestExpectation(description: "getPropositionsForSurfacePaths should not return propositions, if not previously cached.")
+        Optimize.getPropositionsForSurfacePaths(for: [surfacePath]) { propositionsDictionary, _ in
             XCTAssertEqual(0, propositionsDictionary?.count)
             retrieveExpectation.fulfill()
         }
         wait(for: [retrieveExpectation], timeout: 2)
     }
 
-    func testOnPropositionsUpdateForSurface() {
+    func testSetPropositionsHandler() {
         // setup
         let validResponse = HTTPURLResponse(url: URL(string: "https://edge.adobedc.net/ee/v1/interact?configId=configId&requestId=requestId")!, statusCode: 200, httpVersion: nil, headerFields: nil)
         let responseString = """
@@ -1174,7 +1174,7 @@ class OptimizeIntegrationTests: XCTestCase {
         """
 
         // mock edge response
-        let requestExpectation = XCTestExpectation(description: "updatePropositions should result in a valid personalization query request to the Edge network.")
+        let requestExpectation = XCTestExpectation(description: "updatePropositionsForSurfacePaths should result in a valid personalization query request to the Edge network.")
         let mockNetworkService = TestableNetworkService()
         ServiceProvider.shared.networkService = mockNetworkService
         mockNetworkService.mock { request in
@@ -1195,14 +1195,14 @@ class OptimizeIntegrationTests: XCTestCase {
                                             "global.privacy": "optedin",
                                             "edge.configId": "configId"])
 
-        let surface = "myView#htmlElement"
+        let surfacePath = "myView#htmlElement"
 
-        let updateExpectation = XCTestExpectation(description: "onPropositionsUpdate should be invoked upon a valid personalization query response from the Edge network.")
-        Optimize.onPropositionsUpdate { (propositionsDictionary: [String: Proposition]) in
+        let updateExpectation = XCTestExpectation(description: "setPropositionsHandler should be invoked upon a valid personalization query response from the Edge network.")
+        Optimize.setPropositionsHandler { (propositionsDictionary: [String: Proposition]) in
             
             XCTAssertEqual(1, propositionsDictionary.count)
             
-            let proposition = propositionsDictionary[surface]
+            let proposition = propositionsDictionary[surfacePath]
             XCTAssertNotNil(proposition)
             
             XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
@@ -1226,7 +1226,7 @@ class OptimizeIntegrationTests: XCTestCase {
         }
 
         // update propositions
-        Optimize.updatePropositions(for: [surface], withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths(for: [surfacePath], withXdm: nil)
         wait(for: [requestExpectation], timeout: 2)
 
         wait(for: [updateExpectation], timeout: 2)

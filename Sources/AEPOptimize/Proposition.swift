@@ -46,16 +46,7 @@ public class Proposition: NSObject, Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         id = try container.decode(String.self, forKey: .id)
-        let scopeString = try container.decode(String.self, forKey: .scope)
-
-        if
-            let prefix = Bundle.main.mobileappSurface,
-            !prefix.isEmpty, scopeString.hasPrefix(prefix)
-        {
-            scope = String(scopeString.dropFirst(prefix.count + 1))
-        } else {
-            scope = scopeString
-        }
+        scope = try container.decode(String.self, forKey: .scope)
 
         let anyCodableDict = try? container.decode([String: AnyCodable].self, forKey: .scopeDetails)
         // Fix this once ODE supports scopeDetails in personalization query response,

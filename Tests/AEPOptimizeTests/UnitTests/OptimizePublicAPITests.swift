@@ -563,7 +563,7 @@ class OptimizePublicAPITests: XCTestCase {
     
     // MARK: - Mobile Surface Support Tests
     
-    func testUpdatePropositions_validSurface() {
+    func testUpdatePropositionsForSurfacePaths_validSurface() {
         // setup
         let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event with expected data.")
         expectation.assertForOverFulfill = true
@@ -597,13 +597,13 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositions(for: ["myView#htmlElement"], withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths(for: ["myView#htmlElement"], withXdm: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
     }
 
-    func testUpdatePropositions_validSurfaceWithXdmAndData() {
+    func testUpdatePropositionsForSurfacePaths_validSurfaceWithXdmAndData() {
         // setup
         let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event with expected data.")
         expectation.assertForOverFulfill = true
@@ -656,7 +656,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositions(for: ["myView#featureJson"],
+        Optimize.updatePropositionsForSurfacePaths(for: ["myView#featureJson"],
                                     withXdm: ["myXdmKey": "myXdmValue"] as [String: Any],
                                     andData: ["myKey": "myValue"] as [String: Any])
 
@@ -664,7 +664,7 @@ class OptimizePublicAPITests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
 
-    func testUpdatePropositions_multipleValidSurfaces() {
+    func testUpdatePropositionsForSurfacePaths_multipleValidSurfaces() {
         // setup
         let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event with expected data.")
         expectation.assertForOverFulfill = true
@@ -701,13 +701,13 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositions(for: ["myView/mySubview1", "myView/mySubview2"], withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths(for: ["myView/mySubview1", "myView/mySubview2"], withXdm: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
     }
 
-    func testUpdatePropositions_noSurface() {
+    func testUpdatePropositionsForSurfacePaths_noSurface() {
         // setup
         let expectation = XCTestExpectation(description: "updatePropositions should not dispatch an event.")
         expectation.isInverted = true
@@ -724,13 +724,13 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositions(for: [String](), withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths(for: [String](), withXdm: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
     }
 
-    func testUpdatePropositions_emptySurface() {
+    func testUpdatePropositionsForSurfacePaths_emptySurface() {
         // setup
         let expectation = XCTestExpectation(description: "updatePropositions should not dispatch an event.")
         expectation.isInverted = true
@@ -747,13 +747,13 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositions(for: [""], withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths(for: [""], withXdm: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
     }
 
-    func testUpdatePropositions_validAndInvalidSurfaces() {
+    func testUpdatePropositionsForSurfacePaths_validAndInvalidSurfaces() {
         // setup
         let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event.")
         expectation.assertForOverFulfill = true
@@ -786,13 +786,13 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositions(for: ["", "myImageView#imageHtml"], withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths(for: ["", "myImageView#imageHtml"], withXdm: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
     }
 
-    func testGetPropositions_validSurface() {
+    func testGetPropositionsForSurfacePaths_validSurface() {
         // setup
         let expectation = XCTestExpectation(description: "getPropositions should dispatch an event with expected data.")
         expectation.assertForOverFulfill = true
@@ -823,13 +823,13 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.getPropositions(for: ["myView#htmlElement"]) { _, _ in }
+        Optimize.getPropositionsForSurfacePaths(for: ["myView#htmlElement"]) { _, _ in }
 
         // verify
         wait(for: [expectation], timeout: 1)
     }
 
-    func testGetPropositions_noSurface() {
+    func testGetPropositionsForSurfacePaths_noSurface() {
         // setup
         let expectation = XCTestExpectation(description: "getPropositions should not dispatch an event.")
         expectation.isInverted = true
@@ -846,13 +846,13 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.getPropositions(for: [String]()) { _, _ in }
+        Optimize.getPropositionsForSurfacePaths(for: [String]()) { _, _ in }
 
         // verify
         wait(for: [expectation], timeout: 1)
     }
 
-    func testGetPropositions_emptySurface() {
+    func testGetPropositionsForSurfacePaths_emptySurface() {
         // setup
         let expectation = XCTestExpectation(description: "getPropositions should not dispatch an event.")
         expectation.isInverted = true
@@ -869,13 +869,13 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.getPropositions(for: [""]) { _, _ in }
+        Optimize.getPropositionsForSurfacePaths(for: [""]) { _, _ in }
 
         // verify
         wait(for: [expectation], timeout: 1)
     }
 
-    func testGetPropositions_validAndInvalidSurfaces() {
+    func testGetPropositionsForSurfacePaths_validAndInvalidSurfaces() {
         // setup
         let expectation = XCTestExpectation(description: "getPropositions should dispatch an event with expected data.")
         expectation.assertForOverFulfill = true
@@ -906,15 +906,16 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.getPropositions(for: ["", "myView#htmlElement"]) { _, _ in }
+        Optimize.getPropositionsForSurfacePaths(for: ["", "myView#htmlElement"]) { _, _ in }
 
         // verify
         wait(for: [expectation], timeout: 1)
     }
     
-    func testOnPropositionsUpdate_validPropositionForSurface() {
+    func testSetPropositionsHandler_validPropositionForSurface() {
         // setup
-        let expectation = XCTestExpectation(description: "onPropositionsUpdate should be called with response event upon personalization notification.")
+        Optimize.isPropositionsListenerRegistered = false
+        let expectation = XCTestExpectation(description: "setPropositionsHandler should be called with response event upon personalization notification.")
         expectation.assertForOverFulfill = true
 
         let testEvent = Event(name: "Personalization Notification",
@@ -940,7 +941,7 @@ class OptimizePublicAPITests: XCTestCase {
                               ])
 
         // test
-        Optimize.onPropositionsUpdate { (propositionsDictionary :[String: Proposition]) in
+        Optimize.setPropositionsHandler { (propositionsDictionary :[String: Proposition]) in
             XCTAssertEqual(1, propositionsDictionary.count)
 
             let scope = "myView#htmlElement"
@@ -964,9 +965,10 @@ class OptimizePublicAPITests: XCTestCase {
         wait(for: [expectation], timeout: 2)
     }
 
-    func testOnPropositionsUpdate_emptyPropositionArray() {
+    func testSetPropositionsHandler_emptyPropositionArray() {
         // setup
-        let expectation = XCTestExpectation(description: "onPropositionsUpdate should not be called for empty propositions in personalization notification response.")
+        Optimize.isPropositionsListenerRegistered = false
+        let expectation = XCTestExpectation(description: "setPropositionsHandler should not be called for empty propositions in personalization notification response.")
         expectation.isInverted = true
 
         let testEvent = Event(name: "Personalization Notification",
@@ -977,7 +979,7 @@ class OptimizePublicAPITests: XCTestCase {
                               ])
 
         // test
-        Optimize.onPropositionsUpdate { (_: [String: Proposition]) in
+        Optimize.setPropositionsHandler { (_: [String: Proposition]) in
             expectation.fulfill()
         }
 
@@ -987,9 +989,10 @@ class OptimizePublicAPITests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
 
-    func testOnPropositionsUpdate_NilEventData() {
+    func testSetPropositionsHandler_NilEventData() {
         // setup
-        let expectation = XCTestExpectation(description: "onPropositionsUpdate should not be called for no propositions in personalization notification response.")
+        Optimize.isPropositionsListenerRegistered = false
+        let expectation = XCTestExpectation(description: "setPropositionsHandler should not be called for no propositions in personalization notification response.")
         expectation.isInverted = true
         let testEvent = Event(name: "Personalization Notification",
                               type: "com.adobe.eventType.optimize",
@@ -997,7 +1000,7 @@ class OptimizePublicAPITests: XCTestCase {
                               data: nil)
 
         // test
-        Optimize.onPropositionsUpdate { (_: [String: Proposition]) in
+        Optimize.setPropositionsHandler { (_: [String: Proposition]) in
             expectation.fulfill()
         }
 

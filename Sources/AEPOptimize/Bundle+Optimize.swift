@@ -15,9 +15,9 @@ import Foundation
 // MARK: Bundle extension
 
 extension Bundle {
-    var mobileappSurface: String? {
+    var mobileappSurface: String {
         guard let bundleIdentifier = Self.main.bundleIdentifier, !bundleIdentifier.isEmpty else {
-            return nil
+            return "unknown"
         }
         return OptimizeConstants.SURFACE_BASE + bundleIdentifier
     }

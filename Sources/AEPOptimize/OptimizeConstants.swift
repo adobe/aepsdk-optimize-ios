@@ -25,6 +25,7 @@ enum OptimizeConstants {
     static let ITEM_COUNT = "itemCount"
     static let XDM_ITEM_COUNT = "xdm:itemCount"
     static let SURFACE_BASE = "mobileapp://"
+    static let PATH_SEPARATOR = "/"
 
     static let ERROR_UNKNOWN = "unknown"
 
