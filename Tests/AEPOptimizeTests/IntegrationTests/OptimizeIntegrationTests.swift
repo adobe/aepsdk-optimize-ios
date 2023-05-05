@@ -1002,7 +1002,7 @@ class OptimizeIntegrationTests: XCTestCase {
         ])
         
         // update propositions
-        Optimize.updatePropositionsForSurfacePaths(for: ["myView#htmlElement"], withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths(["myView#htmlElement"], withXdm: nil)
 
         wait(for: [requestExpectation], timeout: 2)
     }
@@ -1072,14 +1072,14 @@ class OptimizeIntegrationTests: XCTestCase {
         let surfacePath = "myView#htmlElement"
 
         // update propositions
-        Optimize.updatePropositionsForSurfacePaths(for: [surfacePath], withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths([surfacePath], withXdm: nil)
         wait(for: [requestExpectation], timeout: 2)
 
         sleep(2)
         
         // get propositions
         let retrieveExpectation = XCTestExpectation(description: "getPropositionsForSurfacePaths should return the fetched propositions from the extension propositions cache.")
-        Optimize.getPropositionsForSurfacePaths(for: [surfacePath]) { propositionsDictionary, _ in
+        Optimize.getPropositionsForSurfacePaths([surfacePath]) { propositionsDictionary, _ in
             guard let propositionsDictionary = propositionsDictionary else {
                 XCTFail("Propositions dictionary should be valid.")
                 return
@@ -1126,7 +1126,7 @@ class OptimizeIntegrationTests: XCTestCase {
         let surfacePath = "myView#htmlElement"
 
         let retrieveExpectation = XCTestExpectation(description: "getPropositionsForSurfacePaths should not return propositions, if not previously cached.")
-        Optimize.getPropositionsForSurfacePaths(for: [surfacePath]) { propositionsDictionary, _ in
+        Optimize.getPropositionsForSurfacePaths([surfacePath]) { propositionsDictionary, _ in
             XCTAssertEqual(0, propositionsDictionary?.count)
             retrieveExpectation.fulfill()
         }
@@ -1226,7 +1226,7 @@ class OptimizeIntegrationTests: XCTestCase {
         }
 
         // update propositions
-        Optimize.updatePropositionsForSurfacePaths(for: [surfacePath], withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths([surfacePath], withXdm: nil)
         wait(for: [requestExpectation], timeout: 2)
 
         wait(for: [updateExpectation], timeout: 2)

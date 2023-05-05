@@ -597,7 +597,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositionsForSurfacePaths(for: ["myView#htmlElement"], withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths(["myView#htmlElement"], withXdm: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -656,7 +656,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositionsForSurfacePaths(for: ["myView#featureJson"],
+        Optimize.updatePropositionsForSurfacePaths(["myView#featureJson"],
                                     withXdm: ["myXdmKey": "myXdmValue"] as [String: Any],
                                     andData: ["myKey": "myValue"] as [String: Any])
 
@@ -701,7 +701,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositionsForSurfacePaths(for: ["myView/mySubview1", "myView/mySubview2"], withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths(["myView/mySubview1", "myView/mySubview2"], withXdm: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -724,7 +724,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositionsForSurfacePaths(for: [String](), withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths([String](), withXdm: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -747,7 +747,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositionsForSurfacePaths(for: [""], withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths([""], withXdm: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -786,7 +786,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositionsForSurfacePaths(for: ["", "myImageView#imageHtml"], withXdm: nil)
+        Optimize.updatePropositionsForSurfacePaths(["", "myImageView#imageHtml"], withXdm: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -823,7 +823,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.getPropositionsForSurfacePaths(for: ["myView#htmlElement"]) { _, _ in }
+        Optimize.getPropositionsForSurfacePaths(["myView#htmlElement"]) { _, _ in }
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -846,7 +846,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.getPropositionsForSurfacePaths(for: [String]()) { _, _ in }
+        Optimize.getPropositionsForSurfacePaths([String]()) { _, _ in }
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -869,7 +869,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.getPropositionsForSurfacePaths(for: [""]) { _, _ in }
+        Optimize.getPropositionsForSurfacePaths([""]) { _, _ in }
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -906,7 +906,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.getPropositionsForSurfacePaths(for: ["", "myView#htmlElement"]) { _, _ in }
+        Optimize.getPropositionsForSurfacePaths(["", "myView#htmlElement"]) { _, _ in }
 
         // verify
         wait(for: [expectation], timeout: 1)

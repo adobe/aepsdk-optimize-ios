@@ -155,12 +155,12 @@ public extension Optimize {
 
     /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided mobile surfaces from the decisioning Services enabled behind Experience Edge.
     ///
-    /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositionsForSurfacePaths(for:_:)` API.
-    /// - Parameter surfaces: An array of mobile surfaces.
+    /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositionsForSurfacePaths(_:_:)` API.
+    /// - Parameter surfacePaths: An array of mobile surface paths.
     /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
     @objc(updatePropositionsForSurfacePaths:withXdm:andData:)
-    static func updatePropositionsForSurfacePaths(for surfacePaths: [String], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil) {
+    static func updatePropositionsForSurfacePaths(_ surfacePaths: [String], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil) {
         let surfacePaths = surfacePaths
             .filter { !$0.isEmpty }
 
@@ -197,10 +197,10 @@ public extension Optimize {
     ///
     /// The completion handler will be invoked with the decision propositions corresponding to the given surface strings. If a certain surface has not already been fetched prior to this API call, it will not be contained in the returned propositions.
     /// - Parameters:
-    ///   - decisionScopes: An array of mobile surfaces.
+    ///   - surfacePaths: An array of mobile surface paths.
     ///   - completion: The completion handler to be invoked when the decisions are retrieved from cache.
     @objc(getPropositionsForSurfacePaths:completion:)
-    static func getPropositionsForSurfacePaths(for surfacePaths: [String], _ completion: @escaping ([String: Proposition]?, Error?) -> Void) {
+    static func getPropositionsForSurfacePaths(_ surfacePaths: [String], _ completion: @escaping ([String: Proposition]?, Error?) -> Void) {
         let surfacePaths = surfacePaths
             .filter { !$0.isEmpty }
 
@@ -246,7 +246,7 @@ public extension Optimize {
     /// This API registers a permanent callback which will be invoked whenever the Edge extension dispatches an Event handle,
     /// upon a personalization decisions response from the Experience Edge Network.
     ///
-    /// The personalization query requests can be triggered by the `updatePropositionsForSurfacePaths(for:withXdm:andData:)` API,
+    /// The personalization query requests can be triggered by the `updatePropositionsForSurfacePaths(_:withXdm:andData:)` API,
     /// Edge extension `sendEvent(experienceEvent:_:)` API or launch rules consequence.
     ///
     /// - Parameter completion: The completion handler to be invoked with the decision propositions.
