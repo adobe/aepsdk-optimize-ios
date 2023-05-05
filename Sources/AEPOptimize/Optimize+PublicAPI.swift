@@ -239,11 +239,7 @@ public extension Optimize {
                 return
             }
 
-            completion(propositions.toDictionary {
-                $0.scope.hasPrefix(Bundle.main.mobileappSurface) ?
-                    String($0.scope.dropFirst(Bundle.main.mobileappSurface.count + 1)) :
-                    $0.scope
-            }, .none)
+            completion(propositions.toDictionary { retrieveSurfacePathFromScope($0.scope) }, .none)
         }
     }
 
@@ -253,7 +249,7 @@ public extension Optimize {
     /// The personalization query requests can be triggered by the `updatePropositionsForSurfacePaths(for:withXdm:andData:)` API,
     /// Edge extension `sendEvent(experienceEvent:_:)` API or launch rules consequence.
     ///
-    /// - Parameter action: The completion handler to be invoked with the decision propositions.
+    /// - Parameter completion: The completion handler to be invoked with the decision propositions.
     @objc(setPropositonsHandler:)
     static func setPropositionsHandler(_ completion: @escaping ([String: Proposition]) -> Void) {
         if !isPropositionsListenerRegistered {
@@ -266,9 +262,24 @@ public extension Optimize {
                     return
                 }
 
-                completion(propositions.toDictionary { $0.scope })
+                completion(propositions.toDictionary { retrieveSurfacePathFromScope($0.scope) })
             }
             isPropositionsListenerRegistered = true
         }
+    }
+
+    /// Retrieves surface path from the provided scope string.
+    ///
+    /// - Parameter scope: A string containing the surface URI to extract surface path from.
+    private static func retrieveSurfacePathFromScope(_ scope: String) -> String {
+        if scope.isEmpty {
+            return scope
+        }
+
+        let pathPrefix = Bundle.main.mobileappSurface
+        if scope.hasPrefix(pathPrefix) {
+            return String(scope.dropFirst(pathPrefix.count + 1))
+        }
+        return scope
     }
 }
