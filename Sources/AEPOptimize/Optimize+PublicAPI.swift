@@ -153,7 +153,7 @@ public extension Optimize {
 
     // MARK: - Mobile Surface Support
 
-    /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided mobile surfaces from the decisioning Services enabled behind Experience Edge.
+    /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided mobile surfaces from the decisioning services enabled behind Experience Edge.
     ///
     /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositionsForSurfacePaths(_:_:)` API.
     /// - Parameter surfacePaths: An array of mobile surface paths.
