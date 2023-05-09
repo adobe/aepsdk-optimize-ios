@@ -179,7 +179,7 @@ static func getPropositionsForSurfacePaths(_ surfacePaths: [String],
 let surfacePath1 = "myView#htmlElement"
 let surfacePath2 = "myView/mySubviewJson"
 
-Optimize.getPropositions(for: [surfacePath1, surfacePath2]) { propositionsDict, error in
+Optimize.getPropositionsForSurfacePaths(for: [surfacePath1, surfacePath2]) { propositionsDict, error in
   if let error = error {
     // handle error
     return
@@ -485,7 +485,7 @@ AEPDecisionScope* surfacePath2 = @"myView/mySubviewJson";
 | class | `Proposition` | `AEPProposition` |
 | class | `Offer` | `AEPOffer` |
 
-### DecisionScope
+### DecisionScope - Deprecated!
 
 This class represents the decision scope which is used to fetch the decision propositions from the Edge decisioning services. The encapsulated scope name can also represent the Base64 encoded JSON string created using the provided activityId, placementId and itemCount.
 

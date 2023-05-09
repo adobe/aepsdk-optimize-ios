@@ -610,7 +610,7 @@ class OptimizePublicAPITests: XCTestCase {
 
         let testEventData: [String: Any] = [
             "requesttype": "updatepropositions",
-            "decisionscopes": [
+            "surfaces": [
                 [ "name": "myView#featureJson"
                 ]
             ],
@@ -671,7 +671,7 @@ class OptimizePublicAPITests: XCTestCase {
 
         let testEventData: [String: Any] = [
             "requesttype": "updatepropositions",
-            "decisionscopes": [
+            "surfaces": [
                 [
                     "name": "myView/mySubview1"
                 ],
@@ -760,7 +760,7 @@ class OptimizePublicAPITests: XCTestCase {
 
         let testEventData: [String: Any] = [
             "requesttype": "updatepropositions",
-            "decisionscopes": [
+            "surfaces": [
                 [
                     "name": "myImageView#imageHtml"
                 ]
