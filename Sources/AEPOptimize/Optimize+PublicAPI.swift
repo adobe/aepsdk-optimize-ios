@@ -120,8 +120,7 @@ public extension Optimize {
     /// This API registers a permanent callback which will be invoked whenever the Edge extension dispatches an Event handle,
     /// upon a personalization decisions response from the Experience Edge Network.
     ///
-    /// The personalization query requests can be triggered by the `updatePropositions(for:withXdm:andData:)` API,
-    /// Edge extension `sendEvent(experienceEvent:_:)` API or launch rules consequence.
+    /// The personalization query requests can be triggered by the `updatePropositions(for:withXdm:andData:)` API.
     ///
     /// - Parameter action: The completion handler to be invoked with the decision propositions.
     @available(*, deprecated, message: "Use onPropositionsUpdate(perform: @escaping ([String: Proposition]) -> Void) instead")
@@ -246,8 +245,7 @@ public extension Optimize {
     /// This API registers a permanent callback which will be invoked whenever the Edge extension dispatches an Event handle,
     /// upon a personalization decisions response from the Experience Edge Network.
     ///
-    /// The personalization query requests can be triggered by the `updatePropositionsForSurfacePaths(_:withXdm:andData:)` API,
-    /// Edge extension `sendEvent(experienceEvent:_:)` API or launch rules consequence.
+    /// The personalization query requests can be triggered by the `updatePropositionsForSurfacePaths(_:withXdm:andData:)` API.
     ///
     /// - Parameter completion: The completion handler to be invoked with the decision propositions.
     @objc(setPropositonsHandler:)
