@@ -481,11 +481,11 @@ AEPDecisionScope* surfacePath2 = @"myView/mySubviewJson";
 
 | Type | Swift | Objective-C |
 | ---- | ----- | ----------- |
-| class | `DecisionScope` | `AEPDecisionScope` |
+| class | `DecisionScope` (Deprecated!) | `AEPDecisionScope` (Deprecated!) |
 | class | `Proposition` | `AEPProposition` |
 | class | `Offer` | `AEPOffer` |
 
-### DecisionScope - Deprecated!
+### DecisionScope
 
 This class represents the decision scope which is used to fetch the decision propositions from the Edge decisioning services. The encapsulated scope name can also represent the Base64 encoded JSON string created using the provided activityId, placementId and itemCount.
 
