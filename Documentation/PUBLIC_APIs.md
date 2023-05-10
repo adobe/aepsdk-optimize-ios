@@ -214,7 +214,7 @@ Optimize.getPropositionsForSurfacePaths(for: [surfacePath1, surfacePath2]) { pro
 NSString* surfacePath1 = @"myView#htmlElement";
 NSString* surfacePath2 = @"myView/mySubviewJson";
 
-[AEPMobileOptimize getPropositions: @[surfacePath1, surfacePath2] 
+[AEPMobileOptimize getPropositionsForSurfacePaths: @[surfacePath1, surfacePath2] 
                         completion: ^(NSDictionary<NSString*, AEPProposition*>* propositionsDict, NSError* error) {
   if (error != nil) {
     // handle error   

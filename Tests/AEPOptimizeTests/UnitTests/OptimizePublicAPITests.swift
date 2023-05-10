@@ -611,8 +611,7 @@ class OptimizePublicAPITests: XCTestCase {
         let testEventData: [String: Any] = [
             "requesttype": "updatepropositions",
             "surfaces": [
-                [ "name": "myView#featureJson"
-                ]
+                "myView#featureJson"
             ],
             "xdm": [
                 "myXdmKey": "myXdmValue"
@@ -672,12 +671,8 @@ class OptimizePublicAPITests: XCTestCase {
         let testEventData: [String: Any] = [
             "requesttype": "updatepropositions",
             "surfaces": [
-                [
-                    "name": "myView/mySubview1"
-                ],
-                [
-                    "name": "myView/mySubview2"
-                ]
+                "myView/mySubview1",
+                "myView/mySubview2"
             ]
         ]
         let testEvent = Event(name: "Optimize Update Propositions Request",
@@ -761,9 +756,7 @@ class OptimizePublicAPITests: XCTestCase {
         let testEventData: [String: Any] = [
             "requesttype": "updatepropositions",
             "surfaces": [
-                [
-                    "name": "myImageView#imageHtml"
-                ]
+                "myImageView#imageHtml"
             ]
         ]
         let testEvent = Event(name: "Optimize Update Propositions Request",
@@ -925,7 +918,7 @@ class OptimizePublicAPITests: XCTestCase {
                                 "propositions": [
                                     [
                                         "id": "2cceff23-5eea-4bad-af5f-abb1aca1ea2e",
-                                        "scope": "myView#htmlElement",
+                                        "scope": "mobileapp://com.apple.dt.xctest.tool/myView#htmlElement",
                                         "items": [
                                             [
                                                 "id": "fd125be6-f505-4640-ba26-9527c682e1a8",
@@ -949,7 +942,7 @@ class OptimizePublicAPITests: XCTestCase {
 
             let proposition = propositionsDictionary[scope]
             XCTAssertEqual("2cceff23-5eea-4bad-af5f-abb1aca1ea2e", proposition?.id)
-            XCTAssertEqual("myView#htmlElement", proposition?.scope)
+            XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", proposition?.scope)
             XCTAssertEqual(1, proposition?.offers.count)
             XCTAssertEqual("fd125be6-f505-4640-ba26-9527c682e1a8", proposition?.offers[0].id)
             XCTAssertEqual("https://ns.adobe.com/personalization/html-content-item", proposition?.offers[0].schema)
