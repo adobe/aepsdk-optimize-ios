@@ -1144,7 +1144,7 @@ class OptimizeIntegrationTests: XCTestCase {
                          "payload": [\
                             { \
                                "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",\
-                               "scope": "myView#htmlElement",\
+                               "scope": "mobileapp://com.apple.dt.xctest.tool/myView#htmlElement",\
                                "scopeDetails": {\
                                    "correlationID": "cccccccc-cccc-cccc-cccc-cccccccccccc",\
                                    "characteristics": {\
@@ -1206,7 +1206,7 @@ class OptimizeIntegrationTests: XCTestCase {
             XCTAssertNotNil(proposition)
             
             XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
-            XCTAssertEqual("myView#htmlElement", proposition?.scope)
+            XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", proposition?.scope)
             
             XCTAssertEqual(4, proposition?.scopeDetails.count)
             XCTAssertEqual("cccccccc-cccc-cccc-cccc-cccccccccccc", proposition?.scopeDetails["correlationID"] as? String)
