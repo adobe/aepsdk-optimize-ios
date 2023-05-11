@@ -117,7 +117,7 @@ struct OffersView: View {
                     let htmlSurface = surfaceSettings.htmlSurface
                     let jsonSurface = surfaceSettings.jsonSurface
                     
-                    Optimize.updatePropositions(for: [
+                    Optimize.updatePropositionsForSurfacePaths([
                         htmlSurface,
                         jsonSurface
                     ], withXdm: ["xdmKey": "1234"],
@@ -184,7 +184,7 @@ struct OffersView: View {
                     let htmlSurface = surfaceSettings.htmlSurface
                     let jsonSurface = surfaceSettings.jsonSurface
                     
-                    Optimize.getPropositions(for: [
+                    Optimize.getPropositionsForSurfacePaths([
                         htmlSurface,
                         jsonSurface
                     ]) {
