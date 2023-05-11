@@ -204,7 +204,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.updatePropositions(for: [], withXdm: nil)
+        Optimize.updatePropositions(for: [DecisionScope](), withXdm: nil)
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -363,7 +363,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         // test
-        Optimize.getPropositions(for: []) { _, _ in }
+        Optimize.getPropositions(for: [DecisionScope]()) { _, _ in }
 
         // verify
         wait(for: [expectation], timeout: 1)
@@ -430,9 +430,6 @@ class OptimizePublicAPITests: XCTestCase {
                               data: [
                                 "propositions": [
                                     [
-                                    "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
-                                    ],
-                                    [
                                         "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
                                         "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
                                         "items": [
@@ -451,7 +448,7 @@ class OptimizePublicAPITests: XCTestCase {
                               ])
 
         // test
-        Optimize.onPropositionsUpdate { propositionsDictionary in
+        Optimize.onPropositionsUpdate { (propositionsDictionary: [DecisionScope: Proposition]) in
             XCTAssertEqual(1, propositionsDictionary.count)
 
             let scope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
@@ -488,7 +485,7 @@ class OptimizePublicAPITests: XCTestCase {
                               ])
 
         // test
-        Optimize.onPropositionsUpdate { _ in
+        Optimize.onPropositionsUpdate { (_: [DecisionScope: Proposition]) in
             expectation.fulfill()
         }
 
@@ -508,7 +505,7 @@ class OptimizePublicAPITests: XCTestCase {
                               data: nil)
 
         // test
-        Optimize.onPropositionsUpdate { _ in
+        Optimize.onPropositionsUpdate { (_: [DecisionScope: Proposition]) in
             expectation.fulfill()
         }
 
@@ -559,6 +556,448 @@ class OptimizePublicAPITests: XCTestCase {
         }
 
         MobileCore.resetIdentities()
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    // MARK: - Mobile Surface Support Tests
+    
+    func testUpdatePropositionsForSurfacePaths_validSurface() {
+        // setup
+        let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event with expected data.")
+        expectation.assertForOverFulfill = true
+
+        let testEventData: [String: Any] = [
+            "requesttype": "updatepropositions",
+            "surfaces": [
+                "myView#htmlElement"
+            ]
+        ]
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: testEventData)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { event in
+            XCTAssertEqual(testEvent.name, event.name)
+            XCTAssertEqual("updatepropositions", event.data?["requesttype"] as? String)
+            guard let surfaces = event.data?["surfaces"] as? [String], !surfaces.isEmpty else {
+                XCTFail("Surface string array should be valid.")
+                return
+            }
+            XCTAssertEqual(1, surfaces.count)
+            XCTAssertEqual("myView#htmlElement", surfaces[0])
+
+            XCTAssertNil(event.data?["xdm"])
+            XCTAssertNil(event.data?["data"])
+            expectation.fulfill()
+        }
+
+        // test
+        Optimize.updatePropositionsForSurfacePaths(["myView#htmlElement"], withXdm: nil)
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testUpdatePropositionsForSurfacePaths_validSurfaceWithXdmAndData() {
+        // setup
+        let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event with expected data.")
+        expectation.assertForOverFulfill = true
+
+        let testEventData: [String: Any] = [
+            "requesttype": "updatepropositions",
+            "surfaces": [
+                "myView#featureJson"
+            ],
+            "xdm": [
+                "myXdmKey": "myXdmValue"
+            ],
+            "data": [
+                "myKey": "myValue"
+            ]
+        ]
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: testEventData)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { event in
+            XCTAssertEqual(testEvent.name, event.name)
+            XCTAssertEqual("updatepropositions", event.data?["requesttype"] as? String)
+            guard let surfaces = event.data?["surfaces"] as? [String], !surfaces.isEmpty else {
+                XCTFail("Surface string array should be valid.")
+                return
+            }
+            XCTAssertEqual(1, surfaces.count)
+            XCTAssertEqual("myView#featureJson", surfaces[0])
+
+            guard let xdm = event.data?["xdm"] as? [String: Any] else {
+                XCTFail("Xdm data should be valid.")
+                return
+            }
+            XCTAssertEqual(1, xdm.count)
+            XCTAssertEqual("myXdmValue", xdm["myXdmKey"] as? String)
+
+            guard let data = event.data?["data"] as? [String: Any] else {
+                XCTFail("Freeform data should be valid.")
+                return
+            }
+            XCTAssertEqual(1, data.count)
+            XCTAssertEqual("myValue", data["myKey"] as? String)
+
+            expectation.fulfill()
+        }
+
+        // test
+        Optimize.updatePropositionsForSurfacePaths(["myView#featureJson"],
+                                    withXdm: ["myXdmKey": "myXdmValue"] as [String: Any],
+                                    andData: ["myKey": "myValue"] as [String: Any])
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testUpdatePropositionsForSurfacePaths_multipleValidSurfaces() {
+        // setup
+        let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event with expected data.")
+        expectation.assertForOverFulfill = true
+
+        let testEventData: [String: Any] = [
+            "requesttype": "updatepropositions",
+            "surfaces": [
+                "myView/mySubview1",
+                "myView/mySubview2"
+            ]
+        ]
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: testEventData)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { event in
+            XCTAssertEqual(testEvent.name, event.name)
+            XCTAssertEqual("updatepropositions", event.data?["requesttype"] as? String)
+            guard let surfaces = event.data?["surfaces"] as? [String], !surfaces.isEmpty else {
+                XCTFail("Surface string array should be valid.")
+                return
+            }
+            XCTAssertEqual(2, surfaces.count)
+            XCTAssertEqual("myView/mySubview1", surfaces[0])
+            XCTAssertEqual("myView/mySubview2", surfaces[1])
+            expectation.fulfill()
+        }
+
+        // test
+        Optimize.updatePropositionsForSurfacePaths(["myView/mySubview1", "myView/mySubview2"], withXdm: nil)
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testUpdatePropositionsForSurfacePaths_noSurface() {
+        // setup
+        let expectation = XCTestExpectation(description: "updatePropositions should not dispatch an event.")
+        expectation.isInverted = true
+
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: nil)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { _ in
+            expectation.fulfill()
+        }
+
+        // test
+        Optimize.updatePropositionsForSurfacePaths([String](), withXdm: nil)
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testUpdatePropositionsForSurfacePaths_emptySurface() {
+        // setup
+        let expectation = XCTestExpectation(description: "updatePropositions should not dispatch an event.")
+        expectation.isInverted = true
+
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: nil)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { _ in
+            expectation.fulfill()
+        }
+
+        // test
+        Optimize.updatePropositionsForSurfacePaths([""], withXdm: nil)
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testUpdatePropositionsForSurfacePaths_validAndInvalidSurfaces() {
+        // setup
+        let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event.")
+        expectation.assertForOverFulfill = true
+
+        let testEventData: [String: Any] = [
+            "requesttype": "updatepropositions",
+            "surfaces": [
+                "myImageView#imageHtml"
+            ]
+        ]
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: testEventData)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { event in
+            XCTAssertEqual(testEvent.name, event.name)
+            XCTAssertEqual("updatepropositions", event.data?["requesttype"] as? String)
+            guard let surfaces = event.data?["surfaces"] as? [String], !surfaces.isEmpty else {
+                XCTFail("Surface string array should be valid.")
+                return
+            }
+            XCTAssertEqual(1, surfaces.count)
+            XCTAssertEqual("myImageView#imageHtml", surfaces[0])
+            expectation.fulfill()
+        }
+
+        // test
+        Optimize.updatePropositionsForSurfacePaths(["", "myImageView#imageHtml"], withXdm: nil)
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testGetPropositionsForSurfacePaths_validSurface() {
+        // setup
+        let expectation = XCTestExpectation(description: "getPropositions should dispatch an event with expected data.")
+        expectation.assertForOverFulfill = true
+
+        let testEventData: [String: Any] = [
+            "requesttype": "getpropositions",
+            "surfaces": [
+                "myView#htmlElement"
+            ]
+        ]
+        let testEvent = Event(name: "Optimize Get Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: testEventData)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { event in
+            XCTAssertEqual(event.name, testEvent.name)
+            XCTAssertEqual("getpropositions", event.data?["requesttype"] as? String)
+            guard let surfaces: [String] = event.getTypedData(for: "surfaces") else {
+                XCTFail("Surface string array should be valid.")
+                return
+            }
+            XCTAssertEqual(1, surfaces.count)
+            XCTAssertEqual("myView#htmlElement", surfaces[0])
+            expectation.fulfill()
+        }
+
+        // test
+        Optimize.getPropositionsForSurfacePaths(["myView#htmlElement"]) { _, _ in }
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testGetPropositionsForSurfacePaths_noSurface() {
+        // setup
+        let expectation = XCTestExpectation(description: "getPropositions should not dispatch an event.")
+        expectation.isInverted = true
+
+        let testEvent = Event(name: "Optimize Get Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: nil)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { _ in
+            expectation.fulfill()
+        }
+
+        // test
+        Optimize.getPropositionsForSurfacePaths([String]()) { _, _ in }
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testGetPropositionsForSurfacePaths_emptySurface() {
+        // setup
+        let expectation = XCTestExpectation(description: "getPropositions should not dispatch an event.")
+        expectation.isInverted = true
+
+        let testEvent = Event(name: "Optimize Get Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: nil)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { _ in
+            expectation.fulfill()
+        }
+
+        // test
+        Optimize.getPropositionsForSurfacePaths([""]) { _, _ in }
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testGetPropositionsForSurfacePaths_validAndInvalidSurfaces() {
+        // setup
+        let expectation = XCTestExpectation(description: "getPropositions should dispatch an event with expected data.")
+        expectation.assertForOverFulfill = true
+
+        let testEventData: [String: Any] = [
+            "requesttype": "getpropositions",
+            "surfaces": [
+                "myView#htmlElement"
+            ]
+        ]
+        let testEvent = Event(name: "Optimize Get Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: testEventData)
+
+        // test
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                    source: testEvent.source) { event in
+            XCTAssertEqual(event.name, testEvent.name)
+            XCTAssertEqual("getpropositions", event.data?["requesttype"] as? String)
+            guard let surfaces: [String] = event.getTypedData(for: "surfaces") else {
+                XCTFail("Surface string array should be valid.")
+                return
+            }
+            XCTAssertEqual(1, surfaces.count)
+            XCTAssertEqual("myView#htmlElement", surfaces[0])
+            expectation.fulfill()
+        }
+
+        // test
+        Optimize.getPropositionsForSurfacePaths(["", "myView#htmlElement"]) { _, _ in }
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func testSetPropositionsHandler_validPropositionForSurface() {
+        // setup
+        Optimize.isPropositionsListenerRegistered = false
+        let expectation = XCTestExpectation(description: "setPropositionsHandler should be called with response event upon personalization notification.")
+        expectation.assertForOverFulfill = true
+
+        let testEvent = Event(name: "Personalization Notification",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.notification",
+                              data: [
+                                "propositions": [
+                                    [
+                                        "id": "2cceff23-5eea-4bad-af5f-abb1aca1ea2e",
+                                        "scope": "mobileapp://com.apple.dt.xctest.tool/myView#htmlElement",
+                                        "items": [
+                                            [
+                                                "id": "fd125be6-f505-4640-ba26-9527c682e1a8",
+                                                "schema": "https://ns.adobe.com/personalization/html-content-item",
+                                                "data": [
+                                                    "type": 0, // Offer format is not returned in Edge response
+                                                    "content": "<h3>This is a HTML content!</h3>"
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                              ])
+
+        // test
+        Optimize.setPropositionsHandler { (propositionsDictionary :[String: Proposition]) in
+            XCTAssertEqual(1, propositionsDictionary.count)
+
+            let scope = "myView#htmlElement"
+            XCTAssertNotNil(propositionsDictionary[scope])
+
+            let proposition = propositionsDictionary[scope]
+            XCTAssertEqual("2cceff23-5eea-4bad-af5f-abb1aca1ea2e", proposition?.id)
+            XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", proposition?.scope)
+            XCTAssertEqual(1, proposition?.offers.count)
+            XCTAssertEqual("fd125be6-f505-4640-ba26-9527c682e1a8", proposition?.offers[0].id)
+            XCTAssertEqual("https://ns.adobe.com/personalization/html-content-item", proposition?.offers[0].schema)
+            XCTAssertEqual(.unknown, proposition?.offers[0].type) // Offer format is not returned in Edge response
+            XCTAssertEqual("<h3>This is a HTML content!</h3>", proposition?.offers[0].content)
+
+            expectation.fulfill()
+        }
+
+        EventHub.shared.dispatch(event: testEvent)
+
+        // verify
+        wait(for: [expectation], timeout: 2)
+    }
+
+    func testSetPropositionsHandler_emptyPropositionArray() {
+        // setup
+        Optimize.isPropositionsListenerRegistered = false
+        let expectation = XCTestExpectation(description: "setPropositionsHandler should not be called for empty propositions in personalization notification response.")
+        expectation.isInverted = true
+
+        let testEvent = Event(name: "Personalization Notification",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.notification",
+                              data: [
+                                "propositions": []
+                              ])
+
+        // test
+        Optimize.setPropositionsHandler { (_: [String: Proposition]) in
+            expectation.fulfill()
+        }
+
+        EventHub.shared.dispatch(event: testEvent)
+
+        // verify
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testSetPropositionsHandler_NilEventData() {
+        // setup
+        Optimize.isPropositionsListenerRegistered = false
+        let expectation = XCTestExpectation(description: "setPropositionsHandler should not be called for no propositions in personalization notification response.")
+        expectation.isInverted = true
+        let testEvent = Event(name: "Personalization Notification",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.notification",
+                              data: nil)
+
+        // test
+        Optimize.setPropositionsHandler { (_: [String: Proposition]) in
+            expectation.fulfill()
+        }
+
+        EventHub.shared.dispatch(event: testEvent)
 
         // verify
         wait(for: [expectation], timeout: 1)

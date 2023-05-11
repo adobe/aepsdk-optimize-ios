@@ -76,11 +76,12 @@ public class Offer: NSObject, Codable {
 
         schema = try container.decode(String.self, forKey: .schema)
 
-        meta = AnyCodable.toAnyDictionary(dictionary: try container.decodeIfPresent([String: AnyCodable].self, forKey: .meta))
+        let anyCodableMetaDict = try container.decodeIfPresent([String: AnyCodable].self, forKey: .meta)
+        meta = AnyCodable.toAnyDictionary(dictionary: anyCodableMetaDict)
 
         if let nestedContainer = try? container.nestedContainer(keyedBy: DataKeys.self, forKey: .data) {
-            let nestedId = try nestedContainer.decode(String.self, forKey: .id)
-            if nestedId != id {
+            let nestedId = try nestedContainer.decodeIfPresent(String.self, forKey: .id) ?? ""
+            if !nestedId.isEmpty, nestedId != id {
                 throw DecodingError.dataCorruptedError(forKey: DataKeys.id, in: nestedContainer, debugDescription: "Data id should be same as items id.")
             }
 

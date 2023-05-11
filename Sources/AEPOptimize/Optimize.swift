@@ -24,6 +24,8 @@ public class Optimize: NSObject, Extension {
     public let metadata: [String: String]? = nil
     public let runtime: ExtensionRuntime
 
+    private var personalizationRequestEventId: String = ""
+
     /// Array containing the schema strings for the proposition items supported by the SDK, sent in the personalization query request.
     static let supportedSchemas = [
         // Target schemas
@@ -40,9 +42,9 @@ public class Optimize: NSObject, Extension {
 
     /// Dictionary containing decision propositions currently cached in-memory in the SDK.
     #if DEBUG
-        var cachedPropositions: [DecisionScope: Proposition]
+        var cachedPropositions: [String: Proposition]
     #else
-        private(set) var cachedPropositions: [DecisionScope: Proposition]
+        private(set) var cachedPropositions: [String: Proposition]
     #endif
 
     public required init?(runtime: ExtensionRuntime) {
@@ -109,19 +111,37 @@ public class Optimize: NSObject, Extension {
             return
         }
 
-        guard let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
-              !decisionScopes.isEmpty
-        else {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
-            return
-        }
+        var validDecisionScopes = [String]()
+        var validSurfaces = [String]()
+        if
+            let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
+            !decisionScopes.isEmpty
+        {
+            validDecisionScopes = decisionScopes
+                .filter { $0.isValid }
+                .compactMap { $0.name }
 
-        let targetDecisionScopes = decisionScopes
-            .filter { $0.isValid }
-            .compactMap { $0.name }
+            if validDecisionScopes.isEmpty {
+                Log.debug(label: OptimizeConstants.LOG_TAG, "No valid decision scopes found for the Edge personalization request!")
+                return
+            }
+        } else if
+            let surfacePaths: [String] = event.getTypedData(for: OptimizeConstants.EventDataKeys.SURFACES),
+            !surfacePaths.isEmpty
+        {
+            validSurfaces = surfacePaths
+                .map { $0.prefixedSurface(Bundle.main.mobileappSurface) }
+                .filter { $0.isValidSurface() }
 
-        if targetDecisionScopes.isEmpty {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "No valid decision scopes found for the Edge personalization request!")
+            if validSurfaces.isEmpty {
+                Log.debug(label: OptimizeConstants.LOG_TAG, "No valid surfaces found for the Edge personalization request!")
+                return
+            }
+        } else {
+            Log.debug(label: OptimizeConstants.LOG_TAG, """
+                      Cannot process the update propositions request event, \
+                      surfaces or decision scopes in the event data are either not present or empty.
+            """)
             return
         }
 
@@ -131,7 +151,8 @@ public class Optimize: NSObject, Extension {
         eventData[OptimizeConstants.JsonKeys.QUERY] = [
             OptimizeConstants.JsonKeys.QUERY_PERSONALIZATION: [
                 OptimizeConstants.JsonKeys.SCHEMAS: Optimize.supportedSchemas,
-                OptimizeConstants.JsonKeys.DECISION_SCOPES: targetDecisionScopes
+                OptimizeConstants.JsonKeys.DECISION_SCOPES: validDecisionScopes,
+                OptimizeConstants.JsonKeys.SURFACES: validSurfaces
             ]
         ]
 
@@ -158,19 +179,28 @@ public class Optimize: NSObject, Extension {
                           type: EventType.edge,
                           source: EventSource.requestContent,
                           data: eventData)
+
+        // In AEP Response Event handle, `requestEventId` corresponds to the UUID for the Edge request.
+        // Storing the request event UUID to compare and process only the anticipated response in the extension.
+        personalizationRequestEventId = event.id.uuidString
+
         dispatch(event: event)
     }
 
-    /// Processes the Edge response event, dispatched with type `EventType.edge` and source `personalization: decisions`.
+    /// Processes the Edge response event, dispatched with type `EventType.edge` and source `personalization:decisions`.
     ///
     /// It dispatches a personalization notification event with the propositions received from the decisioning services configured behind
     /// Experience Edge network.
     /// - Parameter event: Edge response event.
     private func processEdgeResponse(event: Event) {
-        guard let eventType = event.data?[OptimizeConstants.Edge.EVENT_HANDLE] as? String,
-              eventType == OptimizeConstants.Edge.EVENT_HANDLE_TYPE_PERSONALIZATION
+        guard event.isPersonalizationDecisionResponse,
+              personalizationRequestEventId == event.requestEventId
         else {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "Ignoring Edge event, handle type is not personalization:decisions.")
+            Log.debug(label: OptimizeConstants.LOG_TAG,
+                      """
+                        Ignoring Edge response event, either response handle is not personalization:decisions, \
+                      or the response is not for a request the extension issued.
+                      """)
             return
         }
 
@@ -183,7 +213,7 @@ public class Optimize: NSObject, Extension {
 
         let propositionsDict = propositions
             .filter { !$0.offers.isEmpty }
-            .toDictionary { DecisionScope(name: $0.scope) }
+            .toDictionary { $0.scope }
 
         if propositionsDict.isEmpty {
             Log.debug(label: OptimizeConstants.LOG_TAG,
@@ -200,7 +230,7 @@ public class Optimize: NSObject, Extension {
         // Update propositions cache
         cachedPropositions.merge(propositionsDict) { _, new in new }
 
-        let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
+        let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict.map { $0.value }].asDictionary()
 
         let event = Event(name: OptimizeConstants.EventNames.OPTIMIZE_NOTIFICATION,
                           type: EventType.optimize,
@@ -231,17 +261,35 @@ public class Optimize: NSObject, Extension {
     ///  It returns previously cached propositions for the requested decision scopes. Any decision scope(s) not already present in the cache are ignored.
     /// - Parameter event: Get propositions request event
     private func processGetPropositions(event: Event) {
-        guard let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
-              !decisionScopes.isEmpty
-        else {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
+        var propositionsDict: [String: Proposition] = [:]
+        if
+            let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
+            !decisionScopes.isEmpty
+        {
+            propositionsDict = cachedPropositions.filter { decisionScopes.contains(DecisionScope(name: $0.key)) }
+        } else if
+            let surfacePaths: [String] = event.getTypedData(for: OptimizeConstants.EventDataKeys.SURFACES),
+            !surfacePaths.isEmpty
+        {
+            for surfacePath in surfacePaths {
+                let prefixedSurface = surfacePath.prefixedSurface(Bundle.main.mobileappSurface)
+                if
+                    prefixedSurface.isValidSurface(),
+                    let cachedProposition = cachedPropositions[prefixedSurface]
+                {
+                    propositionsDict[surfacePath] = cachedProposition
+                }
+            }
+        } else {
+            Log.debug(label: OptimizeConstants.LOG_TAG, """
+                Cannot process the get propositions request event,\
+                decision scopes or surfaces in event data are either not present or empty.
+            """)
             dispatch(event: event.createErrorResponseEvent(AEPError.invalidRequest))
             return
         }
 
-        let propositionsDict = cachedPropositions.filter { decisionScopes.contains($0.key) }
-
-        let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
+        let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict.map { $0.value }].asDictionary()
 
         let responseEvent = event.createResponseEvent(
             name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
@@ -297,4 +345,11 @@ public class Optimize: NSObject, Extension {
         // Clear propositions cache
         cachedPropositions.removeAll()
     }
+
+    #if DEBUG
+        /// Used for testing purposes only
+        internal func setPersonalizationRequestEventId(_ id: String) {
+            personalizationRequestEventId = id
+        }
+    #endif
 }

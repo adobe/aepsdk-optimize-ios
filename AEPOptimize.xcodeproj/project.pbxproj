@@ -10,6 +10,7 @@
 		048957B1B953F5E65058436F /* Pods_AEPOptimize.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6530E7CDA75EFA93DD6318C /* Pods_AEPOptimize.framework */; };
 		0969EAEA28AD14E700E6E470 /* AEPOptimize.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPOptimize.framework */; };
 		0969EAEB28AD14E700E6E470 /* AEPOptimize.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPOptimize.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0976ACEB299D66AA003C31C6 /* Bundle+Optimize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0976ACEA299D66AA003C31C6 /* Bundle+Optimize.swift */; };
 		25A7F16F9547EE83F5734E3C /* Pods_shared_AEPOptimizeDemoAppExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9756675167E8274119439EC8 /* Pods_shared_AEPOptimizeDemoAppExtension.framework */; };
 		3AEB05F692581AAC67BB2B85 /* Pods_FunctionalTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EE07424FC1DD074D8B9FD0C /* Pods_FunctionalTests.framework */; };
 		41CB4F5069B6936944DDB6B1 /* Pods_UnitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B9C2F3CA52295A7E3D1705 /* Pods_UnitTests.framework */; };
@@ -168,6 +169,7 @@
 
 /* Begin PBXFileReference section */
 		07661FE6B8A8FEDCE0658626 /* Pods-shared-AEPOptimizeDemoObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shared-AEPOptimizeDemoObjC.release.xcconfig"; path = "Target Support Files/Pods-shared-AEPOptimizeDemoObjC/Pods-shared-AEPOptimizeDemoObjC.release.xcconfig"; sourceTree = "<group>"; };
+		0976ACEA299D66AA003C31C6 /* Bundle+Optimize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Optimize.swift"; sourceTree = "<group>"; };
 		2D6DE1D78747B6856E34BE1F /* Pods_shared_AEPOptimizeDemoSwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_shared_AEPOptimizeDemoSwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BEAC61A7614146CFE6ADBA3 /* Pods-shared-AEPOptimizeDemoAppExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shared-AEPOptimizeDemoAppExtension.debug.xcconfig"; path = "Target Support Files/Pods-shared-AEPOptimizeDemoAppExtension/Pods-shared-AEPOptimizeDemoAppExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		621A2487FEB22E135935BFC9 /* Pods_IntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -522,6 +524,7 @@
 				C8276BE3261EC74F00508873 /* Array+Optimize.swift */,
 				C8CA1653261EF29E005B09A0 /* Event+Optimize.swift */,
 				C8227C7427DA5BD6005A7703 /* KeyedDecodingContainer+Optimize.swift */,
+				0976ACEA299D66AA003C31C6 /* Bundle+Optimize.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -1204,6 +1207,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0976ACEB299D66AA003C31C6 /* Bundle+Optimize.swift in Sources */,
 				C88C5EDD2614F640003AE3DE /* Offer.swift in Sources */,
 				C8DE6BEF2686848B0076623F /* Proposition+Tracking.swift in Sources */,
 				C8227C7527DA5BD6005A7703 /* KeyedDecodingContainer+Optimize.swift in Sources */,
@@ -1431,6 +1435,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D SURFACES_SUPPORT_ENABLED";
 				PRODUCT_BUNDLE_IDENTIFIER = com.adobe.aep.AEPOptimizeDemoSwiftUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -1455,6 +1460,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D SURFACES_SUPPORT_ENABLED";
 				PRODUCT_BUNDLE_IDENTIFIER = com.adobe.aep.AEPOptimizeDemoSwiftUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

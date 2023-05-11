@@ -6,11 +6,14 @@ This API reference guide provides usage information for the Optimize extension's
 
 - [clearCachedPropositions](#clearCachedPropositions)
 - [extensionVersion](#extensionVersion)
-- [getPropositions](#getPropositions)
-- [onPropositionsUpdate](#onPropositionsUpdate)
+- [getPropositions](#getPropositions) - Deprecated!
+- [getPropositionsForSurfacePaths](#getPropositionsForSurfacePaths)
+- [onPropositionsUpdate](#onPropositionsUpdate) - Deprecated!
 - [registerExtensions](#registerExtensions)
 - [resetIdentities](#resetIdentities)
-- [updatePropositions](#updatePropositions)
+- [setPropositionsHandler](#setPropositionsHandler)
+- [updatePropositions](#updatePropositions) - Deprecated!
+- [updatePropositionsForSurfacePaths](#updatePropositionsForSurfacePaths)
 
 ---
 
@@ -157,9 +160,80 @@ AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc] initWithName: @"myS
 
 ---
 
+### getPropositionsForSurfacePaths
+
+This API retrieves the previously fetched propositions, for the provided mobile surfaces, from the in-memory extension propositions cache. The completion handler is invoked with the decision propositions corresponding to the given surface strings. If a certain surface has not already been fetched prior to this API call, it will not be contained in the returned propositions.
+
+#### Swift
+
+##### Syntax
+
+```swift
+static func getPropositionsForSurfacePaths(_ surfacePaths: [String], 
+                            _ completion: @escaping ([DecisionScope: Proposition]?, Error?) -> Void)
+```
+
+##### Example
+
+```swift
+let surfacePath1 = "myView#htmlElement"
+let surfacePath2 = "myView/mySubviewJson"
+
+Optimize.getPropositionsForSurfacePaths(for: [surfacePath1, surfacePath2]) { propositionsDict, error in
+  if let error = error {
+    // handle error
+    return
+  }
+
+  if let propositionsDict = propositionsDict {
+    // get the propositions for the given decision scopes
+
+    if let proposition1 = propositionsDict[surfacePath1] {
+      // read proposition1 offers
+    }
+
+    if let proposition2 = propositionsDict[surfacePath2] {
+      // read proposition2 offers
+    }
+  }
+}
+```
+
+#### Objective-C
+
+##### Syntax
+
+```objc
++ (void) getPropositionsForSurfacePaths: (NSArray<NSString*>* _Nonnull) surfacePaths 
+              completion: (void (^ _Nonnull)(NSDictionary<NSString*, AEPProposition*>* _Nullable propositionsDict, NSError* _Nullable error)) completion;
+```
+
+##### Example
+
+```objc
+NSString* surfacePath1 = @"myView#htmlElement";
+NSString* surfacePath2 = @"myView/mySubviewJson";
+
+[AEPMobileOptimize getPropositionsForSurfacePaths: @[surfacePath1, surfacePath2] 
+                        completion: ^(NSDictionary<NSString*, AEPProposition*>* propositionsDict, NSError* error) {
+  if (error != nil) {
+    // handle error   
+    return;
+  }
+
+  AEPProposition* proposition1 = propositionsDict[surfacePath1];
+  // read proposition1 offers
+
+  AEPProposition* proposition2 = propositionsDict[surfacePath2];
+  // read proposition2 offers
+}];
+```
+
+---
+
 ### onPropositionsUpdate
 
-This API registers a permanent callback which is invoked whenever the Edge extension dispatches a response Event received from the Experience Edge Network upon a personalization query. The personalization query requests can be triggered by the `updatePropositions(for:withXdm:andData:)` API, Edge extension `sendEvent(experienceEvent:_:)` API or launch consequence rules.
+This API registers a permanent callback which is invoked whenever the Edge extension dispatches a response Event handle received from the Experience Edge Network upon a personalization query. The personalization query requests can be triggered by the `updatePropositions(for:withXdm:andData:)` API.
 
 #### Swift
 
@@ -271,6 +345,46 @@ MobileCore.resetIdentities()
 
 ---
 
+### setPropositionsHandler
+
+This API registers a permanent callback which is invoked whenever the Edge extension dispatches a response Event handle received from the Experience Edge Network upon a personalization query. The personalization query requests can be triggered by the `updatePropositionsForSurfacePaths(_:withXdm:andData:)` API.
+
+#### Swift
+
+##### Syntax
+
+```swift
+static func setPropositionsHandler(_ completion: @escaping ([String: Proposition]?) -> Void)
+```
+
+##### Example
+
+```swift
+Optimize.setPropositionsHandler { propositionsDict in
+  if let propositionsDict = propositionsDict {
+    // handle propositions
+  }
+}
+```
+
+#### Objective-C
+
+##### Syntax
+
+```objc
++ (void) setPropositionsHandler: (void (^ _Nonnull)(NSDictionary<NSString*, AEPProposition*>* _Nullable)) action;
+```
+
+##### Example
+
+```objc
+[AEPMobileOptimize setPropositionsHandler: ^(NSDictionary<NSString*, AEPProposition*>* propositionsDict) {
+  // handle propositions
+}];
+```
+
+---
+
 ### updatePropositions
 
 This API dispatches an Event for the Edge network extension to fetch decision propositions, for the provided decision scopes array, from the decisioning services enabled in the Experience Edge. The returned decision propositions are cached in-memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
@@ -319,11 +433,55 @@ AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc] initWithName: @"myS
 
 ---
 
+### updatePropositionsForSurfacePaths
+
+This API dispatches an Event for the Edge network extension to fetch decision propositions, for the provided mobile surfaces, from the decisioning services enabled in the Experience Edge. The returned decision propositions are cached in-memory in the Optimize SDK extension and can be retrieved using `getPropositionsForSurfacePaths(_:_:)` API.
+
+#### Swift
+
+##### Syntax
+```swift
+static func updatePropositionsForSurfacePaths(_ surfacePaths: [String], 
+                               withXdm xdm: [String: Any]?,
+                               andData data: [String: Any]? = nil)
+```
+
+##### Example
+```swift
+let surfacePath1 = "myView#htmlElement"
+let surfacePath2 = "myView/mySubviewJson"
+
+Optimize.updatePropositionsForSurfacePaths(for: [surfacePath1, surfacePath2] 
+                            withXdm: ["xdmKey": "xdmValue"] 
+                            andData: ["dataKey": "dataValue"])
+```
+
+#### Objective-C
+
+##### Syntax
+```objc
++ (void) updatePropositionsForSurfacePaths: (NSArray<NSString*>* _Nonnull) surfacePaths 
+                    withXdm: (NSDictionary<NSString*, id>* _Nullable) xdm
+                    andData: (NSDictionary<NSString*, id>* _Nullable) data;
+```
+
+##### Example
+```objc
+AEPDecisionScope* surfacePath1 = @"myView#htmlElement";
+AEPDecisionScope* surfacePath2 = @"myView/mySubviewJson";
+
+[AEPMobileOptimize updatePropositionsForSurfacePaths: @[surfacePath1, surfacePath2] 
+                              withXdm: @{@"xdmKey": @"xdmValue"} 
+                              andData: @{@"dataKey": @"dataValue"}];
+```
+
+---
+
 ## Public classes
 
 | Type | Swift | Objective-C |
 | ---- | ----- | ----------- |
-| class | `DecisionScope` | `AEPDecisionScope` |
+| class | `DecisionScope` (Deprecated!) | `AEPDecisionScope` (Deprecated!) |
 | class | `Proposition` | `AEPProposition` |
 | class | `Offer` | `AEPOffer` |
 

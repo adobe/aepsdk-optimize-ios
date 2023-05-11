@@ -18,8 +18,12 @@ import SwiftUI
 struct SettingsView: View {
     @State private var assuranceSessionURL = ""
    
+#if SURFACES_SUPPORT_ENABLED
+    @EnvironmentObject var surfaceSettings: SurfaceSettings
+#else
     @EnvironmentObject var odeSettings: OdeSettings
     @EnvironmentObject var targetSettings: TargetSettings
+#endif
     
     @State private var mboxDictRows: UInt = 1
     @State private var profileDictRows: UInt = 1
@@ -36,7 +40,12 @@ struct SettingsView: View {
                             }
                         }
                 }
-                
+#if SURFACES_SUPPORT_ENABLED
+                Section(header: Text("AEPOptimize - Surfaces")) {
+                    TextField("Enter Surface fragment (html)", text: $surfaceSettings.htmlSurface)
+                    TextField("Enter Surface fragment (json)", text: $surfaceSettings.jsonSurface)
+                }
+#else
                 Section(header: Text("AEPOptimize - ODE")) {
                     TextField("Enter Encoded Decision Scope (Text)", text: $odeSettings.textEncodedDecisionScope)
                     TextField("Enter Encoded Decision Scope (Image)", text: $odeSettings.imageEncodedDecisionScope)
@@ -85,7 +94,7 @@ struct SettingsView: View {
                         TextField("Enter Product Category Id", text: $targetSettings.product.categoryId)
                     }
                 }
-                
+#endif
                 Section(header: Text("About")) {
                     HStack {
                         Text("Version")
@@ -101,7 +110,11 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
+#if SURFACES_SUPPORT_ENABLED
+            .environmentObject(SurfaceSettings())
+#else
             .environmentObject(OdeSettings())
             .environmentObject(TargetSettings())
+#endif
     }
 }

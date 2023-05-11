@@ -474,6 +474,8 @@ class OptimizeFunctionalTests: XCTestCase {
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
 
+        optimize.setPersonalizationRequestEventId(testEvent.data?["requestEventId"] as? String ?? "")
+
         // test
         mockRuntime.simulateComingEvents(testEvent)
 
@@ -484,23 +486,22 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
-            XCTFail("Propositions dictionary should be valid.")
+        guard let propositionsArray: [Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions array should be valid.")
             return
         }
-        let scope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
-        XCTAssertNotNil(propositionsDictionary[scope])
+        XCTAssertNotNil(propositionsArray[0])
 
-        let proposition = propositionsDictionary[scope]
-        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
-        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
-        XCTAssertEqual(1, proposition?.offers.count)
-        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
-        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", proposition?.offers[0].schema)
-        XCTAssertEqual(.html, proposition?.offers[0].type)
-        XCTAssertEqual("<h1>This is HTML content</h1>", proposition?.offers[0].content)
-        XCTAssertEqual(1, proposition?.offers[0].characteristics?.count)
-        XCTAssertEqual("true", proposition?.offers[0].characteristics?["testing"])
+        let proposition = propositionsArray[0]
+        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition.id)
+        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition.scope)
+        XCTAssertEqual(1, proposition.offers.count)
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", proposition.offers[0].schema)
+        XCTAssertEqual(.html, proposition.offers[0].type)
+        XCTAssertEqual("<h1>This is HTML content</h1>", proposition.offers[0].content)
+        XCTAssertEqual(1, proposition.offers[0].characteristics?.count)
+        XCTAssertEqual("true", proposition.offers[0].characteristics?["testing"])
     }
     
     func testEdgeResponse_validPropositionFromTargetWithClickTracking() {
@@ -575,6 +576,8 @@ class OptimizeFunctionalTests: XCTestCase {
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
 
+        optimize.setPersonalizationRequestEventId(testEvent.data?["requestEventId"] as? String ?? "")
+
         // test
         mockRuntime.simulateComingEvents(testEvent)
 
@@ -585,26 +588,25 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
-            XCTFail("Propositions dictionary should be valid.")
+        guard let propositionsArray: [Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions array should be valid.")
             return
         }
-        let scope = DecisionScope(name: "myMbox1")
-        XCTAssertNotNil(propositionsDictionary[scope])
+        XCTAssertNotNil(propositionsArray[0])
 
-        let proposition = propositionsDictionary[scope]
-        XCTAssertEqual("AT:eyJhY3Rpdml0eUlkIjoiMTExMTExIiwiZXhwZXJpZW5jZUlkIjoiMCJ9", proposition?.id)
-        XCTAssertEqual("myMbox1", proposition?.scope)
-        let scopeDetails = proposition?.scopeDetails ?? [:]
+        let proposition = propositionsArray[0]
+        XCTAssertEqual("AT:eyJhY3Rpdml0eUlkIjoiMTExMTExIiwiZXhwZXJpZW5jZUlkIjoiMCJ9", proposition.id)
+        XCTAssertEqual("myMbox1", proposition.scope)
+        let scopeDetails = proposition.scopeDetails
         XCTAssertTrue(testScopeDetails == scopeDetails)
         
-        XCTAssertEqual(1, proposition?.offers.count)
-        XCTAssertEqual("0", proposition?.offers[0].id)
-        XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", proposition?.offers[0].schema)
-        XCTAssertEqual(.json, proposition?.offers[0].type)
-        XCTAssertEqual("{\"device\":\"mobile\"}", proposition?.offers[0].content)
-        XCTAssertNil(proposition?.offers[0].characteristics)
-        XCTAssertNil(proposition?.offers[0].language)
+        XCTAssertEqual(1, proposition.offers.count)
+        XCTAssertEqual("0", proposition.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/personalization/json-content-item", proposition.offers[0].schema)
+        XCTAssertEqual(.json, proposition.offers[0].type)
+        XCTAssertEqual("{\"device\":\"mobile\"}", proposition.offers[0].content)
+        XCTAssertNil(proposition.offers[0].characteristics)
+        XCTAssertNil(proposition.offers[0].language)
     }
 
     func testEdgeResponse_emptyProposition() {
@@ -791,7 +793,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")] = propositions
+        optimize.cachedPropositions["eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -821,26 +823,24 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
-            XCTFail("Propositions dictionary should be valid.")
+        guard let propositionsArray: [Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions array should be valid.")
             return
         }
-        XCTAssertEqual(1, propositionsDictionary.count)
+        XCTAssertEqual(1, propositionsArray.count)
+        XCTAssertNotNil(propositionsArray[0])
 
-        let scope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
-        XCTAssertNotNil(propositionsDictionary[scope])
-
-        let proposition = propositionsDictionary[scope]
-        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
-        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
-        XCTAssertEqual(1, proposition?.offers.count)
-        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
-        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-json", proposition?.offers[0].schema)
-        XCTAssertEqual(1, proposition?.offers[0].score)
-        XCTAssertEqual(.json, proposition?.offers[0].type)
-        XCTAssertEqual("{\"key\":\"value\"}", proposition?.offers[0].content)
-        XCTAssertEqual(1, proposition?.offers[0].characteristics?.count)
-        XCTAssertEqual("true", proposition?.offers[0].characteristics?["testing"])
+        let proposition = propositionsArray[0]
+        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition.id)
+        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition.scope)
+        XCTAssertEqual(1, proposition.offers.count)
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-json", proposition.offers[0].schema)
+        XCTAssertEqual(1, proposition.offers[0].score)
+        XCTAssertEqual(.json, proposition.offers[0].type)
+        XCTAssertEqual("{\"key\":\"value\"}", proposition.offers[0].content)
+        XCTAssertEqual(1, proposition.offers[0].characteristics?.count)
+        XCTAssertEqual("true", proposition.offers[0].characteristics?["testing"])
     }
 
     func testGetPropositions_notAllDecisionScopesInCache() {
@@ -878,7 +878,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")] = propositions
+        optimize.cachedPropositions["eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -911,26 +911,21 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
-            XCTFail("Propositions dictionary should be valid.")
+        guard let propositionsArray: [Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions array should be valid.")
             return
         }
-        XCTAssertEqual(1, propositionsDictionary.count)
-        
-        let scope1 = DecisionScope(name: "myMbox")
-        XCTAssertNil(propositionsDictionary[scope1])
+        XCTAssertEqual(1, propositionsArray.count)
+        XCTAssertNotNil(propositionsArray[0])
 
-        let scope2 = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
-        XCTAssertNotNil(propositionsDictionary[scope2])
-
-        let proposition = propositionsDictionary[scope2]
-        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition?.id)
-        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
-        XCTAssertEqual(1, proposition?.offers.count)
-        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
-        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-text", proposition?.offers[0].schema)
-        XCTAssertEqual(.text, proposition?.offers[0].type)
-        XCTAssertEqual("This is a plain text content.", proposition?.offers[0].content)
+        let proposition = propositionsArray[0]
+        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition.id)
+        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition.scope)
+        XCTAssertEqual(1, proposition.offers.count)
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-text", proposition.offers[0].schema)
+        XCTAssertEqual(.text, proposition.offers[0].type)
+        XCTAssertEqual("This is a plain text content.", proposition.offers[0].content)
     }
 
     func testGetPropositions_noDecisionScopeInCache() {
@@ -968,7 +963,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")] = propositions
+        optimize.cachedPropositions["eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -1001,11 +996,11 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
-            XCTFail("Propositions dictionary should be valid.")
+        guard let propositionsArray: [Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions array should be valid.")
             return
         }
-        XCTAssertTrue(propositionsDictionary.isEmpty)
+        XCTAssertTrue(propositionsArray.isEmpty)
     }
 
     func testGetPropositions_invalidDecisionScopesArray() {
@@ -1043,7 +1038,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")] = propositions
+        optimize.cachedPropositions["eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -1112,11 +1107,11 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
-            XCTFail("Propositions dictionary should be valid.")
+        guard let propositionsArray: [Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions array should be valid.")
             return
         }
-        XCTAssertTrue(propositionsDictionary.isEmpty)
+        XCTAssertTrue(propositionsArray.isEmpty)
     }
 
     func testGetPropositions_missingEventRequestTypeInData() {
@@ -1157,7 +1152,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")] = propositions
+        optimize.cachedPropositions["eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Get Propositions Request",
@@ -1585,7 +1580,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions[DecisionScope(name: "myScope")] = propositions
+        optimize.cachedPropositions["myScope"] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Clear Propositions Request",
@@ -1643,7 +1638,7 @@ class OptimizeFunctionalTests: XCTestCase {
             return
         }
 
-        optimize.cachedPropositions[DecisionScope(name: "myScope")] = propositions
+        optimize.cachedPropositions["myScope"] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
 
         let testEvent = Event(name: "Reset Identities Request",
@@ -1661,5 +1656,599 @@ class OptimizeFunctionalTests: XCTestCase {
         // verify
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
         XCTAssertTrue(optimize.cachedPropositions.isEmpty)
+    }
+    
+    // MARK: - Mobile Surface Support Tests
+
+    func testUpdatePropositionsForSurfacePaths_validSurface() {
+        // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "surfaces": [
+                                    "myView#htmlElement"
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
+        let query = dispatchedEvent?.data?["query"] as? [String: Any]
+        let personalization = query?["personalization"] as? [String: Any]
+        let surfaces = personalization?["surfaces"] as? [String]
+        let schemas = personalization?["schemas"] as? [String]
+        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(Optimize.supportedSchemas, schemas)
+        XCTAssertEqual(1, surfaces?.count)
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", surfaces?[0])
+    }
+
+    func testUpdatePropositionsForSurfacePaths_validSurfaceWithXdmAndDataAndDatasetId() {
+        // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "surfaces": [
+                                    "myView#featureJson"
+                                ],
+                                "xdm": [
+                                    "myXdmKey": "myXdmValue"
+                                ],
+                                "data": [
+                                    "myKey": "myValue"
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+                                            "optimize.datasetId": "111111111111111111111111"
+                                        ] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
+        let query = dispatchedEvent?.data?["query"] as? [String: Any]
+        let personalization = query?["personalization"] as? [String: Any]
+        let schemas = personalization?["schemas"] as? [String]
+        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(Optimize.supportedSchemas, schemas)
+        let surfaces = personalization?["surfaces"] as? [String]
+        XCTAssertEqual(1, surfaces?.count)
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#featureJson", surfaces?[0])
+
+        let xdm = dispatchedEvent?.data?["xdm"] as? [String: Any]
+        XCTAssertEqual(2, xdm?.count)
+        XCTAssertEqual("personalization.request", xdm?["eventType"] as? String)
+        XCTAssertEqual("myXdmValue", xdm?["myXdmKey"] as? String)
+
+        let data = dispatchedEvent?.data?["data"] as? [String: Any]
+        XCTAssertEqual(1, data?.count)
+        XCTAssertEqual("myValue", data?["myKey"] as? String)
+
+        XCTAssertEqual("111111111111111111111111", dispatchedEvent?.data?["datasetId"] as? String)
+    }
+
+    func testUpdatePropositionsForSurfacePaths_multipleValidSurfaces() {
+        // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "surfaces": [
+                                    "myView/mySubview1",
+                                    "myView/mySubview2"
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
+        let query = dispatchedEvent?.data?["query"] as? [String: Any]
+        let personalization = query?["personalization"] as? [String: Any]
+        let schemas = personalization?["schemas"] as? [String]
+        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(Optimize.supportedSchemas, schemas)
+        let surfaces = personalization?["surfaces"] as? [String]
+        XCTAssertEqual(2, surfaces?.count)
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView/mySubview1", surfaces?[0])
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView/mySubview2", surfaces?[1])
+    }
+
+    func testUpdatePropositionsForSurfacePaths_noSurfaces() {
+        // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "surfaces": []
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+    }
+
+    func testUpdatePropositionsForSurfacePaths_invalidSurface() {
+            // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "surfaces": [
+                                    "myView/mySubviews/\\*/home.html"
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+    }
+
+    func testUpdatePropositionsForSurfacePaths_validAndInvalidSurfaces() {
+        // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "surfaces": [
+                                    "myView#htmlElement",
+                                    "myView/mySubviews/[0-9]{2,6}$"
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent?.source)
+        let query = dispatchedEvent?.data?["query"] as? [String: Any]
+        let personalization = query?["personalization"] as? [String: Any]
+        let schemas = personalization?["schemas"] as? [String]
+        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(Optimize.supportedSchemas, schemas)
+        let surfaces = personalization?["surfaces"] as? [String]
+        XCTAssertEqual(1, surfaces?.count)
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", surfaces?[0])
+    }
+
+    func testEdgeResponse_validPropositionForSurface() {
+        // setup
+        let testEvent = Event(name: "AEP Response Event Handle",
+                              type: "com.adobe.eventType.edge",
+                              source: "personalization:decisions",
+                              data: [
+                                  "payload": [
+                                    [
+                                        "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+                                        "scope": "mobileapp://com.apple.dt.xctest.tool/myView#htmlElement",
+                                        "scopeDetails": [
+                                            "correlationID": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+                                            "characteristics": [
+                                                "eventToken": "someToken"
+                                            ],
+                                            "decisionProvider": "AJO",
+                                            "activity": [
+                                                "id": "dddddddd-dddd-dddd-dddd-dddddddddddd#eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"
+                                            ]
+                                        ],
+                                        "items": [
+                                            [
+                                                "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+                                                "schema": "https://ns.adobe.com/personalization/html-content-item",
+                                                "data": [
+                                                    "content": "<h1>This is a HTML content</h1>",
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                  ],
+                                "requestEventId": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
+                                "requestId": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB",
+                                "type": "personalization:decisions"
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        optimize.setPersonalizationRequestEventId(testEvent.data?["requestEventId"] as? String ?? "")
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
+
+        guard let propositionsArray: [Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions array should be valid.")
+            return
+        }
+        XCTAssertNotNil(propositionsArray[0])
+
+        let proposition = propositionsArray[0]
+        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition.id)
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", proposition.scope)
+        
+        XCTAssertEqual(4, proposition.scopeDetails.count)
+        XCTAssertEqual("cccccccc-cccc-cccc-cccc-cccccccccccc", proposition.scopeDetails["correlationID"] as? String)
+        XCTAssertEqual("AJO", proposition.scopeDetails["decisionProvider"] as? String)
+        let characteristics = proposition.scopeDetails["characteristics"] as? [String: Any]
+        XCTAssertEqual("someToken", characteristics?["eventToken"] as? String)
+        let activity = proposition.scopeDetails["activity"] as? [String: Any]
+        XCTAssertEqual("dddddddd-dddd-dddd-dddd-dddddddddddd#eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee", activity?["id"] as? String)
+        
+        XCTAssertEqual(1, proposition.offers.count)
+        XCTAssertEqual("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb", proposition.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/personalization/html-content-item", proposition.offers[0].schema)
+        XCTAssertEqual(.unknown, proposition.offers[0].type) // Offer format is not returned in Edge response
+        XCTAssertEqual("<h1>This is a HTML content</h1>", proposition.offers[0].content)
+    }
+    
+    func testGetPropositionsForSurfacePaths_surfaceInCache() {
+        // setup
+        let propositionsData =
+        """
+          {
+              "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+              "scope": "mobileapp://com.apple.dt.xctest.tool/myView#htmlElement",
+              "scopeDetails": {
+                  "correlationID": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+                  "characteristics": {
+                      "eventToken": "someToken"
+                  },
+                  "decisionProvider": "AJO",
+                  "activity": {
+                      "id": "dddddddd-dddd-dddd-dddd-dddddddddddd#eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"\
+                  }
+              },
+              "items": [
+                  {
+                      "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+                      "schema": "https://ns.adobe.com/personalization/html-content-item",
+                      "data": {
+                          "content": "<h1>This is a HTML content</h1>",\
+                      }
+                  }
+              ]
+          }
+        """.data(using: .utf8)!
+
+        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+
+        optimize.cachedPropositions["mobileapp://com.apple.dt.xctest.tool/myView#htmlElement"] = propositions
+        XCTAssertEqual(1, optimize.cachedPropositions.count)
+
+        let testEvent = Event(name: "Optimize Get Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "getpropositions",
+                                "surfaces": [
+                                    "myView#htmlElement"
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
+        XCTAssertNil(dispatchedEvent?.data?["responseerror"])
+
+        guard let propositionsArray: [Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions array should be valid.")
+            return
+        }
+        XCTAssertEqual(1, propositionsArray.count)
+        XCTAssertNotNil(propositionsArray[0])
+
+        let proposition = propositionsArray[0]
+        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition.id)
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", proposition.scope)
+        
+        XCTAssertEqual(4, proposition.scopeDetails.count)
+        XCTAssertEqual("cccccccc-cccc-cccc-cccc-cccccccccccc", proposition.scopeDetails["correlationID"] as? String)
+        XCTAssertEqual("AJO", proposition.scopeDetails["decisionProvider"] as? String)
+        let characteristics = proposition.scopeDetails["characteristics"] as? [String: Any]
+        XCTAssertEqual("someToken", characteristics?["eventToken"] as? String)
+        let activity = proposition.scopeDetails["activity"] as? [String: Any]
+        XCTAssertEqual("dddddddd-dddd-dddd-dddd-dddddddddddd#eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee", activity?["id"] as? String)
+        
+        XCTAssertEqual(1, proposition.offers.count)
+        XCTAssertEqual("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb", proposition.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/personalization/html-content-item", proposition.offers[0].schema)
+        XCTAssertEqual(.unknown, proposition.offers[0].type) // Offer format is not returned in Edge response
+        XCTAssertEqual("<h1>This is a HTML content</h1>", proposition.offers[0].content)
+    }
+
+    func testGetPropositionsForSurfacePaths_notAllSurfacesInCache() {
+        // setup
+        let propositionsData =
+        """
+          {
+              "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+              "scope": "mobileapp://com.apple.dt.xctest.tool/myView#htmlElement",
+              "scopeDetails": {
+                  "correlationID": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+                  "characteristics": {
+                      "eventToken": "someToken"
+                  },
+                  "decisionProvider": "AJO",
+                  "activity": {
+                      "id": "dddddddd-dddd-dddd-dddd-dddddddddddd#eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"\
+                  }
+              },
+              "items": [
+                  {
+                      "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+                      "schema": "https://ns.adobe.com/personalization/html-content-item",
+                      "data": {
+                          "content": "<h1>This is a HTML content</h1>",\
+                      }
+                  }
+              ]
+          }
+        """.data(using: .utf8)!
+
+        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+
+        optimize.cachedPropositions["mobileapp://com.apple.dt.xctest.tool/myView#htmlElement"] = propositions
+        XCTAssertEqual(1, optimize.cachedPropositions.count)
+
+        let testEvent = Event(name: "Optimize Get Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "getpropositions",
+                                "surfaces": [
+                                    "myView#htmlElement",
+                                    "myView#jsonElement"
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
+        XCTAssertNil(dispatchedEvent?.data?["responseerror"])
+
+        guard let propositionsArray: [Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions array should be valid.")
+            return
+        }
+        XCTAssertEqual(1, propositionsArray.count)
+        XCTAssertNotNil(propositionsArray[0])
+
+        let proposition = propositionsArray[0]
+        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", proposition.id)
+        XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", proposition.scope)
+        
+        XCTAssertEqual(4, proposition.scopeDetails.count)
+        XCTAssertEqual("cccccccc-cccc-cccc-cccc-cccccccccccc", proposition.scopeDetails["correlationID"] as? String)
+        XCTAssertEqual("AJO", proposition.scopeDetails["decisionProvider"] as? String)
+        let characteristics = proposition.scopeDetails["characteristics"] as? [String: Any]
+        XCTAssertEqual("someToken", characteristics?["eventToken"] as? String)
+        let activity = proposition.scopeDetails["activity"] as? [String: Any]
+        XCTAssertEqual("dddddddd-dddd-dddd-dddd-dddddddddddd#eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee", activity?["id"] as? String)
+        
+        XCTAssertEqual(1, proposition.offers.count)
+        XCTAssertEqual("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb", proposition.offers[0].id)
+        XCTAssertEqual("https://ns.adobe.com/personalization/html-content-item", proposition.offers[0].schema)
+        XCTAssertEqual(.unknown, proposition.offers[0].type) // Offer format is not returned in Edge response
+        XCTAssertEqual("<h1>This is a HTML content</h1>", proposition.offers[0].content)
+    }
+
+    func testGetPropositionsForSurfacePaths_noSurfaceInCache() {
+        // setup
+        let propositionsData =
+        """
+          {
+              "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+              "scope": "mobileapp://com.apple.dt.xctest.tool/myView#htmlElement",
+              "scopeDetails": {
+                  "correlationID": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+                  "characteristics": {
+                      "eventToken": "someToken"
+                  },
+                  "decisionProvider": "AJO",
+                  "activity": {
+                      "id": "dddddddd-dddd-dddd-dddd-dddddddddddd#eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"\
+                  }
+              },
+              "items": [
+                  {
+                      "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+                      "schema": "https://ns.adobe.com/personalization/html-content-item",
+                      "data": {
+                          "content": "<h1>This is a HTML content!</h1>",\
+                      }
+                  }
+              ]
+          }
+        """.data(using: .utf8)!
+
+        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+
+        optimize.cachedPropositions["mobileapp://com.apple.dt.xctest.tool/myView#htmlElement"] = propositions
+        XCTAssertEqual(1, optimize.cachedPropositions.count)
+
+        let testEvent = Event(name: "Optimize Get Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "getpropositions",
+                                "surfaces": [
+                                    "myView#jsonElement1",
+                                    "myView#jsonElement2"
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
+        XCTAssertNil(dispatchedEvent?.data?["responseerror"])
+
+        guard let propositionsArray: [Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions array should be valid.")
+            return
+        }
+        XCTAssertTrue(propositionsArray.isEmpty)
+    }
+
+    func testGetPropositionsForSurfacePaths_emptySurfacesArray() {
+        // setup
+        let propositionsData =
+                """
+                  {
+                      "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+                      "scope": "mobileapp://com.apple.dt.xctest.tool/myView#htmlElement",
+                      "scopeDetails": {
+                          "correlationID": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+                          "characteristics": {
+                              "eventToken": "someToken"
+                          },
+                          "decisionProvider": "AJO",
+                          "activity": {
+                              "id": "dddddddd-dddd-dddd-dddd-dddddddddddd#eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"\
+                          }
+                      },
+                      "items": [
+                          {
+                              "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+                              "schema": "https://ns.adobe.com/personalization/html-content-item",
+                              "data": {
+                                  "content": "<h1>This is a HTML content!</h1>",\
+                              }
+                          }
+                      ]
+                  }
+                """.data(using: .utf8)!
+
+        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+
+        optimize.cachedPropositions["mobileapp://com.apple.dt.xctest.tool/myView#htmlElement"] = propositions
+        XCTAssertEqual(1, optimize.cachedPropositions.count)
+
+        let testEvent = Event(name: "Optimize Get Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "getpropositions",
+                                "surfaces": []
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
+        XCTAssertEqual(AEPError.invalidRequest, AEPError(rawValue: dispatchedEvent?.data?["responseerror"] as? Int ?? 1000))
+        XCTAssertNil(dispatchedEvent?.data?["propositions"])
     }
 }
