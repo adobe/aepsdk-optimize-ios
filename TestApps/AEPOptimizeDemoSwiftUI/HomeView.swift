@@ -43,7 +43,7 @@ struct HomeView: View {
             if viewDidLoad == false {
                 viewDidLoad = true
 #if SURFACES_SUPPORT_ENABLED
-                Optimize.onPropositionsUpdate { (propositionsDict: [String: Proposition]) in
+                Optimize.setPropositionsHandler { (propositionsDict: [String: Proposition]) in
                     
                     DispatchQueue.main.async {
                         if let htmlProposition = propositionsDict[self.surfaceSettings.htmlSurface] {
