@@ -38,7 +38,8 @@ public class Optimize: NSObject, Extension {
         OptimizeConstants.JsonValues.SCHEMA_OFFER_JSON,
         OptimizeConstants.JsonValues.SCHEMA_OFFER_IMAGE,
         OptimizeConstants.JsonValues.SCHEMA_OFFER_TEXT,
-        
+
+        // AJO schemas
         OptimizeConstants.JsonValues.SCHEMA_AJO_DECISION
     ]
 
