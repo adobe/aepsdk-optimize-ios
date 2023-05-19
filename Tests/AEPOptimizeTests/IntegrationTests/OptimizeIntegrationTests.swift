@@ -27,7 +27,8 @@ class OptimizeIntegrationTests: XCTestCase {
         "https://ns.adobe.com/experience/offer-management/content-component-html",
         "https://ns.adobe.com/experience/offer-management/content-component-json",
         "https://ns.adobe.com/experience/offer-management/content-component-imagelink",
-        "https://ns.adobe.com/experience/offer-management/content-component-text"
+        "https://ns.adobe.com/experience/offer-management/content-component-text",
+        "https://ns.adobe.com/personalization/decision"
     ]
     
     override func setUp() {
@@ -76,7 +77,7 @@ class OptimizeIntegrationTests: XCTestCase {
                     let query = event?["query"] as? [String: Any]
                     let personalization = query?["personalization"] as? [String: Any]
                     let schemas = personalization?["schemas"] as? [String]
-                    XCTAssertEqual(7, schemas?.count)
+                    XCTAssertEqual(8, schemas?.count)
                     XCTAssertEqual(OptimizeIntegrationTests.supportedSchemas, schemas)
                     let decisionScopes = personalization?["decisionScopes"] as? [String]
                     XCTAssertEqual(1, decisionScopes?.count)
@@ -976,7 +977,7 @@ class OptimizeIntegrationTests: XCTestCase {
                     let query = event?["query"] as? [String: Any]
                     let personalization = query?["personalization"] as? [String: Any]
                     let schemas = personalization?["schemas"] as? [String]
-                    XCTAssertEqual(7, schemas?.count)
+                    XCTAssertEqual(8, schemas?.count)
                     XCTAssertEqual(OptimizeIntegrationTests.supportedSchemas, schemas)
                     let surfaces = personalization?["surfaces"] as? [String]
                     XCTAssertEqual(1, surfaces?.count)
