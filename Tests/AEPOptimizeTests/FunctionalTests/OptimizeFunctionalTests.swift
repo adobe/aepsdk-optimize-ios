@@ -140,7 +140,7 @@ class OptimizeFunctionalTests: XCTestCase {
         let personalization = query?["personalization"] as? [String: Any]
         let decisionScopes = personalization?["decisionScopes"] as? [String]
         let schemas = personalization?["schemas"] as? [String]
-        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(8, schemas?.count)
         XCTAssertEqual(Optimize.supportedSchemas, schemas)
         XCTAssertEqual(1, decisionScopes?.count)
         XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", decisionScopes?[0])
@@ -184,7 +184,7 @@ class OptimizeFunctionalTests: XCTestCase {
         let query = dispatchedEvent?.data?["query"] as? [String: Any]
         let personalization = query?["personalization"] as? [String: Any]
         let schemas = personalization?["schemas"] as? [String]
-        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(8, schemas?.count)
         XCTAssertEqual(Optimize.supportedSchemas, schemas)
         let decisionScopes = personalization?["decisionScopes"] as? [String]
         XCTAssertEqual(1, decisionScopes?.count)
@@ -239,7 +239,7 @@ class OptimizeFunctionalTests: XCTestCase {
         let query = dispatchedEvent?.data?["query"] as? [String: Any]
         let personalization = query?["personalization"] as? [String: Any]
         let schemas = personalization?["schemas"] as? [String]
-        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(8, schemas?.count)
         XCTAssertEqual(Optimize.supportedSchemas, schemas)
         let decisionScopes = personalization?["decisionScopes"] as? [String]
         XCTAssertEqual(1, decisionScopes?.count)
@@ -291,7 +291,7 @@ class OptimizeFunctionalTests: XCTestCase {
         let query = dispatchedEvent?.data?["query"] as? [String: Any]
         let personalization = query?["personalization"] as? [String: Any]
         let schemas = personalization?["schemas"] as? [String]
-        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(8, schemas?.count)
         XCTAssertEqual(Optimize.supportedSchemas, schemas)
         let decisionScopes = personalization?["decisionScopes"] as? [String]
         XCTAssertEqual(2, decisionScopes?.count)
@@ -423,7 +423,7 @@ class OptimizeFunctionalTests: XCTestCase {
         let query = dispatchedEvent?.data?["query"] as? [String: Any]
         let personalization = query?["personalization"] as? [String: Any]
         let schemas = personalization?["schemas"] as? [String]
-        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(8, schemas?.count)
         XCTAssertEqual(Optimize.supportedSchemas, schemas)
         let decisionScopes = personalization?["decisionScopes"] as? [String]
         XCTAssertEqual(1, decisionScopes?.count)
@@ -1689,7 +1689,7 @@ class OptimizeFunctionalTests: XCTestCase {
         let personalization = query?["personalization"] as? [String: Any]
         let surfaces = personalization?["surfaces"] as? [String]
         let schemas = personalization?["schemas"] as? [String]
-        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(8, schemas?.count)
         XCTAssertEqual(Optimize.supportedSchemas, schemas)
         XCTAssertEqual(1, surfaces?.count)
         XCTAssertEqual("mobileapp://com.apple.dt.xctest.tool/myView#htmlElement", surfaces?[0])
@@ -1731,7 +1731,7 @@ class OptimizeFunctionalTests: XCTestCase {
         let query = dispatchedEvent?.data?["query"] as? [String: Any]
         let personalization = query?["personalization"] as? [String: Any]
         let schemas = personalization?["schemas"] as? [String]
-        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(8, schemas?.count)
         XCTAssertEqual(Optimize.supportedSchemas, schemas)
         let surfaces = personalization?["surfaces"] as? [String]
         XCTAssertEqual(1, surfaces?.count)
@@ -1778,7 +1778,7 @@ class OptimizeFunctionalTests: XCTestCase {
         let query = dispatchedEvent?.data?["query"] as? [String: Any]
         let personalization = query?["personalization"] as? [String: Any]
         let schemas = personalization?["schemas"] as? [String]
-        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(8, schemas?.count)
         XCTAssertEqual(Optimize.supportedSchemas, schemas)
         let surfaces = personalization?["surfaces"] as? [String]
         XCTAssertEqual(2, surfaces?.count)
@@ -1859,7 +1859,7 @@ class OptimizeFunctionalTests: XCTestCase {
         let query = dispatchedEvent?.data?["query"] as? [String: Any]
         let personalization = query?["personalization"] as? [String: Any]
         let schemas = personalization?["schemas"] as? [String]
-        XCTAssertEqual(7, schemas?.count)
+        XCTAssertEqual(8, schemas?.count)
         XCTAssertEqual(Optimize.supportedSchemas, schemas)
         let surfaces = personalization?["surfaces"] as? [String]
         XCTAssertEqual(1, surfaces?.count)

@@ -37,7 +37,10 @@ public class Optimize: NSObject, Extension {
         OptimizeConstants.JsonValues.SCHEMA_OFFER_HTML,
         OptimizeConstants.JsonValues.SCHEMA_OFFER_JSON,
         OptimizeConstants.JsonValues.SCHEMA_OFFER_IMAGE,
-        OptimizeConstants.JsonValues.SCHEMA_OFFER_TEXT
+        OptimizeConstants.JsonValues.SCHEMA_OFFER_TEXT,
+
+        // AJO schemas
+        OptimizeConstants.JsonValues.SCHEMA_AJO_DECISION
     ]
 
     /// Dictionary containing decision propositions currently cached in-memory in the SDK.

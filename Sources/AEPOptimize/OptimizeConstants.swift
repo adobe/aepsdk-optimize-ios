@@ -118,5 +118,8 @@ enum OptimizeConstants {
         static let SCHEMA_OFFER_JSON = "https://ns.adobe.com/experience/offer-management/content-component-json"
         static let SCHEMA_OFFER_IMAGE = "https://ns.adobe.com/experience/offer-management/content-component-imagelink"
         static let SCHEMA_OFFER_TEXT = "https://ns.adobe.com/experience/offer-management/content-component-text"
+
+        // AJO schemas
+        static let SCHEMA_AJO_DECISION = "https://ns.adobe.com/personalization/decision"
     }
 }
