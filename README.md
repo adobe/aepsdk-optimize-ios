@@ -8,7 +8,7 @@ The AEPOptimize extension provides APIs to enable real-time personalization work
 
 ## Requirements
 
-- Xcode 11.0 (or newer)
+- Xcode 14.1 (or newer)
 - Swift 5.1 (or newer)
 
 ## Installation
@@ -49,7 +49,7 @@ Alternatively, if your project has a `Package.swift` file, you can add AEPOptimi
 
 ```
 dependencies: [
-    .package(url: "https://github.com/adobe/aepsdk-optimize-ios.git", .upToNextMajor(from: "1.0.0"))
+    .package(url: "https://github.com/adobe/aepsdk-optimize-ios.git", .upToNextMajor(from: "4.0.0"))
 ],
 targets: [
        .target(name: "YourTarget",
