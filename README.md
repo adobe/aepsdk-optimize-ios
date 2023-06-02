@@ -1,6 +1,6 @@
 # Adobe Experience Platform Mobile SDKs - Optimize extension
 
-[![Cocoapods](https://img.shields.io/github/v/release/adobe/aepsdk-optimize-ios?color=orange&label=CocoaPods&logo=apple&logoColor=white&sort=semver)](https://cocoapods.org/pods/AEPOptimize)[![SPM](https://img.shields.io/github/v/release/adobe/aepsdk-optimize-ios?color=orange&label=SPM&logo=apple&logoColor=white&sort=semver)](https://github.com/adobe/aepsdk-optimize-ios/releases)[![CircleCI](https://img.shields.io/circleci/project/github/adobe/aepsdk-optimize-ios/main.svg?logo=circleci)](https://circleci.com/gh/adobe/workflows/aepsdk-optimize-ios)[![Code Coverage](https://img.shields.io/codecov/c/github/adobe/aepsdk-optimize-ios/main.svg?logo=codecov)](https://codecov.io/gh/adobe/aepsdk-optimize-ios/branch/main)
+[![Cocoapods](https://img.shields.io/github/v/release/adobe/aepsdk-optimize-ios?color=orange&label=CocoaPods&logo=apple&logoColor=white&sort=semver)](https://cocoapods.org/pods/AEPOptimize)[![SPM](https://img.shields.io/github/v/release/adobe/aepsdk-optimize-ios?color=orange&label=SPM&logo=apple&logoColor=white&sort=semver)](https://github.com/adobe/aepsdk-optimize-ios/releases)[![CircleCI](https://img.shields.io/circleci/project/github/adobe/aepsdk-optimize-ios/main.svg?logo=circleci&label=Build)](https://circleci.com/gh/adobe/workflows/aepsdk-optimize-ios)[![Code Coverage](https://img.shields.io/codecov/c/github/adobe/aepsdk-optimize-ios/main.svg?logo=codecov&label=Coverage)](https://codecov.io/gh/adobe/aepsdk-optimize-ios/branch/main)
 
 ## About this project
 
