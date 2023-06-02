@@ -1,12 +1,14 @@
-# Adobe Experience Platform Optimize Mobile SDK
+# Adobe Experience Platform Mobile SDKs - Optimize extension
+
+[![Cocoapods](https://img.shields.io/github/v/release/adobe/aepsdk-optimize-ios?color=orange&label=CocoaPods&logo=apple&logoColor=white&sort=semver)](https://cocoapods.org/pods/AEPOptimize)[![SPM](https://img.shields.io/github/v/release/adobe/aepsdk-optimize-ios?color=orange&label=SPM&logo=apple&logoColor=white&sort=semver)](https://github.com/adobe/aepsdk-optimize-ios/releases)[![CircleCI](https://img.shields.io/circleci/project/github/adobe/aepsdk-optimize-ios/main.svg?logo=circleci&label=Build)](https://circleci.com/gh/adobe/workflows/aepsdk-optimize-ios)[![Code Coverage](https://img.shields.io/codecov/c/github/adobe/aepsdk-optimize-ios/main.svg?logo=codecov&label=Coverage)](https://codecov.io/gh/adobe/aepsdk-optimize-ios/branch/main)
 
 ## About this project
 
-The AEPOptimize mobile SDK extension provides APIs to enable real-time personalization workflows in the Adobe Experience Platform SDKs using Adobe Target or Adobe Journey Optimizer Offer Decisioning. It depends on AEPCore and requires AEPEdge Extension to send personalization query events to the Experience Edge network.
+The AEPOptimize extension provides APIs to enable real-time personalization workflows in the Adobe Experience Platform Mobile SDKs using Adobe Target or Adobe Journey Optimizer Offer Decisioning. It requires AEPCore and AEPEdge extensions to send personalization query events to the Experience Edge network.
 
 ## Requirements
 
-- Xcode 11.0 (or newer)
+- Xcode 14.1 (or newer)
 - Swift 5.1 (or newer)
 
 ## Installation
@@ -47,7 +49,7 @@ Alternatively, if your project has a `Package.swift` file, you can add AEPOptimi
 
 ```
 dependencies: [
-    .package(url: "https://github.com/adobe/aepsdk-optimize-ios.git", .upToNextMajor(from: "1.0.0"))
+    .package(url: "https://github.com/adobe/aepsdk-optimize-ios.git", .upToNextMajor(from: "4.0.0"))
 ],
 targets: [
        .target(name: "YourTarget",

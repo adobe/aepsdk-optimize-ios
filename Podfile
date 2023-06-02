@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '10.0'
+platform :ios, '11.0'
 
 # Comment the next line if you don't want to use dynamic frameworks
 use_frameworks!
@@ -7,7 +7,7 @@ use_frameworks!
 workspace 'AEPOptimize'
 project 'AEPOptimize.xcodeproj'
 
-pod 'SwiftLint', '0.44.0'
+pod 'SwiftLint', '0.52.0'
 
 target 'AEPOptimize' do
   # Pods for AEPOptimize
@@ -28,17 +28,28 @@ target 'IntegrationTests' do
   pod 'AEPIdentity'
 end
 
-abstract_target 'shared' do
+def shared_app
+  pod 'AEPSignal'
+  pod 'AEPAssurance'
+end
+
+def shared_all
   pod 'AEPCore'
   pod 'AEPLifecycle'
   pod 'AEPIdentity'
-  pod 'AEPSignal'
   pod 'AEPEdge'
   pod 'AEPEdgeConsent'
   pod 'AEPEdgeIdentity'
-  pod 'AEPAssurance'
+end
 
-  target 'AEPOptimizeDemoSwiftUI'
-  target 'AEPOptimizeDemoObjC'
+abstract_target 'shared' do
+  shared_all
+  target 'AEPOptimizeDemoAppExtension'
+  target 'AEPOptimizeDemoSwiftUI' do
+    shared_app
+  end
+  target 'AEPOptimizeDemoObjC' do
+    shared_app
+  end
 end
 

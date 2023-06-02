@@ -25,14 +25,14 @@ import AEPOptimize
 import SwiftUI
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
-    private let LAUNCH_ENVIRONMENT_FILE_ID = ""
+    private let ENVIRONMENT_FILE_ID = ""
     private let OVERRIDE_DATASET_ID = ""
     
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         MobileCore.setLogLevel(.trace)
 
         MobileCore.registerExtensions([AEPEdgeIdentity.Identity.self, AEPIdentity.Identity.self, Lifecycle.self, Signal.self, Edge.self, Optimize.self, Assurance.self]) {
-            MobileCore.configureWith(appId: self.LAUNCH_ENVIRONMENT_FILE_ID)
+            MobileCore.configureWith(appId: self.ENVIRONMENT_FILE_ID)
             
             // Update Configuration with override dataset identifier
             MobileCore.updateConfigurationWith(configDict: ["optimize.datasetId": self.OVERRIDE_DATASET_ID])
