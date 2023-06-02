@@ -26,8 +26,6 @@ opt_in_rules:
 - sorted_imports
 - toggle_bool
 - trailing_closure
-- unused_declaration
-- unused_import
 - unneeded_parentheses_in_closure_argument
 - switch_case_on_newline
 - vertical_parameter_alignment_on_call
@@ -58,3 +56,6 @@ function_body_length:
 type_body_length:
     warning: 350
     error: 500
+analyzer_rules:
+  - unused_import
+  - unused_declaration

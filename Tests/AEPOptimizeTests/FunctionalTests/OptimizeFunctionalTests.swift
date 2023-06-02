@@ -1193,6 +1193,9 @@ class OptimizeFunctionalTests: XCTestCase {
                                     "eventType": "decisioning.propositionDisplay",
                                     "_experience": [
                                         "decisioning": [
+                                            "propositionEventType": [
+                                                "display": 1
+                                            ],
                                             "propositions": [
                                                 [
                                                     "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
@@ -1230,6 +1233,8 @@ class OptimizeFunctionalTests: XCTestCase {
 
         let experience = try XCTUnwrap(xdm["_experience"] as? [String: Any])
         let decisioning = try XCTUnwrap(experience["decisioning"] as? [String: Any])
+        let propositionEventType = try XCTUnwrap(decisioning["propositionEventType"] as? [String: Any])
+        XCTAssertEqual(1, propositionEventType["display"] as? Int)
         let propositionDetailsArray = try XCTUnwrap(decisioning["propositions"] as? [[String: Any]])
         XCTAssertEqual(1, propositionDetailsArray.count)
 
@@ -1275,6 +1280,9 @@ class OptimizeFunctionalTests: XCTestCase {
                                     "eventType": "decisioning.propositionInteract",
                                     "_experience": [
                                         "decisioning": [
+                                            "propositionEventType": [
+                                                "interact": 1
+                                            ],
                                             "propositions": [
                                                 [
                                                     "id": "AT:eyJhY3Rpdml0eUlkIjoiMTI1NTg5IiwiZXhwZXJpZW5jZUlkIjoiMCJ9",
@@ -1312,6 +1320,8 @@ class OptimizeFunctionalTests: XCTestCase {
 
         let experience = try XCTUnwrap(xdm["_experience"] as? [String: Any])
         let decisioning = try XCTUnwrap(experience["decisioning"] as? [String: Any])
+        let propositionEventType = try XCTUnwrap(decisioning["propositionEventType"] as? [String: Any])
+        XCTAssertEqual(1, propositionEventType["interact"] as? Int)
         let propositionDetailsArray = try XCTUnwrap(decisioning["propositions"] as? [[String: Any]])
         XCTAssertEqual(1, propositionDetailsArray.count)
 
@@ -1356,6 +1366,9 @@ class OptimizeFunctionalTests: XCTestCase {
                                     "eventType": "decisioning.propositionInteract",
                                     "_experience": [
                                         "decisioning": [
+                                            "propositionEventType": [
+                                                "interact": 1
+                                            ],
                                             "propositions": [
                                                 [
                                                     "id": "AT:eyJhY3Rpdml0eUlkIjoiMTI1NTg5IiwiZXhwZXJpZW5jZUlkIjoiMCJ9",
@@ -1395,6 +1408,8 @@ class OptimizeFunctionalTests: XCTestCase {
 
         let experience = try XCTUnwrap(xdm["_experience"] as? [String: Any])
         let decisioning = try XCTUnwrap(experience["decisioning"] as? [String: Any])
+        let propositionEventType = try XCTUnwrap(decisioning["propositionEventType"] as? [String: Any])
+        XCTAssertEqual(1, propositionEventType["interact"] as? Int)
         let propositionDetailsArray = try XCTUnwrap(decisioning["propositions"] as? [[String: Any]])
         XCTAssertEqual(1, propositionDetailsArray.count)
 
@@ -1464,6 +1479,9 @@ class OptimizeFunctionalTests: XCTestCase {
                                     "eventType": "decisioning.propositionDisplay",
                                     "_experience": [
                                         "decisioning": [
+                                            "propositionEventType": [
+                                                "display": 1
+                                            ],
                                             "propositions": [
                                                 [
                                                     "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
