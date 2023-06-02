@@ -11,7 +11,7 @@ IOS_ARCHIVE_DSYM_PATH = $(CURR_DIR)/build/ios.xcarchive/dSYMs/
 IOS_DESTINATION = 'platform=iOS Simulator,name=iPhone 14'
 
 lint-autocorrect:
-	./Pods/SwiftLint/swiftlint autocorrect --format
+	./Pods/SwiftLint/swiftlint --fix --format
 
 lint:
 	./Pods/SwiftLint/swiftlint lint
