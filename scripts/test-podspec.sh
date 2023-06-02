@@ -24,8 +24,8 @@ swift package init
 swift package generate-xcodeproj
 
 # Create a Podfile with our pod as dependency.
-echo "
 platform :ios, '11.0'
+
 target '$PROJECT_NAME' do
   use_frameworks!
   pod 'AEPOptimize', :path => '../AEPOptimize.podspec'
