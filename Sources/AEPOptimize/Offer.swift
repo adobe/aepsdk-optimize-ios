@@ -76,7 +76,7 @@ public class Offer: NSObject, Codable {
 
         schema = try container.decode(String.self, forKey: .schema)
 
-        meta = AnyCodable.toAnyDictionary(dictionary: try container.decodeIfPresent([String: AnyCodable].self, forKey: .meta))
+        meta = try AnyCodable.toAnyDictionary(dictionary: container.decodeIfPresent([String: AnyCodable].self, forKey: .meta))
 
         if let nestedContainer = try? container.nestedContainer(keyedBy: DataKeys.self, forKey: .data) {
             let nestedId = try nestedContainer.decode(String.self, forKey: .id)
