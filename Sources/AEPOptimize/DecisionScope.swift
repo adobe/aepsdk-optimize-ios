@@ -14,6 +14,7 @@ import AEPServices
 import Foundation
 
 /// `DecisionScope` class is used to create decision scopes for personalization requests to Experience Edge Network.
+@available(*, deprecated)
 @objc(AEPDecisionScope)
 public class DecisionScope: NSObject, Codable {
     /// Decision scope name

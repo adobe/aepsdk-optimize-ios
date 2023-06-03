@@ -40,4 +40,28 @@ extension String {
         }
         return String(data: data, encoding: .utf8)
     }
+
+    func isValidSurface() -> Bool {
+        if isEmpty {
+            return false
+        }
+
+        guard URL(string: self) != nil else {
+            return false
+        }
+
+        return true
+    }
+
+    func prefixedSurface(_ prefix: String) -> String {
+        if isEmpty {
+            return ""
+        }
+
+        if prefix.isEmpty {
+            return self
+        }
+
+        return prefix + OptimizeConstants.PATH_SEPARATOR + self
+    }
 }
