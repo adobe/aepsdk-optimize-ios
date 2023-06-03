@@ -47,7 +47,6 @@ public class Proposition: NSObject, Codable {
 
         id = try container.decode(String.self, forKey: .id)
         scope = try container.decode(String.self, forKey: .scope)
-
         let anyCodableDict = try? container.decode([String: AnyCodable].self, forKey: .scopeDetails)
         // Fix this once ODE supports scopeDetails in personalization query response,
         // refer to https://jira.corp.adobe.com/browse/CSMO-12405

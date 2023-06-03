@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '10.0'
+platform :ios, '11.0'
 
 # Comment the next line if you don't want to use dynamic frameworks
 use_frameworks!
@@ -7,7 +7,7 @@ use_frameworks!
 workspace 'AEPOptimize'
 project 'AEPOptimize.xcodeproj'
 
-pod 'SwiftLint', '0.44.0'
+pod 'SwiftLint', '0.52.0'
 
 target 'AEPOptimize' do
   # Pods for AEPOptimize
@@ -41,7 +41,6 @@ def shared_all
   pod 'AEPEdgeConsent'
   pod 'AEPEdgeIdentity'
 end
-
 
 abstract_target 'shared' do
   shared_all

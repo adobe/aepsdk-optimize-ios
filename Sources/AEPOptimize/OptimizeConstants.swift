@@ -13,7 +13,7 @@
 enum OptimizeConstants {
     static let EXTENSION_NAME = "com.adobe.optimize"
     static let FRIENDLY_NAME = "Optimize"
-    static let EXTENSION_VERSION = "1.0.0"
+    static let EXTENSION_VERSION = "4.0.0"
     static let LOG_TAG = FRIENDLY_NAME
 
     static let DECISION_SCOPE_NAME = "name"
@@ -24,8 +24,6 @@ enum OptimizeConstants {
     static let XDM_PLACEMENT_ID = "xdm:placementId"
     static let ITEM_COUNT = "itemCount"
     static let XDM_ITEM_COUNT = "xdm:itemCount"
-    static let SURFACE_BASE = "mobileapp://"
-    static let PATH_SEPARATOR = "/"
 
     static let ERROR_UNKNOWN = "unknown"
 
@@ -53,8 +51,6 @@ enum OptimizeConstants {
         static let PROPOSITIONS = "propositions"
         static let RESPONSE_ERROR = "responseerror"
         static let PROPOSITION_INTERACTIONS = "propositioninteractions"
-        static let SURFACES = "surfaces"
-        static let REQUEST_EVENT_ID = "requestEventId"
     }
 
     enum EventDataValues {
@@ -81,7 +77,6 @@ enum OptimizeConstants {
 
     enum JsonKeys {
         static let DECISION_SCOPES = "decisionScopes"
-        static let SURFACES = "surfaces"
         static let XDM = "xdm"
         static let QUERY = "query"
         static let QUERY_PERSONALIZATION = "personalization"
@@ -118,8 +113,5 @@ enum OptimizeConstants {
         static let SCHEMA_OFFER_JSON = "https://ns.adobe.com/experience/offer-management/content-component-json"
         static let SCHEMA_OFFER_IMAGE = "https://ns.adobe.com/experience/offer-management/content-component-imagelink"
         static let SCHEMA_OFFER_TEXT = "https://ns.adobe.com/experience/offer-management/content-component-text"
-
-        // AJO schemas
-        static let SCHEMA_AJO_DECISION = "https://ns.adobe.com/personalization/decision"
     }
 }

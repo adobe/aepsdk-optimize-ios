@@ -16,16 +16,6 @@ import Foundation
 // MARK: Event extension
 
 extension Event {
-    // MARK: - AEP Response Event handle
-
-    var isPersonalizationDecisionResponse: Bool {
-        type == EventType.edge && source == OptimizeConstants.EventSource.EDGE_PERSONALIZATION_DECISIONS
-    }
-
-    var requestEventId: String? {
-        data?[OptimizeConstants.EventDataKeys.REQUEST_EVENT_ID] as? String
-    }
-
     /// Decode an instance of given type from the event data.
     /// - Parameter key: Event data key, default value is nil.
     /// - Returns: Optional type instance

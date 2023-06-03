@@ -1,6 +1,6 @@
 # Adobe Experience Platform Mobile SDKs - Optimize extension
 
-[![Cocoapods](https://img.shields.io/cocoapods/v/AEPOptimize.svg?color=orange&label=AEPOptimize&logo=apple&logoColor=white)](https://cocoapods.org/pods/AEPOptimize)[![SPM](https://img.shields.io/badge/SPM-Supported-orange.svg?logo=apple&logoColor=white)](https://swift.org/package-manager/)[![CircleCI](https://img.shields.io/circleci/project/github/adobe/aepsdk-optimize-ios/main.svg?logo=circleci)](https://circleci.com/gh/adobe/workflows/aepsdk-optimize-ios)[![Code Coverage](https://img.shields.io/codecov/c/github/adobe/aepsdk-optimize-ios/main.svg?logo=codecov)](https://codecov.io/gh/adobe/aepsdk-optimize-ios/branch/main)
+[![Cocoapods](https://img.shields.io/github/v/release/adobe/aepsdk-optimize-ios?color=orange&label=CocoaPods&logo=apple&logoColor=white&sort=semver)](https://cocoapods.org/pods/AEPOptimize)[![SPM](https://img.shields.io/github/v/release/adobe/aepsdk-optimize-ios?color=orange&label=SPM&logo=apple&logoColor=white&sort=semver)](https://github.com/adobe/aepsdk-optimize-ios/releases)[![CircleCI](https://img.shields.io/circleci/project/github/adobe/aepsdk-optimize-ios/main.svg?logo=circleci&label=Build)](https://circleci.com/gh/adobe/workflows/aepsdk-optimize-ios)[![Code Coverage](https://img.shields.io/codecov/c/github/adobe/aepsdk-optimize-ios/main.svg?logo=codecov&label=Coverage)](https://codecov.io/gh/adobe/aepsdk-optimize-ios/branch/main)
 
 ## About this project
 
@@ -8,7 +8,7 @@ The AEPOptimize extension provides APIs to enable real-time personalization work
 
 ## Requirements
 
-- Xcode 11.0 (or newer)
+- Xcode 14.1 (or newer)
 - Swift 5.1 (or newer)
 
 ## Installation
@@ -49,7 +49,7 @@ Alternatively, if your project has a `Package.swift` file, you can add AEPOptimi
 
 ```
 dependencies: [
-    .package(url: "https://github.com/adobe/aepsdk-optimize-ios.git", .upToNextMajor(from: "1.0.0"))
+    .package(url: "https://github.com/adobe/aepsdk-optimize-ios.git", .upToNextMajor(from: "4.0.0"))
 ],
 targets: [
        .target(name: "YourTarget",
@@ -101,7 +101,9 @@ make test
 
 ## Documentation
 
-Check out the [Documentation](./Documentation/README.md) directory to learn more about the Optimize extension.
+Check out the [Documentation](./Documentation/README.md) directory to learn more about the Optimize extension. 
+
+Try out this [Optimize extension tutorial](https://opensource.adobe.com/aepsdk-optimize-ios/#/tutorials/README) to retrieve and track Adobe Target offers fetched via Experience Edge network using the provided sample application.
 
 ## Related Projects
 
