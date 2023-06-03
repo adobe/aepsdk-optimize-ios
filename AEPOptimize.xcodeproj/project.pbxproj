@@ -10,6 +10,7 @@
 		0942850C3E1485F1B013A772 /* Pods_IntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7A8E7EA5460F8AC12BF0B96 /* Pods_IntegrationTests.framework */; };
 		0969EAEA28AD14E700E6E470 /* AEPOptimize.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPOptimize.framework */; };
 		0969EAEB28AD14E700E6E470 /* AEPOptimize.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPOptimize.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		09A175B12A2AE29C00CC1023 /* Bundle+Optimize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A175B02A2AE29C00CC1023 /* Bundle+Optimize.swift */; };
 		134FF901E46A6EAC57116F10 /* Pods_UnitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19691BE03D8E5FCB568FD775 /* Pods_UnitTests.framework */; };
 		28DDA5AA90BFD2BBD23AA337 /* Pods_FunctionalTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4C4D2E27884F4B6147FA07A /* Pods_FunctionalTests.framework */; };
 		78AF6DB8284FD9AA0022EB24 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78AF6DB7284FD9AA0022EB24 /* ShareViewController.swift */; };
@@ -169,6 +170,7 @@
 /* Begin PBXFileReference section */
 		053BBB26D174FCB8948742F1 /* Pods-AEPOptimize.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEPOptimize.debug.xcconfig"; path = "Target Support Files/Pods-AEPOptimize/Pods-AEPOptimize.debug.xcconfig"; sourceTree = "<group>"; };
 		089DCFE5D36ABFC8F0BC42D0 /* Pods-AEPOptimize.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEPOptimize.release.xcconfig"; path = "Target Support Files/Pods-AEPOptimize/Pods-AEPOptimize.release.xcconfig"; sourceTree = "<group>"; };
+		09A175B02A2AE29C00CC1023 /* Bundle+Optimize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+Optimize.swift"; sourceTree = "<group>"; };
 		19691BE03D8E5FCB568FD775 /* Pods_UnitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UnitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4713121E2DC484EB93DF3013 /* Pods-shared-AEPOptimizeDemoSwiftUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shared-AEPOptimizeDemoSwiftUI.release.xcconfig"; path = "Target Support Files/Pods-shared-AEPOptimizeDemoSwiftUI/Pods-shared-AEPOptimizeDemoSwiftUI.release.xcconfig"; sourceTree = "<group>"; };
 		5369FEA3AA0134C769B000A8 /* Pods_shared_AEPOptimizeDemoObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_shared_AEPOptimizeDemoObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -515,6 +517,7 @@
 		C88C5F3626185F0D003AE3DE /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				09A175B02A2AE29C00CC1023 /* Bundle+Optimize.swift */,
 				C88C5F3226185EF4003AE3DE /* StringInterpolation+Optimize.swift */,
 				C88C5F4026187F0A003AE3DE /* String+Optimize.swift */,
 				C8276BE3261EC74F00508873 /* Array+Optimize.swift */,
@@ -1203,6 +1206,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09A175B12A2AE29C00CC1023 /* Bundle+Optimize.swift in Sources */,
 				C88C5EDD2614F640003AE3DE /* Offer.swift in Sources */,
 				C8DE6BEF2686848B0076623F /* Proposition+Tracking.swift in Sources */,
 				C8227C7527DA5BD6005A7703 /* KeyedDecodingContainer+Optimize.swift in Sources */,
