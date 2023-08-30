@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "AEPOptimize"
-  s.version          = "4.0.0"
+  s.version          = "4.0.1"
   s.summary          = "Experience Platform Optimize extension for Adobe Experience Platform Mobile SDK. Written and maintained by Adobe."
   s.description      = <<-DESC
                         The Experience Platform Optimize extension provides APIs to enable real-time personalization workflows in the Adobe Experience Platform SDKs using Adobe Target or Adobe Journey Optimizer Offer Decisioning. 
