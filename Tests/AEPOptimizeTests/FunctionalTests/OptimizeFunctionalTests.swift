@@ -67,6 +67,55 @@ class OptimizeFunctionalTests: XCTestCase {
         // verify
         XCTAssertTrue(result)
     }
+    
+    func testReadyForEvent_configPending() {
+        // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "decisionscopes": [
+                                    [
+                                        "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
+                                    ]
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration"),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .pending))
+
+        // test
+        let result = optimize.readyForEvent(testEvent)
+
+        // verify
+        XCTAssertFalse(result)
+    }
+    
+    func testReadyForEvent_configPendingNoData() {
+        // setup
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "updatepropositions",
+                                "decisionscopes": [
+                                    [
+                                        "name": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
+                                    ]
+                                ]
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration"),
+                                        data: (nil, .pending))
+
+        // test
+        let result = optimize.readyForEvent(testEvent)
+
+        // verify
+        XCTAssertFalse(result)
+    }
 
     func testReadyForEvent_configNotAvailable() {
         // setup
@@ -83,7 +132,7 @@ class OptimizeFunctionalTests: XCTestCase {
                               ])
 
         mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration"),
-                                        data: (nil, .pending))
+                                        data: (nil, .none))
 
         // test
         let result = optimize.readyForEvent(testEvent)

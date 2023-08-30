@@ -19,7 +19,7 @@ extension Array {
         var dictionary = [Key: Element]()
 
         for element in self {
-            dictionary[try transform(element)] = element
+            try dictionary[transform(element)] = element
         }
         return dictionary
     }
