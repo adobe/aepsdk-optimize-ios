@@ -88,7 +88,7 @@ public class Optimize: NSObject, Extension {
 
     public func readyForEvent(_ event: Event) -> Bool {
         if event.source == EventSource.requestContent {
-            return getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME, event: event)?.value != nil
+            return getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME, event: event)?.status == .set
         }
         return true
     }
