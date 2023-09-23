@@ -23,4 +23,13 @@ extension Array {
         }
         return dictionary
     }
+
+    /// Returns a new array containing the elements of this array that do not occur in the other array.
+    /// - Parameter other: the other array.
+    /// - Returns: a new array containing the difference of elements between this and the other array.
+    func minus(_ other: [Element]) -> [Element] where Element: Hashable {
+        let completeSet = Set(self)
+        let subset = Set(other)
+        return Array(completeSet.subtracting(subset)) as [Element]
+    }
 }

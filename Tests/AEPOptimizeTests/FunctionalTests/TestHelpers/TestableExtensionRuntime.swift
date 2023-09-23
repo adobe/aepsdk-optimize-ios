@@ -23,6 +23,7 @@ class TestableExtensionRuntime: ExtensionRuntime {
     var createdXdmSharedStates: [[String: Any]?] = []
     var mockedSharedStates: [String: SharedStateResult] = [:]
     var mockedXdmSharedStates: [String: SharedStateResult] = [:]
+    var onEventDispatch: ((Event) -> Void)?
 
     init() {}
 
@@ -37,6 +38,9 @@ class TestableExtensionRuntime: ExtensionRuntime {
 
     func dispatch(event: Event) {
         dispatchedEvents += [event]
+        if let onEventDispatch = onEventDispatch {
+            onEventDispatch(event)
+        }
     }
 
     func createSharedState(data: [String: Any], event _: Event?) {

@@ -49,7 +49,7 @@ Alternatively, if your project has a `Package.swift` file, you can add AEPOptimi
 
 ```
 dependencies: [
-    .package(url: "https://github.com/adobe/aepsdk-optimize-ios.git", .upToNextMajor(from: "4.0.0"))
+    .package(url: "https://github.com/adobe/aepsdk-optimize-ios.git", .upToNextMajor(from: "4.0.2"))
 ],
 targets: [
        .target(name: "YourTarget",
@@ -110,8 +110,7 @@ Try out this [Optimize extension tutorial](https://opensource.adobe.com/aepsdk-o
 | Project                                                      | Description                                                  |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | [AEPCore Extensions](https://github.com/adobe/aepsdk-core-ios) | The AEPCore extensions provide a common set of functionality and services required by all the Mobile SDK extensions. |
-| [AEPEdge Extension](https://github.com/adobe/aepsdk-edge-ios) | The AEPEdge extension enables sending data to Adobe Experience Platform from Mobile Apps. | 
-| [AEP SDK Sample App for iOS](https://github.com/adobe/aepsdk-sample-app-ios) | It contains iOS sample apps, both Objective-C and Swift variants, for the AEP Mobile SDKs. |
+| [AEPEdge Extension](https://github.com/adobe/aepsdk-edge-ios) | The AEPEdge extension enables sending data to Adobe Experience Platform from Mobile Apps. |
 
 ## Contributing
 

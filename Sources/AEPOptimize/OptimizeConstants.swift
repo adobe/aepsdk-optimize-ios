@@ -13,7 +13,7 @@
 enum OptimizeConstants {
     static let EXTENSION_NAME = "com.adobe.optimize"
     static let FRIENDLY_NAME = "Optimize"
-    static let EXTENSION_VERSION = "4.0.1"
+    static let EXTENSION_VERSION = "4.0.2"
     static let LOG_TAG = FRIENDLY_NAME
 
     static let DECISION_SCOPE_NAME = "name"
@@ -36,6 +36,7 @@ enum OptimizeConstants {
         static let EDGE_PERSONALIZATION_REQUEST = "Edge Optimize Personalization Request"
         static let EDGE_PROPOSITION_INTERACTION_REQUEST = "Edge Optimize Proposition Interaction Request"
         static let OPTIMIZE_RESPONSE = "Optimize Response"
+        static let OPTIMIZE_UPDATE_COMPLETE = "Optimize Update Propositions Complete"
     }
 
     enum EventSource {
@@ -51,6 +52,8 @@ enum OptimizeConstants {
         static let PROPOSITIONS = "propositions"
         static let RESPONSE_ERROR = "responseerror"
         static let PROPOSITION_INTERACTIONS = "propositioninteractions"
+        static let REQUEST_EVENT_ID = "requestEventId"
+        static let COMPLETED_UPDATE_EVENT_ID = "completedUpdateRequestForEventId"
     }
 
     enum EventDataValues {
@@ -96,6 +99,8 @@ enum OptimizeConstants {
         static let DECISIONING_PROPOSITIONS_SCOPEDETAILS = "scopeDetails"
         static let DECISIONING_PROPOSITIONS_ITEMS = "items"
         static let DECISIONING_PROPOSITIONS_ITEMS_ID = "id"
+        static let REQUEST = "request"
+        static let REQUEST_SEND_COMPLETION = "sendCompletion"
     }
 
     enum JsonValues {

@@ -481,6 +481,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
     func testEdgeResponse_validProposition() {
         // setup
+        optimize.setUpdateRequestEventIdsInProgress("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA", expectedScopes: [DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")])
         let testEvent = Event(name: "AEP Response Event Handle",
                               type: "com.adobe.eventType.edge",
                               source: "personalization:decisions",
@@ -554,6 +555,7 @@ class OptimizeFunctionalTests: XCTestCase {
     
     func testEdgeResponse_validPropositionFromTargetWithClickTracking() {
         // setup
+        optimize.setUpdateRequestEventIdsInProgress("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA", expectedScopes: [DecisionScope(name: "myMbox1")])
         let testScopeDetails: [String: Any] = [
             "decisionProvider": "TGT",
             "activity": [
@@ -658,6 +660,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
     func testEdgeResponse_emptyProposition() {
         // setup
+        optimize.setUpdateRequestEventIdsInProgress("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA", expectedScopes: [])
         let testEvent = Event(name: "AEP Response Event Handle",
                               type: "com.adobe.eventType.edge",
                               source: "personalization:decisions",
@@ -682,6 +685,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
     func testEdgeResponse_unsupportedItemInProposition() {
         // setup
+        optimize.setUpdateRequestEventIdsInProgress("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA", expectedScopes: [DecisionScope(name: "myMbox1")])
         let testEvent = Event(name: "AEP Response Event Handle",
                               type: "com.adobe.eventType.edge",
                               source: "personalization:decisions",
@@ -723,56 +727,6 @@ class OptimizeFunctionalTests: XCTestCase {
         // verify
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
         XCTAssertTrue(optimize.cachedPropositions.isEmpty)
-    }
-
-    func testEdgeResponse_missingEventHandleInData() {
-        // setup
-        let testEvent = Event(name: "AEP Response Event Handle",
-                              type: "com.adobe.eventType.edge",
-                              source: "personalization:decisions",
-                              data: [
-                                  "payload": [
-                                    [
-                                        "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-                                        "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
-                                        "activity": [
-                                            "etag": "8",
-                                            "id": "xcore:offer-activity:1111111111111111"
-                                        ],
-                                        "placement": [
-                                            "etag": "1",
-                                            "id": "xcore:offer-placement:1111111111111111"
-                                        ],
-                                        "items": [
-                                            [
-                                                "id": "xcore:personalized-offer:1111111111111111",
-                                                "etag": "10",
-                                                "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",
-                                                "data": [
-                                                    "id": "xcore:personalized-offer:1111111111111111",
-                                                    "format": "text/html",
-                                                    "content": "<h1>This is HTML content</h1>",
-                                                    "characteristics": [
-                                                        "testing": "true"
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                  ],
-                                "requestEventId": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
-                                "requestId": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB"
-                              ])
-
-        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
-                                        data: ([
-                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
-
-        // test
-        mockRuntime.simulateComingEvents(testEvent)
-
-        // verify
-        XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
     }
 
     func testEdgeErrorResponse() {
@@ -859,10 +813,16 @@ class OptimizeFunctionalTests: XCTestCase {
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
 
+        let expectation = XCTestExpectation(description: "Get propositions request should dispatch response event.")
+        mockRuntime.onEventDispatch = { _ in
+            expectation.fulfill()
+        }
+        
         // test
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
+        wait(for: [expectation], timeout: 2)
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
 
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
@@ -949,10 +909,16 @@ class OptimizeFunctionalTests: XCTestCase {
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
 
+        let expectation = XCTestExpectation(description: "Get propositions request should dispatch response event.")
+        mockRuntime.onEventDispatch = { _ in
+            expectation.fulfill()
+        }
+        
         // test
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
+        wait(for: [expectation], timeout: 2)
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
 
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
@@ -1039,10 +1005,16 @@ class OptimizeFunctionalTests: XCTestCase {
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
 
+        let expectation = XCTestExpectation(description: "Get propositions request should dispatch response event.")
+        mockRuntime.onEventDispatch = { _ in
+            expectation.fulfill()
+        }
+        
         // test
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
+        wait(for: [expectation], timeout: 2)
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
 
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
@@ -1114,10 +1086,16 @@ class OptimizeFunctionalTests: XCTestCase {
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
 
+        let expectation = XCTestExpectation(description: "Get propositions request should dispatch response event.")
+        mockRuntime.onEventDispatch = { _ in
+            expectation.fulfill()
+        }
+        
         // test
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
+        wait(for: [expectation], timeout: 2)
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
 
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
@@ -1150,10 +1128,16 @@ class OptimizeFunctionalTests: XCTestCase {
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
 
+        let expectation = XCTestExpectation(description: "Get propositions request should dispatch response event.")
+        mockRuntime.onEventDispatch = { _ in
+            expectation.fulfill()
+        }
+        
         // test
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
+        wait(for: [expectation], timeout: 2)
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
 
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
