@@ -413,5 +413,10 @@ public class Optimize: NSObject, Extension {
         func setUpdateRequestEventIdsInProgress(_ eventId: String, expectedScopes: [DecisionScope]) {
             updateRequestEventIdsInProgress[eventId] = expectedScopes
         }
+
+        /// For testing purposes only
+        func getUpdateRequestEventIdsInProgress() -> [String: [DecisionScope]] {
+            updateRequestEventIdsInProgress
+        }
     #endif
 }
