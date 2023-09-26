@@ -192,6 +192,13 @@ public class Optimize: NSObject, Extension {
                                                  source: EventSource.requestContent,
                                                  data: eventData)
 
+        // In AEP Response Event handle, `requestEventId` corresponds to the UUID for the Edge request.
+        // Storing the request event UUID to compare and process only the anticipated response in the extension.
+        updateRequestEventIdsInProgress[edgeEvent.id.uuidString] = validDecisionScopes
+
+        // add the Edge event to update propositions in the events queue.
+        eventsQueue.add(edgeEvent)
+
         // Increase timeout to 5s to ensure edge requests have enough time to complete.
         MobileCore.dispatch(event: edgeEvent, timeout: 5) { responseEvent in
             guard
@@ -212,13 +219,6 @@ public class Optimize: NSObject, Extension {
                                                                        ])
             self.dispatch(event: updateCompleteEvent)
         }
-
-        // In AEP Response Event handle, `requestEventId` corresponds to the UUID for the Edge request.
-        // Storing the request event UUID to compare and process only the anticipated response in the extension.
-        updateRequestEventIdsInProgress[edgeEvent.id.uuidString] = validDecisionScopes
-
-        // add the Edge event to update propositions in the events queue.
-        eventsQueue.add(edgeEvent)
     }
 
     /// Processes the internal Optimize content complete event, dispatched with type `EventType.optimize` and source `EventSource.contentComplete`.
