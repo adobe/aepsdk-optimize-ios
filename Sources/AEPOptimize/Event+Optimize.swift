@@ -16,6 +16,38 @@ import Foundation
 // MARK: Event extension
 
 extension Event {
+    // MARK: - AEP Response Event handle
+
+    /// Verify event type and source for Edge personalization:decisions event.
+    var isPersonalizationDecisionResponse: Bool {
+        type == EventType.edge && source == OptimizeConstants.EventSource.EDGE_PERSONALIZATION_DECISIONS
+    }
+
+    /// Return parentID's UUID or requestEventId as string.
+    var requestEventId: String? {
+        parentID?.uuidString as? String ?? data?[OptimizeConstants.EventDataKeys.REQUEST_EVENT_ID] as? String
+    }
+
+    /// Verify event data has requesttype set to updatepropositions.
+    var isUpdateEvent: Bool {
+        data?[OptimizeConstants.EventDataKeys.REQUEST_TYPE] as? String == OptimizeConstants.EventDataValues.REQUEST_TYPE_UPDATE
+    }
+
+    /// Verify event data has requesttype set to getpropositions.
+    var isGetEvent: Bool {
+        data?[OptimizeConstants.EventDataKeys.REQUEST_TYPE] as? String == OptimizeConstants.EventDataValues.REQUEST_TYPE_GET
+    }
+
+    /// Verify event data has requesttype set to trackpropositions.
+    var isTrackEvent: Bool {
+        data?[OptimizeConstants.EventDataKeys.REQUEST_TYPE] as? String == OptimizeConstants.EventDataValues.REQUEST_TYPE_TRACK
+    }
+
+    /// Verify event type and source for Optimize contentComplete event.
+    var isOptimizeContentCompleteEvent: Bool {
+        type == EventType.optimize && source == EventSource.contentComplete
+    }
+
     /// Decode an instance of given type from the event data.
     /// - Parameter key: Event data key, default value is nil.
     /// - Returns: Optional type instance
