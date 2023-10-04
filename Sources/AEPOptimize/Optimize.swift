@@ -282,6 +282,7 @@ public class Optimize: NSObject, Extension {
                       """
                       Ignoring Edge event, either handle type is not personalization:decisions, or the response isn't intended for this extension.
                       """)
+            propositionsInProgress.removeAll()
             return
         }
 
