@@ -207,6 +207,8 @@ public class Optimize: NSObject, Extension {
             else {
                 // response event failed or timed out, remove this event's ID from the requested event IDs dictionary and kick-off queue.
                 self.updateRequestEventIdsInProgress.removeValue(forKey: edgeEvent.id.uuidString)
+                self.propositionsInProgress.removeAll()
+
                 self.eventsQueue.start()
                 return
             }
@@ -282,6 +284,7 @@ public class Optimize: NSObject, Extension {
                       """
                       Ignoring Edge event, either handle type is not personalization:decisions, or the response isn't intended for this extension.
                       """)
+            propositionsInProgress.removeAll()
             return
         }
 
