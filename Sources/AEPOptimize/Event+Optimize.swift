@@ -43,11 +43,6 @@ extension Event {
         data?[OptimizeConstants.EventDataKeys.REQUEST_TYPE] as? String == OptimizeConstants.EventDataValues.REQUEST_TYPE_TRACK
     }
 
-    /// Verify event type and source for Optimize contentComplete event.
-    var isOptimizeContentCompleteEvent: Bool {
-        type == EventType.optimize && source == EventSource.contentComplete
-    }
-
     /// Decode an instance of given type from the event data.
     /// - Parameter key: Event data key, default value is nil.
     /// - Returns: Optional type instance
