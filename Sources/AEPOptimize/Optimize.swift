@@ -227,6 +227,8 @@ public class Optimize: NSObject, Extension {
     /// - Parameter event: Optimize content complete event.
     private func processUpdatePropositionsCompleted(event: Event) {
         defer {
+            propositionsInProgress.removeAll()
+
             // kick off processing the internal events queue after processing is completed for an update propositions request.
             eventsQueue.start()
         }
@@ -247,7 +249,6 @@ public class Optimize: NSObject, Extension {
 
         // remove completed event's ID from the request event IDs dictionary.
         updateRequestEventIdsInProgress.removeValue(forKey: requestCompletedForEventId)
-        propositionsInProgress.removeAll()
     }
 
     /// Updates the in-memory propositions cache with the returned propositions.
@@ -417,6 +418,16 @@ public class Optimize: NSObject, Extension {
         /// For testing purposes only
         func getUpdateRequestEventIdsInProgress() -> [String: [DecisionScope]] {
             updateRequestEventIdsInProgress
+        }
+
+        /// For testing purposes only
+        func setPropositionsInProgress(_ propositions: [DecisionScope: Proposition]) {
+            propositionsInProgress = propositions
+        }
+
+        /// For testing purposes only
+        func getPropositionsInProgress() -> [DecisionScope: Proposition] {
+            propositionsInProgress
         }
     #endif
 }

@@ -484,6 +484,9 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("<h1>This is HTML content</h1>", proposition?.offers[0].content)
         XCTAssertEqual(1, proposition?.offers[0].characteristics?.count)
         XCTAssertEqual("true", proposition?.offers[0].characteristics?["testing"])
+        
+        // the incoming proposition is accumulated
+        XCTAssertEqual(1, optimize.getPropositionsInProgress().count)
     }
     
     func testEdgeResponse_validPropositionFromTargetWithClickTracking() {
@@ -589,6 +592,9 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("{\"device\":\"mobile\"}", proposition?.offers[0].content)
         XCTAssertNil(proposition?.offers[0].characteristics)
         XCTAssertNil(proposition?.offers[0].language)
+        
+        // the incoming proposition is accumulated
+        XCTAssertEqual(1, optimize.getPropositionsInProgress().count)
     }
 
     func testEdgeResponse_emptyProposition() {
@@ -613,6 +619,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // verify
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+        XCTAssertEqual(0, optimize.getPropositionsInProgress().count)
         XCTAssertTrue(optimize.cachedPropositions.isEmpty)
     }
 
@@ -659,6 +666,60 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // verify
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+        XCTAssertEqual(0, optimize.getPropositionsInProgress().count)
+        XCTAssertTrue(optimize.cachedPropositions.isEmpty)
+    }
+    
+    func testEdgeResponse_requestEventIdNotBeingTracked() {
+        // setup
+        let testEvent = Event(name: "AEP Response Event Handle",
+                              type: "com.adobe.eventType.edge",
+                              source: "personalization:decisions",
+                              data: [
+                                  "payload": [
+                                    [
+                                        "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+                                        "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
+                                        "activity": [
+                                            "etag": "8",
+                                            "id": "xcore:offer-activity:1111111111111111"
+                                        ],
+                                        "placement": [
+                                            "etag": "1",
+                                            "id": "xcore:offer-placement:1111111111111111"
+                                        ],
+                                        "items": [
+                                            [
+                                                "id": "xcore:personalized-offer:1111111111111111",
+                                                "etag": "10",
+                                                "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",
+                                                "data": [
+                                                    "id": "xcore:personalized-offer:1111111111111111",
+                                                    "format": "text/html",
+                                                    "content": "<h1>This is HTML content</h1>",
+                                                    "characteristics": [
+                                                        "testing": "true"
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                  ],
+                                "requestEventId": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
+                                "requestId": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB",
+                                "type": "personalization:decisions"
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+        XCTAssertEqual(0, optimize.getPropositionsInProgress().count)
         XCTAssertTrue(optimize.cachedPropositions.isEmpty)
     }
 
@@ -685,6 +746,7 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // verify
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
+        XCTAssertEqual(0, optimize.getPropositionsInProgress().count)
         XCTAssertTrue(optimize.cachedPropositions.isEmpty)
     }
 
@@ -1169,7 +1231,7 @@ class OptimizeFunctionalTests: XCTestCase {
         // simulate update event
         mockRuntime.simulateComingEvents(testUpdateEvent)
         
-        var updateEventIdsInProgress = optimize.getUpdateRequestEventIdsInProgress()
+        let updateEventIdsInProgress = optimize.getUpdateRequestEventIdsInProgress()
         XCTAssertEqual(1, updateEventIdsInProgress.count)
         
         let testGetEvent = Event(name: "Optimize Get Propositions Request",
@@ -1741,5 +1803,132 @@ class OptimizeFunctionalTests: XCTestCase {
         // verify
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
         XCTAssertTrue(optimize.cachedPropositions.isEmpty)
+    }
+    
+    func testUpdatePropositionsComplete_updatesPropositionsCache() {
+        // setup
+        optimize.setUpdateRequestEventIdsInProgress("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA", expectedScopes: [DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")])
+
+        let propositionsData =
+        """
+          {
+              "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+              "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
+              "activity": {
+                  "etag": "8",
+                  "id": "xcore:offer-activity:1111111111111111"
+              },
+              "placement": {
+                  "etag": "1",
+                  "id": "xcore:offer-placement:1111111111111111"
+              },
+              "items": [
+                  {
+                      "id": "xcore:personalized-offer:1111111111111111",
+                      "etag": "10",
+                      "score": 1,
+                      "schema": "https://ns.adobe.com/experience/offer-management/content-component-json",
+                      "data": {
+                          "id": "xcore:personalized-offer:1111111111111111",
+                          "format": "application/json",
+                          "content": {\"key\": \"value\"},
+                          "characteristics": {
+                              "testing": "true"
+                          }
+                      }
+                  }
+              ]
+          }
+        """.data(using: .utf8)!
+
+        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+
+        optimize.setPropositionsInProgress([DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="): propositions])
+        XCTAssertEqual(1, optimize.getPropositionsInProgress().count)
+
+        let testEvent = Event(name: "Optimize Update Propositions Complete",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.contentComplete",
+                              data: [
+                                "completedUpdateRequestForEventId": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+        
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(1, optimize.cachedPropositions.count)
+        XCTAssertEqual(optimize.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")], propositions)
+        XCTAssertEqual(0, optimize.getUpdateRequestEventIdsInProgress().count)
+        XCTAssertEqual(0, optimize.getPropositionsInProgress().count)
+    }
+    
+    func testUpdatePropositionsComplete_requestEventIdNotBeingTracked() {
+        // setup
+        let propositionsData =
+        """
+          {
+              "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+              "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
+              "activity": {
+                  "etag": "8",
+                  "id": "xcore:offer-activity:1111111111111111"
+              },
+              "placement": {
+                  "etag": "1",
+                  "id": "xcore:offer-placement:1111111111111111"
+              },
+              "items": [
+                  {
+                      "id": "xcore:personalized-offer:1111111111111111",
+                      "etag": "10",
+                      "score": 1,
+                      "schema": "https://ns.adobe.com/experience/offer-management/content-component-json",
+                      "data": {
+                          "id": "xcore:personalized-offer:1111111111111111",
+                          "format": "application/json",
+                          "content": {\"key\": \"value\"},
+                          "characteristics": {
+                              "testing": "true"
+                          }
+                      }
+                  }
+              ]
+          }
+        """.data(using: .utf8)!
+
+        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+
+        optimize.setPropositionsInProgress([DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="): propositions])
+        XCTAssertEqual(1, optimize.getPropositionsInProgress().count)
+
+        let testEvent = Event(name: "Optimize Update Propositions Complete",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.contentComplete",
+                              data: [
+                                "completedUpdateRequestForEventId": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
+                              ])
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+        
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+
+        // verify
+        XCTAssertEqual(0, optimize.cachedPropositions.count)
+        XCTAssertEqual(0, optimize.getUpdateRequestEventIdsInProgress().count)
+        XCTAssertEqual(0, optimize.getPropositionsInProgress().count)
     }
 }
