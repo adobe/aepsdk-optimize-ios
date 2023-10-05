@@ -86,7 +86,8 @@ public extension Optimize {
                           source: EventSource.requestContent,
                           data: eventData)
 
-        MobileCore.dispatch(event: event) { responseEvent in
+        // Increase timeout to 10s to ensure prior update propositions requests have enough time to complete.
+        MobileCore.dispatch(event: event, timeout: 10) { responseEvent in
             guard let responseEvent = responseEvent else {
                 completion(nil, AEPError.callbackTimeout)
                 return
