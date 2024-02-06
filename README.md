@@ -9,7 +9,7 @@ The AEPOptimize extension provides APIs to enable real-time personalization work
 ## Requirements
 
 - Xcode 15 (or newer)
-- Swift 5.9 (or newer)
+- Swift 5.1 (or newer)
 
 ## Installation
 
