@@ -23,8 +23,8 @@ public class Proposition: NSObject, Codable {
 
     /// Array containing proposition decision options
     @objc public lazy var offers: [Offer] = {
-        items.forEach {
-            $0.proposition = self
+        for item in items {
+            item.proposition = self
         }
         return items
     }()
