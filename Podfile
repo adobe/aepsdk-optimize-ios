@@ -9,57 +9,75 @@ project 'AEPOptimize.xcodeproj'
 
 pod 'SwiftLint', '0.52.0'
 
-target 'AEPOptimize' do
-  # Pods for AEPOptimize
-  pod 'AEPCore', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
-  pod 'AEPServices', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
-  pod 'AEPRulesEngine', :git => 'https://github.com/adobe/aepsdk-rulesengine-ios.git', :branch => 'dev-v5.0.0'
+# ==================
+# SHARED POD GROUPS
+# ==================
+def lib_main
+    pod 'AEPCore'
+    pod 'AEPServices'
+    pod 'AEPRulesEngine'
 end
 
-target 'UnitTests' do
-  pod 'AEPCore', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
-  pod 'AEPServices', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
-  pod 'AEPRulesEngine', :git => 'https://github.com/adobe/aepsdk-rulesengine-ios.git', :branch => 'dev-v5.0.0'
+def lib_dev
+    pod 'AEPCore', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
+    pod 'AEPServices', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
+    pod 'AEPRulesEngine', :git => 'https://github.com/adobe/aepsdk-rulesengine-ios.git', :branch => 'dev-v5.0.0'
 end
 
-target 'FunctionalTests' do
-  pod 'AEPCore', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
-  pod 'AEPServices', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
-  pod 'AEPRulesEngine', :git => 'https://github.com/adobe/aepsdk-rulesengine-ios.git', :branch => 'dev-v5.0.0'
-end
-
-target 'IntegrationTests' do
-  pod 'AEPCore', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
-  pod 'AEPServices', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
-  pod 'AEPRulesEngine', :git => 'https://github.com/adobe/aepsdk-rulesengine-ios.git', :branch => 'dev-v5.0.0'
-  pod 'AEPEdge'
-  pod 'AEPIdentity'
-end
-
-def shared_app
-  pod 'AEPSignal'
-  pod 'AEPAssurance'
-end
-
-def shared_all
-  pod 'AEPCore', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
-  pod 'AEPServices', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
-  pod 'AEPRulesEngine', :git => 'https://github.com/adobe/aepsdk-rulesengine-ios.git', :branch => 'dev-v5.0.0'
+def app_main
+  pod 'AEPCore'
+  pod 'AEPServices'
+  pod 'AEPRulesEngine'
   pod 'AEPLifecycle'
+  pod 'AEPSignal'
   pod 'AEPIdentity'
   pod 'AEPEdge'
   pod 'AEPEdgeConsent'
   pod 'AEPEdgeIdentity'
+#  pod 'AEPAssurance'
 end
 
-abstract_target 'shared' do
-  shared_all
-  target 'AEPOptimizeDemoAppExtension'
-  target 'AEPOptimizeDemoSwiftUI' do
-    shared_app
-  end
-  target 'AEPOptimizeDemoObjC' do
-    shared_app
-  end
+def app_dev
+  pod 'AEPCore', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPServices', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPRulesEngine', :git => 'https://github.com/adobe/aepsdk-rulesengine-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPLifecycle', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPSignal', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPIdentity', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPEdge', :git => 'https://github.com/adobe/aepsdk-edge-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPEdgeConsent', :git => 'https://github.com/adobe/aepsdk-edgeconsent-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPEdgeIdentity', :git => 'https://github.com/adobe/aepsdk-edgeidentity-ios.git', :branch => 'dev-v5.0.0'
+#  pod 'AEPAssurance'
 end
 
+# ==================
+# TARGET DEFINITIONS
+# ==================
+target 'AEPOptimize' do
+  # Pods for AEPOptimize
+  lib_dev
+end
+
+target 'UnitTests' do
+  lib_dev
+end
+
+target 'FunctionalTests' do
+  lib_dev
+end
+
+target 'IntegrationTests' do
+  app_dev
+end
+
+target 'AEPOptimizeDemoAppExtension' do
+  app_dev
+end
+
+target 'AEPOptimizeDemoSwiftUI' do
+  app_dev
+end
+
+target 'AEPOptimizeDemoObjC' do
+  app_dev
+end
