@@ -13,10 +13,10 @@
 import AEPCore
 import Foundation
 
-// MARK: Proposition extension
+// MARK: OptimizeProposition extension
 
 @objc
-public extension Proposition {
+public extension OptimizeProposition {
     /// Creates a dictionary containing XDM formatted data for `Experience Event - Proposition Reference` field group from the given proposition.
     ///
     /// The Edge `sendEvent(experienceEvent:_:)` API can be used to dispatch this data in an Experience Event along with any additional XDM, free-form data, or override dataset identifier.

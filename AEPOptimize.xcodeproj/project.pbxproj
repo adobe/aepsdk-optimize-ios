@@ -51,13 +51,13 @@
 		C88C5EDD2614F640003AE3DE /* Offer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5EDC2614F640003AE3DE /* Offer.swift */; };
 		C88C5EE12614F693003AE3DE /* OfferType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5EE02614F693003AE3DE /* OfferType.swift */; };
 		C88C5F0A261523A4003AE3DE /* OfferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F0326152390003AE3DE /* OfferTests.swift */; };
-		C88C5F0E26152CFF003AE3DE /* Proposition.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F0D26152CFF003AE3DE /* Proposition.swift */; };
+		C88C5F0E26152CFF003AE3DE /* OptimizeProposition.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F0D26152CFF003AE3DE /* OptimizeProposition.swift */; };
 		C88C5F1226152DAB003AE3DE /* DecisionScope.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F1126152DAB003AE3DE /* DecisionScope.swift */; };
 		C88C5F1F2615916D003AE3DE /* DecisionScopeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F1E2615916D003AE3DE /* DecisionScopeTests.swift */; };
 		C88C5F272615A057003AE3DE /* OfferTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F262615A057003AE3DE /* OfferTypeTests.swift */; };
 		C88C5F3326185EF8003AE3DE /* StringInterpolation+Optimize.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F3226185EF4003AE3DE /* StringInterpolation+Optimize.swift */; };
 		C88C5F4126187F0B003AE3DE /* String+Optimize.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F4026187F0A003AE3DE /* String+Optimize.swift */; };
-		C88C5F56261C3F6A003AE3DE /* PropositionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F55261C3F69003AE3DE /* PropositionTests.swift */; };
+		C88C5F56261C3F6A003AE3DE /* OptimizePropositionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F55261C3F69003AE3DE /* OptimizePropositionTests.swift */; };
 		C88C5F7A261D06A6003AE3DE /* Optimize+PublicAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5F79261D06A5003AE3DE /* Optimize+PublicAPI.swift */; };
 		C88C5FA4261D649A003AE3DE /* AEPOptimize.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPOptimize.framework */; };
 		C88C5FDA261D8EE3003AE3DE /* OptimizePublicAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5FBE261D6602003AE3DE /* OptimizePublicAPITests.swift */; };
@@ -79,7 +79,7 @@
 		C8D4B3D626A7203500E48629 /* EventHub+OptimizeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88C5FB9261D65AD003AE3DE /* EventHub+OptimizeTests.swift */; };
 		C8DE6B6A2684181B0076623F /* Offer+Tracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6B692684181A0076623F /* Offer+Tracking.swift */; };
 		C8DE6BEF2686848B0076623F /* Proposition+Tracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6BEE2686848A0076623F /* Proposition+Tracking.swift */; };
-		C8DE6C052689502E0076623F /* PropositionTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6C042689502D0076623F /* PropositionTrackingTests.swift */; };
+		C8DE6C052689502E0076623F /* OptimizePropositionTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6C042689502D0076623F /* OptimizePropositionTrackingTests.swift */; };
 		C8DE6C0F26895A260076623F /* OfferTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6C0E26895A260076623F /* OfferTrackingTests.swift */; };
 		C8DE6C77268CD9E50076623F /* Dictionary+OptimizeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6BF8268690540076623F /* Dictionary+OptimizeTests.swift */; };
 		C8DE6C84268CDA670076623F /* Dictionary+OptimizeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6BF8268690540076623F /* Dictionary+OptimizeTests.swift */; };
@@ -224,13 +224,13 @@
 		C88C5EDC2614F640003AE3DE /* Offer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Offer.swift; sourceTree = "<group>"; };
 		C88C5EE02614F693003AE3DE /* OfferType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferType.swift; sourceTree = "<group>"; };
 		C88C5F0326152390003AE3DE /* OfferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferTests.swift; sourceTree = "<group>"; };
-		C88C5F0D26152CFF003AE3DE /* Proposition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Proposition.swift; sourceTree = "<group>"; };
+		C88C5F0D26152CFF003AE3DE /* OptimizeProposition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptimizeProposition.swift; sourceTree = "<group>"; };
 		C88C5F1126152DAB003AE3DE /* DecisionScope.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecisionScope.swift; sourceTree = "<group>"; };
 		C88C5F1E2615916D003AE3DE /* DecisionScopeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecisionScopeTests.swift; sourceTree = "<group>"; };
 		C88C5F262615A057003AE3DE /* OfferTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferTypeTests.swift; sourceTree = "<group>"; };
 		C88C5F3226185EF4003AE3DE /* StringInterpolation+Optimize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringInterpolation+Optimize.swift"; sourceTree = "<group>"; };
 		C88C5F4026187F0A003AE3DE /* String+Optimize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Optimize.swift"; sourceTree = "<group>"; };
-		C88C5F55261C3F69003AE3DE /* PropositionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropositionTests.swift; sourceTree = "<group>"; };
+		C88C5F55261C3F69003AE3DE /* OptimizePropositionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptimizePropositionTests.swift; sourceTree = "<group>"; };
 		C88C5F79261D06A5003AE3DE /* Optimize+PublicAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Optimize+PublicAPI.swift"; sourceTree = "<group>"; };
 		C88C5F9F261D6499003AE3DE /* FunctionalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FunctionalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C88C5FAF261D6545003AE3DE /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -255,7 +255,7 @@
 		C8DE6B692684181A0076623F /* Offer+Tracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Offer+Tracking.swift"; sourceTree = "<group>"; };
 		C8DE6BEE2686848A0076623F /* Proposition+Tracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Proposition+Tracking.swift"; sourceTree = "<group>"; };
 		C8DE6BF8268690540076623F /* Dictionary+OptimizeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+OptimizeTests.swift"; sourceTree = "<group>"; };
-		C8DE6C042689502D0076623F /* PropositionTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropositionTrackingTests.swift; sourceTree = "<group>"; };
+		C8DE6C042689502D0076623F /* OptimizePropositionTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptimizePropositionTrackingTests.swift; sourceTree = "<group>"; };
 		C8DE6C0E26895A260076623F /* OfferTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferTrackingTests.swift; sourceTree = "<group>"; };
 		D4C4D2E27884F4B6147FA07A /* Pods_FunctionalTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FunctionalTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7A8E7EA5460F8AC12BF0B96 /* Pods_IntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -492,8 +492,8 @@
 				C88C5F0326152390003AE3DE /* OfferTests.swift */,
 				C8DE6C0E26895A260076623F /* OfferTrackingTests.swift */,
 				C88C5F262615A057003AE3DE /* OfferTypeTests.swift */,
-				C88C5F55261C3F69003AE3DE /* PropositionTests.swift */,
-				C8DE6C042689502D0076623F /* PropositionTrackingTests.swift */,
+				C88C5F55261C3F69003AE3DE /* OptimizePropositionTests.swift */,
+				C8DE6C042689502D0076623F /* OptimizePropositionTrackingTests.swift */,
 			);
 			path = UnitTests;
 			sourceTree = "<group>";
@@ -506,7 +506,7 @@
 				C88C5EDC2614F640003AE3DE /* Offer.swift */,
 				C8DE6B692684181A0076623F /* Offer+Tracking.swift */,
 				C88C5EE02614F693003AE3DE /* OfferType.swift */,
-				C88C5F0D26152CFF003AE3DE /* Proposition.swift */,
+				C88C5F0D26152CFF003AE3DE /* OptimizeProposition.swift */,
 				C8DE6BEE2686848A0076623F /* Proposition+Tracking.swift */,
 			);
 			name = Public;
@@ -1209,7 +1209,7 @@
 				C88C5F3326185EF8003AE3DE /* StringInterpolation+Optimize.swift in Sources */,
 				C8CA1654261EF29E005B09A0 /* Event+Optimize.swift in Sources */,
 				C88C5F7A261D06A6003AE3DE /* Optimize+PublicAPI.swift in Sources */,
-				C88C5F0E26152CFF003AE3DE /* Proposition.swift in Sources */,
+				C88C5F0E26152CFF003AE3DE /* OptimizeProposition.swift in Sources */,
 				C88C5F1226152DAB003AE3DE /* DecisionScope.swift in Sources */,
 				C88C5E952613249C003AE3DE /* OptimizeConstants.swift in Sources */,
 				C88C5EE12614F693003AE3DE /* OfferType.swift in Sources */,
@@ -1231,12 +1231,12 @@
 				C8CA16DE2624BDA6005B09A0 /* String+OptimizeTests.swift in Sources */,
 				C88C5FE3261D8FBF003AE3DE /* MockExtension.swift in Sources */,
 				C88C5F1F2615916D003AE3DE /* DecisionScopeTests.swift in Sources */,
-				C88C5F56261C3F6A003AE3DE /* PropositionTests.swift in Sources */,
+				C88C5F56261C3F6A003AE3DE /* OptimizePropositionTests.swift in Sources */,
 				C88C5F272615A057003AE3DE /* OfferTypeTests.swift in Sources */,
 				C8CA16DC2624BDA6005B09A0 /* Array+OptimizeTests.swift in Sources */,
 				C88C5FDA261D8EE3003AE3DE /* OptimizePublicAPITests.swift in Sources */,
 				C88C5FEA261D9AD0003AE3DE /* EventHub+OptimizeTests.swift in Sources */,
-				C8DE6C052689502E0076623F /* PropositionTrackingTests.swift in Sources */,
+				C8DE6C052689502E0076623F /* OptimizePropositionTrackingTests.swift in Sources */,
 				C8227C7727DAD19C005A7703 /* KeyedDecodingContainer+OptimizeTests.swift in Sources */,
 				C8DE6C0F26895A260076623F /* OfferTrackingTests.swift in Sources */,
 			);
@@ -1551,7 +1551,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1609,7 +1609,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1635,13 +1635,12 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Sources/AEPOptimize/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.0.2;
+				MARKETING_VERSION = 5.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.adobe.aep.AEPOptimize;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1665,13 +1664,12 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Sources/AEPOptimize/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.0.2;
+				MARKETING_VERSION = 5.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.adobe.aep.AEPOptimize;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1689,7 +1687,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = FKGEE875K4;
 				INFOPLIST_FILE = Tests/AEPOptimizeTests/UnitTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1712,7 +1709,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = FKGEE875K4;
 				INFOPLIST_FILE = Tests/AEPOptimizeTests/UnitTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1732,7 +1728,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = FKGEE875K4;
 				INFOPLIST_FILE = Tests/AEPOptimizeTests/IntegrationTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1752,7 +1747,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = FKGEE875K4;
 				INFOPLIST_FILE = Tests/AEPOptimizeTests/IntegrationTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

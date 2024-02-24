@@ -43,8 +43,8 @@ public class Offer: NSObject, Codable {
     /// Optional Offer characteristics dictionary
     @objc public let characteristics: [String: String]?
 
-    /// Weak reference to Proposition instance
-    @objc weak var proposition: Proposition?
+    /// Weak reference to OptimizeProposition instance
+    @objc weak var proposition: OptimizeProposition?
 
     enum CodingKeys: String, CodingKey {
         case id

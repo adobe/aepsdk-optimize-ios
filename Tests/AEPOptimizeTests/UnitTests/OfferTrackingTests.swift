@@ -14,7 +14,7 @@ governing permissions and limitations under the License.
 @testable import AEPOptimize
 import XCTest
 
-extension PropositionTests {
+extension OptimizePropositionTests {
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -32,7 +32,7 @@ extension PropositionTests {
 
         guard
             let propositionData = PROPOSITION_VALID.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
@@ -81,7 +81,7 @@ extension PropositionTests {
 
         guard
             let propositionData = PROPOSITION_VALID_TARGET.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
@@ -137,7 +137,7 @@ extension PropositionTests {
 
         guard
             let propositionData = PROPOSITION_VALID.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
@@ -162,7 +162,7 @@ extension PropositionTests {
 
         guard
             let propositionData = PROPOSITION_VALID.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
@@ -209,7 +209,7 @@ extension PropositionTests {
 
         guard
             let propositionData = PROPOSITION_VALID_TARGET.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
@@ -265,7 +265,7 @@ extension PropositionTests {
 
         guard
             let propositionData = PROPOSITION_VALID.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
@@ -354,7 +354,7 @@ extension PropositionTests {
 
         guard
             let propositionData = PROPOSITION_VALID.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
@@ -453,7 +453,7 @@ extension PropositionTests {
 
         guard
             let propositionData = PROPOSITION_VALID_TARGET.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
@@ -482,7 +482,7 @@ extension PropositionTests {
 
         guard
             let propositionData = PROPOSITION_VALID.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
@@ -567,7 +567,7 @@ extension PropositionTests {
 
         guard
             let propositionData = PROPOSITION_VALID.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
@@ -667,7 +667,7 @@ extension PropositionTests {
 
         guard
             let propositionData = PROPOSITION_VALID_TARGET.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
@@ -696,7 +696,7 @@ extension PropositionTests {
 
         guard
             let propositionData = PROPOSITION_VALID.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return

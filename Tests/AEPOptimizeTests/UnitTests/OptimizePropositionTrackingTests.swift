@@ -13,12 +13,12 @@ governing permissions and limitations under the License.
 import AEPOptimize
 import XCTest
 
-extension PropositionTests {
+extension OptimizePropositionTests {
 
     func testGenerateReferenceXdm_validProposition() throws {
         guard
             let propositionData = PROPOSITION_VALID.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
@@ -40,7 +40,7 @@ extension PropositionTests {
     func testGenerateReferenceXdm_validPropositionFromTarget() throws {
         guard
             let propositionData = PROPOSITION_VALID_TARGET.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
