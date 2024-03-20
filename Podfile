@@ -25,16 +25,14 @@ def lib_dev
 end
 
 def app_main
-  pod 'AEPCore'
-  pod 'AEPServices'
-  pod 'AEPRulesEngine'
+  lib_main  
   pod 'AEPLifecycle'
   pod 'AEPSignal'
   pod 'AEPIdentity'
   pod 'AEPEdge'
   pod 'AEPEdgeConsent'
   pod 'AEPEdgeIdentity'
-#  pod 'AEPAssurance'
+  pod 'AEPAssurance', :git => 'https://github.com/adobe/aepsdk-assurance-ios.git', :branch => 'staging'
 end
 
 def app_dev
@@ -55,29 +53,29 @@ end
 # ==================
 target 'AEPOptimize' do
   # Pods for AEPOptimize
-  lib_dev
+  lib_main
 end
 
 target 'UnitTests' do
-  lib_dev
+  lib_main
 end
 
 target 'FunctionalTests' do
-  lib_dev
+  lib_main
 end
 
 target 'IntegrationTests' do
-  app_dev
+  app_main
 end
 
 target 'AEPOptimizeDemoAppExtension' do
-  app_dev
+  app_main
 end
 
 target 'AEPOptimizeDemoSwiftUI' do
-  app_dev
+  app_main
 end
 
 target 'AEPOptimizeDemoObjC' do
-  app_dev
+  app_main
 end
