@@ -53,7 +53,7 @@ public class Optimize: NSObject, Extension {
     #if DEBUG
         var cachedPropositions: [DecisionScope: OptimizeProposition]
     #else
-        private(set) var cachedPropositions: [DecisionScope: Proposition]
+        private(set) var cachedPropositions: [DecisionScope: OptimizeProposition]
     #endif
 
     public required init?(runtime: ExtensionRuntime) {
