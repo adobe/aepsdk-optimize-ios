@@ -32,6 +32,7 @@ def app_main
   pod 'AEPEdge'
   pod 'AEPEdgeConsent'
   pod 'AEPEdgeIdentity'
+  pod 'AEPAssurance'
 end
 
 def app_dev
@@ -72,10 +73,8 @@ end
 
 target 'AEPOptimizeDemoSwiftUI' do
   app_main
-  pod 'AEPAssurance'
 end
 
 target 'AEPOptimizeDemoObjC' do
   app_main
-  pod 'AEPAssurance'
 end
