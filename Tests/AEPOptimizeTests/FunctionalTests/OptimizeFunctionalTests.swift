@@ -467,7 +467,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
             XCTFail("Propositions dictionary should be valid.")
             return
         }
@@ -572,7 +572,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
             XCTFail("Propositions dictionary should be valid.")
             return
         }
@@ -784,7 +784,7 @@ class OptimizeFunctionalTests: XCTestCase {
           }
         """.data(using: .utf8)!
 
-        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+        guard let propositions = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionsData) else {
             XCTFail("Proposition should be valid.")
             return
         }
@@ -825,7 +825,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
             XCTFail("Propositions dictionary should be valid.")
             return
         }
@@ -877,7 +877,7 @@ class OptimizeFunctionalTests: XCTestCase {
           }
         """.data(using: .utf8)!
 
-        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+        guard let propositions = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionsData) else {
             XCTFail("Proposition should be valid.")
             return
         }
@@ -921,7 +921,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
             XCTFail("Propositions dictionary should be valid.")
             return
         }
@@ -973,7 +973,7 @@ class OptimizeFunctionalTests: XCTestCase {
           }
         """.data(using: .utf8)!
 
-        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+        guard let propositions = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionsData) else {
             XCTFail("Proposition should be valid.")
             return
         }
@@ -1017,7 +1017,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
             XCTFail("Propositions dictionary should be valid.")
             return
         }
@@ -1054,7 +1054,7 @@ class OptimizeFunctionalTests: XCTestCase {
           }
         """.data(using: .utf8)!
 
-        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+        guard let propositions = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionsData) else {
             XCTFail("Proposition should be valid.")
             return
         }
@@ -1140,7 +1140,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
         XCTAssertNil(dispatchedEvent?.data?["responseerror"])
 
-        guard let propositionsDictionary: [DecisionScope: Proposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
             XCTFail("Propositions dictionary should be valid.")
             return
         }
@@ -1180,7 +1180,7 @@ class OptimizeFunctionalTests: XCTestCase {
           }
         """.data(using: .utf8)!
 
-        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+        guard let propositions = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionsData) else {
             XCTFail("Proposition should be valid.")
             return
         }
@@ -1722,7 +1722,7 @@ class OptimizeFunctionalTests: XCTestCase {
           }
         """.data(using: .utf8)!
 
-        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+        guard let propositions = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionsData) else {
             XCTFail("Proposition should be valid.")
             return
         }
@@ -1780,7 +1780,7 @@ class OptimizeFunctionalTests: XCTestCase {
           }
         """.data(using: .utf8)!
 
-        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+        guard let propositions = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionsData) else {
             XCTFail("Proposition should be valid.")
             return
         }
@@ -1841,7 +1841,7 @@ class OptimizeFunctionalTests: XCTestCase {
           }
         """.data(using: .utf8)!
 
-        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+        guard let propositions = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionsData) else {
             XCTFail("Proposition should be valid.")
             return
         }
@@ -1904,7 +1904,7 @@ class OptimizeFunctionalTests: XCTestCase {
           }
         """.data(using: .utf8)!
 
-        guard let propositions = try? JSONDecoder().decode(Proposition.self, from: propositionsData) else {
+        guard let propositions = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionsData) else {
             XCTFail("Proposition should be valid.")
             return
         }

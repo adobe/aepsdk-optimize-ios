@@ -13,7 +13,7 @@ governing permissions and limitations under the License.
 import AEPOptimize
 import XCTest
 
-class PropositionTests: XCTestCase {
+class OptimizePropositionTests: XCTestCase {
 
    let PROPOSITION_VALID =
 """
@@ -135,7 +135,7 @@ class PropositionTests: XCTestCase {
         // Decode
         guard
             let propositionData = PROPOSITION_VALID.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
@@ -167,7 +167,7 @@ class PropositionTests: XCTestCase {
         // Decode
         guard
             let propositionData = PROPOSITION_VALID_TARGET.data(using: .utf8),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
             return
@@ -212,7 +212,7 @@ class PropositionTests: XCTestCase {
             XCTFail("Proposition json data should be valid.")
             return
         }
-        let proposition = try? JSONDecoder().decode(Proposition.self, from: propositionData)
+        let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         XCTAssertNil(proposition)
     }
     
@@ -227,7 +227,7 @@ class PropositionTests: XCTestCase {
             return
         }
         
-        let proposition = Proposition.initFromData(data)
+        let proposition = OptimizeProposition.initFromData(data)
         XCTAssertNotNil(proposition)
         XCTAssertEqual("de03ac85-802a-4331-a905-a57053164d35", proposition?.id)
         XCTAssertEqual("eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", proposition?.scope)
@@ -245,13 +245,13 @@ class PropositionTests: XCTestCase {
     
     func testInitFromData_emptyData() throws {
         let data = [String: Any]()
-        let proposition = Proposition.initFromData(data)
+        let proposition = OptimizeProposition.initFromData(data)
         XCTAssertNil(proposition)
     }
     
     func testInitFromData_missingData() throws {
         let data = ["fake_key": "fake_value"] //Should return nil since Proposition id is missing
-        let proposition = Proposition.initFromData(data)
+        let proposition = OptimizeProposition.initFromData(data)
         XCTAssertNil(proposition)
     }
 }

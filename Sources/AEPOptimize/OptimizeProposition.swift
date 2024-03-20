@@ -13,9 +13,9 @@
 import AEPServices
 import Foundation
 
-/// `Proposition` class
-@objc(AEPProposition)
-public class Proposition: NSObject, Codable {
+/// `OptimizeProposition` class
+@objc(AEPOptimizeProposition)
+public class OptimizeProposition: NSObject, Codable {
     private let items: [Offer]
 
     /// Unique proposition identifier
@@ -23,8 +23,8 @@ public class Proposition: NSObject, Codable {
 
     /// Array containing proposition decision options
     @objc public lazy var offers: [Offer] = {
-        items.forEach {
-            $0.proposition = self
+        for item in items {
+            item.proposition = self
         }
         return items
     }()
@@ -68,14 +68,14 @@ public class Proposition: NSObject, Codable {
     ///       - data: A dictionary containing data for instantiating `Proposition`
     /// - Returns: instance of `Proposition`
     @objc
-    public static func initFromData(_ data: [String: Any]) -> Proposition? {
+    public static func initFromData(_ data: [String: Any]) -> OptimizeProposition? {
         guard !data.isEmpty else {
             Log.warning(label: OptimizeConstants.LOG_TAG, "Cannot create Proposition object, provided data dictionary is empty.")
             return nil
         }
         guard
             let jsonData = try? JSONSerialization.data(withJSONObject: data),
-            let proposition = try? JSONDecoder().decode(Proposition.self, from: jsonData)
+            let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: jsonData)
         else {
             Log.warning(label: OptimizeConstants.LOG_TAG,
                         "Cannot create Proposition object, unable to serialize dictionary to JSON data or decode Proposition from JSON.")

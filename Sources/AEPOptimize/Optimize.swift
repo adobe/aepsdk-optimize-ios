@@ -33,7 +33,7 @@ public class Optimize: NSObject, Extension {
     private var updateRequestEventIdsInProgress: [String: [DecisionScope]] = [:]
 
     /// a dictionary to accumulate propositions returned in various personalization:decisions events for the same Edge personalization request.
-    private var propositionsInProgress: [DecisionScope: Proposition] = [:]
+    private var propositionsInProgress: [DecisionScope: OptimizeProposition] = [:]
 
     /// Array containing the schema strings for the proposition items supported by the SDK, sent in the personalization query request.
     static let supportedSchemas = [
@@ -51,9 +51,9 @@ public class Optimize: NSObject, Extension {
 
     /// Dictionary containing decision propositions currently cached in-memory in the SDK.
     #if DEBUG
-        var cachedPropositions: [DecisionScope: Proposition]
+        var cachedPropositions: [DecisionScope: OptimizeProposition]
     #else
-        private(set) var cachedPropositions: [DecisionScope: Proposition]
+        private(set) var cachedPropositions: [DecisionScope: OptimizeProposition]
     #endif
 
     public required init?(runtime: ExtensionRuntime) {
@@ -288,7 +288,7 @@ public class Optimize: NSObject, Extension {
             return
         }
 
-        guard let propositions: [Proposition] = event.getTypedData(for: OptimizeConstants.Edge.PAYLOAD),
+        guard let propositions: [OptimizeProposition] = event.getTypedData(for: OptimizeConstants.Edge.PAYLOAD),
               !propositions.isEmpty
         else {
             Log.debug(label: OptimizeConstants.LOG_TAG, "Failed to read Edge response, propositions array is invalid or empty.")
@@ -424,12 +424,12 @@ public class Optimize: NSObject, Extension {
         }
 
         /// For testing purposes only
-        func setPropositionsInProgress(_ propositions: [DecisionScope: Proposition]) {
+        func setPropositionsInProgress(_ propositions: [DecisionScope: OptimizeProposition]) {
             propositionsInProgress = propositions
         }
 
         /// For testing purposes only
-        func getPropositionsInProgress() -> [DecisionScope: Proposition] {
+        func getPropositionsInProgress() -> [DecisionScope: OptimizeProposition] {
             propositionsInProgress
         }
     #endif

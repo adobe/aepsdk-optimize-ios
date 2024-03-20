@@ -64,7 +64,7 @@ public extension Optimize {
     ///   - decisionScopes: An array of decision scopes.
     ///   - completion: The completion handler to be invoked when the decisions are retrieved from cache.
     @objc(getPropositions:completion:)
-    static func getPropositions(for decisionScopes: [DecisionScope], _ completion: @escaping ([DecisionScope: Proposition]?, Error?) -> Void) {
+    static func getPropositions(for decisionScopes: [DecisionScope], _ completion: @escaping ([DecisionScope: OptimizeProposition]?, Error?) -> Void) {
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
@@ -99,7 +99,7 @@ public extension Optimize {
             }
 
             guard
-                let propositions: [DecisionScope: Proposition] = responseEvent.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS)
+                let propositions: [DecisionScope: OptimizeProposition] = responseEvent.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS)
             else {
                 completion(nil, AEPError.unexpected)
                 return
@@ -116,10 +116,10 @@ public extension Optimize {
     ///
     /// - Parameter action: The completion handler to be invoked with the decision propositions.
     @objc(onPropositionsUpdate:)
-    static func onPropositionsUpdate(perform action: @escaping ([DecisionScope: Proposition]) -> Void) {
+    static func onPropositionsUpdate(perform action: @escaping ([DecisionScope: OptimizeProposition]) -> Void) {
         MobileCore.registerEventListener(type: EventType.optimize, source: EventSource.notification) { event in
             guard
-                let propositions: [DecisionScope: Proposition] = event.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS),
+                let propositions: [DecisionScope: OptimizeProposition] = event.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS),
                 !propositions.isEmpty
             else {
                 Log.warning(label: OptimizeConstants.LOG_TAG, "No valid propositions found in the notification event.")
