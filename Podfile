@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '11.0'
+platform :ios, '12.0'
 
 # Comment the next line if you don't want to use dynamic frameworks
 use_frameworks!
@@ -9,47 +9,73 @@ project 'AEPOptimize.xcodeproj'
 
 pod 'SwiftLint', '0.52.0'
 
-target 'AEPOptimize' do
-  # Pods for AEPOptimize
-  pod 'AEPCore'
+# ==================
+# SHARED POD GROUPS
+# ==================
+def lib_main
+    pod 'AEPCore'
+    pod 'AEPServices'
+    pod 'AEPRulesEngine'
 end
 
-target 'UnitTests' do
-  pod 'AEPCore'
+def lib_dev
+    pod 'AEPCore', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
+    pod 'AEPServices', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
+    pod 'AEPRulesEngine', :git => 'https://github.com/adobe/aepsdk-rulesengine-ios.git', :branch => 'dev-v5.0.0'
 end
 
-target 'FunctionalTests' do
-  pod 'AEPCore'
-end
-
-target 'IntegrationTests' do
-  pod 'AEPCore'
-  pod 'AEPEdge'
-  pod 'AEPIdentity'
-end
-
-def shared_app
-  pod 'AEPSignal'
-  pod 'AEPAssurance'
-end
-
-def shared_all
-  pod 'AEPCore'
+def app_main
+  lib_main  
   pod 'AEPLifecycle'
+  pod 'AEPSignal'
   pod 'AEPIdentity'
   pod 'AEPEdge'
   pod 'AEPEdgeConsent'
   pod 'AEPEdgeIdentity'
 end
 
-abstract_target 'shared' do
-  shared_all
-  target 'AEPOptimizeDemoAppExtension'
-  target 'AEPOptimizeDemoSwiftUI' do
-    shared_app
-  end
-  target 'AEPOptimizeDemoObjC' do
-    shared_app
-  end
+def app_dev
+  pod 'AEPCore', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPServices', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPRulesEngine', :git => 'https://github.com/adobe/aepsdk-rulesengine-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPLifecycle', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPSignal', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPIdentity', :git => 'https://github.com/adobe/aepsdk-core-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPEdge', :git => 'https://github.com/adobe/aepsdk-edge-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPEdgeConsent', :git => 'https://github.com/adobe/aepsdk-edgeconsent-ios.git', :branch => 'dev-v5.0.0'
+  pod 'AEPEdgeIdentity', :git => 'https://github.com/adobe/aepsdk-edgeidentity-ios.git', :branch => 'dev-v5.0.0'
 end
 
+# ==================
+# TARGET DEFINITIONS
+# ==================
+target 'AEPOptimize' do
+  # Pods for AEPOptimize
+  lib_main
+end
+
+target 'UnitTests' do
+  lib_main
+end
+
+target 'FunctionalTests' do
+  lib_main
+end
+
+target 'IntegrationTests' do
+  app_main
+end
+
+target 'AEPOptimizeDemoAppExtension' do
+  app_main
+end
+
+target 'AEPOptimizeDemoSwiftUI' do  
+  app_main
+  pod 'AEPAssurance'
+end
+
+target 'AEPOptimizeDemoObjC' do
+  app_main
+  pod 'AEPAssurance'
+end

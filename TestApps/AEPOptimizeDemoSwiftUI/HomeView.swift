@@ -91,11 +91,11 @@ class TargetSettings: ObservableObject {
 }
 
 class Propositions: ObservableObject {
-    @Published var textProposition: Proposition?
-    @Published var imageProposition: Proposition?
-    @Published var htmlProposition: Proposition?
-    @Published var jsonProposition: Proposition?
-    @Published var targetProposition: Proposition?
+    @Published var textProposition: OptimizeProposition?
+    @Published var imageProposition: OptimizeProposition?
+    @Published var htmlProposition: OptimizeProposition?
+    @Published var jsonProposition: OptimizeProposition?
+    @Published var targetProposition: OptimizeProposition?
     
     init() {
         textProposition = nil

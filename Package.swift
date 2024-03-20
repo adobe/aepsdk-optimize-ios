@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 /*
  Copyright 2021 Adobe. All rights reserved.
@@ -16,17 +16,20 @@ import PackageDescription
 
 let package = Package(
     name: "AEPOptimize",
-    platforms: [.iOS(.v11)],
+    platforms: [.iOS(.v12)],
     products: [
         .library(name: "AEPOptimize", targets: ["AEPOptimize"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/adobe/aepsdk-core-ios.git", .upToNextMajor(from: "4.0.0")),
-        .package(url: "https://github.com/adobe/aepsdk-edge-ios.git", .upToNextMajor(from: "4.0.0")),
+        .package(url: "https://github.com/adobe/aepsdk-core-ios.git", .upToNextMajor(from: "5.0.0")),
+        .package(url: "https://github.com/adobe/aepsdk-edge-ios.git", .upToNextMajor(from: "5.0.0")),
     ],
     targets: [
         .target(name: "AEPOptimize",
-                dependencies: ["AEPCore", "AEPEdge"],
+                dependencies: [
+                    .product(name: "AEPCore", package: "aepsdk-core-ios"),
+                    .product(name: "AEPEdge", package: "aepsdk-edge-ios"),
+                ],
                 path: "Sources/AEPOptimize"),
     ]
 )

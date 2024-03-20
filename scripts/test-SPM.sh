@@ -23,13 +23,13 @@ mkdir -p $PROJECT_NAME && cd $PROJECT_NAME
 swift package init
 
 # Create the Package.swift.
-echo "// swift-tools-version:5.1
+echo "// swift-tools-version:5.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 let package = Package(
     name: \"TestProject\",
     platforms: [
-        .iOS(.v11)
+        .iOS(.v12)
     ],
     products: [
         .library(
@@ -38,9 +38,9 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: \"https://github.com/adobe/aepsdk-core-ios.git\", .upToNextMajor(from:\"4.0.0\")),
-        .package(url: \"https://github.com/adobe/aepsdk-edge-ios.git\", .upToNextMajor(from:\"4.0.0\")),
-        .package(path: \"../\"),
+        .package(name: \"AEPCore\", url: \"https://github.com/adobe/aepsdk-core-ios.git\", .branch(\"main\")),
+        .package(name: \"AEPEdge\", url: \"https://github.com/adobe/aepsdk-edge-ios.git\", .branch(\"main\")),
+        .package(name: \"AEPOptimize\", path: \"../\"),
     ],
     targets: [
         .target(
@@ -59,10 +59,11 @@ let package = Package(
 " >Package.swift
 
 swift package update
+swift package resolve
 
-# This is a workaround for SPM issue https://github.com/apple/swift-package-manager/issues/5767
-swift package dump-pif > /dev/null || true
-xcodebuild clean -scheme TestProject -destination 'generic/platform=iOS' > /dev/null || true
+# This is necessary to avoid internal PIF error
+swift package dump-pif > /dev/null
+(xcodebuild clean -scheme TestProject -destination 'generic/platform=iOS' > /dev/null) || :
 
 # Archive for generic iOS device
 echo '############# Archive for generic iOS device ###############'
