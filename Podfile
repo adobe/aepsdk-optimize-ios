@@ -70,7 +70,7 @@ target 'AEPOptimizeDemoAppExtension' do
   app_main
 end
 
-target 'AEPOptimizeDemoSwiftUI' do  
+target 'AEPOptimizeDemoSwiftUI' do
   app_main
   pod 'AEPAssurance'
 end

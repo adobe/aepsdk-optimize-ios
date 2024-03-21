@@ -31,33 +31,33 @@ AEPDecisionScope* targetDecisionScope;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [AEPMobileOptimize onPropositionsUpdate:^(NSDictionary<AEPDecisionScope *,AEPProposition *> *propositionsDict) {
+    [AEPMobileOptimize onPropositionsUpdate:^(NSDictionary<AEPDecisionScope *,AEPOptimizeProposition *> *propositionsDict) {
 
-        AEPProposition* textProposition = propositionsDict[textDecisionScope];
+        AEPOptimizeProposition* textProposition = propositionsDict[textDecisionScope];
         NSLog(@"Callback Logging %ld Text Offer(s)", [textProposition.offers count]);
         for(AEPOffer* offer in textProposition.offers) {
             NSLog(@"Callback Text Offer Content:%@", offer.content);
         }
         
-        AEPProposition* imageProposition = propositionsDict[imageDecisionScope];
+        AEPOptimizeProposition* imageProposition = propositionsDict[imageDecisionScope];
         NSLog(@"Callback Logging %ld Image Offer(s)", [imageProposition.offers count]);
         for(AEPOffer* offer in imageProposition.offers) {
             NSLog(@"Callback Image Offer Content:%@", offer.content);
         }
         
-        AEPProposition* htmlProposition = propositionsDict[htmlDecisionScope];
+        AEPOptimizeProposition* htmlProposition = propositionsDict[htmlDecisionScope];
         NSLog(@"Callback Logging %ld Html Offer(s)", [htmlProposition.offers count]);
         for(AEPOffer* offer in htmlProposition.offers) {
             NSLog(@"Callback Html Offer Content:%@", offer.content);
         }
         
-        AEPProposition* jsonProposition = propositionsDict[jsonDecisionScope];
+        AEPOptimizeProposition* jsonProposition = propositionsDict[jsonDecisionScope];
         NSLog(@"Callback Logging %ld Json Offer(s)", [jsonProposition.offers count]);
         for(AEPOffer* offer in jsonProposition.offers) {
             NSLog(@"Callback Json Offer Content:%@", offer.content);
         }
         
-        AEPProposition* targetProposition = propositionsDict[targetDecisionScope];
+        AEPOptimizeProposition* targetProposition = propositionsDict[targetDecisionScope];
         NSLog(@"Callback Logging %ld Target Offer(s)", [targetProposition.offers count]);
         for(AEPOffer* offer in targetProposition.offers) {
             NSLog(@"Callback Target Offer Content:%@", offer.content);
@@ -96,37 +96,37 @@ AEPDecisionScope* targetDecisionScope;
         htmlDecisionScope,
         jsonDecisionScope,
         targetDecisionScope
-    ] completion:^(NSDictionary<AEPDecisionScope *,AEPProposition *>* propositionsDict, NSError* error) {
+    ] completion:^(NSDictionary<AEPDecisionScope *,AEPOptimizeProposition *>* propositionsDict, NSError* error) {
         if (error != nil) {
             NSLog(@"Get propositions failed with error: %@", [error localizedDescription]);
             return;
         }
         
-        AEPProposition* textProposition = propositionsDict[textDecisionScope];
+        AEPOptimizeProposition* textProposition = propositionsDict[textDecisionScope];
         NSLog(@"Logging %ld Text Offer(s)", [textProposition.offers count]);
         for(AEPOffer* offer in textProposition.offers) {
             NSLog(@"Text Offer Content:%@", offer.content);
         }
         
-        AEPProposition* imageProposition = propositionsDict[imageDecisionScope];
+        AEPOptimizeProposition* imageProposition = propositionsDict[imageDecisionScope];
         NSLog(@"Logging %ld Image Offer(s)", [imageProposition.offers count]);
         for(AEPOffer* offer in imageProposition.offers) {
             NSLog(@"Image Offer Content:%@", offer.content);
         }
         
-        AEPProposition* htmlProposition = propositionsDict[htmlDecisionScope];
+        AEPOptimizeProposition* htmlProposition = propositionsDict[htmlDecisionScope];
         NSLog(@"Logging %ld Html Offer(s)", [htmlProposition.offers count]);
         for(AEPOffer* offer in htmlProposition.offers) {
             NSLog(@"Html Offer Content:%@", offer.content);
         }
         
-        AEPProposition* jsonProposition = propositionsDict[jsonDecisionScope];
+        AEPOptimizeProposition* jsonProposition = propositionsDict[jsonDecisionScope];
         NSLog(@"Logging %ld Json Offer(s)", [jsonProposition.offers count]);
         for(AEPOffer* offer in jsonProposition.offers) {
             NSLog(@"Json Offer Content:%@", offer.content);
         }
         
-        AEPProposition* targetProposition = propositionsDict[targetDecisionScope];
+        AEPOptimizeProposition* targetProposition = propositionsDict[targetDecisionScope];
         NSLog(@"Logging %ld Target Offer(s)", [targetProposition.offers count]);
         for(AEPOffer* offer in targetProposition.offers) {
             NSLog(@"Target Offer Content:%@", offer.content);
