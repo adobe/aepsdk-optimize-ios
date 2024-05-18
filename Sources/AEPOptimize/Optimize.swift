@@ -51,9 +51,9 @@ public class Optimize: NSObject, Extension {
 
     /// Dictionary containing decision propositions currently cached in-memory in the SDK.
     #if DEBUG
-    var cachedPropositions: [DecisionScope: Proposition]
+        var cachedPropositions: [DecisionScope: Proposition]
     #else
-    private(set) var cachedPropositions: [DecisionScope: Proposition]
+        private(set) var cachedPropositions: [DecisionScope: Proposition]
     #endif
 
     public required init?(runtime: ExtensionRuntime) {
@@ -222,7 +222,7 @@ public class Optimize: NSObject, Extension {
                                                                        type: EventType.optimize,
                                                                        source: EventSource.contentComplete,
                                                                        data: [
-                                                                        OptimizeConstants.EventDataKeys.COMPLETED_UPDATE_EVENT_ID: requestEventId
+                                                                           OptimizeConstants.EventDataKeys.COMPLETED_UPDATE_EVENT_ID: requestEventId
                                                                        ])
             self.dispatch(event: updateCompleteEvent)
         }
@@ -317,8 +317,8 @@ public class Optimize: NSObject, Extension {
                       """
                       No propositions with valid offers are present in the Edge response event for the provided scopes(\
                       \(propositions
-                            .map { $0.scope }
-                            .joined(separator: ","))
+                          .map { $0.scope }
+                          .joined(separator: ","))
                       ).
                       """)
             return
@@ -428,32 +428,32 @@ public class Optimize: NSObject, Extension {
     }
 
     #if DEBUG
-    /// For testing purposes only
-    func setUpdateRequestEventIdsInProgress(_ eventId: String, expectedScopes: [DecisionScope]) {
-        updateRequestEventIdsInProgress[eventId] = expectedScopes
-    }
-
-    /// For testing purposes only
-    func getUpdateRequestEventIdsInProgress() -> [String: [DecisionScope]] {
-        updateRequestEventIdsInProgress.shallowCopy
-    }
-
-    /// For testing purposes only
-    func setPropositionsInProgress(_ propositions: [DecisionScope: Proposition]) {
-        // remove the existing keys from propositionsInProgress thread-safe dictionary
-        let keys = propositionsInProgress.keys
-        for key in keys {
-            propositionsInProgress.removeValue(forKey: key)
+        /// For testing purposes only
+        func setUpdateRequestEventIdsInProgress(_ eventId: String, expectedScopes: [DecisionScope]) {
+            updateRequestEventIdsInProgress[eventId] = expectedScopes
         }
-        // Add new entries from propositions
-        for (key, value) in propositions {
-            propositionsInProgress[key] = value
-        }
-    }
 
-    /// For testing purposes only
-    func getPropositionsInProgress() -> [DecisionScope: Proposition] {
-        propositionsInProgress.shallowCopy
-    }
+        /// For testing purposes only
+        func getUpdateRequestEventIdsInProgress() -> [String: [DecisionScope]] {
+            updateRequestEventIdsInProgress.shallowCopy
+        }
+
+        /// For testing purposes only
+        func setPropositionsInProgress(_ propositions: [DecisionScope: Proposition]) {
+            // remove the existing keys from propositionsInProgress thread-safe dictionary
+            let keys = propositionsInProgress.keys
+            for key in keys {
+                propositionsInProgress.removeValue(forKey: key)
+            }
+            // Add new entries from propositions
+            for (key, value) in propositions {
+                propositionsInProgress[key] = value
+            }
+        }
+
+        /// For testing purposes only
+        func getPropositionsInProgress() -> [DecisionScope: Proposition] {
+            propositionsInProgress.shallowCopy
+        }
     #endif
 }
