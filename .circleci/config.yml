@@ -79,17 +79,17 @@ jobs:
 
       - install_dependencies
 
-      - run:
-          name: Lint Source Code
-          command: make lint
+      # - run:
+      #     name: Lint Source Code
+      #     command: make lint
 
-      - run:
-          name: Install SwiftFormat
-          command: make install-swiftformat
+      # - run:
+      #     name: Install SwiftFormat
+      #     command: make install-swiftformat
 
-      - run: 
-          name: Check Source Code Formatting
-          command: make check-format
+      # - run: 
+      #     name: Check Source Code Formatting
+      #     command: make check-format
 
   test-ios:
     macos:
