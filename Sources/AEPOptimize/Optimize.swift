@@ -287,7 +287,7 @@ public class Optimize: NSObject, Extension {
         guard
             event.isPersonalizationDecisionResponse,
             let requestEventId = event.requestEventId,
-            updateRequestEventIdsInProgress.shallowCopy.contains(where: { $0.key == requestEventId })
+            (updateRequestEventIdsInProgress.first(where: { $0.key == requestEventId }) != nil)
         else {
             Log.debug(label: OptimizeConstants.LOG_TAG,
                       """
