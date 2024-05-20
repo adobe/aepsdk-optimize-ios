@@ -31,7 +31,7 @@ public class Optimize: NSObject, Extension {
 
     /// Dispatch queue used to protect against simultaneous access of our containers from multiple threads
     private let queue: DispatchQueue = .init(label: "com.adobe.optimize.containers.queue")
-    
+
     /// a dictionary containing the update event IDs (and corresponding requested scopes) for Edge events that haven't yet received an Edge completion response.
     private var _updateRequestEventIdsInProgress: [String: [DecisionScope]] = [:]
     private var updateRequestEventIdsInProgress: [String: [DecisionScope]] {
@@ -59,7 +59,7 @@ public class Optimize: NSObject, Extension {
             set { queue.async { self._cachedPropositions = newValue } }
         }
     #endif
-    
+
     /// Array containing the schema strings for the proposition items supported by the SDK, sent in the personalization query request.
     static let supportedSchemas = [
         // Target schemas
