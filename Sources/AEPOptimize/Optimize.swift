@@ -29,12 +29,37 @@ public class Optimize: NSObject, Extension {
     // and the get propositions request is fulfilled from the latest cached content.
     private let eventsQueue = OperationOrderer<Event>("OptimizeEvents")
 
+    /// Dispatch queue used to protect against simultaneous access of our containers from multiple threads
+    private let queue: DispatchQueue = .init(label: "com.adobe.optimize.containers.queue")
+    
     /// a dictionary containing the update event IDs (and corresponding requested scopes) for Edge events that haven't yet received an Edge completion response.
-    private var updateRequestEventIdsInProgress: [String: [DecisionScope]] = [:]
+    private var _updateRequestEventIdsInProgress: [String: [DecisionScope]] = [:]
+    private var updateRequestEventIdsInProgress: [String: [DecisionScope]] {
+        get { queue.sync { self._updateRequestEventIdsInProgress } }
+        set { queue.async { self._updateRequestEventIdsInProgress = newValue } }
+    }
 
     /// a dictionary to accumulate propositions returned in various personalization:decisions events for the same Edge personalization request.
-    private var propositionsInProgress: [DecisionScope: OptimizeProposition] = [:]
+    private var _propositionsInProgress: [DecisionScope: OptimizeProposition] = [:]
+    private var propositionsInProgress: [DecisionScope: OptimizeProposition] {
+        get { queue.sync { self._propositionsInProgress } }
+        set { queue.async { self._propositionsInProgress = newValue } }
+    }
 
+    /// Dictionary containing decision propositions currently cached in-memory in the SDK.
+    private var _cachedPropositions: [DecisionScope: OptimizeProposition] = [:]
+    #if DEBUG
+        var cachedPropositions: [DecisionScope: OptimizeProposition] {
+            get { queue.sync { self._cachedPropositions } }
+            set { queue.async { self._cachedPropositions = newValue } }
+        }
+    #else
+        private(set) var cachedPropositions: [DecisionScope: OptimizeProposition] {
+            get { queue.sync { self._cachedPropositions } }
+            set { queue.async { self._cachedPropositions = newValue } }
+        }
+    #endif
+    
     /// Array containing the schema strings for the proposition items supported by the SDK, sent in the personalization query request.
     static let supportedSchemas = [
         // Target schemas
@@ -49,16 +74,8 @@ public class Optimize: NSObject, Extension {
         OptimizeConstants.JsonValues.SCHEMA_OFFER_TEXT
     ]
 
-    /// Dictionary containing decision propositions currently cached in-memory in the SDK.
-    #if DEBUG
-        var cachedPropositions: [DecisionScope: OptimizeProposition]
-    #else
-        private(set) var cachedPropositions: [DecisionScope: OptimizeProposition]
-    #endif
-
     public required init?(runtime: ExtensionRuntime) {
         self.runtime = runtime
-        cachedPropositions = [:]
         super.init()
     }
 
