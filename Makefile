@@ -75,3 +75,7 @@ lint-autocorrect:
 	($(CURRENT_DIRECTORY)/Pods/SwiftLint/swiftlint --fix)
 
 format: lint-autocorrect swift-format
+
+# used to test update-versions.sh script locally
+test-versions:
+	(sh ./scripts/update-versions.sh -n Optimize -v 5.0.1 -d "AEPCore 5.0.0, AEPEdge 5.0.0")
