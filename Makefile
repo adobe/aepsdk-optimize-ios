@@ -3,18 +3,12 @@ PROJECT_NAME = $(EXTENSION_NAME)
 TARGET_NAME_XCFRAMEWORK = $(EXTENSION_NAME).xcframework
 SCHEME_NAME_XCFRAMEWORK = AEPOptimize
 
-CURR_DIR := ${CURDIR}
-SIMULATOR_ARCHIVE_PATH = $(CURR_DIR)/build/ios_simulator.xcarchive/Products/Library/Frameworks/
-SIMULATOR_ARCHIVE_DSYM_PATH = $(CURR_DIR)/build/ios_simulator.xcarchive/dSYMs/
-IOS_ARCHIVE_PATH = $(CURR_DIR)/build/ios.xcarchive/Products/Library/Frameworks/
-IOS_ARCHIVE_DSYM_PATH = $(CURR_DIR)/build/ios.xcarchive/dSYMs/
+CURRENT_DIRECTORY := ${CURDIR}
+SIMULATOR_ARCHIVE_PATH = $(CURRENT_DIRECTORY)/build/ios_simulator.xcarchive/Products/Library/Frameworks/
+SIMULATOR_ARCHIVE_DSYM_PATH = $(CURRENT_DIRECTORY)/build/ios_simulator.xcarchive/dSYMs/
+IOS_ARCHIVE_PATH = $(CURRENT_DIRECTORY)/build/ios.xcarchive/Products/Library/Frameworks/
+IOS_ARCHIVE_DSYM_PATH = $(CURRENT_DIRECTORY)/build/ios.xcarchive/dSYMs/
 IOS_DESTINATION = 'platform=iOS Simulator,name=iPhone 15'
-
-lint-autocorrect:
-	./Pods/SwiftLint/swiftlint --fix --format
-
-lint:
-	./Pods/SwiftLint/swiftlint lint
 
 pod-install:
 	(pod install --repo-update)
@@ -71,7 +65,13 @@ install-swiftformat:
 check-format:
 	(swiftformat --lint Sources/$(PROJECT_NAME) --swiftversion 5.1)
 	
-format:
+swift-format:
 	(swiftformat Sources/$(PROJECT_NAME) --swiftversion 5.1)
 
+lint:
+	(./Pods/SwiftLint/swiftlint lint $(PROJECT_NAME)/Sources)
 
+lint-autocorrect:
+	($(CURRENT_DIRECTORY)/Pods/SwiftLint/swiftlint --fix)
+
+format: lint-autocorrect swift-format
