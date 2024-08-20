@@ -22,8 +22,8 @@ public extension Optimize {
     /// - Parameter decisionScopes: An array of decision scopes.
     /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
-    @objc(updatePropositions:withXdm:andData:)
-    static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil) {
+    @objc(updatePropositions:withXdm:andData:completion:)
+    static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil,_ completion: ((Bool, Error?) -> Void)? = nil) {
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
@@ -54,7 +54,17 @@ public extension Optimize {
                           source: EventSource.requestContent,
                           data: eventData)
 
-        MobileCore.dispatch(event: event)
+        MobileCore.dispatch(event: event, timeout: 10) { responseEvent in
+            guard let responseEvent = responseEvent else {
+                completion?(false, AEPError.callbackTimeout)
+                return
+            }
+            if let error = responseEvent.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR] as? AEPError {
+                completion?(false, error)
+                return
+            }
+            completion?(true, nil)
+        }
     }
 
     /// This API retrieves the previously fetched decisions for the provided decision scopes from the in-memory extension cache.

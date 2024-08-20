@@ -225,10 +225,19 @@ public class Optimize: NSObject, Extension {
                 // response event failed or timed out, remove this event's ID from the requested event IDs dictionary and kick-off queue.
                 self.updateRequestEventIdsInProgress.removeValue(forKey: edgeEvent.id.uuidString)
                 self.propositionsInProgress.removeAll()
-
+                self.dispatch(event: event.createErrorResponseEvent(AEPError.callbackTimeout))
                 self.eventsQueue.start()
                 return
             }
+            
+            
+               let responseEventToSend = event.createResponseEvent(
+                   name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
+                   type: EventType.optimize,
+                   source: EventSource.responseContent,
+                   data: [ OptimizeConstants.EventDataKeys.COMPLETED_UPDATE_EVENT_ID: requestEventId ]
+               )
+               self.dispatch(event: responseEventToSend)
 
             let updateCompleteEvent = responseEvent.createChainedEvent(name: OptimizeConstants.EventNames.OPTIMIZE_UPDATE_COMPLETE,
                                                                        type: EventType.optimize,
