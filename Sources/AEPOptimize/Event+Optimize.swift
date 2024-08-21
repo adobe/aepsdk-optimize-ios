@@ -65,7 +65,7 @@ extension Event {
                             type: EventType.optimize,
                             source: EventSource.responseContent,
                             data: [
-                                OptimizeConstants.EventDataKeys.RESPONSE_ERROR: error.rawValue
+                                OptimizeConstants.EventDataKeys.RESPONSE_ERROR: error
                             ])
     }
 }
