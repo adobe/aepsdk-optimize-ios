@@ -233,7 +233,7 @@ public class Optimize: NSObject, Extension {
                 name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
                 type: EventType.optimize,
                 source: EventSource.responseContent,
-                data: [ 
+                data: [
                     OptimizeConstants.EventDataKeys.COMPLETED_UPDATE_EVENT_ID: requestEventId
                 ]
             )
