@@ -1096,7 +1096,7 @@ class OptimizeFunctionalTests: XCTestCase {
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
         XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
-        XCTAssertEqual(AEPError.invalidRequest, AEPError(rawValue: dispatchedEvent?.data?["responseerror"] as? Int ?? 1000))
+        XCTAssertEqual(AEPError.invalidRequest, dispatchedEvent?.data?["responseerror"] as! AEPError)
         XCTAssertNil(dispatchedEvent?.data?["propositions"])
     }
 

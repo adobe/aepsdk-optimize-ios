@@ -229,9 +229,7 @@ public class Optimize: NSObject, Extension {
                 self.eventsQueue.start()
                 return
             }
-            
-            
-               let responseEventToSend = event.createResponseEvent(
+            let responseEventToSend = event.createResponseEvent(
                    name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
                    type: EventType.optimize,
                    source: EventSource.responseContent,
