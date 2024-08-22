@@ -136,26 +136,26 @@ public class Optimize: NSObject, Extension {
         if event.isUpdateEvent {
             processUpdatePropositions(event: event)
         } else if event.isGetEvent {
-            guard let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
-                  !decisionScopes.isEmpty
+            guard let eventDecisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
+                  !eventDecisionScopes.isEmpty
             else {
                 /// If decision scopes are not present in the event data, then adding it to the event queue
                 eventsQueue.add(event)
-                Log.warning(label: OptimizeConstants.LOG_TAG, "Decision scopes are either not present or empty in the event data.")
+                Log.trace(label: OptimizeConstants.LOG_TAG, "Decision scopes are either not present or empty in the event data.")
                 return
             }
             /// Fetch propositions and check if all of the decision scopes are present in the cache
-            let fetchedPropositions = decisionScopes.filter { self.cachedPropositions.keys.contains($0) }
+            let fetchedPropositions = eventDecisionScopes.filter { self.cachedPropositions.keys.contains($0) }
             /// Check if the decision scopes are currently in progress in `updateRequestEventIdsInProgress`
-            let scopesInProgress = decisionScopes.filter { scope in
+            let scopesInProgress = eventDecisionScopes.filter { scope in
                 updateRequestEventIdsInProgress.values.flatMap { $0 }.contains(scope)
             }
-            if decisionScopes.count == fetchedPropositions.count && scopesInProgress.isEmpty {
+            if eventDecisionScopes.count == fetchedPropositions.count && scopesInProgress.isEmpty {
                 processGetPropositions(event: event)
             } else {
                 /// Not all decision scopes are present in the cache or requested scopes are currently in progress, adding it to the event queue
                 eventsQueue.add(event)
-                Log.warning(label: OptimizeConstants.LOG_TAG, "Decision scopes are either not present or currently in progress.")
+                Log.trace(label: OptimizeConstants.LOG_TAG, "Decision scopes are either not present or currently in progress.")
             }
         } else if event.isTrackEvent {
             processTrackPropositions(event: event)
