@@ -233,9 +233,11 @@ public class Optimize: NSObject, Extension {
                 name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
                 type: EventType.optimize,
                 source: EventSource.responseContent,
-                data: [ OptimizeConstants.EventDataKeys.COMPLETED_UPDATE_EVENT_ID: requestEventId ]
+                data: [ 
+                    OptimizeConstants.EventDataKeys.COMPLETED_UPDATE_EVENT_ID: requestEventId
+                ]
             )
-               self.dispatch(event: responseEventToSend)
+            self.dispatch(event: responseEventToSend)
 
             let updateCompleteEvent = responseEvent.createChainedEvent(name: OptimizeConstants.EventNames.OPTIMIZE_UPDATE_COMPLETE,
                                                                        type: EventType.optimize,
