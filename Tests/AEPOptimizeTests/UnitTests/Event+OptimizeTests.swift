@@ -124,6 +124,6 @@ class Event_OptimizeTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventSource.responseContent", errorResponseEvent.source)
         XCTAssertNotNil(errorResponseEvent.data)
         XCTAssertEqual(1, errorResponseEvent.data?.count)
-        XCTAssertEqual(6, errorResponseEvent.data?["responseerror"] as? Int)
+        XCTAssertEqual(AEPError.invalidRequest, errorResponseEvent.data?["responseerror"] as! AEPError)
     }
 }
