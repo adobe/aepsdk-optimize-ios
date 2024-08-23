@@ -22,6 +22,7 @@ public extension Optimize {
     /// - Parameter decisionScopes: An array of decision scopes.
     /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
+    /// - Parameter completion: An optional callback to be used by consumer
     @objc(updatePropositions:withXdm:andData:completion:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, _ completion: ((Bool, Error?) -> Void)? = nil) {
         let flattenedDecisionScopes = decisionScopes
