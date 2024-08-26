@@ -130,7 +130,7 @@ public class Optimize: NSObject, Extension {
 
     /// Processes the propositions request event, dispatched with type `EventType.optimize` and source `EventSource.requestContent`.
     ///
-    /// It processes events based on the type of the requested event type
+    /// It processes events based on the "requesttype" in the event data
     /// - Parameter event: propositions request event
     private func processOptimizeRequestContent(event: Event) {
         if event.isUpdateEvent {
@@ -139,9 +139,8 @@ public class Optimize: NSObject, Extension {
             guard let eventDecisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
                   !eventDecisionScopes.isEmpty
             else {
-                /// If decision scopes are not present in the event data, then adding it to the event queue
-                eventsQueue.add(event)
-                Log.trace(label: OptimizeConstants.LOG_TAG, "Decision scopes are either not present or empty in the event data.")
+                Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
+                dispatch(event: event.createErrorResponseEvent(AEPError.invalidRequest))
                 return
             }
             /// Fetch propositions and check if all of the decision scopes are present in the cache
