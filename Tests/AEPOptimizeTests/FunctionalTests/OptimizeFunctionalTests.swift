@@ -847,6 +847,307 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("true", proposition?.offers[0].characteristics?["testing"])
     }
 
+    func testGetPropositions_dispatchPropositionFromCacheBeforeNextUpdate() throws {
+        /// Setup
+        let decisionScopeA = DecisionScope(name: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY3Rpdml0eUlkIjoic2NvcGUtYSIsInBsYWNlbWVudElkIjoic2NvcGUtYV9wbGFjZW1lbnQifQ.KW1HKVJHTTdmUkJZUmM5UEhNdURtOGdT")
+        
+        let decisionScopeB = DecisionScope(name: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY3Rpdml0eUlkIjoic2NvcGUtYiIsInBsYWNlbWVudElkIjoic2NvcGUtYl9wbGFjZW1lbnQifQ.QzNxT1dBZ1Z1M0Z5dW84SjdKak1nY2c1")
+
+        let propositionA = """
+        {
+            "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+            "scope": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY3Rpdml0eUlkIjoic2NvcGUtYSIsInBsYWNlbWVudElkIjoic2NvcGUtYV9wbGFjZW1lbnQifQ.KW1HKVJHTTdmUkJZUmM5UEhNdURtOGdT"
+        }
+        """.data(using: .utf8)!
+
+        guard let propositionForScopeA = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionA) else {
+            XCTFail("Propositions should be valid.")
+            return
+        }
+
+        /// Cache decisionScopeA
+        optimize.cachedPropositions = [
+            decisionScopeA: propositionForScopeA
+        ]
+        
+        let getEvent = Event(
+            name: "Get Propositions Request",
+            type: "com.adobe.eventType.optimize",
+            source: "com.adobe.eventSource.requestContent",
+            data: [
+                "requesttype": "getpropositions",
+                "decisionscopes": [
+                    ["name": decisionScopeA.name]
+                ]
+            ]
+        )
+
+        let updateEvent = Event(
+            name: "Update Propositions Request",
+            type: "com.adobe.eventType.optimize",
+            source: "com.adobe.eventSource.requestContent",
+            data: [
+                "requesttype": "updatepropositions",
+                "decisionscopes": [
+                    ["name": decisionScopeB.name]
+                ]
+            ]
+        )
+        
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", updateEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+        /// Dispatch the Update event
+        mockRuntime.simulateComingEvents(updateEvent)
+        
+        let updateEventIdsInProgress = optimize.getUpdateRequestEventIdsInProgress()
+        XCTAssertEqual(1, updateEventIdsInProgress.count)
+        
+        let optimizeContentComplete = Event(
+            name: "Optimize Update Propositions Complete",
+            type: "com.adobe.eventType.optimize",
+            source: "com.adobe.eventSource.contentComplete",
+            data: [
+                "completedUpdateRequestForEventId": updateEvent.id.uuidString
+            ]
+        )
+
+        let expectationGet = XCTestExpectation(description: "Get event should be processed first.")
+
+        var dispatchedEvents = [Event]()
+        
+        mockRuntime.onEventDispatch = { event in
+            dispatchedEvents.append(event)
+            expectationGet.fulfill()
+        }
+
+        /// Dispatch the events
+        mockRuntime.simulateComingEvents(getEvent)
+        mockRuntime.simulateComingEvents(optimizeContentComplete)
+
+        /// Verify
+        wait(for: [expectationGet], timeout: 5)
+
+        XCTAssertEqual(mockRuntime.firstEvent?.type, "com.adobe.eventType.optimize")
+        XCTAssertEqual(mockRuntime.firstEvent?.source, "com.adobe.eventSource.responseContent")
+        
+        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = mockRuntime.firstEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions dictionary should be valid.")
+            return
+        }
+        
+        XCTAssertEqual(propositionsDictionary[decisionScopeA]?.id, optimize.cachedPropositions[decisionScopeA]?.id)
+        XCTAssertEqual("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", propositionsDictionary[decisionScopeA]?.id)
+        XCTAssertEqual("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY3Rpdml0eUlkIjoic2NvcGUtYSIsInBsYWNlbWVudElkIjoic2NvcGUtYV9wbGFjZW1lbnQifQ.KW1HKVJHTTdmUkJZUmM5UEhNdURtOGdT", propositionsDictionary[decisionScopeA]?.scope)
+    }
+    
+    func testGetPropositions_ScopesFromEventIsUpdateInProgress() {
+        // Setup
+        let decisionScopeA = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
+        
+        let cachedPropositionJSON = """
+        {
+            "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+            "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
+        }
+        """.data(using: .utf8)!
+        
+        let updatedPropositionJSON = """
+        {
+            "id": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB",
+            "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
+        }
+        """.data(using: .utf8)!
+
+        guard let cachedPropositionForScopeA = try? JSONDecoder().decode(OptimizeProposition.self, from: cachedPropositionJSON),
+              let updatedPropositionForScopeA = try? JSONDecoder().decode(OptimizeProposition.self, from: updatedPropositionJSON) else {
+            XCTFail("Propositions should be valid.")
+            return
+        }
+
+        /// Same Decision Scope is already cached with old propositions
+        optimize.cachedPropositions = [
+            decisionScopeA: cachedPropositionForScopeA
+        ]
+
+        let updateEvent = Event(
+            name: "Optimize Update Propositions Request",
+            type: "com.adobe.eventType.optimize",
+            source: "com.adobe.eventSource.requestContent",
+            data: [
+                "requesttype": "updatepropositions",
+                "decisionscopes": [
+                    ["name": decisionScopeA.name]
+                ]
+            ]
+        )
+
+        let getEvent = Event(
+            name: "Optimize Get Propositions Request",
+            type: "com.adobe.eventType.optimize",
+            source: "com.adobe.eventSource.requestContent",
+            data: [
+                "requesttype": "getpropositions",
+                "decisionscopes": [
+                    ["name": decisionScopeA.name]
+                ]
+            ]
+        )
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", updateEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        /// Simulating update & get events
+        mockRuntime.simulateComingEvents(updateEvent)
+        mockRuntime.simulateComingEvents(getEvent)
+
+        XCTAssertTrue(mockRuntime.dispatchedEvents.isEmpty)
+
+        let optimizeContentComplete = Event(
+            name: "Optimize Update Propositions Complete",
+            type: "com.adobe.eventType.optimize",
+            source: "com.adobe.eventSource.contentComplete",
+            data: [
+                "completedUpdateRequestForEventId": updateEvent.id.uuidString,
+                "propositions" : [updatedPropositionJSON]
+            ]
+        )
+        
+        mockRuntime.simulateComingEvents(optimizeContentComplete)
+        optimize.cachedPropositions[decisionScopeA] = updatedPropositionForScopeA
+        
+        /// After the update is complete, the get event should now dispatch
+        let expectation = XCTestExpectation(description: "Get propositions request should now dispatch response event after update completion.")
+        
+        mockRuntime.onEventDispatch = { event in
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 10)
+        XCTAssertEqual(mockRuntime.dispatchedEvents.count, 1)
+        
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual(dispatchedEvent?.type, "com.adobe.eventType.optimize")
+        XCTAssertEqual(dispatchedEvent?.source, "com.adobe.eventSource.responseContent")
+
+        /// Validate that the Get proposition response contains the updated proposition
+        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions dictionary should be valid.")
+            return
+        }
+        XCTAssertEqual(propositionsDictionary[decisionScopeA]?.id, updatedPropositionForScopeA.id)
+        XCTAssertEqual("BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB", propositionsDictionary[decisionScopeA]?.id)
+        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", propositionsDictionary[decisionScopeA]?.scope)
+    }
+
+    func testGetPropositions_fewDecisionScopesNotInCacheAndGetToBeQueued() {
+        /// Setup
+        let decisionScopeA = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
+        let decisionScopeB = DecisionScope(name: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY3Rpdml0eUlkIjoic2NvcGUtYiIsInBsYWNlbWVudElkIjoic2NvcGUtYl9wbGFjZW1lbnQifQ.QzNxT1dBZ1Z1M0Z5dW84SjdKak1nY2c1")
+        
+        let propositionA = """
+        {
+            "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+            "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
+        }
+        """.data(using: .utf8)!
+        
+        let propositionB = """
+        {
+            "id": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB",
+            "scope": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY3Rpdml0eUlkIjoic2NvcGUtYiIsInBsYWNlbWVudElkIjoic2NvcGUtYl9wbGFjZW1lbnQifQ.QzNxT1dBZ1Z1M0Z5dW84SjdKak1nY2c1"
+        }
+        """.data(using: .utf8)!
+
+        guard let cachedPropositionForScopeA = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionA),
+              let cachedPropositionForScopeB = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionB) else {
+            XCTFail("Propositions should be valid.")
+            return
+        }
+
+        /// decisionScopeA is already cached.
+        optimize.cachedPropositions = [
+            decisionScopeA: cachedPropositionForScopeA
+        ]
+
+        /// Creating a get event with a decisionScopeB that is currently not present in the cache.
+        let getEvent = Event(
+            name: "Optimize Get Propositions Request",
+            type: "com.adobe.eventType.optimize",
+            source: "com.adobe.eventSource.requestContent",
+            data: [
+                "requesttype": "getpropositions",
+                "decisionscopes": [
+                    ["name": decisionScopeA.name],
+                    ["name": decisionScopeB.name]
+                ]
+            ]
+        )
+        
+        /// Update event with decisionScopeB.
+        let updateEvent = Event(
+            name: "Optimize Update Propositions Request",
+            type: "com.adobe.eventType.optimize",
+            source: "com.adobe.eventSource.requestContent",
+            data: [
+                "requesttype": "updatepropositions",
+                "decisionscopes": [
+                    ["name": decisionScopeB.name]
+                ]
+            ]
+        )
+
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", updateEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+
+        /// Dispatching the update event.
+        mockRuntime.simulateComingEvents(updateEvent)
+        optimize.setUpdateRequestEventIdsInProgress(updateEvent.id.uuidString, expectedScopes: [decisionScopeB])
+        optimize.setPropositionsInProgress([decisionScopeB : cachedPropositionForScopeB])
+        
+        let optimizeContentComplete = Event(
+            name: "Optimize Update Propositions Complete",
+            type: "com.adobe.eventType.optimize",
+            source: "com.adobe.eventSource.contentComplete",
+            data: [
+                "completedUpdateRequestForEventId": updateEvent.id.uuidString,
+                "propositions" : [propositionB]
+            ]
+        )
+
+        let expectationGet = XCTestExpectation(description: "Get event should be queued.")
+        mockRuntime.onEventDispatch = { event in
+            expectationGet.fulfill()
+        }
+
+        /// Dispatch the get event Immediately.
+        mockRuntime.simulateComingEvents(getEvent)
+        
+        /// Dispatching the proposition complete event after a delay of 1 second to simulate a real use case.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {[weak self] in
+            self?.mockRuntime.simulateComingEvents(optimizeContentComplete)
+        })
+
+        wait(for: [expectationGet], timeout: 10)
+        
+        /// Verify that the get proposition event was queued & is the last event to be executed.
+        XCTAssertEqual(mockRuntime.firstEvent?.type, "com.adobe.eventType.optimize")
+        XCTAssertEqual(mockRuntime.firstEvent?.source, "com.adobe.eventSource.responseContent")
+        
+        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = mockRuntime.firstEvent?.getTypedData(for: "propositions") else {
+            XCTFail("Propositions dictionary should be valid.")
+            return
+        }
+        
+        /// Verify that the proposition for decisionScopeB is present in the reponse event as well as in the cache.
+        XCTAssertTrue(propositionsDictionary.keys.contains(decisionScopeB))
+        XCTAssertEqual("BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB", propositionsDictionary[decisionScopeB]?.id)
+        XCTAssertEqual("BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB", optimize.cachedPropositions[decisionScopeB]?.id)
+        XCTAssertEqual(propositionsDictionary[decisionScopeB]?.id, optimize.cachedPropositions[decisionScopeB]?.id)
+    }
+    
     func testGetPropositions_notAllDecisionScopesInCache() {
         // setup
         let propositionsData =

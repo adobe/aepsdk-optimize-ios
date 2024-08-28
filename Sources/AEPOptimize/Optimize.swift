@@ -80,20 +80,9 @@ public class Optimize: NSObject, Extension {
     }
 
     public func onRegistered() {
-        registerListener(type: EventType.optimize, source: EventSource.requestContent) { event in
-            if event.isUpdateEvent {
-                self.processUpdatePropositions(event: event)
-            } else if event.isGetEvent {
-                // Queue the get propositions event in internal events queue to ensure any prior update requests are completed
-                // before it is processed.
-                self.eventsQueue.add(event)
-            } else if event.isTrackEvent {
-                self.processTrackPropositions(event: event)
-            } else {
-                Log.warning(label: OptimizeConstants.LOG_TAG, "Ignoring event! Cannot determine the type of request event.")
-                return
-            }
-        }
+        registerListener(type: EventType.optimize,
+                         source: EventSource.requestContent,
+                         listener: processOptimizeRequestContent(event:))
 
         registerListener(type: EventType.edge,
                          source: OptimizeConstants.EventSource.EDGE_PERSONALIZATION_DECISIONS,
@@ -137,6 +126,42 @@ public class Optimize: NSObject, Extension {
             return getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME, event: event)?.status == .set
         }
         return true
+    }
+
+    /// Processes the propositions request event, dispatched with type `EventType.optimize` and source `EventSource.requestContent`.
+    ///
+    /// It processes events based on the "requesttype" in the event data
+    /// - Parameter event: propositions request event
+    private func processOptimizeRequestContent(event: Event) {
+        if event.isUpdateEvent {
+            processUpdatePropositions(event: event)
+        } else if event.isGetEvent {
+            guard let eventDecisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
+                  !eventDecisionScopes.isEmpty
+            else {
+                Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
+                dispatch(event: event.createErrorResponseEvent(AEPError.invalidRequest))
+                return
+            }
+            /// Fetch propositions and check if all of the decision scopes are present in the cache
+            let fetchedPropositions = eventDecisionScopes.filter { self.cachedPropositions.keys.contains($0) }
+            /// Check if the decision scopes are currently in progress in `updateRequestEventIdsInProgress`
+            let scopesInProgress = eventDecisionScopes.filter { scope in
+                updateRequestEventIdsInProgress.values.flatMap { $0 }.contains(scope)
+            }
+            if eventDecisionScopes.count == fetchedPropositions.count && scopesInProgress.isEmpty {
+                processGetPropositions(event: event)
+            } else {
+                /// Not all decision scopes are present in the cache or requested scopes are currently in progress, adding it to the event queue
+                eventsQueue.add(event)
+                Log.trace(label: OptimizeConstants.LOG_TAG, "Decision scopes are either not present or currently in progress.")
+            }
+        } else if event.isTrackEvent {
+            processTrackPropositions(event: event)
+        } else {
+            Log.warning(label: OptimizeConstants.LOG_TAG, "Ignoring event! Cannot determine the type of request event.")
+            return
+        }
     }
 
     // MARK: Event Listeners
