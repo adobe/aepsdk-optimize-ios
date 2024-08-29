@@ -54,6 +54,66 @@ class OptimizeIntegrationTests: XCTestCase {
         }
         wait(for: [initExpectation], timeout: 1)
     }
+    
+    func testUpdatePropositions_timeoutError() {
+        // setup
+        let timeoutResponse = HTTPURLResponse(url: URL(string: "https://edge.adobedc.net/ee/v1/interact?configId=configId&requestId=requestId")!, statusCode: 408, httpVersion: nil, headerFields: nil)
+        let responseString = """
+        {\
+           "requestId":"FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF",\
+           "handle":[],\
+           "errors":[\
+              {\
+                 "type":"EXEG-0201-503",\
+                 "status":408,\
+                 "title":"Request timed out. Please try again."\
+              }\
+           ]\
+        }
+        """
+
+        // mock edge response
+        let requestExpectation = XCTestExpectation(description: "Request for mock service response.")
+        let mockNetworkService = TestableNetworkService()
+        ServiceProvider.shared.networkService = mockNetworkService
+        mockNetworkService.mock { request in
+            if request.url.absoluteString.contains("edge.adobedc.net/ee/v1/interact?configId=configId") {
+                requestExpectation.fulfill()
+                return (data: responseString.data(using: .utf8), response: timeoutResponse, error: nil)
+            }
+            return (data: nil, response: timeoutResponse, error: nil)
+        }
+
+        // init extensions
+        initExtensionsAndWait()
+        
+        // update configuration
+        MobileCore.updateConfigurationWith(configDict: [
+                                            "experienceCloud.org": "orgid",
+                                            "experienceCloud.server": "test.com",
+                                            "global.privacy": "optedin",
+                                            "edge.configId": "configId"])
+        
+        let decisionScope = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
+                                              placementId: "xcore:offer-placement:1111111111111111")
+
+        let exp = expectation(description: "The Update Proposition should result in a time out")
+        
+        // test
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil) {scope, error in
+            // verify
+            XCTAssertNil(scope)
+            XCTAssertNotNil(error)
+            XCTAssertTrue(error?.status == 408)
+            XCTAssertTrue(error?.aepError == .callbackTimeout)
+            XCTAssertTrue(error?.title == "Request Timeout")
+            XCTAssertTrue(error?.detail == "Update proposition request resulted in a timeout.")
+            exp.fulfill()
+        }
+
+        wait(for: [exp, requestExpectation], timeout: 12)
+    }
+
 
     func testUpdatePropositions_validEdgeRequest() {
         // setup

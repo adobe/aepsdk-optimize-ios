@@ -17,11 +17,11 @@ import Foundation
 /// AEPOptimizeError class used to create AEPOptimizeError from error details received from Experience Edge.
 @objc(AEPOptimizeError)
 public class AEPOptimizeError: NSObject {
-    let type: String?
-    let status: Int?
-    let title: String?
-    let detail: String?
-    var aepError = AEPError.none
+    public let type: String?
+    public let status: Int?
+    public let title: String?
+    public let detail: String?
+    public var aepError = AEPError.none
 
     public init(type: String?, status: Int?, title: String?, detail: String?, aepError: AEPError? = nil) {
         self.type = type
