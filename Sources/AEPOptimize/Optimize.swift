@@ -255,7 +255,8 @@ public class Optimize: NSObject, Extension {
                     status: 408,
                     title: "Request Timeout",
                     detail: "Update proposition request resulted in a timeout.",
-                    aepError: AEPError.callbackTimeout)
+                    aepError: AEPError.callbackTimeout
+                )
                 self.dispatch(event: event.createErrorResponseEvent(timeoutError))
                 self.eventsQueue.start()
                 return

@@ -61,7 +61,8 @@ public extension Optimize {
                     status: 408,
                     title: "Request Timeout",
                     detail: "Update proposition request resulted in a timeout.",
-                    aepError: AEPError.callbackTimeout)
+                    aepError: AEPError.callbackTimeout
+                )
                 completion?(nil, timeoutError)
                 return
             }
