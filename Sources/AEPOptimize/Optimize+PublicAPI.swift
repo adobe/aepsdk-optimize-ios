@@ -22,9 +22,9 @@ public extension Optimize {
     /// - Parameter decisionScopes: An array of decision scopes.
     /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
-    /// - Parameter completion: An optional callback to be used by consumer
+    /// - Parameter completion: Optional completion handler invoked with list of successful decision scopes and errors, if any
     @objc(updatePropositions:withXdm:andData:completion:)
-    static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, _ completion: ((Bool, Error?) -> Void)? = nil) {
+    static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, _ completion: (([DecisionScope]?, AEPOptimizeError?) -> Void)? = nil) {
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
@@ -54,17 +54,20 @@ public extension Optimize {
                           type: EventType.optimize,
                           source: EventSource.requestContent,
                           data: eventData)
-
         MobileCore.dispatch(event: event, timeout: 10) { responseEvent in
             guard let responseEvent = responseEvent else {
-                completion?(false, AEPError.callbackTimeout)
+                let timeoutError = AEPOptimizeError(
+                    type: nil,
+                    status: 408,
+                    title: "Request Timeout",
+                    detail: "Update proposition request resulted in a timeout.",
+                    aepError: AEPError.callbackTimeout)
+                completion?(nil, timeoutError)
                 return
             }
-            if let error = responseEvent.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR] as? AEPError {
-                completion?(false, error)
-                return
-            }
-            completion?(true, nil)
+            let result = responseEvent.data?[OptimizeConstants.EventDataKeys.DECISION_SCOPES] as? [DecisionScope]
+            let error = responseEvent.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR] as? AEPOptimizeError
+            completion?(result, error)
         }
     }
 

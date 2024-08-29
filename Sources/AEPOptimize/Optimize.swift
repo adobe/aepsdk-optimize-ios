@@ -216,8 +216,8 @@ public class Optimize: NSObject, Extension {
         // add the Edge event to update propositions in the events queue.
         eventsQueue.add(edgeEvent)
 
-        // Increase timeout to 5s to ensure edge requests have enough time to complete.
-        MobileCore.dispatch(event: edgeEvent, timeout: 5) { responseEvent in
+        // Increase timeout to 10s to ensure edge requests have enough time to complete.
+        MobileCore.dispatch(event: edgeEvent, timeout: 10) { responseEvent in
             guard
                 let responseEvent = responseEvent,
                 let requestEventId = responseEvent.requestEventId
@@ -225,18 +225,24 @@ public class Optimize: NSObject, Extension {
                 // response event failed or timed out, remove this event's ID from the requested event IDs dictionary, dispatch an error response event and kick-off queue.
                 self.updateRequestEventIdsInProgress.removeValue(forKey: edgeEvent.id.uuidString)
                 self.propositionsInProgress.removeAll()
-                self.dispatch(event: event.createErrorResponseEvent(AEPError.callbackTimeout))
+                let timeoutError = AEPOptimizeError(
+                    type: nil,
+                    status: 408,
+                    title: "Request Timeout",
+                    detail: "Update proposition request resulted in a timeout.",
+                    aepError: AEPError.callbackTimeout)
+                self.dispatch(event: event.createErrorResponseEvent(timeoutError))
                 self.eventsQueue.start()
                 return
             }
-            
+
             // response event to provide success callback to updateProposition public api
             let responseEventToSend = event.createResponseEvent(
                 name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
                 type: EventType.optimize,
                 source: EventSource.responseContent,
                 data: [
-                    OptimizeConstants.EventDataKeys.COMPLETED_UPDATE_EVENT_ID: requestEventId
+                    OptimizeConstants.EventDataKeys.DECISION_SCOPES: Array(self.propositionsInProgress.keys)
                 ]
             )
             self.dispatch(event: responseEventToSend)

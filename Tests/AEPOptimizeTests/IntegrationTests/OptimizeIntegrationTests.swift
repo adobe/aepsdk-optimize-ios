@@ -105,8 +105,8 @@ class OptimizeIntegrationTests: XCTestCase {
                                           placementId: "xcore:offer-placement:1111111111111111")
         
         // update propositions
-        Optimize.updatePropositions(for: [decisionScope], withXdm: nil){ (status,error) in
-            XCTAssertTrue(status)
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil){ (scope,error) in
+            XCTAssertNotNil(scope)
             requestExpectation.fulfill()
         }
 
