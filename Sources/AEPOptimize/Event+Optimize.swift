@@ -65,7 +65,19 @@ extension Event {
                             type: EventType.optimize,
                             source: EventSource.responseContent,
                             data: [
-                                OptimizeConstants.EventDataKeys.RESPONSE_ERROR: error.rawValue
+                                OptimizeConstants.EventDataKeys.RESPONSE_ERROR: error
+                            ])
+    }
+
+    /// Creates a response event with specified AEPOptimizeError type added in the Event data.
+    /// - Parameter error: type of AEPOptimizeError
+    /// - Returns: error response Event
+    func createErrorResponseEvent(_ error: AEPOptimizeError) -> Event {
+        createResponseEvent(name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
+                            type: EventType.optimize,
+                            source: EventSource.responseContent,
+                            data: [
+                                OptimizeConstants.EventDataKeys.RESPONSE_ERROR: error
                             ])
     }
 }
