@@ -64,13 +64,13 @@ class OptimizeIntegrationTests: XCTestCase {
            "handle":[],\
            "errors":[\
               {\
-                 "type":"EXEG-0201-503",\
+                 "type":"EXEG-0201-408",\
                  "status":408,\
                  "title":"Request timed out. Please try again."\
               }\
            ]\
         }
-        """
+        """ 
 
         // mock edge response
         let requestExpectation = XCTestExpectation(description: "Request for mock service response.")
