@@ -32,7 +32,7 @@ public extension Optimize {
         guard !flattenedDecisionScopes.isEmpty else {
             Log.warning(label: OptimizeConstants.LOG_TAG,
                         "Cannot update propositions, provided decision scopes array is empty or has invalid items.")
-            completion?(nil,nil)
+            completion?(nil, nil)
             return
         }
 
