@@ -21,7 +21,7 @@ public class AEPOptimizeError: NSObject {
     public let status: Int?
     public let title: String?
     public let detail: String?
-    public var aepError = AEPError.none
+    public var aepError = AEPError.unexpected
 
     public init(type: String?, status: Int?, title: String?, detail: String?, aepError: AEPError? = nil) {
         self.type = type
@@ -31,7 +31,13 @@ public class AEPOptimizeError: NSObject {
         if let aepError {
             self.aepError = aepError
         } else {
-            if status == 400 {
+            if status == 408 {
+                self.aepError = .callbackTimeout
+            } else if status == 400 || status == 403 || status == 404 {
+                self.aepError = .invalidRequest
+            } else if status == 429 || status == 500 || status == 503 {
+                self.aepError = .serverError
+            } else if status == 502 || status == 504 {
                 self.aepError = .networkError
             }
         }
