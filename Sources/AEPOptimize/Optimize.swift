@@ -252,9 +252,9 @@ public class Optimize: NSObject, Extension {
                 self.propositionsInProgress.removeAll()
                 let timeoutError = AEPOptimizeError(
                     type: nil,
-                    status: 408,
-                    title: "Request Timeout",
-                    detail: "Update proposition request resulted in a timeout.",
+                    status: OptimizeConstants.ErrorData.Timeout.STATUS,
+                    title: OptimizeConstants.ErrorData.Timeout.TITLE,
+                    detail: OptimizeConstants.ErrorData.Timeout.DETAIL,
                     aepError: AEPError.callbackTimeout
                 )
                 self.dispatch(event: event.createErrorResponseEvent(timeoutError))
@@ -268,7 +268,7 @@ public class Optimize: NSObject, Extension {
                 type: EventType.optimize,
                 source: EventSource.responseContent,
                 data: [
-                    OptimizeConstants.EventDataKeys.DECISION_SCOPES: Array(self.propositionsInProgress.keys)
+                    OptimizeConstants.EventDataKeys.PROPOSITIONS: self.propositionsInProgress
                 ]
             )
             self.dispatch(event: responseEventToSend)

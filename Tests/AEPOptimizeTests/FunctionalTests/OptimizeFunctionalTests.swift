@@ -1029,6 +1029,13 @@ class OptimizeFunctionalTests: XCTestCase {
         wait(for: [expectation], timeout: 12)
         XCTAssertEqual(mockRuntime.dispatchedEvents.count, 2)
         
+        // first event will be a timeout error response event as in functional test we don't recieve response from edge
+        let firstEvent = mockRuntime.firstEvent
+        XCTAssertEqual(firstEvent?.type, "com.adobe.eventType.optimize")
+        XCTAssertEqual(firstEvent?.source, "com.adobe.eventSource.responseContent")
+        XCTAssertNotNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR])
+        XCTAssertNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.DECISION_SCOPES])
+        
         let dispatchedEvent = mockRuntime.secondEvent
         XCTAssertEqual(dispatchedEvent?.type, "com.adobe.eventType.optimize")
         XCTAssertEqual(dispatchedEvent?.source, "com.adobe.eventSource.responseContent")
@@ -1135,6 +1142,13 @@ class OptimizeFunctionalTests: XCTestCase {
         })
 
         wait(for: [expectationGet], timeout: 12)
+        
+        // first event will be a timeout error response event as in functional test we don't recieve response from edge
+        let firstEvent = mockRuntime.firstEvent
+        XCTAssertEqual(firstEvent?.type, "com.adobe.eventType.optimize")
+        XCTAssertEqual(firstEvent?.source, "com.adobe.eventSource.responseContent")
+        XCTAssertNotNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR])
+        XCTAssertNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.DECISION_SCOPES])
         
         /// Verify that the get proposition event was queued & is the last event to be executed.
         XCTAssertEqual(mockRuntime.secondEvent?.type, "com.adobe.eventType.optimize")
