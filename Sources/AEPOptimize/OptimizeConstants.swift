@@ -69,7 +69,10 @@ enum OptimizeConstants {
         static let PAYLOAD = "payload"
         enum ErrorKeys {
             static let TYPE = "type"
+            static let STATUS = "status"
+            static let TITLE = "title"
             static let DETAIL = "detail"
+            static let REPORT = "report"
         }
     }
 
@@ -118,5 +121,13 @@ enum OptimizeConstants {
         static let SCHEMA_OFFER_JSON = "https://ns.adobe.com/experience/offer-management/content-component-json"
         static let SCHEMA_OFFER_IMAGE = "https://ns.adobe.com/experience/offer-management/content-component-imagelink"
         static let SCHEMA_OFFER_TEXT = "https://ns.adobe.com/experience/offer-management/content-component-text"
+    }
+
+    enum ErrorData {
+        enum Timeout {
+            static let STATUS = 408
+            static let TITLE = "Request Timeout"
+            static let DETAIL = "Update/Get proposition request resulted in a timeout."
+        }
     }
 }

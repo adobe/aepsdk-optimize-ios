@@ -16,7 +16,7 @@ import Foundation
 
 /// AEPOptimizeError class used to create AEPOptimizeError from error details received from Experience Edge.
 @objc(AEPOptimizeError)
-public class AEPOptimizeError: NSObject {
+public class AEPOptimizeError: NSObject, Error {
     public let type: String?
     public let status: Int?
     public let title: String?

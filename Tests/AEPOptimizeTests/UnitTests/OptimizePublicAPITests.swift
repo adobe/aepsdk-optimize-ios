@@ -81,10 +81,11 @@ class OptimizePublicAPITests: XCTestCase {
         let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
         
         // test
-        Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { scope, error in
-            XCTAssert(error?.status == 408)
-            XCTAssert(error?.title == "Request Timeout")
-            XCTAssert(error?.detail == "Update proposition request resulted in a timeout.")
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { propositions, error in
+            XCTAssert(error?.status == OptimizeConstants.ErrorData.Timeout.STATUS)
+            XCTAssert(error?.aepError == .callbackTimeout)
+            XCTAssert(error?.title == OptimizeConstants.ErrorData.Timeout.TITLE)
+            XCTAssert(error?.detail == OptimizeConstants.ErrorData.Timeout.DETAIL)
             XCTAssert(error?.aepError == .callbackTimeout)
             expectation.fulfill()
         }

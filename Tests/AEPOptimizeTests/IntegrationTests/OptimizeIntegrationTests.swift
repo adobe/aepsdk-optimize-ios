@@ -100,14 +100,14 @@ class OptimizeIntegrationTests: XCTestCase {
         let exp = expectation(description: "The Update Proposition should result in a time out")
         
         // test
-        Optimize.updatePropositions(for: [decisionScope], withXdm: nil) {scope, error in
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil) {propositions, error in
             // verify
-            XCTAssertNil(scope)
+            XCTAssertNil(propositions)
             XCTAssertNotNil(error)
             XCTAssertTrue(error?.status == 408)
             XCTAssertTrue(error?.aepError == .callbackTimeout)
             XCTAssertTrue(error?.title == "Request Timeout")
-            XCTAssertTrue(error?.detail == "Update proposition request resulted in a timeout.")
+            XCTAssertTrue(error?.detail == "Update/Get proposition request resulted in a timeout.")
             exp.fulfill()
         }
 
@@ -165,8 +165,9 @@ class OptimizeIntegrationTests: XCTestCase {
                                           placementId: "xcore:offer-placement:1111111111111111")
         
         // update propositions
-        Optimize.updatePropositions(for: [decisionScope], withXdm: nil){ (scope,error) in
-            XCTAssertNotNil(scope)
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil){ (propositions,error) in
+            XCTAssertNotNil(propositions)
+            XCTAssertNil(error)
             requestExpectation.fulfill()
         }
 

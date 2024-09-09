@@ -24,7 +24,7 @@ public extension Optimize {
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
     /// - Parameter completion: Optional completion handler invoked with list of successful decision scopes and errors, if any
     @objc(updatePropositions:withXdm:andData:completion:)
-    static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, _ completion: (([DecisionScope]?, AEPOptimizeError?) -> Void)? = nil) {
+    static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, _ completion: (([DecisionScope: OptimizeProposition]?, AEPOptimizeError?) -> Void)? = nil) {
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
@@ -59,15 +59,15 @@ public extension Optimize {
             guard let responseEvent = responseEvent else {
                 let timeoutError = AEPOptimizeError(
                     type: nil,
-                    status: 408,
-                    title: "Request Timeout",
-                    detail: "Update proposition request resulted in a timeout.",
+                    status: OptimizeConstants.ErrorData.Timeout.STATUS,
+                    title: OptimizeConstants.ErrorData.Timeout.TITLE,
+                    detail: OptimizeConstants.ErrorData.Timeout.DETAIL,
                     aepError: AEPError.callbackTimeout
                 )
                 completion?(nil, timeoutError)
                 return
             }
-            let result = responseEvent.data?[OptimizeConstants.EventDataKeys.DECISION_SCOPES] as? [DecisionScope]
+            let result = responseEvent.data?[OptimizeConstants.EventDataKeys.PROPOSITIONS] as? [DecisionScope: OptimizeProposition]
             let error = responseEvent.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR] as? AEPOptimizeError
             completion?(result, error)
         }
