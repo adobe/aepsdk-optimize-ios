@@ -82,11 +82,15 @@ class OptimizePublicAPITests: XCTestCase {
         
         // test
         Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { propositions, error in
-            XCTAssert(error?.status == OptimizeConstants.ErrorData.Timeout.STATUS)
-            XCTAssert(error?.aepError == .callbackTimeout)
-            XCTAssert(error?.title == OptimizeConstants.ErrorData.Timeout.TITLE)
-            XCTAssert(error?.detail == OptimizeConstants.ErrorData.Timeout.DETAIL)
-            XCTAssert(error?.aepError == .callbackTimeout)
+            guard let error = error as? AEPOptimizeError else {
+                XCTFail("Type mismatch in error received for Update Propositions")
+                return
+            }
+            XCTAssert(error.status == OptimizeConstants.ErrorData.Timeout.STATUS)
+            XCTAssert(error.aepError == .callbackTimeout)
+            XCTAssert(error.title == OptimizeConstants.ErrorData.Timeout.TITLE)
+            XCTAssert(error.detail == OptimizeConstants.ErrorData.Timeout.DETAIL)
+            XCTAssert(error.aepError == .callbackTimeout)
             expectation.fulfill()
         }
 

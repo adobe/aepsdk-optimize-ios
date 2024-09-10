@@ -102,12 +102,16 @@ class OptimizeIntegrationTests: XCTestCase {
         // test
         Optimize.updatePropositions(for: [decisionScope], withXdm: nil) {propositions, error in
             // verify
+            guard let error = error as? AEPOptimizeError else {
+                XCTFail("Type mismatch in error received for Update Propositions")
+                return
+            }
             XCTAssertNil(propositions)
             XCTAssertNotNil(error)
-            XCTAssertTrue(error?.status == 408)
-            XCTAssertTrue(error?.aepError == .callbackTimeout)
-            XCTAssertTrue(error?.title == "Request Timeout")
-            XCTAssertTrue(error?.detail == "Update/Get proposition request resulted in a timeout.")
+            XCTAssertTrue(error.status == 408)
+            XCTAssertTrue(error.aepError == .callbackTimeout)
+            XCTAssertTrue(error.title == "Request Timeout")
+            XCTAssertTrue(error.detail == "Update/Get proposition request resulted in a timeout.")
             exp.fulfill()
         }
 

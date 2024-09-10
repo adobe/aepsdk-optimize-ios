@@ -22,9 +22,9 @@ public extension Optimize {
     /// - Parameter decisionScopes: An array of decision scopes.
     /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
-    /// - Parameter completion: Optional completion handler invoked with list of successful decision scopes and errors, if any
+    /// - Parameter completion: Optional completion handler invoked with map of successful decision scopes to propositions and errors, if any
     @objc(updatePropositions:withXdm:andData:completion:)
-    static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, _ completion: (([DecisionScope: OptimizeProposition]?, AEPOptimizeError?) -> Void)? = nil) {
+    static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, _ completion: (([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
@@ -32,7 +32,14 @@ public extension Optimize {
         guard !flattenedDecisionScopes.isEmpty else {
             Log.warning(label: OptimizeConstants.LOG_TAG,
                         "Cannot update propositions, provided decision scopes array is empty or has invalid items.")
-            completion?(nil, nil)
+            let aepOptimizeError = AEPOptimizeError(
+                type: nil,
+                status: OptimizeConstants.ErrorData.InvalidRequest.STATUS,
+                title: OptimizeConstants.ErrorData.InvalidRequest.TITLE,
+                detail: OptimizeConstants.ErrorData.InvalidRequest.DETAIL,
+                aepError: AEPError.invalidRequest
+            )
+            completion?(nil, aepOptimizeError)
             return
         }
 
@@ -109,8 +116,8 @@ public extension Optimize {
                 return
             }
 
-            if let error = responseEvent.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR] as? AEPError {
-                completion(nil, error)
+            if let error = responseEvent.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR] as? AEPOptimizeError {
+                completion(nil, error.aepError)
                 return
             }
 

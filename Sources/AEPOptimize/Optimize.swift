@@ -140,7 +140,14 @@ public class Optimize: NSObject, Extension {
                   !eventDecisionScopes.isEmpty
             else {
                 Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
-                dispatch(event: event.createErrorResponseEvent(AEPError.invalidRequest))
+                let aepOptimizeError = AEPOptimizeError(
+                    type: nil,
+                    status: OptimizeConstants.ErrorData.InvalidRequest.STATUS,
+                    title: OptimizeConstants.ErrorData.InvalidRequest.TITLE,
+                    detail: OptimizeConstants.ErrorData.InvalidRequest.DETAIL,
+                    aepError: AEPError.invalidRequest
+                )
+                dispatch(event: event.createErrorResponseEvent(aepOptimizeError))
                 return
             }
             /// Fetch propositions and check if all of the decision scopes are present in the cache
@@ -409,7 +416,14 @@ public class Optimize: NSObject, Extension {
               !decisionScopes.isEmpty
         else {
             Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
-            dispatch(event: event.createErrorResponseEvent(AEPError.invalidRequest))
+            let aepOptimizeError = AEPOptimizeError(
+                type: nil,
+                status: OptimizeConstants.ErrorData.InvalidRequest.STATUS,
+                title: OptimizeConstants.ErrorData.InvalidRequest.TITLE,
+                detail: OptimizeConstants.ErrorData.InvalidRequest.DETAIL,
+                aepError: AEPError.invalidRequest
+            )
+            dispatch(event: event.createErrorResponseEvent(aepOptimizeError))
             return
         }
 
