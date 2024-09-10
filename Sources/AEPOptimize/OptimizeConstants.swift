@@ -129,5 +129,11 @@ enum OptimizeConstants {
             static let TITLE = "Request Timeout"
             static let DETAIL = "Update/Get proposition request resulted in a timeout."
         }
+
+        enum InvalidRequest {
+            static let STATUS = 400
+            static let TITLE = "Invalid Request"
+            static let DETAIL = "Decision scopes, in event data, is either not present or empty."
+        }
     }
 }
