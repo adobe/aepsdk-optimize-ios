@@ -26,6 +26,7 @@ enum OptimizeConstants {
     static let XDM_ITEM_COUNT = "xdm:itemCount"
 
     static let ERROR_UNKNOWN = "unknown"
+    static let UNKNOWN_STATUS = 0
 
     enum EventNames {
         static let UPDATE_PROPOSITIONS_REQUEST = "Optimize Update Propositions Request"
@@ -135,5 +136,14 @@ enum OptimizeConstants {
             static let TITLE = "Invalid Request"
             static let DETAIL = "Decision scopes, in event data, is either not present or empty."
         }
+    }
+
+    // enum containing http response codes being retried by Edge Network Service.
+    enum RecoverableHttpResponseCodes: Int {
+        case clientTimeout = 408
+        case tooManyRequests = 429
+        case badGateway = 502
+        case serviceUnavailable = 503
+        case gatewayTimeout = 504
     }
 }
