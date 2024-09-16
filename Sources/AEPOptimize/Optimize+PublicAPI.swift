@@ -22,6 +22,17 @@ public extension Optimize {
     /// - Parameter decisionScopes: An array of decision scopes.
     /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
+    @objc(updatePropositions:withXdm:andData:)
+    static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil) {
+        updatePropositions(for: decisionScopes, withXdm: xdm, andData: data, nil)
+    }
+
+    /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the decisioning Services enabled behind Experience Edge.
+    ///
+    /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
+    /// - Parameter decisionScopes: An array of decision scopes.
+    /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
+    /// - Parameter data: Additional free-form data to be sent in the personalization request.
     /// - Parameter completion: Optional completion handler invoked with map of successful decision scopes to propositions and errors, if any
     @objc(updatePropositions:withXdm:andData:completion:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, _ completion: (([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
@@ -32,13 +43,7 @@ public extension Optimize {
         guard !flattenedDecisionScopes.isEmpty else {
             Log.warning(label: OptimizeConstants.LOG_TAG,
                         "Cannot update propositions, provided decision scopes array is empty or has invalid items.")
-            let aepOptimizeError = AEPOptimizeError(
-                type: nil,
-                status: OptimizeConstants.ErrorData.InvalidRequest.STATUS,
-                title: OptimizeConstants.ErrorData.InvalidRequest.TITLE,
-                detail: OptimizeConstants.ErrorData.InvalidRequest.DETAIL,
-                aepError: AEPError.invalidRequest
-            )
+            let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
             completion?(nil, aepOptimizeError)
             return
         }
@@ -64,13 +69,7 @@ public extension Optimize {
                           data: eventData)
         MobileCore.dispatch(event: event, timeout: 10) { responseEvent in
             guard let responseEvent = responseEvent else {
-                let timeoutError = AEPOptimizeError(
-                    type: nil,
-                    status: OptimizeConstants.ErrorData.Timeout.STATUS,
-                    title: OptimizeConstants.ErrorData.Timeout.TITLE,
-                    detail: OptimizeConstants.ErrorData.Timeout.DETAIL,
-                    aepError: AEPError.callbackTimeout
-                )
+                let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError()
                 completion?(nil, timeoutError)
                 return
             }
