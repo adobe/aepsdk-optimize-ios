@@ -26,6 +26,7 @@ enum OptimizeConstants {
     static let XDM_ITEM_COUNT = "xdm:itemCount"
 
     static let ERROR_UNKNOWN = "unknown"
+    static let UNKNOWN_STATUS = 0
 
     enum EventNames {
         static let UPDATE_PROPOSITIONS_REQUEST = "Optimize Update Propositions Request"

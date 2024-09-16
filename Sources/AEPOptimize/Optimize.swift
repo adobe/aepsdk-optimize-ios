@@ -32,6 +32,13 @@ public class Optimize: NSObject, Extension {
     /// Dispatch queue used to protect against simultaneous access of our containers from multiple threads
     private let queue: DispatchQueue = .init(label: "com.adobe.optimize.containers.queue")
 
+    /// a dictionary containing the update event IDs and corresponding errors as received from Edge SDK
+    private var _errorUpdateRequestEventIds: [String: AEPOptimizeError] = [:]
+    private var errorUpdateRequestEventIds: [String: AEPOptimizeError] {
+        get { queue.sync { self._errorUpdateRequestEventIds } }
+        set { queue.async { self._errorUpdateRequestEventIds = newValue } }
+    }
+
     /// a dictionary containing the update event IDs (and corresponding requested scopes) for Edge events that haven't yet received an Edge completion response.
     private var _updateRequestEventIdsInProgress: [String: [DecisionScope]] = [:]
     private var updateRequestEventIdsInProgress: [String: [DecisionScope]] {
@@ -59,6 +66,13 @@ public class Optimize: NSObject, Extension {
             set { queue.async { self._cachedPropositions = newValue } }
         }
     #endif
+
+    /// Array containing recoverable network error codes being retried by Edge Network Service
+    private let recoverableNetworkErrorCodes: [Int] = [OptimizeConstants.RecoverableHttpResponseCodes.clientTimeout.rawValue,
+                                                       OptimizeConstants.RecoverableHttpResponseCodes.tooManyRequests.rawValue,
+                                                       OptimizeConstants.RecoverableHttpResponseCodes.badGateway.rawValue,
+                                                       OptimizeConstants.RecoverableHttpResponseCodes.serviceUnavailable.rawValue,
+                                                       OptimizeConstants.RecoverableHttpResponseCodes.gatewayTimeout.rawValue]
 
     /// Array containing the schema strings for the proposition items supported by the SDK, sent in the personalization query request.
     static let supportedSchemas = [
@@ -256,6 +270,8 @@ public class Optimize: NSObject, Extension {
                 self.eventsQueue.start()
                 return
             }
+            // Error response received for Edge request event UUID (if any)
+            let edgeError = self.errorUpdateRequestEventIds[requestEventId]
 
             // response event to provide success callback to updateProposition public api
             let responseEventToSend = event.createResponseEvent(
@@ -263,7 +279,8 @@ public class Optimize: NSObject, Extension {
                 type: EventType.optimize,
                 source: EventSource.responseContent,
                 data: [
-                    OptimizeConstants.EventDataKeys.PROPOSITIONS: self.propositionsInProgress
+                    OptimizeConstants.EventDataKeys.PROPOSITIONS: self.propositionsInProgress,
+                    OptimizeConstants.EventDataKeys.RESPONSE_ERROR: edgeError as Any
                 ]
             )
             self.dispatch(event: responseEventToSend)
@@ -383,16 +400,43 @@ public class Optimize: NSObject, Extension {
     /// It logs error related information specifying error type along with a detailed message.
     /// - Parameter event: Edge error response event.
     private func processEdgeErrorResponse(event: Event) {
+        guard
+            event.isEdgeErrorResponseEvent,
+            let requestEventId = event.requestEventId,
+            updateRequestEventIdsInProgress.contains(where: { $0.key == requestEventId })
+        else {
+            Log.debug(label: OptimizeConstants.LOG_TAG,
+                      """
+                      Ignoring Edge event, either handle type is not errorResponseContent, or the response isn't intended for this extension.
+                      """)
+            return
+        }
         let errorType = event.data?[OptimizeConstants.Edge.ErrorKeys.TYPE] as? String
+        let errorStatus = event.data?[OptimizeConstants.Edge.ErrorKeys.STATUS] as? Int
+        let errorTitle = event.data?[OptimizeConstants.Edge.ErrorKeys.TITLE] as? String
         let errorDetail = event.data?[OptimizeConstants.Edge.ErrorKeys.DETAIL] as? String
+        let errorReport = event.data?[OptimizeConstants.Edge.ErrorKeys.REPORT] as? [String: Any]
 
         let errorString =
             """
             Decisioning Service error, type: \(errorType ?? OptimizeConstants.ERROR_UNKNOWN), \
-            detail: \(errorDetail ?? OptimizeConstants.ERROR_UNKNOWN)"
+            status: \(errorStatus ?? OptimizeConstants.UNKNOWN_STATUS), \
+            title: \(errorTitle ?? OptimizeConstants.ERROR_UNKNOWN), \
+            detail: \(errorDetail ?? OptimizeConstants.ERROR_UNKNOWN), \
+            report: \(errorReport ?? [:])"
             """
 
         Log.warning(label: OptimizeConstants.LOG_TAG, errorString)
+
+        if let errorStatus = errorStatus, shouldSuppressRecoverableError(status: errorStatus) {
+            let aepOptimizeError = AEPOptimizeError(type: errorType, status: errorStatus, title: errorTitle, detail: errorDetail)
+            guard let edgeEventRequestId = event.requestEventId else {
+                Log.debug(label: OptimizeConstants.LOG_TAG, "No valid edge event request ID found for error response event.")
+                return
+            }
+            // store the error response as an AEPOptimizeError in error dictionary per edge request
+            errorUpdateRequestEventIds[edgeEventRequestId] = aepOptimizeError
+        }
     }
 
     /// Processes the get propositions request event, dispatched with type `EventType.optimize` and source `EventSource.requestContent`.
@@ -466,6 +510,14 @@ public class Optimize: NSObject, Extension {
     private func processClearPropositions(event _: Event) {
         // Clear propositions cache
         cachedPropositions.removeAll()
+    }
+
+    /// Helper function to check if edge error response received should be suppressed as it is already being retried on Edge
+    private func shouldSuppressRecoverableError(status: Int) -> Bool {
+        if recoverableNetworkErrorCodes.contains(status) {
+            return false
+        }
+        return true
     }
 
     #if DEBUG
