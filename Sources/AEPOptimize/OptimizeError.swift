@@ -53,7 +53,7 @@ public class AEPOptimizeError: NSObject, Error {
                 self.aepError = .serverError
             } else if networkError.contains(status) {
                 self.aepError = .networkError
-            } else if (400...499).contains(status) {
+            } else if (400 ... 499).contains(status) {
                 self.aepError = .invalidRequest
             }
         }
