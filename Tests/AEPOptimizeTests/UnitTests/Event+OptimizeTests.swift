@@ -117,13 +117,7 @@ class Event_OptimizeTests: XCTestCase {
                               source: "com.adobe.eventSource.requestContent",
                               data: nil)
 
-        let aepOptimizeError = AEPOptimizeError(
-            type: nil,
-            status: OptimizeConstants.ErrorData.InvalidRequest.STATUS,
-            title: OptimizeConstants.ErrorData.InvalidRequest.TITLE,
-            detail: OptimizeConstants.ErrorData.InvalidRequest.DETAIL,
-            aepError: AEPError.invalidRequest
-        )
+        let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
 
         let errorResponseEvent = testEvent.createErrorResponseEvent(aepOptimizeError)
 

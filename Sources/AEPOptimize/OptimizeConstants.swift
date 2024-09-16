@@ -136,4 +136,17 @@ enum OptimizeConstants {
             static let DETAIL = "Decision scopes, in event data, is either not present or empty."
         }
     }
+
+    enum HTTPResponseCodes: Int {
+        case success = 200
+        case noContent = 204
+        case multiStatus = 207
+        case invalidRequest = 400
+        case clientTimeout = 408
+        case tooManyRequests = 429
+        case internalServerError = 500
+        case badGateway = 502
+        case serviceUnavailable = 503
+        case gatewayTimeout = 504
+    }
 }

@@ -140,13 +140,7 @@ public class Optimize: NSObject, Extension {
                   !eventDecisionScopes.isEmpty
             else {
                 Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
-                let aepOptimizeError = AEPOptimizeError(
-                    type: nil,
-                    status: OptimizeConstants.ErrorData.InvalidRequest.STATUS,
-                    title: OptimizeConstants.ErrorData.InvalidRequest.TITLE,
-                    detail: OptimizeConstants.ErrorData.InvalidRequest.DETAIL,
-                    aepError: AEPError.invalidRequest
-                )
+                let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
                 dispatch(event: event.createErrorResponseEvent(aepOptimizeError))
                 return
             }
@@ -257,13 +251,7 @@ public class Optimize: NSObject, Extension {
                 // response event failed or timed out, remove this event's ID from the requested event IDs dictionary, dispatch an error response event and kick-off queue.
                 self.updateRequestEventIdsInProgress.removeValue(forKey: edgeEvent.id.uuidString)
                 self.propositionsInProgress.removeAll()
-                let timeoutError = AEPOptimizeError(
-                    type: nil,
-                    status: OptimizeConstants.ErrorData.Timeout.STATUS,
-                    title: OptimizeConstants.ErrorData.Timeout.TITLE,
-                    detail: OptimizeConstants.ErrorData.Timeout.DETAIL,
-                    aepError: AEPError.callbackTimeout
-                )
+                let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError()
                 self.dispatch(event: event.createErrorResponseEvent(timeoutError))
                 self.eventsQueue.start()
                 return
@@ -416,13 +404,7 @@ public class Optimize: NSObject, Extension {
               !decisionScopes.isEmpty
         else {
             Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
-            let aepOptimizeError = AEPOptimizeError(
-                type: nil,
-                status: OptimizeConstants.ErrorData.InvalidRequest.STATUS,
-                title: OptimizeConstants.ErrorData.InvalidRequest.TITLE,
-                detail: OptimizeConstants.ErrorData.InvalidRequest.DETAIL,
-                aepError: AEPError.invalidRequest
-            )
+            let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
             dispatch(event: event.createErrorResponseEvent(aepOptimizeError))
             return
         }

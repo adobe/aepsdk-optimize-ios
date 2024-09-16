@@ -17,6 +17,7 @@ import Foundation
 /// AEPOptimizeError class used to create AEPOptimizeError from error details received from Experience Edge.
 @objc(AEPOptimizeError)
 public class AEPOptimizeError: NSObject, Error {
+    typealias HTTPResponseCodes = OptimizeConstants.HTTPResponseCodes
     public let type: String?
     public let status: Int?
     public let title: String?
@@ -31,15 +32,42 @@ public class AEPOptimizeError: NSObject, Error {
         if let aepError {
             self.aepError = aepError
         } else {
-            if status == 408 {
+            // map edge error response to AEPError on the basis of status (if received)
+            guard let status else {
+                return
+            }
+            if status == HTTPResponseCodes.clientTimeout.rawValue {
                 self.aepError = .callbackTimeout
-            } else if status == 400 || status == 403 || status == 404 {
+            } else if (400...499).contains(status) && status != HTTPResponseCodes.tooManyRequests.rawValue {
                 self.aepError = .invalidRequest
-            } else if status == 429 || status == 500 || status == 503 {
+            } else if status == HTTPResponseCodes.tooManyRequests.rawValue,
+                      status == HTTPResponseCodes.internalServerError.rawValue,
+                      status == HTTPResponseCodes.serviceUnavailable.rawValue {
                 self.aepError = .serverError
-            } else if status == 502 || status == 504 {
+            } else if status == HTTPResponseCodes.badGateway.rawValue,
+                      status == HTTPResponseCodes.gatewayTimeout.rawValue {
                 self.aepError = .networkError
             }
         }
+    }
+
+    static func createAEPOptimizeTimeoutError() -> AEPOptimizeError {
+        return AEPOptimizeError(
+            type: nil,
+            status: OptimizeConstants.ErrorData.Timeout.STATUS,
+            title: OptimizeConstants.ErrorData.Timeout.TITLE,
+            detail: OptimizeConstants.ErrorData.Timeout.DETAIL,
+            aepError: AEPError.callbackTimeout
+        )
+    }
+
+    static func createAEPOptimizInvalidRequestError() -> AEPOptimizeError {
+        return AEPOptimizeError(
+            type: nil,
+            status: OptimizeConstants.ErrorData.InvalidRequest.STATUS,
+            title: OptimizeConstants.ErrorData.InvalidRequest.TITLE,
+            detail: OptimizeConstants.ErrorData.InvalidRequest.DETAIL,
+            aepError: AEPError.invalidRequest
+        )
     }
 }
