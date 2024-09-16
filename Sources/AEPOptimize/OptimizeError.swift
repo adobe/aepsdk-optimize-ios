@@ -24,6 +24,17 @@ public class AEPOptimizeError: NSObject, Error {
     public let detail: String?
     public var aepError = AEPError.unexpected
 
+    private let serverErrors = [
+        HTTPResponseCodes.tooManyRequests.rawValue,
+        HTTPResponseCodes.internalServerError.rawValue,
+        HTTPResponseCodes.serviceUnavailable.rawValue
+    ]
+
+    private let networkError = [
+        HTTPResponseCodes.badGateway.rawValue,
+        HTTPResponseCodes.gatewayTimeout.rawValue
+    ]
+
     public init(type: String?, status: Int?, title: String?, detail: String?, aepError: AEPError? = nil) {
         self.type = type
         self.status = status
@@ -38,21 +49,18 @@ public class AEPOptimizeError: NSObject, Error {
             }
             if status == HTTPResponseCodes.clientTimeout.rawValue {
                 self.aepError = .callbackTimeout
-            } else if (400...499).contains(status) && status != HTTPResponseCodes.tooManyRequests.rawValue {
-                self.aepError = .invalidRequest
-            } else if status == HTTPResponseCodes.tooManyRequests.rawValue,
-                      status == HTTPResponseCodes.internalServerError.rawValue,
-                      status == HTTPResponseCodes.serviceUnavailable.rawValue {
+            } else if serverErrors.contains(status) {
                 self.aepError = .serverError
-            } else if status == HTTPResponseCodes.badGateway.rawValue,
-                      status == HTTPResponseCodes.gatewayTimeout.rawValue {
+            } else if networkError.contains(status) {
                 self.aepError = .networkError
+            } else if (400...499).contains(status) {
+                self.aepError = .invalidRequest
             }
         }
     }
 
     static func createAEPOptimizeTimeoutError() -> AEPOptimizeError {
-        return AEPOptimizeError(
+        AEPOptimizeError(
             type: nil,
             status: OptimizeConstants.ErrorData.Timeout.STATUS,
             title: OptimizeConstants.ErrorData.Timeout.TITLE,
@@ -62,7 +70,7 @@ public class AEPOptimizeError: NSObject, Error {
     }
 
     static func createAEPOptimizInvalidRequestError() -> AEPOptimizeError {
-        return AEPOptimizeError(
+        AEPOptimizeError(
             type: nil,
             status: OptimizeConstants.ErrorData.InvalidRequest.STATUS,
             title: OptimizeConstants.ErrorData.InvalidRequest.TITLE,
