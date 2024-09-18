@@ -427,7 +427,7 @@ public class Optimize: NSObject, Extension {
 
         Log.warning(label: OptimizeConstants.LOG_TAG, errorString)
 
-        if let errorStatus = errorStatus, shouldSuppressRecoverableError(status: errorStatus) {
+        if let errorStatus = errorStatus, !shouldSuppressRecoverableError(status: errorStatus) {
             let aepOptimizeError = AEPOptimizeError(type: errorType, status: errorStatus, title: errorTitle, detail: errorDetail)
             guard let edgeEventRequestId = event.requestEventId else {
                 Log.debug(label: OptimizeConstants.LOG_TAG, "No valid edge event request ID found for error response event.")
@@ -514,9 +514,9 @@ public class Optimize: NSObject, Extension {
     /// Helper function to check if edge error response received should be suppressed as it is already being retried on Edge
     private func shouldSuppressRecoverableError(status: Int) -> Bool {
         if recoverableNetworkErrorCodes.contains(status) {
-            return false
+            return true
         }
-        return true
+        return false
     }
 
     #if DEBUG
