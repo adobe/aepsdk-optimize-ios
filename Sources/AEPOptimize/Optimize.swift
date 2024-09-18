@@ -68,11 +68,11 @@ public class Optimize: NSObject, Extension {
     #endif
 
     /// Array containing recoverable network error codes being retried by Edge Network Service
-    private let recoverableNetworkErrorCodes: [Int] = [OptimizeConstants.RecoverableHttpResponseCodes.clientTimeout.rawValue,
-                                                       OptimizeConstants.RecoverableHttpResponseCodes.tooManyRequests.rawValue,
-                                                       OptimizeConstants.RecoverableHttpResponseCodes.badGateway.rawValue,
-                                                       OptimizeConstants.RecoverableHttpResponseCodes.serviceUnavailable.rawValue,
-                                                       OptimizeConstants.RecoverableHttpResponseCodes.gatewayTimeout.rawValue]
+    private let recoverableNetworkErrorCodes: [Int] = [OptimizeConstants.HTTPResponseCodes.clientTimeout.rawValue,
+                                                       OptimizeConstants.HTTPResponseCodes.tooManyRequests.rawValue,
+                                                       OptimizeConstants.HTTPResponseCodes.badGateway.rawValue,
+                                                       OptimizeConstants.HTTPResponseCodes.serviceUnavailable.rawValue,
+                                                       OptimizeConstants.HTTPResponseCodes.gatewayTimeout.rawValue]
 
     /// Array containing the schema strings for the proposition items supported by the SDK, sent in the personalization query request.
     static let supportedSchemas = [
@@ -356,7 +356,6 @@ public class Optimize: NSObject, Extension {
                       """
                       Ignoring Edge event, either handle type is not personalization:decisions, or the response isn't intended for this extension.
                       """)
-            propositionsInProgress.removeAll()
             return
         }
 
