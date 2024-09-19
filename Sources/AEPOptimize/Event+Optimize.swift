@@ -57,15 +57,15 @@ extension Event {
         return try? JSONDecoder().decode(T.self, from: jsonData)
     }
 
-    /// Creates a response event with specified AEPError type added in the Event data.
-    /// - Parameter error: type of AEPError
+    /// Creates a response event with specified AEPOptimizeError type added in the Event data.
+    /// - Parameter error: type of AEPOptimizeError
     /// - Returns: error response Event
-    func createErrorResponseEvent(_ error: AEPError) -> Event {
+    func createErrorResponseEvent(_ error: AEPOptimizeError) -> Event {
         createResponseEvent(name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
                             type: EventType.optimize,
                             source: EventSource.responseContent,
                             data: [
-                                OptimizeConstants.EventDataKeys.RESPONSE_ERROR: error.rawValue
+                                OptimizeConstants.EventDataKeys.RESPONSE_ERROR: error
                             ])
     }
 }

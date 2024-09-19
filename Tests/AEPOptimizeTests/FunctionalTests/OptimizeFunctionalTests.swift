@@ -1021,13 +1021,22 @@ class OptimizeFunctionalTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Get propositions request should now dispatch response event after update completion.")
         
         mockRuntime.onEventDispatch = { event in
-            expectation.fulfill()
+            if event.responseID == getEvent.id {
+                expectation.fulfill()
+            }
         }
         
-        wait(for: [expectation], timeout: 10)
-        XCTAssertEqual(mockRuntime.dispatchedEvents.count, 1)
+        wait(for: [expectation], timeout: 12)
+        XCTAssertEqual(mockRuntime.dispatchedEvents.count, 2)
         
-        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        // first event will be a timeout error response event as in functional test we don't recieve response from edge
+        let firstEvent = mockRuntime.firstEvent
+        XCTAssertEqual(firstEvent?.type, "com.adobe.eventType.optimize")
+        XCTAssertEqual(firstEvent?.source, "com.adobe.eventSource.responseContent")
+        XCTAssertNotNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR])
+        XCTAssertNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.DECISION_SCOPES])
+        
+        let dispatchedEvent = mockRuntime.secondEvent
         XCTAssertEqual(dispatchedEvent?.type, "com.adobe.eventType.optimize")
         XCTAssertEqual(dispatchedEvent?.source, "com.adobe.eventSource.responseContent")
 
@@ -1119,7 +1128,9 @@ class OptimizeFunctionalTests: XCTestCase {
 
         let expectationGet = XCTestExpectation(description: "Get event should be queued.")
         mockRuntime.onEventDispatch = { event in
-            expectationGet.fulfill()
+            if event.responseID == getEvent.id {
+                expectationGet.fulfill()
+            }
         }
 
         /// Dispatch the get event Immediately.
@@ -1130,13 +1141,20 @@ class OptimizeFunctionalTests: XCTestCase {
             self?.mockRuntime.simulateComingEvents(optimizeContentComplete)
         })
 
-        wait(for: [expectationGet], timeout: 10)
+        wait(for: [expectationGet], timeout: 12)
+        
+        // first event will be a timeout error response event as in functional test we don't recieve response from edge
+        let firstEvent = mockRuntime.firstEvent
+        XCTAssertEqual(firstEvent?.type, "com.adobe.eventType.optimize")
+        XCTAssertEqual(firstEvent?.source, "com.adobe.eventSource.responseContent")
+        XCTAssertNotNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR])
+        XCTAssertNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.DECISION_SCOPES])
         
         /// Verify that the get proposition event was queued & is the last event to be executed.
-        XCTAssertEqual(mockRuntime.firstEvent?.type, "com.adobe.eventType.optimize")
-        XCTAssertEqual(mockRuntime.firstEvent?.source, "com.adobe.eventSource.responseContent")
+        XCTAssertEqual(mockRuntime.secondEvent?.type, "com.adobe.eventType.optimize")
+        XCTAssertEqual(mockRuntime.secondEvent?.source, "com.adobe.eventSource.responseContent")
         
-        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = mockRuntime.firstEvent?.getTypedData(for: "propositions") else {
+        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = mockRuntime.secondEvent?.getTypedData(for: "propositions") else {
             XCTFail("Propositions dictionary should be valid.")
             return
         }
@@ -1395,9 +1413,10 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
 
         let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        let errorData = dispatchedEvent?.data?["responseerror"] as? AEPOptimizeError
         XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.responseContent", dispatchedEvent?.source)
-        XCTAssertEqual(AEPError.invalidRequest, AEPError(rawValue: dispatchedEvent?.data?["responseerror"] as? Int ?? 1000))
+        XCTAssertEqual(AEPError.invalidRequest, errorData?.aepError)
         XCTAssertNil(dispatchedEvent?.data?["propositions"])
     }
 

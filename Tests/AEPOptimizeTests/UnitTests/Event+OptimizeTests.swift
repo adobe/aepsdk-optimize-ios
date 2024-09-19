@@ -117,13 +117,18 @@ class Event_OptimizeTests: XCTestCase {
                               source: "com.adobe.eventSource.requestContent",
                               data: nil)
 
-        let errorResponseEvent = testEvent.createErrorResponseEvent(AEPError.invalidRequest)
+        let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
 
+        let errorResponseEvent = testEvent.createErrorResponseEvent(aepOptimizeError)
+
+        let errorData = errorResponseEvent.data?["responseerror"] as? AEPOptimizeError
         XCTAssertEqual("Optimize Response", errorResponseEvent.name)
         XCTAssertEqual("com.adobe.eventType.optimize", errorResponseEvent.type)
         XCTAssertEqual("com.adobe.eventSource.responseContent", errorResponseEvent.source)
         XCTAssertNotNil(errorResponseEvent.data)
         XCTAssertEqual(1, errorResponseEvent.data?.count)
-        XCTAssertEqual(6, errorResponseEvent.data?["responseerror"] as? Int)
+        XCTAssertEqual(400, errorData?.status)
+        XCTAssertEqual("Invalid Request", errorData?.title)
+        XCTAssertEqual(AEPError.invalidRequest, errorData?.aepError)
     }
 }

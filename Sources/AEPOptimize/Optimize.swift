@@ -140,7 +140,8 @@ public class Optimize: NSObject, Extension {
                   !eventDecisionScopes.isEmpty
             else {
                 Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
-                dispatch(event: event.createErrorResponseEvent(AEPError.invalidRequest))
+                let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
+                dispatch(event: event.createErrorResponseEvent(aepOptimizeError))
                 return
             }
             /// Fetch propositions and check if all of the decision scopes are present in the cache
@@ -241,19 +242,31 @@ public class Optimize: NSObject, Extension {
         // add the Edge event to update propositions in the events queue.
         eventsQueue.add(edgeEvent)
 
-        // Increase timeout to 5s to ensure edge requests have enough time to complete.
-        MobileCore.dispatch(event: edgeEvent, timeout: 5) { responseEvent in
+        // Increase timeout to 10s to ensure edge requests have enough time to complete.
+        MobileCore.dispatch(event: edgeEvent, timeout: 10) { responseEvent in
             guard
                 let responseEvent = responseEvent,
                 let requestEventId = responseEvent.requestEventId
             else {
-                // response event failed or timed out, remove this event's ID from the requested event IDs dictionary and kick-off queue.
+                // response event failed or timed out, remove this event's ID from the requested event IDs dictionary, dispatch an error response event and kick-off queue.
                 self.updateRequestEventIdsInProgress.removeValue(forKey: edgeEvent.id.uuidString)
                 self.propositionsInProgress.removeAll()
-
+                let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError()
+                self.dispatch(event: event.createErrorResponseEvent(timeoutError))
                 self.eventsQueue.start()
                 return
             }
+
+            // response event to provide success callback to updateProposition public api
+            let responseEventToSend = event.createResponseEvent(
+                name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
+                type: EventType.optimize,
+                source: EventSource.responseContent,
+                data: [
+                    OptimizeConstants.EventDataKeys.PROPOSITIONS: self.propositionsInProgress
+                ]
+            )
+            self.dispatch(event: responseEventToSend)
 
             let updateCompleteEvent = responseEvent.createChainedEvent(name: OptimizeConstants.EventNames.OPTIMIZE_UPDATE_COMPLETE,
                                                                        type: EventType.optimize,
@@ -391,7 +404,8 @@ public class Optimize: NSObject, Extension {
               !decisionScopes.isEmpty
         else {
             Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
-            dispatch(event: event.createErrorResponseEvent(AEPError.invalidRequest))
+            let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
+            dispatch(event: event.createErrorResponseEvent(aepOptimizeError))
             return
         }
 
