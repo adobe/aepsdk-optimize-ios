@@ -428,7 +428,7 @@ public class Optimize: NSObject, Extension {
         Log.warning(label: OptimizeConstants.LOG_TAG, errorString)
 
         if let errorStatus = errorStatus, !shouldSuppressRecoverableError(status: errorStatus) {
-            let aepOptimizeError = AEPOptimizeError(type: errorType, status: errorStatus, title: errorTitle, detail: errorDetail)
+            let aepOptimizeError = AEPOptimizeError(type: errorType, status: errorStatus, title: errorTitle, detail: errorDetail, report: errorReport)
             guard let edgeEventRequestId = event.requestEventId else {
                 Log.debug(label: OptimizeConstants.LOG_TAG, "No valid edge event request ID found for error response event.")
                 return
