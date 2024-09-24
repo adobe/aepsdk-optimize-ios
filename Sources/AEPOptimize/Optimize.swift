@@ -33,10 +33,10 @@ public class Optimize: NSObject, Extension {
     private let queue: DispatchQueue = .init(label: "com.adobe.optimize.containers.queue")
 
     /// a dictionary containing the update event IDs and corresponding errors as received from Edge SDK
-    private var _errorUpdateRequestEventIds: [String: AEPOptimizeError] = [:]
-    private var errorUpdateRequestEventIds: [String: AEPOptimizeError] {
-        get { queue.sync { self._errorUpdateRequestEventIds } }
-        set { queue.async { self._errorUpdateRequestEventIds = newValue } }
+    private var _updateRequestEventIdsErrors: [String: AEPOptimizeError] = [:]
+    private var updateRequestEventIdsErrors: [String: AEPOptimizeError] {
+        get { queue.sync { self._updateRequestEventIdsErrors } }
+        set { queue.async { self._updateRequestEventIdsErrors = newValue } }
     }
 
     /// a dictionary containing the update event IDs (and corresponding requested scopes) for Edge events that haven't yet received an Edge completion response.
@@ -271,7 +271,7 @@ public class Optimize: NSObject, Extension {
                 return
             }
             // Error response received for Edge request event UUID (if any)
-            let edgeError = self.errorUpdateRequestEventIds[requestEventId]
+            let edgeError = self.updateRequestEventIdsErrors[requestEventId]
 
             // response event to provide success callback to updateProposition public api
             let responseEventToSend = event.createResponseEvent(
@@ -434,7 +434,7 @@ public class Optimize: NSObject, Extension {
                 return
             }
             // store the error response as an AEPOptimizeError in error dictionary per edge request
-            errorUpdateRequestEventIds[edgeEventRequestId] = aepOptimizeError
+            updateRequestEventIdsErrors[edgeEventRequestId] = aepOptimizeError
         }
     }
 

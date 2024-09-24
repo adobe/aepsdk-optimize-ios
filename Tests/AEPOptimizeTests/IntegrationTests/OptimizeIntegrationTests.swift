@@ -467,9 +467,10 @@ class OptimizeIntegrationTests: XCTestCase {
            "handle":[],\
            "errors":[\
               {\
-                 "type":"EXEG-0201-503",\
-                 "status":503,\
-                 "title":"The 'com.adobe.experience.platform.ode' service is temporarily unable to serve this request. Please try again later."\
+                 "type":"EXEG-0201-400",\
+                 "status":400,\
+                 "title":"Invalid Request",\
+                 "detail":"Request cannot be processed as few parameters are missing. Please check and try again later."\
               }\
            ]\
         }
@@ -500,9 +501,22 @@ class OptimizeIntegrationTests: XCTestCase {
         let decisionScope = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
                                               placementId: "xcore:offer-placement:1111111111111111")
 
+        let invalidResponseExpectation = XCTestExpectation(description: "updatePropositions should result in a inavlid resoponse from Edge Experience Network.")
+
         // update propositions
-        Optimize.updatePropositions(for: [decisionScope], withXdm: nil)
-        wait(for: [requestExpectation], timeout: 2)
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { data, error in
+            guard let error = error as? AEPOptimizeError else {
+                XCTFail("Type mismatch in error received for Update Propositions")
+                return
+            }
+            XCTAssertNotNil(error)
+            XCTAssertTrue(error.status == 400)
+            XCTAssertTrue(error.aepError == .invalidRequest)
+            XCTAssertTrue(error.title == "Invalid Request")
+            XCTAssertTrue(error.detail == "Request cannot be processed as few parameters are missing. Please check and try again later.")
+            invalidResponseExpectation.fulfill()
+        }
+        wait(for: [requestExpectation, invalidResponseExpectation], timeout: 12)
 
         // get propositions
         let retrieveExpectation = XCTestExpectation(description: "getPropositions should not return propositions, if update request errors out.")
