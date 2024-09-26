@@ -22,6 +22,7 @@ public class AEPOptimizeError: NSObject, Error {
     public let status: Int?
     public let title: String?
     public let detail: String?
+    public let report: [String: Any]?
     public var aepError = AEPError.unexpected
 
     private let serverErrors = [
@@ -35,11 +36,12 @@ public class AEPOptimizeError: NSObject, Error {
         HTTPResponseCodes.gatewayTimeout.rawValue
     ]
 
-    public init(type: String?, status: Int?, title: String?, detail: String?, aepError: AEPError? = nil) {
+    public init(type: String?, status: Int?, title: String?, detail: String?, report: [String: Any]?, aepError: AEPError? = nil) {
         self.type = type
         self.status = status
         self.title = title
         self.detail = detail
+        self.report = report
         if let aepError {
             self.aepError = aepError
         } else {
@@ -65,6 +67,7 @@ public class AEPOptimizeError: NSObject, Error {
             status: OptimizeConstants.ErrorData.Timeout.STATUS,
             title: OptimizeConstants.ErrorData.Timeout.TITLE,
             detail: OptimizeConstants.ErrorData.Timeout.DETAIL,
+            report: nil,
             aepError: AEPError.callbackTimeout
         )
     }
@@ -75,6 +78,7 @@ public class AEPOptimizeError: NSObject, Error {
             status: OptimizeConstants.ErrorData.InvalidRequest.STATUS,
             title: OptimizeConstants.ErrorData.InvalidRequest.TITLE,
             detail: OptimizeConstants.ErrorData.InvalidRequest.DETAIL,
+            report: nil,
             aepError: AEPError.invalidRequest
         )
     }
