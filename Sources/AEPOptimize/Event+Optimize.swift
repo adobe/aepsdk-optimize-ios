@@ -18,6 +18,11 @@ import Foundation
 extension Event {
     // MARK: - AEP Response Event handle
 
+    /// Verify event type and source for  Edge error response event.
+    var isEdgeErrorResponseEvent: Bool {
+        type == EventType.edge && source == OptimizeConstants.EventSource.EDGE_ERROR_RESPONSE
+    }
+
     /// Verify event type and source for Edge personalization:decisions event.
     var isPersonalizationDecisionResponse: Bool {
         type == EventType.edge && source == OptimizeConstants.EventSource.EDGE_PERSONALIZATION_DECISIONS

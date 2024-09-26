@@ -160,8 +160,20 @@ struct OffersView: View {
                         htmlDecisionScope,
                         jsonDecisionScope,
                         targetScope
-                    ], withXdm: ["xdmKey": "1234"],
-                       andData: data)
+                    ], withXdm: ["xdmKey": "1234"], andData: data) { data, error in
+                        if let error = error as? AEPOptimizeError {
+                            errorAlert = true
+                            if let errorStatus = error.status {
+                                errorMessage = (error.title ?? "Unexpected Error") + " : " + String(errorStatus)
+                            }else{
+                                errorMessage = error.title ?? "Unexpected Error"
+                            }
+                        }
+                    }
+                        
+                }
+                .alert(isPresented: $errorAlert) {
+                    Alert(title: Text("Error: Update Propositions"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
                 }
                 
                 CustomButtonView(buttonTitle: "Get Propositions") {
