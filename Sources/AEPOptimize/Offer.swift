@@ -23,7 +23,7 @@ public class Offer: NSObject, Codable {
     @objc public let etag: String
 
     /// Offer priority score
-    @objc public let score: Int
+    @objc public let score: Double
 
     /// Offer schema string
     @objc public let schema: String
@@ -72,7 +72,7 @@ public class Offer: NSObject, Codable {
         // Try and decode format, if present. Target response doesn't contain etag, so setting the default value to empty string.
         etag = try container.decodeIfPresent(String.self, forKey: .etag) ?? ""
 
-        score = try container.decodeIfPresent(Int.self, forKey: .score) ?? 0
+        score = try container.decodeIfPresent(Double.self, forKey: .score) ?? 0
 
         schema = try container.decode(String.self, forKey: .schema)
 
