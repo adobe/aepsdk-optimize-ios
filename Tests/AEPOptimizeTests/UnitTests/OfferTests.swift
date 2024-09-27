@@ -407,7 +407,6 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("true", offer.characteristics?["mobile"])
     }
     
-    
     func testOffer_invalidNoContent() {
         guard let offerData = OFFER_INVALID_NO_CONTENT.data(using: .utf8) else {
             XCTFail("Offer json data should be valid.")
