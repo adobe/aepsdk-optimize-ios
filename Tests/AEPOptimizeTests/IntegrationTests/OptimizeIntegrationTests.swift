@@ -54,6 +54,70 @@ class OptimizeIntegrationTests: XCTestCase {
         }
         wait(for: [initExpectation], timeout: 1)
     }
+    
+    func testUpdatePropositions_timeoutError() {
+        // setup
+        let timeoutResponse = HTTPURLResponse(url: URL(string: "https://edge.adobedc.net/ee/v1/interact?configId=configId&requestId=requestId")!, statusCode: 408, httpVersion: nil, headerFields: nil)
+        let responseString = """
+        {\
+           "requestId":"FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF",\
+           "handle":[],\
+           "errors":[\
+              {\
+                 "type":"EXEG-0201-408",\
+                 "status":408,\
+                 "title":"Request timed out. Please try again."\
+              }\
+           ]\
+        }
+        """ 
+
+        // mock edge response
+        let requestExpectation = XCTestExpectation(description: "Request for mock service response.")
+        let mockNetworkService = TestableNetworkService()
+        ServiceProvider.shared.networkService = mockNetworkService
+        mockNetworkService.mock { request in
+            if request.url.absoluteString.contains("edge.adobedc.net/ee/v1/interact?configId=configId") {
+                requestExpectation.fulfill()
+                return (data: responseString.data(using: .utf8), response: timeoutResponse, error: nil)
+            }
+            return (data: nil, response: timeoutResponse, error: nil)
+        }
+
+        // init extensions
+        initExtensionsAndWait()
+        
+        // update configuration
+        MobileCore.updateConfigurationWith(configDict: [
+                                            "experienceCloud.org": "orgid",
+                                            "experienceCloud.server": "test.com",
+                                            "global.privacy": "optedin",
+                                            "edge.configId": "configId"])
+        
+        let decisionScope = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
+                                              placementId: "xcore:offer-placement:1111111111111111")
+
+        let exp = expectation(description: "The Update Proposition should result in a time out")
+        
+        // test
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil) {propositions, error in
+            // verify
+            guard let error = error as? AEPOptimizeError else {
+                XCTFail("Type mismatch in error received for Update Propositions")
+                return
+            }
+            XCTAssertNil(propositions)
+            XCTAssertNotNil(error)
+            XCTAssertTrue(error.status == 408)
+            XCTAssertTrue(error.aepError == .callbackTimeout)
+            XCTAssertTrue(error.title == "Request Timeout")
+            XCTAssertTrue(error.detail == "Update/Get proposition request resulted in a timeout.")
+            exp.fulfill()
+        }
+
+        wait(for: [exp, requestExpectation], timeout: 12)
+    }
+
 
     func testUpdatePropositions_validEdgeRequest() {
         // setup
@@ -105,7 +169,11 @@ class OptimizeIntegrationTests: XCTestCase {
                                           placementId: "xcore:offer-placement:1111111111111111")
         
         // update propositions
-        Optimize.updatePropositions(for: [decisionScope], withXdm: nil)
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil){ (propositions,error) in
+            XCTAssertNotNil(propositions)
+            XCTAssertNil(error)
+            requestExpectation.fulfill()
+        }
 
         wait(for: [requestExpectation], timeout: 2)
     }
@@ -388,6 +456,64 @@ class OptimizeIntegrationTests: XCTestCase {
             retrieveExpectation.fulfill()
         }
         wait(for: [retrieveExpectation], timeout: 2)
+    }
+    
+    func testUpdateProposition_invalidEdgeResponse() {
+        //setup
+        let inValidResponse = HTTPURLResponse(url: URL(string: "https://edge.adobedc.net/ee/v1/interact?configId=configId&requestId=requestId")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+        let responseString = """
+        {\
+           "requestId":"FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF",\
+           "handle":[],\
+           "errors":[\
+              {\
+                 "type":"EXEG-0201-400",\
+                 "status":400,\
+                 "title":"Invalid Request",\
+                 "detail":"Request cannot be processed as few parameters are missing. Please check and try again later."\
+              }\
+           ]\
+        }
+        """
+        
+        let requestExpectation = XCTestExpectation(description: "updatePropositions should result in a valid personalization query request to the Edge network.")
+        let mockNetworkService = TestableNetworkService()
+        ServiceProvider.shared.networkService = mockNetworkService
+        mockNetworkService.mock { request in
+            if request.url.absoluteString.contains("edge.adobedc.net/ee/v1/interact?configId=configId") {
+                requestExpectation.fulfill()
+                return (data: responseString.data(using: .utf8), response: inValidResponse, error: nil)
+            }
+            return (data: nil, response: inValidResponse, error: nil)
+        }
+        
+        // init extensions
+        initExtensionsAndWait()
+        
+        // update configuration
+        MobileCore.updateConfigurationWith(configDict: [
+                                            "experienceCloud.org": "orgid",
+                                            "experienceCloud.server": "test.com",
+                                            "global.privacy": "optedin",
+                                            "edge.configId": "configId"])
+        
+        let decisionScope = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
+                                              placementId: "xcore:offer-placement:1111111111111111")
+        
+        let invalidResponseExpectation = XCTestExpectation(description: "updatePropositions should result in a inavlid resoponse from Edge Experience Network.")
+        
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { data, error in
+            if let error = error as? AEPOptimizeError {
+                XCTAssertNotNil(error)
+                XCTAssertTrue(error.status == 400)
+                XCTAssertTrue(error.aepError == .invalidRequest)
+                XCTAssertTrue(error.title == "Invalid Request")
+                XCTAssertTrue(error.detail == "Request cannot be processed as few parameters are missing. Please check and try again later.")
+            }
+            invalidResponseExpectation.fulfill()
+        }
+        
+        wait(for: [requestExpectation, invalidResponseExpectation], timeout: 12)
     }
 
     func testGetPropositions_invalidEdgeResponse() {
