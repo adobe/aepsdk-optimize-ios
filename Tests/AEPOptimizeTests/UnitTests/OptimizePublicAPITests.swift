@@ -72,6 +72,31 @@ class OptimizePublicAPITests: XCTestCase {
         // verify
         wait(for: [expectation], timeout: 1)
     }
+    
+    func testUpdatePropositions_updateTimeout() {
+        // setup
+        let expectation = XCTestExpectation(description: "The Update proposition request should time out.")
+        expectation.assertForOverFulfill = true
+
+        let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
+        
+        // test
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { propositions, error in
+            guard let error = error as? AEPOptimizeError else {
+                XCTFail("Type mismatch in error received for Update Propositions")
+                return
+            }
+            XCTAssert(error.status == OptimizeConstants.ErrorData.Timeout.STATUS)
+            XCTAssert(error.aepError == .callbackTimeout)
+            XCTAssert(error.title == OptimizeConstants.ErrorData.Timeout.TITLE)
+            XCTAssert(error.detail == OptimizeConstants.ErrorData.Timeout.DETAIL)
+            XCTAssert(error.aepError == .callbackTimeout)
+            expectation.fulfill()
+        }
+
+        // verify
+        wait(for: [expectation], timeout: 11)
+    }
 
     func testUpdatePropositions_validDecisionScopeWithXdmAndData() {
         // setup

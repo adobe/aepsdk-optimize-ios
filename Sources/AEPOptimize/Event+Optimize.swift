@@ -18,6 +18,11 @@ import Foundation
 extension Event {
     // MARK: - AEP Response Event handle
 
+    /// Verify event type and source for  Edge error response event.
+    var isEdgeErrorResponseEvent: Bool {
+        type == EventType.edge && source == OptimizeConstants.EventSource.EDGE_ERROR_RESPONSE
+    }
+
     /// Verify event type and source for Edge personalization:decisions event.
     var isPersonalizationDecisionResponse: Bool {
         type == EventType.edge && source == OptimizeConstants.EventSource.EDGE_PERSONALIZATION_DECISIONS
@@ -57,15 +62,15 @@ extension Event {
         return try? JSONDecoder().decode(T.self, from: jsonData)
     }
 
-    /// Creates a response event with specified AEPError type added in the Event data.
-    /// - Parameter error: type of AEPError
+    /// Creates a response event with specified AEPOptimizeError type added in the Event data.
+    /// - Parameter error: type of AEPOptimizeError
     /// - Returns: error response Event
-    func createErrorResponseEvent(_ error: AEPError) -> Event {
+    func createErrorResponseEvent(_ error: AEPOptimizeError) -> Event {
         createResponseEvent(name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
                             type: EventType.optimize,
                             source: EventSource.responseContent,
                             data: [
-                                OptimizeConstants.EventDataKeys.RESPONSE_ERROR: error.rawValue
+                                OptimizeConstants.EventDataKeys.RESPONSE_ERROR: error
                             ])
     }
 }
