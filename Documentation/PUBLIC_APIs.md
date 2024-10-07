@@ -11,6 +11,7 @@ This API reference guide provides usage information for the Optimize extension's
 - [registerExtensions](#registerExtensions)
 - [resetIdentities](#resetIdentities)
 - [updatePropositions](#updatePropositions)
+- [updatePropositionsWithCompletionHandler](#updatePropositionsWithCompletionHandler)
 
 ---
 
@@ -319,6 +320,76 @@ AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc] initWithName: @"myS
 
 ---
 
+### updatePropositionsWithCompletionHandler
+
+This API dispatches an event for the Edge network extension to fetch decision propositions, for the provided decision scopes array, from the decisioning services enabled in the Experience Edge. The returned decision propositions are cached in-memory in the Optimize SDK extension and can be retrieved using `getPropositions` API.
+
+<InlineAlert variant="help" slots="text"/>
+
+Completion callback passed to `updatePropositions` supports network timeout and fatal errors returned by edge network along with fetched propositions data. The SDK's internal retry mechanism handles the recoverable HTTP errors. As a result, recoverable HTTP errors are not returned through this callback.
+
+<TabsBlock orientation="horizontal" slots="heading, content" repeat="2"/>
+
+#### Swift
+
+##### Syntax
+```swift
+static func updatePropositions(for decisionScopes: [DecisionScope], 
+                               withXdm xdm: [String: Any]?,
+                               andData data: [String: Any]? = nil,
+                               _completion: (([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil)
+```
+
+##### Example
+```swift
+let decisionScope1 = DecisionScope(activityId: "xcore:offer-activity:1111111111111111", 
+                                   placementId: "xcore:offer-placement:1111111111111111" 
+                                   itemCount: 2)
+let decisionScope2 = DecisionScope(name: "myScope")
+
+Optimize.updatePropositions(for: [decisionScope1, decisionScope2] 
+                            withXdm: ["xdmKey": "xdmValue"] 
+                            andData: ["dataKey": "dataValue"]){ data, error in
+            if let error = error as? AEPOptimizeError {
+                // handle error
+            }
+        }
+```
+
+#### Objective-C
+
+##### Syntax
+```objc
++ (void) updatePropositions: (NSArray<AEPDecisionScope*>* _Nonnull) decisionScopes 
+                    withXdm: (NSDictionary<NSString*, id>* _Nullable) xdm
+                    andData: (NSDictionary<NSString*, id>* _Nullable) data  
+                    completion: (void (^ _Nonnull)(NSDictionary<AEPDecisionScope*, AEPOptimizeProposition*>* _Nullable propositionsDict, NSError* _Nullable error)) completion;
+```
+
+##### Example
+```objc
+AEPDecisionScope* decisionScope1 = [[AEPDecisionScope alloc] initWithActivityId: @"xcore:offer-activity:1111111111111111" 
+                                                                   placementId: @"xcore:offer-placement:1111111111111111" 
+                                                                     itemCount: 2];
+AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc] initWithName: @"myScope"];
+
+[AEPMobileOptimize updatePropositions: @[decisionScope1, decisionScope2] 
+                              withXdm: @{@"xdmKey": @"xdmValue"} 
+                              andData: @{@"dataKey": @"dataValue"}] 
+                              completion: ^(NSDictionary<AEPDecisionScope*, AEPOptimizeProposition*>* propositionsDict, NSError* error) {
+  if (error != nil) {
+    // handle error
+    return;
+  }
+
+  AEPOptimizeProposition* proposition1 = propositionsDict[decisionScope1];
+  // read proposition1 offers
+
+  AEPOptimizeProposition* proposition2 = propositionsDict[decisionScope2];
+  // read proposition2 offers
+}];
+```
+
 ## Public classes
 
 | Type | Swift | Objective-C |
@@ -326,6 +397,7 @@ AEPDecisionScope* decisionScope2 = [[AEPDecisionScope alloc] initWithName: @"myS
 | class | `DecisionScope` | `AEPDecisionScope` |
 | class | `Proposition` | `AEPProposition` |
 | class | `Offer` | `AEPOffer` |
+| class | `AEPOptimizeError` | `AEPOptimizeError` |
 
 ### DecisionScope
 
@@ -424,7 +496,7 @@ public class Offer: NSObject, Codable {
     @objc public let etag: String
 
     /// Offer priority score
-    @objc public let score: Int
+    @objc public let score: Double
 
     /// Offer schema string
     @objc public let schema: String
@@ -478,6 +550,44 @@ public extension Offer {
 
     /// Dispatches an event for the Edge extension to send an Experience Event to the Edge network with the tap interaction data for the given proposition item.
     func tapped() {...}
+}
+```
+
+### AEPOptimizeError
+
+This class represents the error details returned by the Edge Network while fetching propositions.
+
+#### Swift
+
+Error details received from Edge response along with [AEPError](../../../home/base/mobile-core/tabs/api-reference/#aeperror) object returned with values:
+
+* _AEPError.callbackTimeout_ is returned when request timeout without any response.
+* _AEPError.serverErrors_ is returned for HTTP Status 500.
+* _AEPError.invalidRequest_ is returned for HTTP Status 400 - 499 (except 408 and 429).
+
+```swift
+@objc(AEPOptimizeError)
+public class AEPOptimizeError: NSObject, Error {
+    // This is a URI reference (RFC3986) that identifies the problem type  
+    public let type: String?
+
+    // This is the HTTP status code generated by the server for this occurrence of the problem.
+    public let status: Int?
+
+    // This is a short, human-readable summary of the problem type.
+    public let title: String?
+
+    // This is human-readable description of the problem type.
+    public let detail: String?
+
+    // This is a map of additional properties that aid in debugging such as the request ID or the org ID. In some cases, it might contain data specific to the error at hand, such as a list of validation errors.
+    public let report: [String: Any]?
+
+    // This ia a mandatory AEPError representing the high level error status
+    public var aepError = AEPError.unexpected
+
+    // Initializer for AEPOptimizeError based based on the Error details returned by Edge respose
+    public init(type: String?, status: Int?, title: String?, detail: String?, aepError: AEPError? = nil) {...}
 }
 ```
 
