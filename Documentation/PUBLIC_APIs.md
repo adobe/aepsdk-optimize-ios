@@ -350,10 +350,10 @@ let decisionScope2 = DecisionScope(name: "myScope")
 Optimize.updatePropositions(for: [decisionScope1, decisionScope2] 
                             withXdm: ["xdmKey": "xdmValue"] 
                             andData: ["dataKey": "dataValue"]){ data, error in
-            if let error = error as? AEPOptimizeError {
+    if let error = error as? AEPOptimizeError {
                 // handle error
-            }
-        }
+    }
+}
 ```
 
 #### Objective-C
