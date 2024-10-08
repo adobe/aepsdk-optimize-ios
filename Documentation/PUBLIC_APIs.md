@@ -553,7 +553,7 @@ public extension Offer {
 
 This class represents the error details returned by the Edge Network while fetching propositions.
 
-Error details received from Edge response along with [AEPError](../../../home/base/mobile-core/tabs/api-reference/#aeperror) object returned with values:
+Error details received from Edge response along with AEPError object returned with values:
 
 * _AEPError.callbackTimeout_ is returned when request timeout without any response.
 * _AEPError.serverErrors_ is returned for HTTP Status 500.
