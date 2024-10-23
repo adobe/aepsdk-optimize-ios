@@ -27,6 +27,7 @@ enum OptimizeConstants {
 
     static let ERROR_UNKNOWN = "unknown"
     static let UNKNOWN_STATUS = 0
+    static let PAYLOAD = "payload"
 
     enum EventNames {
         static let UPDATE_PROPOSITIONS_REQUEST = "Optimize Update Propositions Request"
@@ -43,6 +44,7 @@ enum OptimizeConstants {
     enum EventSource {
         static let EDGE_PERSONALIZATION_DECISIONS = "personalization:decisions"
         static let EDGE_ERROR_RESPONSE = "com.adobe.eventSource.errorResponseContent"
+        static let DEBUG = "com.adobe.eventSource.debug"
     }
 
     enum EventDataKeys {

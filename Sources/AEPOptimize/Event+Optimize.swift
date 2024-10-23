@@ -28,6 +28,11 @@ extension Event {
         type == EventType.edge && source == OptimizeConstants.EventSource.EDGE_PERSONALIZATION_DECISIONS
     }
 
+    /// Verify event type and source for debug events triggered by the system.
+    var isDebugEvent: Bool {
+        type == EventType.system && source == OptimizeConstants.EventSource.DEBUG
+    }
+
     /// Return parentID's UUID or requestEventId as string.
     var requestEventId: String? {
         parentID?.uuidString as? String ?? data?[OptimizeConstants.EventDataKeys.REQUEST_EVENT_ID] as? String

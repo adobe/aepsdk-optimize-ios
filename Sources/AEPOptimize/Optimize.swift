@@ -120,6 +120,11 @@ public class Optimize: NSObject, Extension {
                          source: EventSource.contentComplete,
                          listener: processUpdatePropositionsCompleted(event:))
 
+        // register listener for handling debug events
+        registerListener(type: EventType.system,
+                         source: EventSource.debug,
+                         listener: processDebugEvent)
+
         // Handler function called for each queued event. If the queued event is a get propositions event, process it
         // otherwise if it is an Edge event to update propositions, process it only if it is completed.
         eventsQueue.setHandler { event -> Bool in
@@ -498,6 +503,45 @@ public class Optimize: NSObject, Extension {
         let event = Event(name: OptimizeConstants.EventNames.EDGE_PROPOSITION_INTERACTION_REQUEST,
                           type: EventType.edge,
                           source: EventSource.requestContent,
+                          data: eventData)
+        dispatch(event: event)
+    }
+
+    /// Processes debug events triggered by the system.
+    ///
+    /// A debug event allows the optimize extension to processes non-production workflows.
+    /// - Parameter event: the debug `Event` to be handled.
+    private func processDebugEvent(_ event: Event) {
+        guard event.isDebugEvent else {
+            Log.debug(label: OptimizeConstants.LOG_TAG,
+                      " Ignoring Debug event, either handle type is not com.adobe.eventType.system or source is not com.adobe.eventSource.debug")
+            return
+        }
+
+        guard let propositions: [OptimizeProposition] = event.getTypedData(for: OptimizeConstants.PAYLOAD),
+              !propositions.isEmpty
+        else {
+            Log.debug(label: OptimizeConstants.LOG_TAG, "Failed to read debug response from external system, propositions array is invalid or empty.")
+            return
+        }
+
+        let propositionsDict = propositions
+            .filter { !$0.offers.isEmpty }
+            .toDictionary { DecisionScope(name: $0.scope) }
+
+        guard !propositionsDict.isEmpty else {
+            Log.debug(label: OptimizeConstants.LOG_TAG,
+                      """
+                      No propositions with valid offers are present in the debug response event triggered by external system.
+                      """)
+            return
+        }
+
+        let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
+
+        let event = Event(name: OptimizeConstants.EventNames.OPTIMIZE_NOTIFICATION,
+                          type: EventType.optimize,
+                          source: EventSource.notification,
                           data: eventData)
         dispatch(event: event)
     }
