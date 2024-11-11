@@ -2251,4 +2251,54 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(0, optimize.getUpdateRequestEventIdsInProgress().count)
         XCTAssertEqual(0, optimize.getPropositionsInProgress().count)
     }
+    
+    func testDebugEventTriggeredByExternalSystem(){
+        //setUp
+        let testEvent = Event(name: "AEP Response Event Handle (Spoof)",
+                              type: "com.adobe.eventType.system",
+                              source: "com.adobe.eventSource.debug",
+                              data: [
+                                "payload": [
+                                  [
+                                      "id": "AT:Spoofed",
+                                      "scope": "optimize-tutorial-loc",
+                                      "scopeDetails": [
+                                          "activity": [
+                                            "id" : "0"
+                                            ],
+                                          "decisionProvider": "TGT"
+                                      ],
+                                      "items": [
+                                          [
+                                              "id": "xcore:personalized-offer:1111111111111111",
+                                              "etag": "10",
+                                              "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",
+                                              "data": [
+                                                  "id": "xcore:personalized-offer:1111111111111111",
+                                                  "format": "text/html",
+                                                  "content": "<h1>This is HTML content</h1>",
+                                                  "characteristics": [
+                                                      "testing": "true"
+                                                  ]
+                                              ]
+                                          ]
+                                      ]
+                                  ]
+                                ],
+                                "type": "personalization:decisions"
+                              ])
+        
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+        
+        //verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+        let dispatchedEvent = mockRuntime.dispatchedEvents.first
+        XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
+        XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
+        
+        XCTAssertEqual(0, optimize.cachedPropositions.count)
+
+    }
 }
