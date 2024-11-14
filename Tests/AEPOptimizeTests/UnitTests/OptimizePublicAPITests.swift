@@ -596,9 +596,7 @@ class OptimizePublicAPITests: XCTestCase {
         let expectation = XCTestExpectation(description: "Callback expected.")
         expectation.assertForOverFulfill = true
         
-        // Call updatePropositions with a short timeout to simulate timeout scenario
         Optimize.updatePropositions(for: [decisionScope], withXdm: nil, andData: nil, timeout: 1) { propositions, error in
-            // Check for a timeout error scenario
             guard let error = error as? AEPOptimizeError else {
                 XCTFail("Type mismatch in error received for Update Propositions")
                 return

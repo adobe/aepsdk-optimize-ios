@@ -32,23 +32,11 @@ public extension Optimize {
     /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
     /// - Parameter decisionScopes: An array of decision scopes.
     /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
-    /// - Parameter timeout: Timeout for the event.
-    /// - Parameter data: Additional free-form data to be sent in the personalization request.
-    @objc(updatePropositions:withXdm:andData:timeout:)
-    static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, timeout: TimeInterval) {
-        updatePropositions(for: decisionScopes, withXdm: xdm, andData: data, timeout: timeout, nil)
-    }
-
-    /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the decisioning Services enabled behind Experience Edge.
-    ///
-    /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
-    /// - Parameter decisionScopes: An array of decision scopes.
-    /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
     /// - Parameter completion: Optional completion handler invoked with map of successful decision scopes to propositions and errors, if any
     @objc(updatePropositions:withXdm:andData:completion:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, _ completion: (([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
-        updatePropositions(for: decisionScopes, withXdm: xdm, andData: data, timeout: 10, completion)
+        updatePropositions(for: decisionScopes, withXdm: xdm, andData: data, timeout: OptimizeConstants.DEFAULT_TIMEOUT, completion)
     }
 
     /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the decisioning Services enabled behind Experience Edge.
