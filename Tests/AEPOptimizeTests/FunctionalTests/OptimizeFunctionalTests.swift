@@ -2298,7 +2298,7 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
         XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
         
-        XCTAssertEqual(0, optimize.cachedPropositions.count)
+        XCTAssertEqual(1, optimize.cachedPropositions.count)
 
     }
 }

@@ -537,6 +537,8 @@ public class Optimize: NSObject, Extension {
             return
         }
 
+        cachedPropositions.merge(propositionsDict) { _, new in new }
+
         let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
 
         let event = Event(name: OptimizeConstants.EventNames.OPTIMIZE_NOTIFICATION,
