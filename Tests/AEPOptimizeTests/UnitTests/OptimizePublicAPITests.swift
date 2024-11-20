@@ -590,7 +590,7 @@ class OptimizePublicAPITests: XCTestCase {
     }
     
     func testUpdateProposition_responseWithinTimeout() {
-        // setup
+        /// setup
         let propositionB = """
         {
             "id": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB",
@@ -645,7 +645,7 @@ class OptimizePublicAPITests: XCTestCase {
                                                          type: EventType.edge,
                                                          source: EventSource.requestContent,
                                                          data: eventData)
-                MobileCore.dispatch(event: edgeEvent, timeout: timeout) { responeEvent in
+                MobileCore.dispatch(event: edgeEvent, timeout: timeout) { _ in
                     let responseEvent = event.createResponseEvent(
                         name: "AEP Response Complete",
                         type: EventType.edge,
@@ -655,7 +655,7 @@ class OptimizePublicAPITests: XCTestCase {
                 }
             }
         
-        // Execute
+        /// Execute
         Optimize.updatePropositions(for: [decisionScope], withXdm: nil, andData: nil, timeout: 1) { data, error in
             XCTAssertNil(error)
             XCTAssertNotNil(data)
@@ -684,12 +684,12 @@ class OptimizePublicAPITests: XCTestCase {
             expectation.fulfill()
         }
 
-        // wait
+        /// wait
         wait(for: [expectation], timeout: 2)
     }
     
     func testUpdateProposition_responseExceedsTimeout() {
-        // setup
+        /// setup
         let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
         
         let expectation = XCTestExpectation(description: "updatePropositions should timeout as the response is delayed.")
@@ -720,10 +720,19 @@ class OptimizePublicAPITests: XCTestCase {
                 MobileCore.dispatch(event: edgeEvent)
             }
         
-        // Execute
-        Optimize.updatePropositions(for: [decisionScope], withXdm: nil, andData: nil, timeout: 1) { data, error in
+        /// Execute
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil, andData: nil, timeout: 1) { data, err in
             XCTAssertNil(data, "Data should be nil when the response times out.")
-            XCTAssertNotNil(error, "An error should be returned when the response times out.")
+            XCTAssertNotNil(err, "An error should be returned when the response times out.")
+            guard let error = err as? AEPOptimizeError else {
+                XCTFail("Type mismatch in error received for Update Propositions")
+                return
+            }
+            XCTAssert(error.status == OptimizeConstants.ErrorData.Timeout.STATUS)
+            XCTAssert(error.aepError == .callbackTimeout)
+            XCTAssert(error.title == OptimizeConstants.ErrorData.Timeout.TITLE)
+            XCTAssert(error.detail == OptimizeConstants.ErrorData.Timeout.DETAIL)
+            XCTAssert(error.aepError == .callbackTimeout)
             expectation.fulfill()
         }
         
@@ -735,25 +744,21 @@ class OptimizePublicAPITests: XCTestCase {
         let propositionB = """
         {
           "id": "AT:example-id",
-          "scope": "optimize-tutorial-loc",
+          "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
           "scopeDetails": {
-            "activity": { "id": "1451350" },
-            "characteristics": { "eventToken": "example-token" }
+            "activity": { "id": "1451350" }
           },
           "items": [
             {
               "id": "0",
-              "data": { "content": "<html>Content</html>" },
-              "meta": { "key": "value" },
-              "schema": "example-schema",
-              "etag": "",
+              "etag": "update",
               "score": 10
             }
           ]
         }
         """.data(using: .utf8)!
         
-        let decisionScope = DecisionScope(name: "optimize-tutorial-loc")
+        let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
         guard let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionB) else {
             XCTFail("Propositions should be valid.")
             return
@@ -804,12 +809,12 @@ class OptimizePublicAPITests: XCTestCase {
             
             expectation.fulfill()
         }
-        // wait
+        /// wait
         wait(for: [expectation], timeout: 5)
     }
     
     func testGetProposition_responseExceedsTimeout() {
-        // setup
+        /// setup
         let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
         
         let expectation = XCTestExpectation(description: "getPropositions should timeout as the response is delayed.")
