@@ -589,47 +589,6 @@ class OptimizePublicAPITests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testUpdatePropositionsWithTimeout() {
-        let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
-    
-        // Setup expectation
-        let expectation = XCTestExpectation(description: "Callback expected.")
-        expectation.assertForOverFulfill = true
-        
-        Optimize.updatePropositions(for: [decisionScope], withXdm: nil, andData: nil, timeout: 1) { propositions, error in
-            guard let error = error as? AEPOptimizeError else {
-                XCTFail("Type mismatch in error received for Update Propositions")
-                return
-            }
-            XCTAssert(error.aepError == .callbackTimeout)
-            XCTAssertNil(propositions)
-            expectation.fulfill()
-        }
-        
-        wait(for: [expectation], timeout: 5)
-    }
-    
-    
-    func testGetPropositionsWithTimeout() {
-        // Setup test data
-        let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
-
-        let expectation = XCTestExpectation(description: "Callback expected.")
-        expectation.assertForOverFulfill = true
-        
-        Optimize.getPropositions(for: [decisionScope], timeout: 1) { propositions, error in
-            guard let error = error as? AEPError else {
-                XCTFail("Type mismatch in error received for Update Propositions")
-                return
-            }
-            XCTAssert(error == .callbackTimeout)
-            XCTAssertNil(propositions)
-            expectation.fulfill()
-        }
-        
-        wait(for: [expectation], timeout: 5)
-    }
-    
     func testUpdateProposition_responseWithinTimeout() {
         // setup
         let propositionB = """
@@ -729,6 +688,175 @@ class OptimizePublicAPITests: XCTestCase {
         wait(for: [expectation], timeout: 2)
     }
     
+    func testUpdateProposition_responseExceedsTimeout() {
+        // setup
+        let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
+        
+        let expectation = XCTestExpectation(description: "updatePropositions should timeout as the response is delayed.")
+        expectation.assertForOverFulfill = true
+        
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
+            type: EventType.edge,
+            source: EventSource.requestContent) { event in
+                DispatchQueue.global().asyncAfter(deadline: .now() + 3) {
+                    /// Fire the response after 3 seconds
+                    let responseEvent = event.createResponseEvent(
+                        name: "AEP Response Complete",
+                        type: EventType.edge,
+                        source: EventSource.contentComplete,
+                        data: [:]
+                    )
+                    EventHub.shared.dispatch(event: responseEvent)
+                }
+            }
+        
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
+            type: EventType.optimize,
+            source: EventSource.requestContent) { event in
+                let edgeEvent = event.createChainedEvent(name: OptimizeConstants.EventNames.EDGE_PERSONALIZATION_REQUEST,
+                                                         type: EventType.edge,
+                                                         source: EventSource.requestContent,
+                                                         data: [:])
+                MobileCore.dispatch(event: edgeEvent)
+            }
+        
+        // Execute
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil, andData: nil, timeout: 1) { data, error in
+            XCTAssertNil(data, "Data should be nil when the response times out.")
+            XCTAssertNotNil(error, "An error should be returned when the response times out.")
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 4)
+    }
+    
+    func testGetProposition_responseWithinTimeout() {
+        /// Setup
+        let propositionB = """
+        {
+          "id": "AT:example-id",
+          "scope": "optimize-tutorial-loc",
+          "scopeDetails": {
+            "activity": { "id": "1451350" },
+            "characteristics": { "eventToken": "example-token" }
+          },
+          "items": [
+            {
+              "id": "0",
+              "data": { "content": "<html>Content</html>" },
+              "meta": { "key": "value" },
+              "schema": "example-schema",
+              "etag": "",
+              "score": 10
+            }
+          ]
+        }
+        """.data(using: .utf8)!
+        
+        let decisionScope = DecisionScope(name: "optimize-tutorial-loc")
+        guard let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionB) else {
+            XCTFail("Propositions should be valid.")
+            return
+        }
+        let propositionDictionary: [DecisionScope: OptimizeProposition] = [decisionScope:proposition]
+        let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event with expected data.")
+        expectation.assertForOverFulfill = true
+        
+        let testEventData: [String: Any] = [
+            "requesttype": "getpropositions",
+            "decisionscopes": [
+                [ "name": decisionScope.name ]
+            ]
+        ]
+        let testEvent = Event(name: "Optimize Get Propositions Request",
+                              type: EventType.optimize,
+                              source: EventSource.requestContent,
+                              data: testEventData)
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
+            type: testEvent.type,
+            source: testEvent.source) { event in
+                let responseEventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionDictionary].asDictionary()
+                let responseEvent = event.createResponseEvent(name: OptimizeConstants.EventNames.OPTIMIZE_NOTIFICATION,
+                                                              type: EventType.optimize,
+                                                              source: EventSource.notification,
+                                                              data: responseEventData)
+                MobileCore.dispatch(event: responseEvent)
+            }
+        
+        /// execute
+        Optimize.getPropositions(for: [decisionScope], timeout: 5) { data, error in
+            XCTAssertNil(error, "Error should be nil for a successful response.")
+            XCTAssertNotNil(data, "Data should not be nil for a valid response.")
+            /// Verify the decision scope exists in the response
+            XCTAssertTrue(data?.keys.contains(decisionScope) == true, "The response should contain the requested decision scope.")
+            /// Verify the proposition for the decision scope
+            if let returnedProposition = data?[decisionScope] {
+                XCTAssertEqual(returnedProposition.id, proposition.id, "The proposition ID should match the expected value.")
+                XCTAssertEqual(returnedProposition.scope, proposition.scope, "The proposition scope should match the expected value.")
+                
+                /// Verify offers within the proposition
+                XCTAssertEqual(returnedProposition.offers.count, proposition.offers.count, "The number of offers should match.")
+                XCTAssertEqual(returnedProposition.offers.first?.id, proposition.offers.first?.id, "The first offer ID should match.")
+                XCTAssertEqual(returnedProposition.offers.first?.schema, proposition.offers.first?.schema, "The first offer schema should match.")
+            } else {
+                XCTFail("The returned proposition should not be nil.")
+            }
+            
+            expectation.fulfill()
+        }
+        // wait
+        wait(for: [expectation], timeout: 5)
+    }
+    
+    func testGetProposition_responseExceedsTimeout() {
+        // setup
+        let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
+        
+        let expectation = XCTestExpectation(description: "getPropositions should timeout as the response is delayed.")
+        expectation.assertForOverFulfill = true
+        
+        let testEventData: [String: Any] = [
+            "requesttype": "getpropositions",
+            "decisionscopes": [
+                [ "name": decisionScope.name ]
+            ]
+        ]
+        
+        let testEvent = Event(name: "Optimize Get Propositions Request",
+                              type: EventType.optimize,
+                              source: EventSource.requestContent,
+                              data: testEventData)
+        
+        /// Mock listener with delayed response
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
+            type: testEvent.type,
+            source: testEvent.source) { event in
+                DispatchQueue.global().asyncAfter(deadline: .now() + 4) {
+                    /// Delay response beyond timeout
+                    let eventData: [String: Any] = [:]
+                    let responseEvent = event.createResponseEvent(name: OptimizeConstants.EventNames.OPTIMIZE_NOTIFICATION,
+                                                                  type: EventType.optimize,
+                                                                  source: EventSource.notification,
+                                                                  data: eventData)
+                    MobileCore.dispatch(event: responseEvent)
+                }
+            }
+        
+        /// execute
+        Optimize.getPropositions(for: [decisionScope], timeout: 2) { data, error in
+            /// Verify
+            XCTAssertNil(data)
+            XCTAssertNotNil(error)
+            if let error = error as? AEPError {
+                XCTAssertEqual(error, .callbackTimeout)
+            }
+            expectation.fulfill()
+        }
+        
+        /// wait
+        wait(for: [expectation], timeout: 5)
+    }
+
     private func registerMockExtension<T: Extension>(_ type: T.Type) {
         let semaphore = DispatchSemaphore(value: 0)
         EventHub.shared.registerExtension(type) { error in
