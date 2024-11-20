@@ -160,8 +160,10 @@ struct OffersView: View {
                         htmlDecisionScope,
                         jsonDecisionScope,
                         targetScope
-                    ], withXdm: ["xdmKey": "1234"], andData: data) { data, error in
-                        if let error = error as? AEPOptimizeError {
+                    ], withXdm: ["xdmKey": "1234"], andData: data, timeout: 1
+
+                    ) { data, error in
+                         if let error = error as? AEPOptimizeError {
                             errorAlert = true
                             if let errorStatus = error.status {
                                 errorMessage = (error.title ?? "Unexpected Error") + " : " + String(errorStatus)

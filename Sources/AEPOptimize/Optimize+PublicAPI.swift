@@ -65,7 +65,6 @@ public extension Optimize {
             OptimizeConstants.EventDataKeys.REQUEST_TYPE: OptimizeConstants.EventDataValues.REQUEST_TYPE_UPDATE,
             OptimizeConstants.EventDataKeys.DECISION_SCOPES: flattenedDecisionScopes
         ]
-
         // Add XDM data
         if let xdm = xdm {
             eventData[OptimizeConstants.EventDataKeys.XDM] = xdm
@@ -74,9 +73,9 @@ public extension Optimize {
         // Add free-form data
         if let data = data {
             eventData[OptimizeConstants.EventDataKeys.DATA] = data
-            eventData[OptimizeConstants.EventDataKeys.TIMEOUT] = timeout
         }
 
+        eventData[OptimizeConstants.EventDataKeys.TIMEOUT] = timeout
         let event = Event(name: OptimizeConstants.EventNames.UPDATE_PROPOSITIONS_REQUEST,
                           type: EventType.optimize,
                           source: EventSource.requestContent,
