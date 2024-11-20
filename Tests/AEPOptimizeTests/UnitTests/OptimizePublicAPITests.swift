@@ -591,15 +591,15 @@ class OptimizePublicAPITests: XCTestCase {
     
     func testUpdateProposition_responseWithinTimeout() {
         /// setup
+        let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
+        
         let propositionB = """
         {
             "id": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB",
-            "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="
+            "scope": "\(decisionScope.name)"
         }
         """.data(using: .utf8)!
 
-        let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
-        
         guard let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionB) else {
             XCTFail("Propositions should be valid.")
             return
@@ -665,21 +665,19 @@ class OptimizePublicAPITests: XCTestCase {
             XCTAssertTrue(decisionScopes?.contains(decisionScope) == true)
 
             /// Verify the propositions
-            let propositions = data?.values
-            XCTAssertNotNil(propositions)
-            XCTAssertFalse(propositions?.isEmpty ?? true)
-            
-            let returnedProposition = data?[decisionScope]
-            XCTAssertNotNil(returnedProposition)
-            XCTAssertEqual(returnedProposition?.id, proposition.id)
-            XCTAssertEqual(returnedProposition?.scope, proposition.scope)
-
-            /// Additional check for propositions
-            if let propositions = propositions {
-                XCTAssertEqual(propositions.count, 1)
-                XCTAssertEqual(propositions.first?.id, proposition.id)
-                XCTAssertEqual(propositions.first?.scope, proposition.scope)
+            guard let propositions = data?.values, let returnedProposition = data?[decisionScope] else {
+                XCTFail("Proposition should be present")
+                return
             }
+
+            XCTAssertNotNil(propositions)
+            XCTAssertFalse(propositions.isEmpty)
+            XCTAssertEqual(propositions.count, 1)
+            XCTAssertEqual(propositions.first?.id, proposition.id)
+            XCTAssertEqual(propositions.first?.scope, proposition.scope)
+            XCTAssertNotNil(returnedProposition)
+            XCTAssertEqual(returnedProposition.id, proposition.id)
+            XCTAssertEqual(returnedProposition.scope, proposition.scope)
 
             expectation.fulfill()
         }
@@ -732,7 +730,6 @@ class OptimizePublicAPITests: XCTestCase {
             XCTAssert(error.aepError == .callbackTimeout)
             XCTAssert(error.title == OptimizeConstants.ErrorData.Timeout.TITLE)
             XCTAssert(error.detail == OptimizeConstants.ErrorData.Timeout.DETAIL)
-            XCTAssert(error.aepError == .callbackTimeout)
             expectation.fulfill()
         }
         
@@ -850,11 +847,13 @@ class OptimizePublicAPITests: XCTestCase {
         /// execute
         Optimize.getPropositions(for: [decisionScope], timeout: 2) { data, error in
             /// Verify
-            XCTAssertNil(data)
-            XCTAssertNotNil(error)
-            if let error = error as? AEPError {
-                XCTAssertEqual(error, .callbackTimeout)
+            guard let aepError = error as? AEPError else {
+                XCTFail("The returned proposition should not be nil.")
+                return
             }
+            XCTAssertNil(data)
+            XCTAssertNotNil(aepError)
+            XCTAssertEqual(aepError, .callbackTimeout)
             expectation.fulfill()
         }
         
