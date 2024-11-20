@@ -25,7 +25,7 @@ import AEPOptimize
 import SwiftUI
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
-    private let ENVIRONMENT_FILE_ID = "3149c49c3910/0f12baf27522/launch-0d096c129660-development"
+    private let ENVIRONMENT_FILE_ID = ""
     private let OVERRIDE_DATASET_ID = ""
     
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
