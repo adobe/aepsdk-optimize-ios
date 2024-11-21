@@ -256,8 +256,8 @@ public class Optimize: NSObject, Extension {
         // add the Edge event to update propositions in the events queue.
         eventsQueue.add(edgeEvent)
 
-        // Increase timeout to 10s to ensure edge requests have enough time to complete.
-        MobileCore.dispatch(event: edgeEvent, timeout: 10) { responseEvent in
+        let timeout: TimeInterval = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval ?? OptimizeConstants.DEFAULT_TIMEOUT
+        MobileCore.dispatch(event: edgeEvent, timeout: timeout) { responseEvent in
             guard
                 let responseEvent = responseEvent,
                 let requestEventId = responseEvent.requestEventId

@@ -27,6 +27,7 @@ enum OptimizeConstants {
 
     static let ERROR_UNKNOWN = "unknown"
     static let UNKNOWN_STATUS = 0
+    static let DEFAULT_TIMEOUT: TimeInterval = 10
 
     enum EventNames {
         static let UPDATE_PROPOSITIONS_REQUEST = "Optimize Update Propositions Request"
@@ -50,6 +51,7 @@ enum OptimizeConstants {
         static let DECISION_SCOPES = "decisionscopes"
         static let XDM = "xdm"
         static let DATA = "data"
+        static let TIMEOUT = "timeout"
         static let PROPOSITIONS = "propositions"
         static let RESPONSE_ERROR = "responseerror"
         static let PROPOSITION_INTERACTIONS = "propositioninteractions"
