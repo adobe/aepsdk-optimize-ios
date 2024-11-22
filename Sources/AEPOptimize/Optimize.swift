@@ -544,7 +544,6 @@ public class Optimize: NSObject, Extension {
     /// A debug event allows the optimize extension to processes non-production workflows.
     /// - Parameter event: the debug `Event` to be handled.
     private func processDebugEvent(event: Event) {
-
         // ToDo - check for  debugEventType and debugEventSource once we receive debug object in eventData
         guard event.type == EventType.system && event.source == OptimizeConstants.EventSource.DEBUG
         else {
@@ -586,7 +585,6 @@ public class Optimize: NSObject, Extension {
                           source: EventSource.notification,
                           data: eventData)
         dispatch(event: event)
-
     }
 
     /// Helper function to check if edge error response received should be suppressed as it is already being retried on Edge
