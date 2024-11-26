@@ -2050,7 +2050,9 @@ class OptimizeFunctionalTests: XCTestCase {
         }
 
         optimize.cachedPropositions[DecisionScope(name: "myScope")] = propositions
+        optimize.previewCachedPropositions[DecisionScope(name: "myScope")] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
+        XCTAssertEqual(1, optimize.previewCachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Clear Propositions Request",
                               type: "com.adobe.eventType.optimize",
@@ -2067,6 +2069,7 @@ class OptimizeFunctionalTests: XCTestCase {
         // verify
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
         XCTAssertTrue(optimize.cachedPropositions.isEmpty)
+        XCTAssertTrue(optimize.previewCachedPropositions.isEmpty)
     }
 
     func testCoreResetIdentities() {
