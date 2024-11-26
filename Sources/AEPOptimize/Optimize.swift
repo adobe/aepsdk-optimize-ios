@@ -537,6 +537,7 @@ public class Optimize: NSObject, Extension {
     private func processClearPropositions(event _: Event) {
         // Clear propositions cache
         cachedPropositions.removeAll()
+        previewCachedPropositions.removeAll()
     }
 
     /// Processes debug events triggered by the system.
