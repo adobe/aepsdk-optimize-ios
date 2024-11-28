@@ -44,6 +44,7 @@ enum OptimizeConstants {
     enum EventSource {
         static let EDGE_PERSONALIZATION_DECISIONS = "personalization:decisions"
         static let EDGE_ERROR_RESPONSE = "com.adobe.eventSource.errorResponseContent"
+        static let DEBUG = "com.adobe.eventSource.debug"
     }
 
     enum EventDataKeys {

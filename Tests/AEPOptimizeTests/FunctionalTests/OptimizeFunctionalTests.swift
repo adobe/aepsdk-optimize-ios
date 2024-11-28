@@ -35,7 +35,7 @@ class OptimizeFunctionalTests: XCTestCase {
         // onRegistered() invoked in setUp()
 
         // verify
-        XCTAssertEqual(6, mockRuntime.listeners.count)
+        XCTAssertEqual(7, mockRuntime.listeners.count)
         XCTAssertNotNil(mockRuntime.listeners["com.adobe.eventType.generic.identity-com.adobe.eventSource.requestReset"])
         XCTAssertNotNil(mockRuntime.listeners["com.adobe.eventType.optimize-com.adobe.eventSource.requestReset"])
         XCTAssertNotNil(mockRuntime.listeners["com.adobe.eventType.edge-com.adobe.eventSource.errorResponseContent"])
@@ -1004,6 +1004,9 @@ class OptimizeFunctionalTests: XCTestCase {
 
         XCTAssertTrue(mockRuntime.dispatchedEvents.isEmpty)
 
+        optimize.setUpdateRequestEventIdsInProgress(updateEvent.id.uuidString, expectedScopes: [decisionScopeA])
+        optimize.setPropositionsInProgress([decisionScopeA : updatedPropositionForScopeA])
+        
         let optimizeContentComplete = Event(
             name: "Optimize Update Propositions Complete",
             type: "com.adobe.eventType.optimize",
@@ -1015,7 +1018,6 @@ class OptimizeFunctionalTests: XCTestCase {
         )
         
         mockRuntime.simulateComingEvents(optimizeContentComplete)
-        optimize.cachedPropositions[decisionScopeA] = updatedPropositionForScopeA
         
         /// After the update is complete, the get event should now dispatch
         let expectation = XCTestExpectation(description: "Get propositions request should now dispatch response event after update completion.")
@@ -2048,7 +2050,9 @@ class OptimizeFunctionalTests: XCTestCase {
         }
 
         optimize.cachedPropositions[DecisionScope(name: "myScope")] = propositions
+        optimize.previewCachedPropositions[DecisionScope(name: "myScope")] = propositions
         XCTAssertEqual(1, optimize.cachedPropositions.count)
+        XCTAssertEqual(1, optimize.previewCachedPropositions.count)
 
         let testEvent = Event(name: "Optimize Clear Propositions Request",
                               type: "com.adobe.eventType.optimize",
@@ -2065,6 +2069,7 @@ class OptimizeFunctionalTests: XCTestCase {
         // verify
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
         XCTAssertTrue(optimize.cachedPropositions.isEmpty)
+        XCTAssertTrue(optimize.previewCachedPropositions.isEmpty)
     }
 
     func testCoreResetIdentities() {
@@ -2251,4 +2256,406 @@ class OptimizeFunctionalTests: XCTestCase {
         XCTAssertEqual(0, optimize.getUpdateRequestEventIdsInProgress().count)
         XCTAssertEqual(0, optimize.getPropositionsInProgress().count)
     }
+    
+    func testDebugEventTriggeredByExternalSystem(){
+            //setUp
+            let decisionScope = DecisionScope(name: "optimize-tutorial-loc")
+            let testEvent = Event(name: "AEP Response Event Handle (Spoof)",
+                                  type: "com.adobe.eventType.system",
+                                  source: "com.adobe.eventSource.debug",
+                                  data: [
+                                    "payload": [
+                                      [
+                                          "id": "AT:Spoofed",
+                                          "scope": "\(decisionScope.name)",
+                                          "scopeDetails": [
+                                              "activity": [
+                                                "id" : "0"
+                                                ],
+                                              "decisionProvider": "TGT"
+                                          ],
+                                          "items": [
+                                              [
+                                                  "id": "xcore:personalized-offer:1111111111111111",
+                                                  "etag": "10",
+                                                  "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",
+                                                  "data": [
+                                                      "id": "xcore:personalized-offer:1111111111111111",
+                                                      "format": "text/html",
+                                                      "content": "<h1>This is HTML content</h1>",
+                                                      "characteristics": [
+                                                          "testing": "true"
+                                                      ]
+                                                  ]
+                                              ]
+                                          ]
+                                      ]
+                                    ],
+                                    "type": "personalization:decisions"
+                                  ])
+
+            // test
+            mockRuntime.simulateComingEvents(testEvent)
+
+            //verify
+            XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+
+            let dispatchedEvent = mockRuntime.dispatchedEvents.first
+            XCTAssertEqual("com.adobe.eventType.optimize", dispatchedEvent?.type)
+            XCTAssertEqual("com.adobe.eventSource.notification", dispatchedEvent?.source)
+            
+            XCTAssertEqual(1, optimize.previewCachedPropositions.count)
+            XCTAssertTrue(optimize.cachedPropositions.isEmpty)
+        
+            guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = dispatchedEvent?.getTypedData(for: "propositions") else {
+                XCTFail("Propositions dictionary should be valid.")
+                return
+            }
+            
+            XCTAssertNotNil(propositionsDictionary[decisionScope])
+            XCTAssertEqual(propositionsDictionary[decisionScope]?.id, optimize.previewCachedPropositions[decisionScope]?.id)
+        
+        }
+    
+        func testDebugEvent_getPropositionForMultipleScopes() {
+            // Setup
+            let decisionScopeA = DecisionScope(name: "optimize-tutorial-loc")
+            
+            let decisionScopeB = DecisionScope(name: "eyJ4ZG06YWN0aXZpdHlJZCI6Inhjb3JlOm9mZmVyLWFjdGl2aXR5OjE4ZTBlZjZlZDg5MWI5NTEiLCJ4ZG06cGxhY2VtZW50SWQiOiJ4Y29yZTpvZmZlci1wbGFjZW1lbnQ6MThlMGVlMDQ5NGRkMTdjNCJ9")
+            
+            let propositionA = """
+            {
+                "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+                "scope": "optimize-tutorial-loc"
+            }
+            """.data(using: .utf8)!
+            
+            let propositionB = """
+            {
+                "id": "bbbbbbbb-bbbb-bbbb-bbbbbbbbbbbb",
+                "scope": "eyJ4ZG06YWN0aXZpdHlJZCI6Inhjb3JlOm9mZmVyLWFjdGl2aXR5OjE4ZTBlZjZlZDg5MWI5NTEiLCJ4ZG06cGxhY2VtZW50SWQiOiJ4Y29yZTpvZmZlci1wbGFjZW1lbnQ6MThlMGVlMDQ5NGRkMTdjNCJ9"
+            }
+            """.data(using: .utf8)!
+            
+            guard let propositionForScopeA = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionA),
+                  let propositionForScopeB = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionB) else {
+                XCTFail("Propositions should be valid.")
+                return
+            }
+            
+            /// Cache decisionScopes
+            optimize.cachedPropositions = [
+                decisionScopeA: propositionForScopeA,
+                decisionScopeB: propositionForScopeB
+            ]
+            
+            //test
+            let expectationDebugEvent = XCTestExpectation(description: "Test Debug Event should get dispatched.")
+            
+            let testEvent = Event(name: "AEP Response Event Handle (Spoof)",
+                                  type: "com.adobe.eventType.system",
+                                  source: "com.adobe.eventSource.debug",
+                                  data: [
+                                    "payload": [
+                                      [
+                                          "id": "AT:Spoofed",
+                                          "scope": "optimize-tutorial-loc",
+                                          "scopeDetails": [
+                                              "activity": [
+                                                "id" : "0"
+                                                ],
+                                              "decisionProvider": "TGT"
+                                          ],
+                                          "items": [
+                                              [
+                                                  "id": "xcore:personalized-offer:1111111111111111",
+                                                  "etag": "10",
+                                                  "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",
+                                                  "data": [
+                                                      "id": "xcore:personalized-offer:1111111111111111",
+                                                      "format": "text/html",
+                                                      "content": "<h1>This is HTML content</h1>",
+                                                      "characteristics": [
+                                                          "testing": "true"
+                                                      ]
+                                                  ]
+                                              ]
+                                          ]
+                                      ]
+                                    ],
+                                    "type": "personalization:decisions"
+                                  ])
+            
+            
+            mockRuntime.onEventDispatch = { [weak self] event in
+                XCTAssertEqual("com.adobe.eventType.optimize", event.type)
+                XCTAssertEqual("com.adobe.eventSource.notification", event.source)
+                XCTAssertEqual(1, self?.optimize.previewCachedPropositions.count)
+                expectationDebugEvent.fulfill()
+            }
+            
+            // simulate debug event
+            mockRuntime.simulateComingEvents(testEvent)
+            
+            wait(for: [expectationDebugEvent], timeout: 2)
+            
+            let expectationGetEvent = XCTestExpectation(description: "Get propositions request should dispatch response event for scope A and B.")
+            let testGetEventA = Event(name: "Optimize Get Propositions Request",
+                                  type: "com.adobe.eventType.optimize",
+                                  source: "com.adobe.eventSource.requestContent",
+                                  data: [
+                                    "requesttype": "getpropositions",
+                                    "decisionscopes": [
+                                        [
+                                            "name": "optimize-tutorial-loc"
+                                        ]
+                                    ]
+                                  ])
+            
+            let testGetEventB = Event(name: "Optimize Get Propositions Request",
+                                  type: "com.adobe.eventType.optimize",
+                                  source: "com.adobe.eventSource.requestContent",
+                                  data: [
+                                    "requesttype": "getpropositions",
+                                    "decisionscopes": [
+                                        [
+                                            "name": "eyJ4ZG06YWN0aXZpdHlJZCI6Inhjb3JlOm9mZmVyLWFjdGl2aXR5OjE4ZTBlZjZlZDg5MWI5NTEiLCJ4ZG06cGxhY2VtZW50SWQiOiJ4Y29yZTpvZmZlci1wbGFjZW1lbnQ6MThlMGVlMDQ5NGRkMTdjNCJ9"
+                                        ]
+                                    ]
+                                  ])
+            
+            var dispatchedEvents = [Event]()
+            mockRuntime.onEventDispatch = { event in
+                dispatchedEvents.append(event)
+                XCTAssertEqual(2, self.optimize.cachedPropositions.count)
+                expectationGetEvent.fulfill()
+            }
+            
+            mockRuntime.simulateComingEvents(testGetEventA, testGetEventB)
+            
+            //verify
+            wait(for: [expectationGetEvent], timeout: 5)
+            
+            guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = dispatchedEvents.first?.getTypedData(for: "propositions") else {
+                XCTFail("Propositions dictionary should be valid.")
+                return
+            }
+            XCTAssertNotNil(propositionsDictionary[decisionScopeA])
+            XCTAssertEqual(propositionsDictionary[decisionScopeA]?.id, "AT:Spoofed") // verifies that proposition id is receieved from debug event from preview cache for scope A which was already present in main cache.
+            
+            guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = dispatchedEvents[1].getTypedData(for: "propositions") else {
+                XCTFail("Propositions dictionary should be valid.")
+                return
+            }
+            
+            XCTAssertNotNil(propositionsDictionary[decisionScopeB])
+            XCTAssertEqual(propositionsDictionary[decisionScopeB]?.id, "bbbbbbbb-bbbb-bbbb-bbbbbbbbbbbb") // verifies that proposition data for scope B is returned from main cache.
+        }
+    
+    func testDebugEvents_UpdateAndGetForMultipleDecisionScopes() {
+        // Setup
+        let decisionScopeA = DecisionScope(name: "optimize-tutorial-loc")
+        
+        let decisionScopeB = DecisionScope(name: "eyJ4ZG06YWN0aXZpdHlJZCI6Inhjb3JlOm9mZmVyLWFjdGl2aXR5OjE4ZTBlZjZlZDg5MWI5NTEiLCJ4ZG06cGxhY2VtZW50SWQiOiJ4Y29yZTpvZmZlci1wbGFjZW1lbnQ6MThlMGVlMDQ5NGRkMTdjNCJ9")
+        
+        let propositionA = """
+        {
+            "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+            "scope": "optimize-tutorial-loc"
+        }
+        """.data(using: .utf8)!
+        
+        let propositionB = """
+        {
+            "id": "bbbbbbbb-bbbb-bbbb-bbbbbbbbbbbb",
+            "scope": "eyJ4ZG06YWN0aXZpdHlJZCI6Inhjb3JlOm9mZmVyLWFjdGl2aXR5OjE4ZTBlZjZlZDg5MWI5NTEiLCJ4ZG06cGxhY2VtZW50SWQiOiJ4Y29yZTpvZmZlci1wbGFjZW1lbnQ6MThlMGVlMDQ5NGRkMTdjNCJ9"
+        }
+        """.data(using: .utf8)!
+        
+        guard let propositionForScopeA = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionA),
+              let propositionForScopeB = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionB) else {
+            XCTFail("Propositions should be valid.")
+            return
+        }
+        
+        let expectationDebugEvent = XCTestExpectation(description: "Test Debug Event should get dispatched.")
+        
+        let testEvent = Event(name: "AEP Response Event Handle (Spoof)",
+                              type: "com.adobe.eventType.system",
+                              source: "com.adobe.eventSource.debug",
+                              data: [
+                                "payload": [
+                                  [
+                                      "id": "AT:Spoofed",
+                                      "scope": "optimize-tutorial-loc",
+                                      "scopeDetails": [
+                                          "activity": [
+                                            "id" : "0"
+                                            ],
+                                          "decisionProvider": "TGT"
+                                      ],
+                                      "items": [
+                                          [
+                                              "id": "xcore:personalized-offer:1111111111111111",
+                                              "etag": "10",
+                                              "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",
+                                              "data": [
+                                                  "id": "xcore:personalized-offer:1111111111111111",
+                                                  "format": "text/html",
+                                                  "content": "<h1>This is HTML content</h1>",
+                                                  "characteristics": [
+                                                      "testing": "true"
+                                                  ]
+                                              ]
+                                          ]
+                                      ]
+                                  ]
+                                ],
+                                "type": "personalization:decisions"
+                              ])
+        
+        
+        mockRuntime.onEventDispatch = { [weak self] event in
+            XCTAssertEqual("com.adobe.eventType.optimize", event.type)
+            XCTAssertEqual("com.adobe.eventSource.notification", event.source)
+            XCTAssertEqual(1, self?.optimize.previewCachedPropositions.count)
+            expectationDebugEvent.fulfill()
+        }
+        
+        // simulate debug event
+        mockRuntime.simulateComingEvents(testEvent)
+        
+        wait(for: [expectationDebugEvent], timeout: 2)
+        
+        let expectationUpdateEvent = XCTestExpectation(description: "Update propositions request should dispatch response event for scope A.")
+        
+        let updateEventA = Event(
+            name: "Update Propositions Request",
+            type: "com.adobe.eventType.optimize",
+            source: "com.adobe.eventSource.requestContent",
+            data: [
+                "requesttype": "updatepropositions",
+                "decisionscopes": [
+                    ["name": decisionScopeA.name]
+                ]
+            ]
+        )
+        
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", updateEventA),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+        
+        
+        mockRuntime.onEventDispatch = { event in
+            expectationUpdateEvent.fulfill()
+        }
+        mockRuntime.simulateComingEvents(updateEventA)
+        
+        wait(for: [expectationUpdateEvent], timeout: 12)
+        let expectationUpdateEventB = XCTestExpectation(description: "Update propositions request should dispatch response event for scope B.")
+        let updateEventB = Event(
+            name: "Update Propositions Request",
+            type: "com.adobe.eventType.optimize",
+            source: "com.adobe.eventSource.requestContent",
+            data: [
+                "requesttype": "updatepropositions",
+                "decisionscopes": [
+                    ["name": decisionScopeB.name]
+                ]
+            ]
+        )
+        
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", updateEventB),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+        mockRuntime.onEventDispatch = { event in
+            expectationUpdateEventB.fulfill()
+        }
+        mockRuntime.simulateComingEvents(updateEventB)
+        
+        wait(for: [expectationUpdateEventB], timeout: 12)
+        
+        
+        optimize.setUpdateRequestEventIdsInProgress(updateEventA.id.uuidString, expectedScopes: [decisionScopeA])
+        optimize.setPropositionsInProgress([decisionScopeA : propositionForScopeA])
+        
+        let optimizeContentCompleteA = Event(
+            name: "Optimize Update Propositions Complete",
+            type: "com.adobe.eventType.optimize",
+            source: "com.adobe.eventSource.contentComplete",
+            data: [
+                "completedUpdateRequestForEventId": updateEventA.id.uuidString
+            ]
+        )
+        
+        mockRuntime.simulateComingEvents(optimizeContentCompleteA)
+        
+        optimize.setUpdateRequestEventIdsInProgress(updateEventB.id.uuidString, expectedScopes: [decisionScopeB])
+        optimize.setPropositionsInProgress([decisionScopeB : propositionForScopeB])
+    
+        let optimizeContentCompleteB = Event(
+            name: "Optimize Update Propositions Complete",
+            type: "com.adobe.eventType.optimize",
+            source: "com.adobe.eventSource.contentComplete",
+            data: [
+                "completedUpdateRequestForEventId": updateEventB.id.uuidString
+            ]
+        )
+        
+        mockRuntime.simulateComingEvents(optimizeContentCompleteB)
+        
+        let expectationGetEvent = XCTestExpectation(description: "Get propositions request should dispatch response event for scope A and B.")
+        let testGetEventA = Event(name: "Optimize Get Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "getpropositions",
+                                "decisionscopes": [
+                                    [
+                                        "name": "optimize-tutorial-loc"
+                                    ]
+                                ]
+                              ])
+        
+        let testGetEventB = Event(name: "Optimize Get Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: [
+                                "requesttype": "getpropositions",
+                                "decisionscopes": [
+                                    [
+                                        "name": "eyJ4ZG06YWN0aXZpdHlJZCI6Inhjb3JlOm9mZmVyLWFjdGl2aXR5OjE4ZTBlZjZlZDg5MWI5NTEiLCJ4ZG06cGxhY2VtZW50SWQiOiJ4Y29yZTpvZmZlci1wbGFjZW1lbnQ6MThlMGVlMDQ5NGRkMTdjNCJ9"
+                                    ]
+                                ]
+                              ])
+        
+        var dispatchedEvents = [Event]()
+        mockRuntime.onEventDispatch = { event in
+            dispatchedEvents.append(event)
+            if dispatchedEvents.count == 2 {
+                expectationGetEvent.fulfill()
+            }
+        }
+        
+        mockRuntime.simulateComingEvents(testGetEventA)
+        mockRuntime.simulateComingEvents(testGetEventB)
+        
+        //verify
+        wait(for: [expectationGetEvent], timeout: 24)
+        
+        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = dispatchedEvents[0].getTypedData(for: "propositions") else {
+            XCTFail("Propositions dictionary should be valid.")
+            return
+        }
+        XCTAssertNotNil(propositionsDictionary[decisionScopeA])
+        XCTAssertEqual(propositionsDictionary[decisionScopeA]?.id, "AT:Spoofed") // verifies that proposition id is receieved from debug event from preview cache for scope A which was already present in main cache.
+        
+        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = dispatchedEvents[1].getTypedData(for: "propositions") else {
+            XCTFail("Propositions dictionary should be valid.")
+            return
+        }
+        XCTAssertNotNil(propositionsDictionary[decisionScopeB])
+        XCTAssertEqual(propositionsDictionary[decisionScopeB]?.id, "bbbbbbbb-bbbb-bbbb-bbbbbbbbbbbb") // verifies that proposition data for scope B is returned from main cache.
+    }
+
 }
