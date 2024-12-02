@@ -545,18 +545,17 @@ public class Optimize: NSObject, Extension {
     /// A debug event allows the optimize extension to processes non-production workflows.
     /// - Parameter event: the debug `Event` to be handled.
     private func processDebugEvent(event: Event) {
-        // ToDo - check for  debugEventType and debugEventSource once we receive debug object in eventData
-        guard event.type == EventType.system && event.source == OptimizeConstants.EventSource.DEBUG
+        guard event.debugEventType == EventType.edge && event.debugEventSource == EventSource.personalizationDecisions
         else {
             Log.debug(label: OptimizeConstants.LOG_TAG,
-                      " Ignoring Debug event, either handle type is not com.adobe.eventType.system or source is not com.adobe.eventSource.debug")
+                      " Ignoring Debug event, either debug type is not com.adobe.eventType.edge or debug source is not personalization:decisions")
             return
         }
 
         guard let propositions: [OptimizeProposition] = event.getTypedData(for: OptimizeConstants.Edge.PAYLOAD),
               !propositions.isEmpty
         else {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "Failed to read Edge response, propositions array is invalid or empty.")
+            Log.debug(label: OptimizeConstants.LOG_TAG, "Failed to read Debug Event's Edge response, propositions array is invalid or empty.")
             return
         }
 
@@ -567,7 +566,7 @@ public class Optimize: NSObject, Extension {
         guard !propositionsDict.isEmpty else {
             Log.debug(label: OptimizeConstants.LOG_TAG,
                       """
-                      No propositions with valid offers are present in the Edge response event for the provided scopes(\
+                      No propositions with valid offers are present in the Debug Event's Edge response event for the provided scopes(\
                       \(propositions
                           .map { $0.scope }
                           .joined(separator: ","))
