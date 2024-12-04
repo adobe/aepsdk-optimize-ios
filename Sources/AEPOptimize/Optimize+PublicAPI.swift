@@ -22,6 +22,7 @@ public extension Optimize {
     /// - Parameter decisionScopes: An array of decision scopes.
     /// - Parameter xdm: Additional XDM-formatted data to be sent in the personalization request.
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
+    @available(*, deprecated, message: "This API is deprecated. Use `updatePropositions(for:withXdm:andData:completion:)` instead.")
     @objc(updatePropositions:withXdm:andData:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil) {
         updatePropositions(for: decisionScopes, withXdm: xdm, andData: data, nil)
