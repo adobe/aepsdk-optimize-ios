@@ -27,6 +27,7 @@ enum OptimizeConstants {
 
     static let ERROR_UNKNOWN = "unknown"
     static let UNKNOWN_STATUS = 0
+    static let CONFIGURATION_NAME = "com.adobe.module.configuration"
     static let DEFAULT_TIMEOUT: TimeInterval = 10
 
     enum EventNames {

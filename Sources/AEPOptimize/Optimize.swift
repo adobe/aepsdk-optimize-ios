@@ -94,6 +94,11 @@ public class Optimize: NSObject, Extension {
     }
 
     public func onRegistered() {
+        
+        registerListener(type: EventType.optimize,
+                         source: EventSource.requestConfiguration,
+                         listener: processOptimizeRequestConfiguration(event:))
+        
         registerListener(type: EventType.optimize,
                          source: EventSource.requestContent,
                          listener: processOptimizeRequestContent(event:))
@@ -178,6 +183,22 @@ public class Optimize: NSObject, Extension {
             return
         }
     }
+    
+    /// Processes the propositions request event, dispatched with type `EventType.optimize` and source `EventSource.requestConfiguration`.
+    /// - Parameter event: configuration request event
+    private func processOptimizeRequestConfiguration(event: Event) {
+        let timeoutValue = fetchTimeoutFromSharedState() ?? OptimizeConstants.DEFAULT_TIMEOUT
+        let responseEventToSend = event.createResponseEvent(
+            name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
+            type: EventType.optimize,
+            source: EventSource.responseContent,
+            data: [
+                OptimizeConstants.EventDataKeys.TIMEOUT: timeoutValue,
+            ]
+        )
+        
+        MobileCore.dispatch(event: responseEventToSend)
+    }
 
     // MARK: Event Listeners
 
@@ -210,6 +231,13 @@ public class Optimize: NSObject, Extension {
             return
         }
 
+        // Timeout value
+        let defaultTimeout = OptimizeConstants.DEFAULT_TIMEOUT
+        let configTimeout = fetchTimeoutFromSharedState() ?? defaultTimeout
+        let apiTimeout = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval ?? defaultTimeout
+        let finalTimeout = apiTimeout != defaultTimeout ? apiTimeout : configTimeout
+
+        // Construct Edge event data
         var eventData: [String: Any] = [:]
 
         // Add query
@@ -256,12 +284,9 @@ public class Optimize: NSObject, Extension {
         // add the Edge event to update propositions in the events queue.
         eventsQueue.add(edgeEvent)
 
-        let timeout: TimeInterval = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval ?? OptimizeConstants.DEFAULT_TIMEOUT
-        MobileCore.dispatch(event: edgeEvent, timeout: timeout) { responseEvent in
-            guard
-                let responseEvent = responseEvent,
-                let requestEventId = responseEvent.requestEventId
-            else {
+        // Dispatch Edge event with synchronized timeout
+        MobileCore.dispatch(event: edgeEvent, timeout: finalTimeout) { responseEvent in
+            guard let responseEvent = responseEvent, let requestEventId = responseEvent.requestEventId else {
                 // response event failed or timed out, remove this event's ID from the requested event IDs dictionary, dispatch an error response event and kick-off queue.
                 self.updateRequestEventIdsInProgress.removeValue(forKey: edgeEvent.id.uuidString)
                 self.propositionsInProgress.removeAll()
@@ -517,6 +542,14 @@ public class Optimize: NSObject, Extension {
             return true
         }
         return false
+    }
+    
+    func fetchTimeoutFromSharedState() -> TimeInterval? {
+        if let sharedState = getSharedState(extensionName: OptimizeConstants.CONFIGURATION_NAME, event: nil)?.value,
+           let timeout = sharedState[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval {
+            return timeout
+        }
+        return nil
     }
 
     #if DEBUG
