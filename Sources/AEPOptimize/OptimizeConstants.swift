@@ -10,6 +10,8 @@
  governing permissions and limitations under the License.
  */
 
+import Foundation
+
 enum OptimizeConstants {
     static let EXTENSION_NAME = "com.adobe.optimize"
     static let FRIENDLY_NAME = "Optimize"
