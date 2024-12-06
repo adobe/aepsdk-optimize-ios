@@ -13,7 +13,7 @@
 enum OptimizeConstants {
     static let EXTENSION_NAME = "com.adobe.optimize"
     static let FRIENDLY_NAME = "Optimize"
-    static let EXTENSION_VERSION = "5.1.0"
+    static let EXTENSION_VERSION = "5.2.0"
     static let LOG_TAG = FRIENDLY_NAME
 
     static let DECISION_SCOPE_NAME = "name"
@@ -27,6 +27,7 @@ enum OptimizeConstants {
 
     static let ERROR_UNKNOWN = "unknown"
     static let UNKNOWN_STATUS = 0
+    static let DEFAULT_TIMEOUT: TimeInterval = 10
 
     enum EventNames {
         static let UPDATE_PROPOSITIONS_REQUEST = "Optimize Update Propositions Request"
@@ -43,6 +44,7 @@ enum OptimizeConstants {
     enum EventSource {
         static let EDGE_PERSONALIZATION_DECISIONS = "personalization:decisions"
         static let EDGE_ERROR_RESPONSE = "com.adobe.eventSource.errorResponseContent"
+        static let DEBUG = "com.adobe.eventSource.debug"
     }
 
     enum EventDataKeys {
@@ -50,6 +52,7 @@ enum OptimizeConstants {
         static let DECISION_SCOPES = "decisionscopes"
         static let XDM = "xdm"
         static let DATA = "data"
+        static let TIMEOUT = "timeout"
         static let PROPOSITIONS = "propositions"
         static let RESPONSE_ERROR = "responseerror"
         static let PROPOSITION_INTERACTIONS = "propositioninteractions"
