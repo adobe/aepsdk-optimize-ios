@@ -2291,6 +2291,10 @@ class OptimizeFunctionalTests: XCTestCase {
                                           ]
                                       ]
                                     ],
+                                    "debug": [
+                                        "eventType": "com.adobe.eventType.edge",
+                                        "eventSource": "personalization:decisions"
+                                    ],
                                     "type": "personalization:decisions"
                                   ])
 
@@ -2382,6 +2386,10 @@ class OptimizeFunctionalTests: XCTestCase {
                                               ]
                                           ]
                                       ]
+                                    ],
+                                    "debug": [
+                                        "eventType": "com.adobe.eventType.edge",
+                                        "eventSource": "personalization:decisions"
                                     ],
                                     "type": "personalization:decisions"
                                   ])
@@ -2510,6 +2518,10 @@ class OptimizeFunctionalTests: XCTestCase {
                                           ]
                                       ]
                                   ]
+                                ],
+                                "debug": [
+                                    "eventType": "com.adobe.eventType.edge",
+                                    "eventSource": "personalization:decisions"
                                 ],
                                 "type": "personalization:decisions"
                               ])
