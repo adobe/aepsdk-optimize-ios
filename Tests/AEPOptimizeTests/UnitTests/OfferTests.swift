@@ -212,6 +212,20 @@ class OfferTests: XCTestCase {
 }
 """
 
+    private let JSON_OFFER_WITHOUT_KEY =
+"""
+{\
+    "id": "xcore:personalized-offer:1111111111111111",\
+    "etag": "8",\
+    "schema": "https://ns.adobe.com/experience/offer-management/content-component-json",\
+    "data": {\
+        "id": "xcore:personalized-offer:1111111111111111",\
+        "format": "application/json",\
+        "content": ["abc", "def"]\
+    }\
+}
+"""
+
     private let OFFER_INVALID_CONTENT_UNEXPECTED =
 """
 {\
@@ -221,7 +235,7 @@ class OfferTests: XCTestCase {
     "data": {\
         "id": "xcore:personalized-offer:1111111111111111",\
         "format": "application/json",\
-        "content": ["123", "456"]\
+        "content": 123.45\
     }\
 }
 """
@@ -244,6 +258,20 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("en-us", offer.language?[0])
         XCTAssertEqual(1, offer.characteristics?.count)
         XCTAssertEqual("true", offer.characteristics?["mobile"])
+    }
+    
+    func testOffer_jsonOfferWithoutKey() {
+        guard let offerData = JSON_OFFER_WITHOUT_KEY.data(using: .utf8),
+              let offer = try? JSONDecoder().decode(Offer.self, from: offerData) else {
+            XCTFail("Offer json data should be valid.")
+            return
+        }
+        
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
+        XCTAssertEqual("8", offer.etag)
+        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-json", offer.schema)
+        XCTAssertEqual(OfferType.init(rawValue: 1), offer.type)
+        XCTAssertEqual("[\"abc\",\"def\"]", offer.content)
     }
 
     func testTextOffer() {

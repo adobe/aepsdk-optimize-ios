@@ -107,11 +107,15 @@ public class Offer: NSObject, Codable {
                 return
             }
 
-            if
-                let jsonData = data.dictionaryValue,
-                let encodedData = try? JSONSerialization.data(withJSONObject: jsonData),
-                let offerContent = String(data: encodedData, encoding: .utf8)
-            {
+            var jsonData: Any?
+            if let data = data.arrayValue {
+                jsonData = data
+            } else if let data = data.dictionaryValue {
+                jsonData = data
+            }
+            if let jsonData = jsonData,
+               let encodedData = try? JSONSerialization.data(withJSONObject: jsonData),
+               let offerContent = String(data: encodedData, encoding: .utf8) {
                 content = offerContent
                 return
             }
