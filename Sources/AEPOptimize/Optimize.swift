@@ -108,11 +108,11 @@ public class Optimize: NSObject, Extension {
     }
 
     public func onRegistered() {
-        
+
         registerListener(type: EventType.optimize,
                          source: EventSource.requestConfiguration,
                          listener: processOptimizeRequestConfiguration(event:))
-        
+
         registerListener(type: EventType.optimize,
                          source: EventSource.requestContent,
                          listener: processOptimizeRequestContent(event:))
@@ -202,7 +202,7 @@ public class Optimize: NSObject, Extension {
             return
         }
     }
-    
+
     /// Processes the propositions request event, dispatched with type `EventType.optimize` and source `EventSource.requestConfiguration`.
     /// - Parameter event: configuration request event
     private func processOptimizeRequestConfiguration(event: Event) {
@@ -212,10 +212,10 @@ public class Optimize: NSObject, Extension {
             type: EventType.optimize,
             source: EventSource.responseContent,
             data: [
-                OptimizeConstants.EventDataKeys.TIMEOUT: timeoutValue,
+                OptimizeConstants.EventDataKeys.TIMEOUT: timeoutValue
             ]
         )
-        
+
         MobileCore.dispatch(event: responseEventToSend)
     }
 
@@ -620,7 +620,8 @@ public class Optimize: NSObject, Extension {
         }
         return false
     }
-    
+
+    /// Fetch the timeout value from the sharedstate.
     func fetchTimeoutFromSharedState() -> TimeInterval? {
         if let sharedState = getSharedState(extensionName: OptimizeConstants.CONFIGURATION_NAME, event: nil)?.value,
            let timeout = sharedState[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval {
