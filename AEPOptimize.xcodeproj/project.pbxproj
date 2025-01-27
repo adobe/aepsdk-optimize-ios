@@ -10,6 +10,7 @@
 		0942850C3E1485F1B013A772 /* Pods_IntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7A8E7EA5460F8AC12BF0B96 /* Pods_IntegrationTests.framework */; };
 		0969EAEA28AD14E700E6E470 /* AEPOptimize.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPOptimize.framework */; };
 		0969EAEB28AD14E700E6E470 /* AEPOptimize.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C892B490260EAC74007FE5C5 /* AEPOptimize.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0F5AD3722D47C12D00F76CA0 /* ConfigManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F5AD3712D47C12D00F76CA0 /* ConfigManager.swift */; };
 		134FF901E46A6EAC57116F10 /* Pods_UnitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19691BE03D8E5FCB568FD775 /* Pods_UnitTests.framework */; };
 		28DDA5AA90BFD2BBD23AA337 /* Pods_FunctionalTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4C4D2E27884F4B6147FA07A /* Pods_FunctionalTests.framework */; };
 		307AFBDDA995F26642A51652 /* Pods_AEPOptimizeDemoAppExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7D0AD82414CB123A98D6050 /* Pods_AEPOptimizeDemoAppExtension.framework */; };
@@ -172,6 +173,7 @@
 		05173168C481B32E53CE7733 /* Pods_AEPOptimizeDemoSwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AEPOptimizeDemoSwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		053BBB26D174FCB8948742F1 /* Pods-AEPOptimize.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEPOptimize.debug.xcconfig"; path = "Target Support Files/Pods-AEPOptimize/Pods-AEPOptimize.debug.xcconfig"; sourceTree = "<group>"; };
 		089DCFE5D36ABFC8F0BC42D0 /* Pods-AEPOptimize.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEPOptimize.release.xcconfig"; path = "Target Support Files/Pods-AEPOptimize/Pods-AEPOptimize.release.xcconfig"; sourceTree = "<group>"; };
+		0F5AD3712D47C12D00F76CA0 /* ConfigManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigManager.swift; sourceTree = "<group>"; };
 		19691BE03D8E5FCB568FD775 /* Pods_UnitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UnitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4713121E2DC484EB93DF3013 /* Pods-shared-AEPOptimizeDemoSwiftUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shared-AEPOptimizeDemoSwiftUI.release.xcconfig"; path = "Target Support Files/Pods-shared-AEPOptimizeDemoSwiftUI/Pods-shared-AEPOptimizeDemoSwiftUI.release.xcconfig"; sourceTree = "<group>"; };
 		62DB4B12042C9053073722BA /* Pods-shared-AEPOptimizeDemoObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shared-AEPOptimizeDemoObjC.release.xcconfig"; path = "Target Support Files/Pods-shared-AEPOptimizeDemoObjC/Pods-shared-AEPOptimizeDemoObjC.release.xcconfig"; sourceTree = "<group>"; };
@@ -515,6 +517,7 @@
 		C88C5F1726154621003AE3DE /* Public */ = {
 			isa = PBXGroup;
 			children = (
+				0F5AD3712D47C12D00F76CA0 /* ConfigManager.swift */,
 				C88C5F79261D06A5003AE3DE /* Optimize+PublicAPI.swift */,
 				C88C5F1126152DAB003AE3DE /* DecisionScope.swift */,
 				C88C5EDC2614F640003AE3DE /* Offer.swift */,
@@ -1233,6 +1236,7 @@
 				C8276BE4261EC74F00508873 /* Array+Optimize.swift in Sources */,
 				C8DE6B6A2684181B0076623F /* Offer+Tracking.swift in Sources */,
 				C88C5E932613249C003AE3DE /* Optimize.swift in Sources */,
+				0F5AD3722D47C12D00F76CA0 /* ConfigManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
