@@ -14,7 +14,7 @@ governing permissions and limitations under the License.
 import AEPCore
 import AEPServices
 
-@objc
+@objc(AEPConfigManager)
 class ConfigManager: NSObject {
     @objc static let shared = ConfigManager()
 
