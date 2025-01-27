@@ -20,6 +20,8 @@ class ConfigManager: NSObject {
 
     private(set) var optimizeTimeout: TimeInterval = OptimizeConstants.DEFAULT_TIMEOUT
     private var isFetchingTimeout = false
+    private var isDefaultTimeoutPresent = false
+    private let queue = DispatchQueue(label: "com.adobe.configmanager.queue", attributes: .concurrent)
 
     private override init() {
         super.init()
@@ -29,33 +31,41 @@ class ConfigManager: NSObject {
     ///
     /// - Parameter completion: A closure invoked with the retrieved timeout value as a `TimeInterval`.
     func fetchTimeoutConfiguration(completion: ((TimeInterval) -> Void)? = nil) {
-        /// Ensure timeout is not already cached or being fetched
-        guard optimizeTimeout == OptimizeConstants.DEFAULT_TIMEOUT, !isFetchingTimeout else {
-            completion?(optimizeTimeout)
-            return
+        queue.sync {
+            /// Ensure timeout is not already cached or being fetched
+            guard isDefaultTimeoutPresent, !isFetchingTimeout else {
+                completion?(optimizeTimeout)
+                return
+            }
         }
 
-        /// Mark that the timeout fetch is in progress
-        isFetchingTimeout = true
+        queue.async(flags: .barrier) {
+            self.isFetchingTimeout = true
+        }
 
         let event = Event(name: "Get Timeout Request",
                           type: EventType.optimize,
                           source: EventSource.requestConfiguration,
                           data: nil)
 
-        MobileCore.dispatch(event: event) {[weak self] responseEvent in
-            guard let self else { return }
-            if let responseEvent = responseEvent,
-               let timeout = responseEvent.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval {
-                self.optimizeTimeout = timeout
-                Log.debug(label: OptimizeConstants.LOG_TAG, "Timeout value cached: \(timeout)")
-            } else {
-                Log.warning(label: OptimizeConstants.LOG_TAG, "Timeout not found in the response event. Using default timeout.")
-            }
+        MobileCore.dispatch(event: event) { [weak self] responseEvent in
+            guard let self = self else { return }
 
-            /// Mark that the timeout fetch is complete
-            self.isFetchingTimeout = false
-            completion?(self.optimizeTimeout)
+            self.queue.async(flags: .barrier) {
+                if let responseEvent = responseEvent,
+                   let timeout = responseEvent.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval {
+                    self.optimizeTimeout = timeout
+                    self.isDefaultTimeoutPresent = timeout == OptimizeConstants.DEFAULT_TIMEOUT
+                    Log.debug(label: OptimizeConstants.LOG_TAG, "Timeout value cached: \(timeout)")
+                } else {
+                    Log.warning(label: OptimizeConstants.LOG_TAG, "Timeout not found in the response event. Using default timeout.")
+                }
+
+                self.isFetchingTimeout = false
+                DispatchQueue.main.async {
+                    completion?(self.optimizeTimeout)
+                }
+            }
         }
     }
 }
