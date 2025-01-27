@@ -860,6 +860,98 @@ class OptimizePublicAPITests: XCTestCase {
         /// wait
         wait(for: [expectation], timeout: 5)
     }
+    
+    
+    func testUpdatePropositionsUsesCustomTimeoutFromConfigManager() {
+        let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
+        
+        let propositionB = """
+        {
+            "id": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB",
+            "scope": "\(decisionScope.name)"
+        }
+        """.data(using: .utf8)!
+
+        guard let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionB) else {
+            XCTFail("Propositions should be valid.")
+            return
+        }
+        let customTimeout: TimeInterval = 1
+        
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
+            type: EventType.optimize,
+            source: EventSource.requestConfiguration
+        ){ event in
+            let responseEvent = event.createResponseEvent(
+                name: "Get Configuration Response",
+                type: EventType.optimize,
+                source: EventSource.responseContent,
+                data: [OptimizeConstants.EventDataKeys.TIMEOUT: customTimeout]
+            )
+            MobileCore.dispatch(event: responseEvent)
+        }
+        
+        var propositionDictionary: [DecisionScope: OptimizeProposition] = [:]
+        propositionDictionary[decisionScope] = proposition
+        
+        let expectation = XCTestExpectation(description: "updatePropositions should dispatch an event with expected data.")
+        expectation.assertForOverFulfill = true
+        
+        let testEventData: [String: Any] = [
+            "requesttype": "updatepropositions",
+            "decisionscopes": [
+                [ "name": decisionScope.name ]
+            ]
+        ]
+        
+        let testEvent = Event(name: "Optimize Update Propositions Request",
+                              type: EventType.optimize,
+                              source: EventSource.requestContent,
+                              data: testEventData)
+        
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
+            type: EventType.edge,
+            source: EventSource.requestContent) { event in
+                let responseEvent = event.createResponseEvent(
+                    name: "AEP Response Complete",
+                    type: EventType.edge,
+                    source: EventSource.contentComplete,
+                    data:[:]
+                )
+                EventHub.shared.dispatch(event: responseEvent)
+            }
+        
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
+            type: testEvent.type,
+            source: testEvent.source) { event in
+                var eventData: [String: Any] = [:]
+                eventData[OptimizeConstants.EventDataKeys.PROPOSITIONS] = propositionDictionary
+                let timeout: TimeInterval = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval ?? OptimizeConstants.DEFAULT_TIMEOUT
+                let edgeEvent = event.createChainedEvent(name: OptimizeConstants.EventNames.EDGE_PERSONALIZATION_REQUEST,
+                                                         type: EventType.edge,
+                                                         source: EventSource.requestContent,
+                                                         data: eventData)
+                MobileCore.dispatch(event: edgeEvent, timeout: timeout) { _ in
+                    let responseEvent = event.createResponseEvent(
+                        name: "AEP Response Complete",
+                        type: EventType.edge,
+                        source: EventSource.contentComplete,
+                        data: eventData)
+                    EventHub.shared.dispatch(event: responseEvent)
+                }
+            }
+        
+        /// Execute
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil, andData: nil) { data, error in
+            XCTAssertNil(error)
+            XCTAssertNotNil(data)
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 5)
+        /// Assert
+        XCTAssertEqual(ConfigManager.shared.optimizeTimeout, customTimeout)
+    }
 
     private func registerMockExtension<T: Extension>(_ type: T.Type) {
         let semaphore = DispatchSemaphore(value: 0)

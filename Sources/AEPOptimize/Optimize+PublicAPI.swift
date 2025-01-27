@@ -16,10 +16,11 @@ import Foundation
 
 @objc
 public extension Optimize {
-    
-    private static var optimizeTimeout: TimeInterval = OptimizeConstants.DEFAULT_TIMEOUT
-    private static var isFetchingTimeout = false
-    
+
+    private static var configManager: ConfigManager {
+        return ConfigManager.shared
+    }
+
     /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the decisioning Services enabled behind Experience Edge.
     ///
     /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
@@ -41,7 +42,7 @@ public extension Optimize {
     /// - Parameter completion: Optional completion handler invoked with map of successful decision scopes to propositions and errors, if any
     @objc(updatePropositions:withXdm:andData:completion:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, _ completion: (([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
-        updatePropositions(for: decisionScopes, withXdm: xdm, andData: data, timeout: optimizeTimeout, completion)
+        updatePropositions(for: decisionScopes, withXdm: xdm, andData: data, timeout: configManager.optimizeTimeout, completion)
     }
 
     /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the decisioning Services enabled behind Experience Edge.
@@ -54,7 +55,7 @@ public extension Optimize {
     /// - Parameter completion: Optional completion handler invoked with map of successful decision scopes to propositions and errors, if any
     @objc(updatePropositions:withXdm:timeout:andData:completion:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, timeout: TimeInterval, _ completion: (([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
-        getConfiguration()
+        configManager.fetchTimeoutConfiguration()
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
@@ -106,7 +107,7 @@ public extension Optimize {
     ///   - completion: The completion handler to be invoked when the decisions are retrieved from cache.
     @objc(getPropositions:completion:)
     static func getPropositions(for decisionScopes: [DecisionScope], _ completion: @escaping ([DecisionScope: OptimizeProposition]?, Error?) -> Void) {
-        getPropositions(for: decisionScopes, timeout: optimizeTimeout, completion)
+        getPropositions(for: decisionScopes, timeout: configManager.optimizeTimeout, completion)
     }
 
     /// This API retrieves the previously fetched decisions for the provided decision scopes from the in-memory extension cache.
@@ -118,7 +119,7 @@ public extension Optimize {
     ///   - completion: The completion handler to be invoked when the decisions are retrieved from cache.
     @objc(getPropositions:timeout:completion:)
     static func getPropositions(for decisionScopes: [DecisionScope], timeout: TimeInterval, _ completion: @escaping ([DecisionScope: OptimizeProposition]?, Error?) -> Void) {
-        getConfiguration()
+        configManager.fetchTimeoutConfiguration()
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
@@ -158,42 +159,6 @@ public extension Optimize {
                 return
             }
             completion(propositions, .none)
-        }
-    }
-
-    /// Fetches the timeout configuration and caches it.
-    ///
-    /// - Parameter completion: A closure invoked with the retrieved timeout value as a `TimeInterval`.
-    @objc(getTimeoutWithCompletion:)
-    static private func getConfiguration(_ completion: ((TimeInterval) -> Void)? = nil) {
-
-        // Ensure timeout is not already cached or being fetched
-        guard optimizeTimeout == OptimizeConstants.DEFAULT_TIMEOUT, !isFetchingTimeout else {
-            completion?(optimizeTimeout)
-            return
-        }
-
-        // Mark that the timeout fetch is in progress
-        isFetchingTimeout = true
-
-        let event = Event(name: "Get Timeout Request",
-                          type: EventType.optimize,
-                          source: EventSource.requestConfiguration,
-                          data: nil)
-
-        // Dispatch the event and handle the response
-        MobileCore.dispatch(event: event) { responseEvent in
-            if let responseEvent = responseEvent,
-               let timeout = responseEvent.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval {
-                optimizeTimeout = timeout
-                Log.debug(label: OptimizeConstants.LOG_TAG, "Timeout value cached: \(timeout)")
-            } else {
-                Log.warning(label: OptimizeConstants.LOG_TAG, "Timeout not found in the response event. Using default timeout.")
-            }
-
-            // Mark that the timeout fetch is complete and release the semaphore
-            isFetchingTimeout = false
-            completion?(optimizeTimeout)
         }
     }
 
