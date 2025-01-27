@@ -108,7 +108,6 @@ public class Optimize: NSObject, Extension {
     }
 
     public func onRegistered() {
-
         registerListener(type: EventType.optimize,
                          source: EventSource.requestConfiguration,
                          listener: processOptimizeRequestConfiguration(event:))
