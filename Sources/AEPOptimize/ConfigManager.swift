@@ -18,9 +18,14 @@ import AEPServices
 class ConfigManager: NSObject {
     @objc static let shared = ConfigManager()
 
+    private enum ProcessState {
+        case idle
+        case fetching
+        case fetched
+    }
+
     private(set) var optimizeTimeout: TimeInterval = OptimizeConstants.DEFAULT_TIMEOUT
-    private var isFetchingTimeout = false
-    private var isDefaultTimeoutPresent = false
+    private var processState: ProcessState = .idle
     private let queue = DispatchQueue(label: "com.adobe.configmanager.queue", attributes: .concurrent)
 
     private override init() {
@@ -32,15 +37,14 @@ class ConfigManager: NSObject {
     /// - Parameter completion: A closure invoked with the retrieved timeout value as a `TimeInterval`.
     func fetchTimeoutConfiguration(completion: ((TimeInterval) -> Void)? = nil) {
         queue.sync {
-            /// Ensure timeout is not already cached or being fetched
-            guard isDefaultTimeoutPresent, !isFetchingTimeout else {
+            guard processState == .idle else {
                 completion?(optimizeTimeout)
                 return
             }
         }
 
         queue.async(flags: .barrier) {
-            self.isFetchingTimeout = true
+            self.processState = .fetching
         }
 
         let event = Event(name: "Get Timeout Request",
@@ -55,13 +59,13 @@ class ConfigManager: NSObject {
                 if let responseEvent = responseEvent,
                    let timeout = responseEvent.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval {
                     self.optimizeTimeout = timeout
-                    self.isDefaultTimeoutPresent = timeout == OptimizeConstants.DEFAULT_TIMEOUT
+                    self.processState = .fetched
                     Log.debug(label: OptimizeConstants.LOG_TAG, "Timeout value cached: \(timeout)")
                 } else {
+                    self.processState = .idle
                     Log.warning(label: OptimizeConstants.LOG_TAG, "Timeout not found in the response event. Using default timeout.")
                 }
 
-                self.isFetchingTimeout = false
                 DispatchQueue.main.async {
                     completion?(self.optimizeTimeout)
                 }
