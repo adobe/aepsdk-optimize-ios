@@ -623,11 +623,12 @@ public class Optimize: NSObject, Extension {
 
     /// Fetch the timeout value from the sharedstate.
     func fetchTimeoutFromSharedState() -> TimeInterval? {
-        if let sharedState = getSharedState(extensionName: OptimizeConstants.CONFIGURATION_NAME, event: nil)?.value,
-           let timeout = sharedState[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval {
-            return timeout
+        guard let sharedState = getSharedState(extensionName: OptimizeConstants.CONFIGURATION_NAME, event: nil)?.value,
+              let timeout = sharedState[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval
+        else {
+            return nil
         }
-        return nil
+        return timeout
     }
 
     #if DEBUG

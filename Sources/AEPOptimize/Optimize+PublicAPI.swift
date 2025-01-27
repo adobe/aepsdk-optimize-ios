@@ -16,9 +16,9 @@ import Foundation
 
 @objc
 public extension Optimize {
-
+    /// Singleton instance
     private static var configManager: ConfigManager {
-        return ConfigManager.shared
+        ConfigManager.shared
     }
 
     /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the decisioning Services enabled behind Experience Edge.
