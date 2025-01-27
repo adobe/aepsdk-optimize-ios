@@ -18,7 +18,6 @@ import Foundation
 public extension Optimize {
     
     private static var optimizeTimeout: TimeInterval = OptimizeConstants.DEFAULT_TIMEOUT
-    private static let timeoutSemaphore = DispatchSemaphore(value: 1)
     private static var isFetchingTimeout = false
     
     /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the decisioning Services enabled behind Experience Edge.
@@ -54,6 +53,7 @@ public extension Optimize {
     /// - Parameter completion: Optional completion handler invoked with map of successful decision scopes to propositions and errors, if any
     @objc(updatePropositions:withXdm:timeout:andData:completion:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, timeout: TimeInterval, _ completion: (([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
+        getConfiguration()
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
@@ -117,6 +117,7 @@ public extension Optimize {
     ///   - completion: The completion handler to be invoked when the decisions are retrieved from cache.
     @objc(getPropositions:timeout:completion:)
     static func getPropositions(for decisionScopes: [DecisionScope], timeout: TimeInterval, _ completion: @escaping ([DecisionScope: OptimizeProposition]?, Error?) -> Void) {
+        getConfiguration()
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
@@ -165,11 +166,9 @@ public extension Optimize {
     /// - Parameter completion: A closure invoked with the retrieved timeout value as a `TimeInterval`.
     @objc(getTimeoutWithCompletion:)
     static func getConfiguration(_ completion: ((TimeInterval) -> Void)? = nil) {
-        timeoutSemaphore.wait()
 
         // Ensure timeout is not already cached or being fetched
         guard optimizeTimeout == OptimizeConstants.DEFAULT_TIMEOUT, !isFetchingTimeout else {
-            timeoutSemaphore.signal()
             completion?(optimizeTimeout)
             return
         }
@@ -194,7 +193,6 @@ public extension Optimize {
 
             // Mark that the timeout fetch is complete and release the semaphore
             isFetchingTimeout = false
-            timeoutSemaphore.signal()
             completion?(optimizeTimeout)
         }
     }
