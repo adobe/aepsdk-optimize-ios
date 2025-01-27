@@ -161,8 +161,7 @@ public extension Optimize {
         }
     }
 
-    /// Fetches the timeout configuration and caches it. Ensures that only one call to fetch the configuration is made,
-    /// even when invoked multiple times concurrently.
+    /// Fetches the timeout configuration and caches it.
     ///
     /// - Parameter completion: A closure invoked with the retrieved timeout value as a `TimeInterval`.
     @objc(getTimeoutWithCompletion:)
