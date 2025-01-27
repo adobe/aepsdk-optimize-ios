@@ -880,7 +880,7 @@ class OptimizePublicAPITests: XCTestCase {
         
         EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
             type: EventType.optimize,
-            source: EventSource.requestConfiguration
+            source: OptimizeConstants.EventSource.REQUEST_CONFIGURATION
         ){ event in
             let responseEvent = event.createResponseEvent(
                 name: "Get Configuration Response",

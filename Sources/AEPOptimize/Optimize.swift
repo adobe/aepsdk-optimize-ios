@@ -109,7 +109,7 @@ public class Optimize: NSObject, Extension {
 
     public func onRegistered() {
         registerListener(type: EventType.optimize,
-                         source: EventSource.requestConfiguration,
+                         source: OptimizeConstants.EventSource.REQUEST_CONFIGURATION,
                          listener: processOptimizeRequestConfiguration(event:))
 
         registerListener(type: EventType.optimize,
@@ -250,10 +250,9 @@ public class Optimize: NSObject, Extension {
         }
 
         // Timeout value
-        let defaultTimeout = OptimizeConstants.DEFAULT_TIMEOUT
-        let configTimeout = fetchTimeoutFromSharedState() ?? defaultTimeout
-        let apiTimeout = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval ?? defaultTimeout
-        let finalTimeout = apiTimeout != defaultTimeout ? apiTimeout : configTimeout
+        let configTimeout: TimeInterval = fetchTimeoutFromSharedState() ?? OptimizeConstants.DEFAULT_TIMEOUT
+        let apiTimeout: TimeInterval? = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval
+        let finalTimeout = apiTimeout ?? configTimeout
 
         // Construct Edge event data
         var eventData: [String: Any] = [:]
@@ -620,7 +619,7 @@ public class Optimize: NSObject, Extension {
         return false
     }
 
-    /// Fetch the timeout value from the sharedstate.
+    /// Fetch the timeout value from the Configuration sharedstate.
     func fetchTimeoutFromSharedState() -> TimeInterval? {
         guard let sharedState = getSharedState(extensionName: OptimizeConstants.CONFIGURATION_NAME, event: nil)?.value,
               let timeout = sharedState[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval

@@ -31,10 +31,10 @@ class ConfigManager: NSObject {
         super.init()
     }
 
-    /// Fetches the timeout configuration and updates the cached value.
+    /// Fetches the timeout configuration.
     ///
     /// - Parameter completion: A closure invoked with the retrieved timeout value as a `TimeInterval`.
-    func fetchTimeoutConfiguration(completion: ((TimeInterval) -> Void)? = nil) {
+    @objc func fetchTimeoutConfiguration(completion: ((TimeInterval) -> Void)? = nil) {
         queue.sync {
             guard processState == .idle else {
                 completion?(optimizeTimeout)
@@ -48,7 +48,7 @@ class ConfigManager: NSObject {
 
         let event = Event(name: "Get Timeout Request",
                           type: EventType.optimize,
-                          source: EventSource.requestConfiguration,
+                          source: OptimizeConstants.EventSource.REQUEST_CONFIGURATION,
                           data: nil)
 
         MobileCore.dispatch(event: event) { [weak self] responseEvent in
