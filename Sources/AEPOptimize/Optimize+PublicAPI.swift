@@ -166,7 +166,7 @@ public extension Optimize {
     ///
     /// - Parameter completion: A closure invoked with the retrieved timeout value as a `TimeInterval`.
     @objc(getTimeoutWithCompletion:)
-    static func getConfiguration(_ completion: ((TimeInterval) -> Void)? = nil) {
+    static private func getConfiguration(_ completion: ((TimeInterval) -> Void)? = nil) {
 
         // Ensure timeout is not already cached or being fetched
         guard optimizeTimeout == OptimizeConstants.DEFAULT_TIMEOUT, !isFetchingTimeout else {
