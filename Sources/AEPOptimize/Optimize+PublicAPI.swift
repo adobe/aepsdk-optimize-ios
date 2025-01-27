@@ -198,7 +198,6 @@ public extension Optimize {
         }
     }
 
-
     /// This API registers a permanent callback which will be invoked whenever the Edge extension dispatches an Event handle,
     /// upon a personalization decisions response from the Experience Edge Network.
     ///
