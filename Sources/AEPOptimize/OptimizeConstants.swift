@@ -10,10 +10,12 @@
  governing permissions and limitations under the License.
  */
 
+import Foundation
+
 enum OptimizeConstants {
     static let EXTENSION_NAME = "com.adobe.optimize"
     static let FRIENDLY_NAME = "Optimize"
-    static let EXTENSION_VERSION = "5.1.0"
+    static let EXTENSION_VERSION = "5.2.0"
     static let LOG_TAG = FRIENDLY_NAME
 
     static let DECISION_SCOPE_NAME = "name"
@@ -45,6 +47,7 @@ enum OptimizeConstants {
     enum EventSource {
         static let EDGE_PERSONALIZATION_DECISIONS = "personalization:decisions"
         static let EDGE_ERROR_RESPONSE = "com.adobe.eventSource.errorResponseContent"
+        static let DEBUG = "com.adobe.eventSource.debug"
     }
 
     enum EventDataKeys {
