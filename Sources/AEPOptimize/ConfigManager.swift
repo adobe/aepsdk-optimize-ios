@@ -31,7 +31,6 @@ class ConfigManager: NSObject {
     }
 
     /// Fetches the timeout configuration and stores it.
-    ///
     func fetchTimeoutConfiguration() {
         let shouldReturn: Bool = queue.sync {
             return processState != .idle
