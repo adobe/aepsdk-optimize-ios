@@ -33,7 +33,7 @@ class ConfigManager: NSObject {
     /// Fetches the timeout configuration and stores it.
     func fetchTimeoutConfiguration() {
         let shouldReturn: Bool = queue.sync {
-            return processState != .idle
+            processState != .idle
         }
 
         guard !shouldReturn else {
@@ -62,6 +62,7 @@ class ConfigManager: NSObject {
                 }
                 self.optimizeTimeout = timeout
                 self.processState = .fetched
+                print("LOG:- timeout \(timeout)")
                 Log.debug(label: OptimizeConstants.LOG_TAG, "Timeout value cached: \(timeout)")
             }
         }
