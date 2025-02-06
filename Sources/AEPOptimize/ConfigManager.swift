@@ -62,7 +62,6 @@ class ConfigManager: NSObject {
                 }
                 self.optimizeTimeout = timeout
                 self.processState = .fetched
-                print("LOG:- timeout \(timeout)")
                 Log.debug(label: OptimizeConstants.LOG_TAG, "Timeout value cached: \(timeout)")
             }
         }

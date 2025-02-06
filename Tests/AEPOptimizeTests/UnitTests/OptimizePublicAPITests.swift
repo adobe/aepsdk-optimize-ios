@@ -15,11 +15,26 @@ governing permissions and limitations under the License.
 import XCTest
 
 class OptimizePublicAPITests: XCTestCase {
+    let customTimeout: TimeInterval = 6
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         EventHub.shared.start()
         registerMockExtension(MockExtension.self)
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
+            type: EventType.optimize,
+            source: OptimizeConstants.EventSource.REQUEST_CONFIGURATION
+        ){ event in
+            let responseEvent = event.createResponseEvent(
+                name: "Get Configuration Response",
+                type: EventType.optimize,
+                source: EventSource.responseContent,
+                data: [
+                    OptimizeConstants.EventDataKeys.TIMEOUT: self.customTimeout
+                ]
+            )
+            MobileCore.dispatch(event: responseEvent)
+        }
     }
 
     override func tearDown() {
@@ -875,20 +890,6 @@ class OptimizePublicAPITests: XCTestCase {
         guard let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionB) else {
             XCTFail("Propositions should be valid.")
             return
-        }
-        let customTimeout: TimeInterval = 1
-        
-        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
-            type: EventType.optimize,
-            source: OptimizeConstants.EventSource.REQUEST_CONFIGURATION
-        ){ event in
-            let responseEvent = event.createResponseEvent(
-                name: "Get Configuration Response",
-                type: EventType.optimize,
-                source: EventSource.responseContent,
-                data: [OptimizeConstants.EventDataKeys.TIMEOUT: customTimeout]
-            )
-            MobileCore.dispatch(event: responseEvent)
         }
         
         var propositionDictionary: [DecisionScope: OptimizeProposition] = [:]
