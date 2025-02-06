@@ -13,9 +13,8 @@
 import AEPCore
 import AEPServices
 
-@objc(AEPConfigManager)
 class ConfigManager: NSObject {
-    @objc static let shared = ConfigManager()
+    static let shared = ConfigManager()
 
     private enum ProcessState {
         case idle
@@ -31,15 +30,15 @@ class ConfigManager: NSObject {
         super.init()
     }
 
-    /// Fetches the timeout configuration.
+    /// Fetches the timeout configuration and stores it.
     ///
-    /// - Parameter completion: A closure invoked with the retrieved timeout value as a `TimeInterval`.
-    @objc func fetchTimeoutConfiguration(completion: ((TimeInterval) -> Void)? = nil) {
-        queue.sync {
-            guard processState == .idle else {
-                completion?(optimizeTimeout)
-                return
-            }
+    func fetchTimeoutConfiguration() {
+        let shouldReturn: Bool = queue.sync {
+            return processState != .idle
+        }
+
+        guard !shouldReturn else {
+            return
         }
 
         queue.async(flags: .barrier) {
@@ -65,10 +64,6 @@ class ConfigManager: NSObject {
                 self.optimizeTimeout = timeout
                 self.processState = .fetched
                 Log.debug(label: OptimizeConstants.LOG_TAG, "Timeout value cached: \(timeout)")
-
-                DispatchQueue.main.async {
-                    completion?(self.optimizeTimeout)
-                }
             }
         }
     }

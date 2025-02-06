@@ -517,7 +517,6 @@
 		C88C5F1726154621003AE3DE /* Public */ = {
 			isa = PBXGroup;
 			children = (
-				0F5AD3712D47C12D00F76CA0 /* ConfigManager.swift */,
 				C88C5F79261D06A5003AE3DE /* Optimize+PublicAPI.swift */,
 				C88C5F1126152DAB003AE3DE /* DecisionScope.swift */,
 				C88C5EDC2614F640003AE3DE /* Offer.swift */,
@@ -533,6 +532,7 @@
 		C88C5F3626185F0D003AE3DE /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				0F5AD3712D47C12D00F76CA0 /* ConfigManager.swift */,
 				C88C5F3226185EF4003AE3DE /* StringInterpolation+Optimize.swift */,
 				C88C5F4026187F0A003AE3DE /* String+Optimize.swift */,
 				C8276BE3261EC74F00508873 /* Array+Optimize.swift */,
