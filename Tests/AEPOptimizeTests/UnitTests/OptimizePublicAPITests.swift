@@ -926,7 +926,7 @@ class OptimizePublicAPITests: XCTestCase {
             source: testEvent.source) { event in
                 var eventData: [String: Any] = [:]
                 eventData[OptimizeConstants.EventDataKeys.PROPOSITIONS] = propositionDictionary
-                let timeout: TimeInterval = event.data?[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? TimeInterval ?? OptimizeConstants.DEFAULT_TIMEOUT
+                let timeout: TimeInterval = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval ?? OptimizeConstants.DEFAULT_TIMEOUT
                 let edgeEvent = event.createChainedEvent(name: OptimizeConstants.EventNames.EDGE_PERSONALIZATION_REQUEST,
                                                          type: EventType.edge,
                                                          source: EventSource.requestContent,
