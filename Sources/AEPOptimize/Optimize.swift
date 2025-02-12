@@ -250,9 +250,8 @@ public class Optimize: NSObject, Extension {
         }
 
         // Timeout value
-        let configTimeout: TimeInterval = fetchTimeoutFromSharedState() ?? OptimizeConstants.DEFAULT_TIMEOUT
         let apiTimeout: TimeInterval? = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval
-        let finalTimeout = apiTimeout ?? configTimeout
+        let finalTimeout = apiTimeout ?? OptimizeConstants.DEFAULT_TIMEOUT
 
         // Construct Edge event data
         var eventData: [String: Any] = [:]
