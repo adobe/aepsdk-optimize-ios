@@ -29,7 +29,6 @@ enum OptimizeConstants {
 
     static let ERROR_UNKNOWN = "unknown"
     static let UNKNOWN_STATUS = 0
-    static let CONFIGURATION_NAME = "com.adobe.module.configuration"
     static let DEFAULT_TIMEOUT: TimeInterval = 10
 
     enum EventNames {
@@ -47,7 +46,6 @@ enum OptimizeConstants {
     enum EventSource {
         static let EDGE_PERSONALIZATION_DECISIONS = "personalization:decisions"
         static let EDGE_ERROR_RESPONSE = "com.adobe.eventSource.errorResponseContent"
-        static let REQUEST_CONFIGURATION = "com.adobe.eventSource.requestConfiguration"
         static let DEBUG = "com.adobe.eventSource.debug"
     }
 
