@@ -599,29 +599,19 @@ public class Optimize: NSObject, Extension {
 
     /// Calculates the final timeout value based on API timeout, shared state, and default timeout.
     ///
-    /// - Parameters:
-    ///   - apiTimeout: The timeout value provided in the API request.
+    /// - Parameter apiTimeout: The timeout value provided in the API request.
     /// - Returns: The final timeout value to be used.
     private func calculateTimeout(apiTimeout: TimeInterval?) -> TimeInterval {
-        let configTimeout: TimeInterval? = fetchTimeoutFromSharedState()
-        guard let apiTimeout,
-                apiTimeout != Double.infinity
-        else {
+        /// Fetch the timeout value from the shared state.
+        var configTimeout: TimeInterval?
+        if let sharedState = getSharedState(extensionName: OptimizeConstants.CONFIGURATION_NAME, event: nil)?.value,
+           let timeout = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int {
+            configTimeout = TimeInterval(timeout)
+        }
+        guard let apiTimeout, apiTimeout != Double.infinity else {
             return configTimeout ?? OptimizeConstants.DEFAULT_TIMEOUT
         }
         return apiTimeout
-    }
-
-    /// Fetches the timeout value from the Configuration shared state.
-    ///
-    /// - Returns: The timeout value as `TimeInterval` if available, otherwise `nil`.
-    private func fetchTimeoutFromSharedState() -> TimeInterval? {
-        guard let sharedState = getSharedState(extensionName: OptimizeConstants.CONFIGURATION_NAME, event: nil)?.value,
-              let timeout = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int
-        else {
-            return nil
-        }
-        return TimeInterval(timeout)
     }
 
     #if DEBUG
