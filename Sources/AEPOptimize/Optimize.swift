@@ -608,7 +608,9 @@ public class Optimize: NSObject, Extension {
            let timeout = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int {
             configTimeout = TimeInterval(timeout)
         }
-        guard let apiTimeout, apiTimeout != Double.infinity else {
+        guard let apiTimeout,
+                apiTimeout != Double.infinity
+        else {
             return configTimeout ?? OptimizeConstants.DEFAULT_TIMEOUT
         }
         return apiTimeout
