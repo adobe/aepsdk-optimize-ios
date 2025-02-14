@@ -605,11 +605,12 @@ public class Optimize: NSObject, Extension {
         /// Fetch the timeout value from the shared state.
         var configTimeout: TimeInterval?
         if let sharedState = getSharedState(extensionName: OptimizeConstants.CONFIGURATION_NAME, event: nil)?.value,
-           let timeout = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int {
+           let timeout = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int
+        {
             configTimeout = TimeInterval(timeout)
         }
         guard let apiTimeout,
-                apiTimeout != Double.infinity
+              apiTimeout != Double.infinity
         else {
             return configTimeout ?? OptimizeConstants.DEFAULT_TIMEOUT
         }
