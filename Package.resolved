@@ -1,0 +1,43 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "AEPCore",
+        "repositoryURL": "https://github.com/adobe/aepsdk-core-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "57e8b30bba4cc4e28d2ae31b815aecfeb8d64edb",
+          "version": "5.3.2"
+        }
+      },
+      {
+        "package": "AEPEdge",
+        "repositoryURL": "https://github.com/adobe/aepsdk-edge-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "d0d3e0d74ff8999ab8d6bbd30f921610ee1e6dd1",
+          "version": "5.0.3"
+        }
+      },
+      {
+        "package": "AEPEdgeIdentity",
+        "repositoryURL": "https://github.com/adobe/aepsdk-edgeidentity-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "25fab07d344981afc768b99a550c63ed032ae3ad",
+          "version": "5.0.0"
+        }
+      },
+      {
+        "package": "AEPRulesEngine",
+        "repositoryURL": "https://github.com/adobe/aepsdk-rulesengine-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "514d2b3787c545bfa6749ffce5dd3e6f560c9319",
+          "version": "5.0.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
