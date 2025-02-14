@@ -109,10 +109,6 @@ public class Optimize: NSObject, Extension {
 
     public func onRegistered() {
         registerListener(type: EventType.optimize,
-                         source: OptimizeConstants.EventSource.REQUEST_CONFIGURATION,
-                         listener: processOptimizeRequestConfiguration(event:))
-
-        registerListener(type: EventType.optimize,
                          source: EventSource.requestContent,
                          listener: processOptimizeRequestContent(event:))
 
@@ -202,22 +198,6 @@ public class Optimize: NSObject, Extension {
         }
     }
 
-    /// Processes the propositions request event, dispatched with type `EventType.optimize` and source `EventSource.requestConfiguration`.
-    /// - Parameter event: configuration request event
-    private func processOptimizeRequestConfiguration(event: Event) {
-        let timeoutValue = fetchTimeoutFromSharedState() ?? OptimizeConstants.DEFAULT_TIMEOUT
-        let responseEventToSend = event.createResponseEvent(
-            name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
-            type: EventType.optimize,
-            source: EventSource.responseContent,
-            data: [
-                OptimizeConstants.EventDataKeys.TIMEOUT: timeoutValue
-            ]
-        )
-
-        MobileCore.dispatch(event: responseEventToSend)
-    }
-
     // MARK: Event Listeners
 
     /// Processes the update propositions request event, dispatched with type `EventType.optimize` and source `EventSource.requestContent`.
@@ -251,7 +231,7 @@ public class Optimize: NSObject, Extension {
 
         // Timeout value
         let apiTimeout: TimeInterval? = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval
-        let finalTimeout = apiTimeout ?? OptimizeConstants.DEFAULT_TIMEOUT
+        let finalTimeout = calculateTimeout(apiTimeout: apiTimeout)
 
         // Construct Edge event data
         var eventData: [String: Any] = [:]
@@ -617,7 +597,24 @@ public class Optimize: NSObject, Extension {
         return false
     }
 
-    /// Fetch the timeout value from the Configuration sharedstate.
+    /// Calculates the final timeout value based on API timeout, shared state, and default timeout.
+    ///
+    /// - Parameters:
+    ///   - apiTimeout: The timeout value provided in the API request.
+    /// - Returns: The final timeout value to be used.
+    private func calculateTimeout(apiTimeout: TimeInterval?) -> TimeInterval {
+        let configTimeout: TimeInterval? = fetchTimeoutFromSharedState()
+        guard let apiTimeout,
+                apiTimeout != Double.infinity
+        else {
+            return configTimeout ?? OptimizeConstants.DEFAULT_TIMEOUT
+        }
+        return apiTimeout
+    }
+
+    /// Fetches the timeout value from the Configuration shared state.
+    ///
+    /// - Returns: The timeout value as `TimeInterval` if available, otherwise `nil`.
     func fetchTimeoutFromSharedState() -> TimeInterval? {
         guard let sharedState = getSharedState(extensionName: OptimizeConstants.CONFIGURATION_NAME, event: nil)?.value,
               let timeout = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int

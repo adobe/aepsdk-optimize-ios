@@ -16,11 +16,6 @@ import Foundation
 
 @objc
 public extension Optimize {
-    /// Singleton instance
-    private static var configManager: ConfigManager {
-        ConfigManager.shared
-    }
-
     /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the decisioning Services enabled behind Experience Edge.
     ///
     /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
@@ -42,7 +37,7 @@ public extension Optimize {
     /// - Parameter completion: Optional completion handler invoked with map of successful decision scopes to propositions and errors, if any
     @objc(updatePropositions:withXdm:andData:completion:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, _ completion: (([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
-        updatePropositions(for: decisionScopes, withXdm: xdm, andData: data, timeout: configManager.optimizeTimeout, completion)
+        updatePropositions(for: decisionScopes, withXdm: xdm, andData: data, timeout: Double.infinity, completion)
     }
 
     /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the decisioning Services enabled behind Experience Edge.
@@ -55,7 +50,6 @@ public extension Optimize {
     /// - Parameter completion: Optional completion handler invoked with map of successful decision scopes to propositions and errors, if any
     @objc(updatePropositions:withXdm:timeout:andData:completion:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, timeout: TimeInterval, _ completion: (([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
-        configManager.fetchTimeoutConfiguration()
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
@@ -107,7 +101,7 @@ public extension Optimize {
     ///   - completion: The completion handler to be invoked when the decisions are retrieved from cache.
     @objc(getPropositions:completion:)
     static func getPropositions(for decisionScopes: [DecisionScope], _ completion: @escaping ([DecisionScope: OptimizeProposition]?, Error?) -> Void) {
-        getPropositions(for: decisionScopes, timeout: configManager.optimizeTimeout, completion)
+        getPropositions(for: decisionScopes, timeout: Double.infinity, completion)
     }
 
     /// This API retrieves the previously fetched decisions for the provided decision scopes from the in-memory extension cache.
@@ -119,7 +113,6 @@ public extension Optimize {
     ///   - completion: The completion handler to be invoked when the decisions are retrieved from cache.
     @objc(getPropositions:timeout:completion:)
     static func getPropositions(for decisionScopes: [DecisionScope], timeout: TimeInterval, _ completion: @escaping ([DecisionScope: OptimizeProposition]?, Error?) -> Void) {
-        configManager.fetchTimeoutConfiguration()
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
