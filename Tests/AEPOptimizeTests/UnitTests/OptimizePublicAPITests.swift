@@ -15,7 +15,6 @@ governing permissions and limitations under the License.
 import XCTest
 
 class OptimizePublicAPITests: XCTestCase {
-    let customTimeout: TimeInterval = 6
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.

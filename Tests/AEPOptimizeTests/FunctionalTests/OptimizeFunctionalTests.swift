@@ -35,14 +35,13 @@ class OptimizeFunctionalTests: XCTestCase {
         // onRegistered() invoked in setUp()
 
         // verify
-        XCTAssertEqual(8, mockRuntime.listeners.count)
+        XCTAssertEqual(7, mockRuntime.listeners.count)
         XCTAssertNotNil(mockRuntime.listeners["com.adobe.eventType.generic.identity-com.adobe.eventSource.requestReset"])
         XCTAssertNotNil(mockRuntime.listeners["com.adobe.eventType.optimize-com.adobe.eventSource.requestReset"])
         XCTAssertNotNil(mockRuntime.listeners["com.adobe.eventType.edge-com.adobe.eventSource.errorResponseContent"])
         XCTAssertNotNil(mockRuntime.listeners["com.adobe.eventType.optimize-com.adobe.eventSource.requestContent"])
         XCTAssertNotNil(mockRuntime.listeners["com.adobe.eventType.edge-personalization:decisions"])
         XCTAssertNotNil(mockRuntime.listeners["com.adobe.eventType.optimize-com.adobe.eventSource.contentComplete"])
-        XCTAssertNotNil(mockRuntime.listeners["com.adobe.eventType.optimize-com.adobe.eventSource.requestConfiguration"])
     }
 
     func testReadyForEvent_validConfig() {
