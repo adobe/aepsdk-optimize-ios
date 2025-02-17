@@ -230,8 +230,7 @@ public class Optimize: NSObject, Extension {
         }
 
         // Timeout value
-        let apiTimeout: TimeInterval? = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval
-        let finalTimeout = calculateTimeout(apiTimeout: apiTimeout)
+        let finalTimeout = calculateTimeout(apiTimeout: event.configTimeout)
 
         // Construct Edge event data
         var eventData: [String: Any] = [:]
@@ -603,18 +602,19 @@ public class Optimize: NSObject, Extension {
     /// - Returns: The final timeout value to be used.
     private func calculateTimeout(apiTimeout: TimeInterval?) -> TimeInterval {
         /// Fetch the timeout value from the shared state.
+        if let apiTimeout, apiTimeout != .infinity {
+            return apiTimeout
+        }
+
+        /// Fetch the timeout value from the shared state only if `apiTimeout` is absent.
         var configTimeout: TimeInterval?
-        if let sharedState = getSharedState(extensionName: OptimizeConstants.CONFIGURATION_NAME, event: nil)?.value,
-           let timeout = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int
-        {
-            configTimeout = TimeInterval(timeout)
+        if let sharedState = getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME, event: nil)?.value,
+           let timeoutValue = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int {
+            configTimeout = TimeInterval(timeoutValue)
         }
-        guard let apiTimeout,
-              apiTimeout != Double.infinity
-        else {
-            return configTimeout ?? OptimizeConstants.DEFAULT_TIMEOUT
-        }
-        return apiTimeout
+
+        /// Return the shared state timeout if available; otherwise, use the default timeout.
+        return configTimeout ?? OptimizeConstants.DEFAULT_TIMEOUT
     }
 
     #if DEBUG
