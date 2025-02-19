@@ -101,7 +101,7 @@ public extension Optimize {
     ///   - completion: The completion handler to be invoked when the decisions are retrieved from cache.
     @objc(getPropositions:completion:)
     static func getPropositions(for decisionScopes: [DecisionScope], _ completion: @escaping ([DecisionScope: OptimizeProposition]?, Error?) -> Void) {
-        getPropositions(for: decisionScopes, timeout: Double.infinity, completion)
+        getPropositions(for: decisionScopes, timeout: OptimizeConstants.DEFAULT_TIMEOUT, completion)
     }
 
     /// This API retrieves the previously fetched decisions for the provided decision scopes from the in-memory extension cache.
