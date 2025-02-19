@@ -84,6 +84,7 @@ enum OptimizeConstants {
     enum Configuration {
         static let EXTENSION_NAME = "com.adobe.module.configuration"
         static let OPTIMIZE_OVERRIDE_DATASET_ID = "optimize.datasetId"
+        static let OPTIMIZE_TIMEOUT_VALUE = "optimize.timeout"
     }
 
     enum JsonKeys {
