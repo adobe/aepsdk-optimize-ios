@@ -611,7 +611,7 @@ public class Optimize: NSObject, Extension {
         if let sharedState = getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME, event: nil)?.value,
            let timeoutValue = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int
         {
-            /// converting the miliseconds to seconds
+            /// converting timeout from miliseconds to seconds
             configTimeout = TimeInterval(timeoutValue * 1000)
         }
 
