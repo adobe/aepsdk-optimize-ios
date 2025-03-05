@@ -612,7 +612,7 @@ public class Optimize: NSObject, Extension {
            let timeoutValue = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int
         {
             /// converting timeout from miliseconds to seconds
-            configTimeout = TimeInterval(Double(timeoutValue) / 1000.0)
+            configTimeout = TimeInterval(Double(timeoutValue) / OptimizeConstants.TIMEOUT_CONVERSION_FACTOR)
         }
 
         /// Return the shared state timeout if available; otherwise, use the default timeout.
