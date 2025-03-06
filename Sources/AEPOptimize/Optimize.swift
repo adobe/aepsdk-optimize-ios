@@ -229,6 +229,10 @@ public class Optimize: NSObject, Extension {
             return
         }
 
+        // Timeout value
+        let finalTimeout = calculateTimeout(apiTimeout: event.configTimeout)
+
+        // Construct Edge event data
         var eventData: [String: Any] = [:]
 
         // Add query
@@ -275,12 +279,9 @@ public class Optimize: NSObject, Extension {
         // add the Edge event to update propositions in the events queue.
         eventsQueue.add(edgeEvent)
 
-        let timeout: TimeInterval = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval ?? OptimizeConstants.DEFAULT_TIMEOUT
-        MobileCore.dispatch(event: edgeEvent, timeout: timeout) { responseEvent in
-            guard
-                let responseEvent = responseEvent,
-                let requestEventId = responseEvent.requestEventId
-            else {
+        // Dispatch Edge event with synchronized timeout
+        MobileCore.dispatch(event: edgeEvent, timeout: finalTimeout) { responseEvent in
+            guard let responseEvent = responseEvent, let requestEventId = responseEvent.requestEventId else {
                 // response event failed or timed out, remove this event's ID from the requested event IDs dictionary, dispatch an error response event and kick-off queue.
                 self.updateRequestEventIdsInProgress.removeValue(forKey: edgeEvent.id.uuidString)
                 self.propositionsInProgress.removeAll()
@@ -593,6 +594,28 @@ public class Optimize: NSObject, Extension {
             return true
         }
         return false
+    }
+
+    /// Calculates the final timeout value based on API timeout, shared state, and default timeout.
+    ///
+    /// - Parameter apiTimeout: The timeout value provided in the API request.
+    /// - Returns: The final timeout value to be used.
+    private func calculateTimeout(apiTimeout: TimeInterval?) -> TimeInterval {
+        /// Fetch the timeout value from the shared state.
+        if let apiTimeout, apiTimeout != .infinity {
+            return apiTimeout
+        }
+
+        /// Fetch the timeout value from the shared state only if `apiTimeout` is absent.
+        var configTimeout: TimeInterval?
+        if let sharedState = getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME, event: nil)?.value,
+           let timeoutValue = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int
+        {
+            configTimeout = TimeInterval(timeoutValue)
+        }
+
+        /// Return the shared state timeout if available; otherwise, use the default timeout.
+        return configTimeout ?? OptimizeConstants.DEFAULT_TIMEOUT
     }
 
     #if DEBUG
