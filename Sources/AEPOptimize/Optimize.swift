@@ -33,53 +33,27 @@ public class Optimize: NSObject, Extension {
     private let queue: DispatchQueue = .init(label: "com.adobe.optimize.containers.queue")
 
     /// a dictionary containing the update event IDs and corresponding errors as received from Edge SDK
-    private var updateRequestEventIdsErrors: [String: AEPOptimizeError] = [:]
-//    private var updateRequestEventIdsErrors: [String: AEPOptimizeError] {
-//        get { queue.sync { self._updateRequestEventIdsErrors } }
-//        set { queue.async { self._updateRequestEventIdsErrors = newValue } }
-//    }
+    private var updateRequestEventIdsErrors = ThreadSafeDictionary<String, AEPOptimizeError>(identifier: "com.adobe.optimize.updateRequestEventIdsErrors")
 
     /// a dictionary containing the update event IDs (and corresponding requested scopes) for Edge events that haven't yet received an Edge completion response.
-    private var updateRequestEventIdsInProgress: [String: [DecisionScope]] = [:]
-//    private var updateRequestEventIdsInProgress: [String: [DecisionScope]] {
-//        get { queue.sync { self._updateRequestEventIdsInProgress } }
-//        set { queue.async { self._updateRequestEventIdsInProgress = newValue } }
-//    }
+    private var updateRequestEventIdsInProgress = ThreadSafeDictionary<String, [DecisionScope]>(identifier: "com.adobe.optimize.updateRequestEventIdsInProgress")
 
     /// a dictionary to accumulate propositions returned in various personalization:decisions events for the same Edge personalization request.
-    private var propositionsInProgress: [DecisionScope: OptimizeProposition] = [:]
-//    private var propositionsInProgress: [DecisionScope: OptimizeProposition] {
-//        get { queue.sync { self._propositionsInProgress } }
-//        set { queue.async { self._propositionsInProgress = newValue } }
-//    }
+    private var propositionsInProgress = ThreadSafeDictionary<DecisionScope, OptimizeProposition>(identifier: "com.adobe.optimize.propositionsInProgress")
 
     /// Dictionary containing decision propositions currently cached in-memory in the SDK.
-    private var cachedPropositions: [DecisionScope: OptimizeProposition] = [:]
-//    #if DEBUG
-//        var cachedPropositions: [DecisionScope: OptimizeProposition] {
-//            get { queue.sync { self._cachedPropositions } }
-//            set { queue.async { self._cachedPropositions = newValue } }
-//        }
-//    #else
-//        private(set) var cachedPropositions: [DecisionScope: OptimizeProposition] {
-//            get { queue.sync { self._cachedPropositions } }
-//            set { queue.async { self._cachedPropositions = newValue } }
-//        }
-//    #endif
+    #if DEBUG
+        var cachedPropositions = ThreadSafeDictionary<DecisionScope, OptimizeProposition>(identifier: "com.adobe.optimize.cachedPropositions")
+    #else
+        private(set) var cachedPropositions = ThreadSafeDictionary<DecisionScope, OptimizeProposition>(identifier: "com.adobe.optimize.cachedPropositions")
+    #endif
 
     /// Dictionary containing  propositions simulated for preview and cached in-memory in the SDK
-    private var previewCachedPropositions: [DecisionScope: OptimizeProposition] = [:]
-//    #if DEBUG
-//        var previewCachedPropositions: [DecisionScope: OptimizeProposition] {
-//            get { queue.sync { self._previewCachedPropositions } }
-//            set { queue.async { self._previewCachedPropositions = newValue } }
-//        }
-//    #else
-//        private(set) var previewCachedPropositions: [DecisionScope: OptimizeProposition] {
-//            get { queue.sync { self._previewCachedPropositions } }
-//            set { queue.async { self._previewCachedPropositions = newValue } }
-//        }
-//    #endif
+    #if DEBUG
+        var previewCachedPropositions = ThreadSafeDictionary<DecisionScope, OptimizeProposition>(identifier: "com.adobe.optimize.previewCachedPropositions")
+    #else
+        private(set) var previewCachedPropositions = ThreadSafeDictionary<DecisionScope, OptimizeProposition>(identifier: "com.adobe.optimize.previewCachedPropositions")
+    #endif
 
     /// Array containing recoverable network error codes being retried by Edge Network Service
     private let recoverableNetworkErrorCodes: [Int] = [OptimizeConstants.HTTPResponseCodes.clientTimeout.rawValue,
@@ -170,8 +144,8 @@ public class Optimize: NSObject, Extension {
     /// It processes events based on the "requesttype" in the event data
     /// - Parameter event: propositions request event
     private func processOptimizeRequestContent(event: Event) {
-        queue.async {
-            
+        queue.async { [weak self] in
+            guard let self = self else { return }
             if event.isUpdateEvent {
                 self.processUpdatePropositions(event: event)
             } else if event.isGetEvent {
@@ -212,116 +186,118 @@ public class Optimize: NSObject, Extension {
     /// It dispatches an event to the Edge extension to send personalization query request to the Experience Edge network.
     /// - Parameter event: Update propositions request event
     private func processUpdatePropositions(event: Event) {
-        guard
-            let configSharedState = getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME,
-                                                   event: event)?.value
-        else {
-            Log.debug(label: OptimizeConstants.LOG_TAG,
-                      "Cannot process the update propositions request event, Configuration shared state is not available.")
-            return
-        }
-
-        guard let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
-              !decisionScopes.isEmpty
-        else {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
-            return
-        }
-
-        let validDecisionScopes = decisionScopes
-            .filter { $0.isValid }
-
-        guard !validDecisionScopes.isEmpty else {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "No valid decision scopes found for the Edge personalization request!")
-            return
-        }
-
-        var eventData: [String: Any] = [:]
-
-        // Add query
-        eventData[OptimizeConstants.JsonKeys.QUERY] = [
-            OptimizeConstants.JsonKeys.QUERY_PERSONALIZATION: [
-                OptimizeConstants.JsonKeys.SCHEMAS: Optimize.supportedSchemas,
-                OptimizeConstants.JsonKeys.DECISION_SCOPES: validDecisionScopes.compactMap { $0.name }
+        queue.async {
+            
+            
+            guard
+                let configSharedState = self.getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME,
+                                                       event: event)?.value
+            else {
+                Log.debug(label: OptimizeConstants.LOG_TAG,
+                          "Cannot process the update propositions request event, Configuration shared state is not available.")
+                return
+            }
+            
+            guard let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
+                  !decisionScopes.isEmpty
+            else {
+                Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
+                return
+            }
+            
+            let validDecisionScopes = decisionScopes
+                .filter { $0.isValid }
+            
+            guard !validDecisionScopes.isEmpty else {
+                Log.debug(label: OptimizeConstants.LOG_TAG, "No valid decision scopes found for the Edge personalization request!")
+                return
+            }
+            
+            var eventData: [String: Any] = [:]
+            
+            // Add query
+            eventData[OptimizeConstants.JsonKeys.QUERY] = [
+                OptimizeConstants.JsonKeys.QUERY_PERSONALIZATION: [
+                    OptimizeConstants.JsonKeys.SCHEMAS: Optimize.supportedSchemas,
+                    OptimizeConstants.JsonKeys.DECISION_SCOPES: validDecisionScopes.compactMap { $0.name }
+                ]
             ]
-        ]
-
-        // Add xdm
-        var xdmData: [String: Any] = [
-            OptimizeConstants.JsonKeys.EXPERIENCE_EVENT_TYPE: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PERSONALIZATION
-        ]
-        if let additionalXdmData = event.data?[OptimizeConstants.EventDataKeys.XDM] as? [String: Any] {
-            xdmData.merge(additionalXdmData) { old, _ in old }
-        }
-        eventData[OptimizeConstants.JsonKeys.XDM] = xdmData
-
-        // Add data
-        if let data = event.data?[OptimizeConstants.EventDataKeys.DATA] as? [String: Any] {
-            eventData[OptimizeConstants.JsonKeys.DATA] = data
-        }
-
-        // Add the flag to request sendCompletion
-        eventData[OptimizeConstants.JsonKeys.REQUEST] = [
-            OptimizeConstants.JsonKeys.REQUEST_SEND_COMPLETION: true
-        ]
-
-        // Add override datasetId
-        if let datasetId = configSharedState[OptimizeConstants.Configuration.OPTIMIZE_OVERRIDE_DATASET_ID] as? String {
-            eventData[OptimizeConstants.JsonKeys.DATASET_ID] = datasetId
-        }
-
-        let edgeEvent = event.createChainedEvent(name: OptimizeConstants.EventNames.EDGE_PERSONALIZATION_REQUEST,
-                                                 type: EventType.edge,
-                                                 source: EventSource.requestContent,
-                                                 data: eventData)
-
-        // In AEP Response Event handle, `requestEventId` corresponds to the UUID for the Edge request.
-        // Storing the request event UUID to compare and process only the anticipated response in the extension.
-        updateRequestEventIdsInProgress[edgeEvent.id.uuidString] = validDecisionScopes
-
-        // add the Edge event to update propositions in the events queue.
-        eventsQueue.add(edgeEvent)
-
-        let timeout: TimeInterval = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval ?? OptimizeConstants.DEFAULT_TIMEOUT
-        MobileCore.dispatch(event: edgeEvent, timeout: timeout) { responseEvent in
-            self.queue.async {
-                
-//                let random = Int.random(in: 0...15)
-//                sleep(UInt32(random))
-                guard
-                    let responseEvent = responseEvent,
-                    let requestEventId = responseEvent.requestEventId
-                else {
-                    // response event failed or timed out, remove this event's ID from the requested event IDs dictionary, dispatch an error response event and kick-off queue.
-                    self.updateRequestEventIdsInProgress.removeValue(forKey: edgeEvent.id.uuidString)
-                    self.propositionsInProgress.removeAll()
-                    let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError()
-                    self.dispatch(event: event.createErrorResponseEvent(timeoutError))
-                    self.eventsQueue.start()
-                    return
+            
+            // Add xdm
+            var xdmData: [String: Any] = [
+                OptimizeConstants.JsonKeys.EXPERIENCE_EVENT_TYPE: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PERSONALIZATION
+            ]
+            if let additionalXdmData = event.data?[OptimizeConstants.EventDataKeys.XDM] as? [String: Any] {
+                xdmData.merge(additionalXdmData) { old, _ in old }
+            }
+            eventData[OptimizeConstants.JsonKeys.XDM] = xdmData
+            
+            // Add data
+            if let data = event.data?[OptimizeConstants.EventDataKeys.DATA] as? [String: Any] {
+                eventData[OptimizeConstants.JsonKeys.DATA] = data
+            }
+            
+            // Add the flag to request sendCompletion
+            eventData[OptimizeConstants.JsonKeys.REQUEST] = [
+                OptimizeConstants.JsonKeys.REQUEST_SEND_COMPLETION: true
+            ]
+            
+            // Add override datasetId
+            if let datasetId = configSharedState[OptimizeConstants.Configuration.OPTIMIZE_OVERRIDE_DATASET_ID] as? String {
+                eventData[OptimizeConstants.JsonKeys.DATASET_ID] = datasetId
+            }
+            
+            let edgeEvent = event.createChainedEvent(name: OptimizeConstants.EventNames.EDGE_PERSONALIZATION_REQUEST,
+                                                     type: EventType.edge,
+                                                     source: EventSource.requestContent,
+                                                     data: eventData)
+            
+            // In AEP Response Event handle, `requestEventId` corresponds to the UUID for the Edge request.
+            // Storing the request event UUID to compare and process only the anticipated response in the extension.
+            self.updateRequestEventIdsInProgress[edgeEvent.id.uuidString] = validDecisionScopes
+            
+            // add the Edge event to update propositions in the events queue.
+            self.eventsQueue.add(edgeEvent)
+            
+            let timeout: TimeInterval = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval ?? OptimizeConstants.DEFAULT_TIMEOUT
+            MobileCore.dispatch(event: edgeEvent, timeout: timeout) { responseEvent in
+                self.queue.async { [weak self] in
+                    guard let self = self else { return }
+                    guard
+                        let responseEvent = responseEvent,
+                        let requestEventId = responseEvent.requestEventId
+                    else {
+                        // response event failed or timed out, remove this event's ID from the requested event IDs dictionary, dispatch an error response event and kick-off queue.
+                        self.updateRequestEventIdsInProgress.removeValue(forKey: edgeEvent.id.uuidString)
+                        self.propositionsInProgress.removeAll()
+                        let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError()
+                        self.dispatch(event: event.createErrorResponseEvent(timeoutError))
+                        self.eventsQueue.start()
+                        return
+                    }
+                    // Error response received for Edge request event UUID (if any)
+                    let edgeError = self.updateRequestEventIdsErrors[requestEventId]
+                    
+                    // response event to provide success callback to updateProposition public api
+                    let responseEventToSend = event.createResponseEvent(
+                        name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
+                        type: EventType.optimize,
+                        source: EventSource.responseContent,
+                        data: [
+                            OptimizeConstants.EventDataKeys.PROPOSITIONS: self.propositionsInProgress.shallowCopy,
+                            OptimizeConstants.EventDataKeys.RESPONSE_ERROR: edgeError as Any
+                        ]
+                    )
+                    self.dispatch(event: responseEventToSend)
+                    
+                    let updateCompleteEvent = responseEvent.createChainedEvent(name: OptimizeConstants.EventNames.OPTIMIZE_UPDATE_COMPLETE,
+                                                                               type: EventType.optimize,
+                                                                               source: EventSource.contentComplete,
+                                                                               data: [
+                                                                                OptimizeConstants.EventDataKeys.COMPLETED_UPDATE_EVENT_ID: requestEventId
+                                                                               ])
+                    self.dispatch(event: updateCompleteEvent)
                 }
-                // Error response received for Edge request event UUID (if any)
-                let edgeError = self.updateRequestEventIdsErrors[requestEventId]
-                
-                // response event to provide success callback to updateProposition public api
-                let responseEventToSend = event.createResponseEvent(
-                    name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
-                    type: EventType.optimize,
-                    source: EventSource.responseContent,
-                    data: [
-                        OptimizeConstants.EventDataKeys.PROPOSITIONS: self.propositionsInProgress,
-                        OptimizeConstants.EventDataKeys.RESPONSE_ERROR: edgeError as Any
-                    ]
-                )
-                self.dispatch(event: responseEventToSend)
-                
-                let updateCompleteEvent = responseEvent.createChainedEvent(name: OptimizeConstants.EventNames.OPTIMIZE_UPDATE_COMPLETE,
-                                                                           type: EventType.optimize,
-                                                                           source: EventSource.contentComplete,
-                                                                           data: [
-                                                                            OptimizeConstants.EventDataKeys.COMPLETED_UPDATE_EVENT_ID: requestEventId
-                                                                           ])
-                self.dispatch(event: updateCompleteEvent)
             }
         }
     }
@@ -331,8 +307,9 @@ public class Optimize: NSObject, Extension {
     /// The event is dispatched internally upon receiving an Edge content complete response for an update propositions request.
     /// - Parameter event: Optimize content complete event.
     private func processUpdatePropositionsCompleted(event: Event) {
-        queue.async {
-            
+        queue.async { [weak self] in
+            guard let self = self else { return }
+
             defer {
                 self.propositionsInProgress.removeAll()
                 
@@ -365,7 +342,7 @@ public class Optimize: NSObject, Extension {
     /// - Parameter requestedScope: an array of decision scopes for which propositions are requested.
     private func updateCachedPropositions(for requestedScopes: [DecisionScope]) {
         // update cache with accumulated propositions
-        cachedPropositions.merge(propositionsInProgress) { _, new in new }
+        cachedPropositions.merge(propositionsInProgress.shallowCopy) { _, new in new }
 
         // remove cached propositions for requested scopes for which no propositions are returned.
         let returnedScopes = Array(propositionsInProgress.keys) as [DecisionScope]
@@ -381,9 +358,9 @@ public class Optimize: NSObject, Extension {
     /// Experience Edge network.
     /// - Parameter event: Edge response event.
     private func processEdgeResponse(event: Event) {
-        queue.async {
-            
+        queue.async { [weak self] in
             guard
+                let self = self,
                 event.isPersonalizationDecisionResponse,
                 let requestEventId = event.requestEventId,
                 self.updateRequestEventIdsInProgress.contains(where: { $0.key == requestEventId })
@@ -405,7 +382,7 @@ public class Optimize: NSObject, Extension {
             let propositionsDict = propositions
                 .filter { !$0.offers.isEmpty }
                 .toDictionary { DecisionScope(name: $0.scope) }
-            
+
             guard !propositionsDict.isEmpty else {
                 Log.debug(label: OptimizeConstants.LOG_TAG,
                       """
@@ -417,9 +394,7 @@ public class Optimize: NSObject, Extension {
                       """)
                 return
             }
-            
-//                    sleep(1)
-            // accumulate propositions in in-progress propositions dictionary
+//            accumulate propositions in in-progress propositions dictionary
             self.propositionsInProgress.merge(propositionsDict) { _, new in new }
             
             let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
@@ -437,9 +412,9 @@ public class Optimize: NSObject, Extension {
     /// It logs error related information specifying error type along with a detailed message.
     /// - Parameter event: Edge error response event.
     private func processEdgeErrorResponse(event: Event) {
-        queue.async {
-            
+        queue.async { [weak self] in
             guard
+                let self = self,
                 event.isEdgeErrorResponseEvent,
                 let requestEventId = event.requestEventId,
                 self.updateRequestEventIdsInProgress.contains(where: { $0.key == requestEventId })
@@ -484,35 +459,38 @@ public class Optimize: NSObject, Extension {
     ///  It returns previously cached propositions for the requested decision scopes. Any decision scope(s) not already present in the cache are ignored.
     /// - Parameter event: Get propositions request event
     private func processGetPropositions(event: Event) {
-        guard let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
-              !decisionScopes.isEmpty
-        else {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
-            let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
-            dispatch(event: event.createErrorResponseEvent(aepOptimizeError))
-            return
-        }
+//        queue.async { [weak self] in
+//            guard let self else { return }
+            guard let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
+                  !decisionScopes.isEmpty
+            else {
+                Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
+                let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
+                dispatch(event: event.createErrorResponseEvent(aepOptimizeError))
+                return
+            }
 
-        // check if the requested scopes are present in preview cache
-        let previewPropositionDict = previewCachedPropositions.filter { decisionScopes.contains($0.key) }
-        let propositionsDict = cachedPropositions.filter { decisionScopes.contains($0.key) }
+            // check if the requested scopes are present in preview cache
+            let previewPropositionDict = previewCachedPropositions.filter { decisionScopes.contains($0.key) }
+            let propositionsDict = cachedPropositions.filter { decisionScopes.contains($0.key) }
 
-        var eventData: [String: Any]?
-        if !previewPropositionDict.isEmpty {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "Preview Mode is enabled")
-            // if preview cache has requested scope, send propositions to be previewed in eventData
-            eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: previewPropositionDict].asDictionary()
-        } else {
-            eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
-        }
+            var eventData: [String: Any]?
+            if !previewPropositionDict.isEmpty {
+                Log.debug(label: OptimizeConstants.LOG_TAG, "Preview Mode is enabled")
+                // if preview cache has requested scope, send propositions to be previewed in eventData
+                eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: previewPropositionDict].asDictionary()
+            } else {
+                eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
+            }
 
-        let responseEvent = event.createResponseEvent(
-            name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
-            type: EventType.optimize,
-            source: EventSource.responseContent,
-            data: eventData
-        )
-        dispatch(event: responseEvent)
+            let responseEvent = event.createResponseEvent(
+                name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
+                type: EventType.optimize,
+                source: EventSource.responseContent,
+                data: eventData
+            )
+            dispatch(event: responseEvent)
+//        }
     }
 
     /// Processes the track propositions request event, dispatched with type `EventType.optimize` and source `EventSource.requestContent`.
@@ -557,8 +535,8 @@ public class Optimize: NSObject, Extension {
     /// This method is also invoked upon Core`resetIdentities` to clear the propositions cached locally.
     /// - Parameter event: Personalization request reset event.
     private func processClearPropositions(event _: Event) {
-        queue.async {
-            
+        queue.async { [weak self] in
+            guard let self else { return }
             // Clear propositions cache
             self.cachedPropositions.removeAll()
             self.previewCachedPropositions.removeAll()
@@ -570,9 +548,8 @@ public class Optimize: NSObject, Extension {
     /// A debug event allows the optimize extension to processes non-production workflows.
     /// - Parameter event: the debug `Event` to be handled.
     private func processDebugEvent(event: Event) {
-        queue.async {
-            
-            // ToDo - check for  debugEventType and debugEventSource once we receive debug object in eventData
+        queue.async { [weak self] in
+
             guard event.type == EventType.system && event.source == OptimizeConstants.EventSource.DEBUG
             else {
                 Log.debug(label: OptimizeConstants.LOG_TAG,
@@ -604,7 +581,7 @@ public class Optimize: NSObject, Extension {
             }
             
             // accumulate in preview cache
-            self.previewCachedPropositions.merge(propositionsDict) { _, new in new }
+            self?.previewCachedPropositions.merge(propositionsDict) { _, new in new }
             
             let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
             
@@ -612,7 +589,7 @@ public class Optimize: NSObject, Extension {
                               type: EventType.optimize,
                               source: EventSource.notification,
                               data: eventData)
-            self.dispatch(event: event)
+            self?.dispatch(event: event)
         }
     }
 
@@ -627,22 +604,32 @@ public class Optimize: NSObject, Extension {
     #if DEBUG
         /// For testing purposes only
         func setUpdateRequestEventIdsInProgress(_ eventId: String, expectedScopes: [DecisionScope]) {
-            updateRequestEventIdsInProgress[eventId] = expectedScopes
+            queue.async { [weak self] in
+                self?.updateRequestEventIdsInProgress[eventId] = expectedScopes
+            }
         }
 
         /// For testing purposes only
         func getUpdateRequestEventIdsInProgress() -> [String: [DecisionScope]] {
-            updateRequestEventIdsInProgress
+            queue.sync { [weak self] in
+                self?.updateRequestEventIdsInProgress.shallowCopy ?? [:]
+            }
         }
 
         /// For testing purposes only
         func setPropositionsInProgress(_ propositions: [DecisionScope: OptimizeProposition]) {
-            propositionsInProgress = propositions
+            queue.async { [weak self] in
+                self?.propositionsInProgress.merge(propositions) { _, new in
+                    new
+                }
+            }
         }
 
         /// For testing purposes only
         func getPropositionsInProgress() -> [DecisionScope: OptimizeProposition] {
-            propositionsInProgress
+            queue.sync { [weak self] in
+                self?.propositionsInProgress.shallowCopy ?? [:]
+            }
         }
     #endif
 }

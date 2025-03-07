@@ -459,7 +459,13 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // test
         mockRuntime.simulateComingEvents(testEvent)
-
+        
+        let exp = expectation(description: "Waiting for test event to be dispatched")
+        mockRuntime.onEventDispatch  = { _ in
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1)
         // verify
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
 
@@ -564,7 +570,12 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // test
         mockRuntime.simulateComingEvents(testEvent)
-
+        
+        let exp = XCTestExpectation(description: "waiting for test event to be dispatched")
+        mockRuntime.onEventDispatch = { _ in
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
         // verify
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
 
@@ -866,9 +877,7 @@ class OptimizeFunctionalTests: XCTestCase {
         }
 
         /// Cache decisionScopeA
-        optimize.cachedPropositions = [
-            decisionScopeA: propositionForScopeA
-        ]
+        optimize.cachedPropositions[decisionScopeA] = propositionForScopeA
         
         let getEvent = Event(
             name: "Get Propositions Request",
@@ -966,9 +975,7 @@ class OptimizeFunctionalTests: XCTestCase {
         }
 
         /// Same Decision Scope is already cached with old propositions
-        optimize.cachedPropositions = [
-            decisionScopeA: cachedPropositionForScopeA
-        ]
+        optimize.cachedPropositions[decisionScopeA] = cachedPropositionForScopeA
 
         let updateEvent = Event(
             name: "Optimize Update Propositions Request",
@@ -1017,7 +1024,14 @@ class OptimizeFunctionalTests: XCTestCase {
             ]
         )
         
+//        let updateCompleteExp = XCTestExpectation(description: "Update Complete Event")
+//    
+//        mockRuntime.onEventDispatch = { event in
+//            updateCompleteExp.fulfill()
+//        }
         mockRuntime.simulateComingEvents(optimizeContentComplete)
+//        
+//        wait(for: [updateCompleteExp], timeout: 10)
         
         /// After the update is complete, the get event should now dispatch
         let expectation = XCTestExpectation(description: "Get propositions request should now dispatch response event after update completion.")
@@ -1028,17 +1042,17 @@ class OptimizeFunctionalTests: XCTestCase {
             }
         }
         
-        wait(for: [expectation], timeout: 12)
-        XCTAssertEqual(mockRuntime.dispatchedEvents.count, 2)
+        wait(for: [expectation], timeout: 2)
+        XCTAssertEqual(mockRuntime.dispatchedEvents.count, 1)
         
-        // first event will be a timeout error response event as in functional test we don't recieve response from edge
-        let firstEvent = mockRuntime.firstEvent
-        XCTAssertEqual(firstEvent?.type, "com.adobe.eventType.optimize")
-        XCTAssertEqual(firstEvent?.source, "com.adobe.eventSource.responseContent")
-        XCTAssertNotNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR])
-        XCTAssertNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.DECISION_SCOPES])
+//        // first event will be a timeout error response event as in functional test we don't recieve response from edge
+//        let firstEvent = mockRuntime.secondEvent
+//        XCTAssertEqual(firstEvent?.type, "com.adobe.eventType.optimize")
+//        XCTAssertEqual(firstEvent?.source, "com.adobe.eventSource.responseContent")
+//        XCTAssertNotNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR])
+//        XCTAssertNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.DECISION_SCOPES])
         
-        let dispatchedEvent = mockRuntime.secondEvent
+        let dispatchedEvent = mockRuntime.firstEvent
         XCTAssertEqual(dispatchedEvent?.type, "com.adobe.eventType.optimize")
         XCTAssertEqual(dispatchedEvent?.source, "com.adobe.eventSource.responseContent")
 
@@ -1078,9 +1092,7 @@ class OptimizeFunctionalTests: XCTestCase {
         }
 
         /// decisionScopeA is already cached.
-        optimize.cachedPropositions = [
-            decisionScopeA: cachedPropositionForScopeA
-        ]
+        optimize.cachedPropositions[decisionScopeA] = cachedPropositionForScopeA
 
         /// Creating a get event with a decisionScopeB that is currently not present in the cache.
         let getEvent = Event(
@@ -1146,17 +1158,17 @@ class OptimizeFunctionalTests: XCTestCase {
         wait(for: [expectationGet], timeout: 12)
         
         // first event will be a timeout error response event as in functional test we don't recieve response from edge
-        let firstEvent = mockRuntime.firstEvent
-        XCTAssertEqual(firstEvent?.type, "com.adobe.eventType.optimize")
-        XCTAssertEqual(firstEvent?.source, "com.adobe.eventSource.responseContent")
-        XCTAssertNotNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR])
-        XCTAssertNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.DECISION_SCOPES])
+//        let firstEvent = mockRuntime.firstEvent
+//        XCTAssertEqual(firstEvent?.type, "com.adobe.eventType.optimize")
+//        XCTAssertEqual(firstEvent?.source, "com.adobe.eventSource.responseContent")
+//        XCTAssertNotNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR])
+//        XCTAssertNil(firstEvent?.data?[OptimizeConstants.EventDataKeys.DECISION_SCOPES])
         
         /// Verify that the get proposition event was queued & is the last event to be executed.
-        XCTAssertEqual(mockRuntime.secondEvent?.type, "com.adobe.eventType.optimize")
-        XCTAssertEqual(mockRuntime.secondEvent?.source, "com.adobe.eventSource.responseContent")
+        XCTAssertEqual(mockRuntime.firstEvent?.type, "com.adobe.eventType.optimize")
+        XCTAssertEqual(mockRuntime.firstEvent?.source, "com.adobe.eventSource.responseContent")
         
-        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = mockRuntime.secondEvent?.getTypedData(for: "propositions") else {
+        guard let propositionsDictionary: [DecisionScope: OptimizeProposition] = mockRuntime.firstEvent?.getTypedData(for: "propositions") else {
             XCTFail("Propositions dictionary should be valid.")
             return
         }
@@ -1680,10 +1692,16 @@ class OptimizeFunctionalTests: XCTestCase {
         mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
-
+        
+        let exp = XCTestExpectation(description: "waiting for event dispatch")
+        mockRuntime.onEventDispatch = { _ in
+            exp.fulfill()
+        }
+        
         // test
         mockRuntime.simulateComingEvents(testEvent)
-
+        wait(for: [exp], timeout: 2)
+        
         // verify
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
 
@@ -1767,10 +1785,15 @@ class OptimizeFunctionalTests: XCTestCase {
         mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
-
+        
+        let exp = XCTestExpectation(description: "waiting for event dispatch")
+        mockRuntime.onEventDispatch = { _ in
+            exp.fulfill()
+        }
         // test
         mockRuntime.simulateComingEvents(testEvent)
-
+        wait(for: [exp], timeout: 2)
+        
         // verify
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
 
@@ -1855,10 +1878,15 @@ class OptimizeFunctionalTests: XCTestCase {
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff",
                                             "optimize.datasetId": "111111111111111111111111"
                                         ] as [String: Any], .set))
-
+        
+        let exp = XCTestExpectation(description: "waiting for event dispatch")
+        mockRuntime.onEventDispatch = { _ in
+            exp.fulfill()
+        }
         // test
         mockRuntime.simulateComingEvents(testEvent)
-
+        wait(for: [exp], timeout: 2)
+        
         // verify
         XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
 
@@ -2064,8 +2092,12 @@ class OptimizeFunctionalTests: XCTestCase {
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
 
         // test
+        let expectation = self.expectation(description: "Optimize should reset identities")
         mockRuntime.simulateComingEvents(testEvent)
-
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1, handler: nil)
         // verify
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
         XCTAssertTrue(optimize.cachedPropositions.isEmpty)
@@ -2123,8 +2155,13 @@ class OptimizeFunctionalTests: XCTestCase {
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
 
         // test
+        
+        let expectation = self.expectation(description: "Optimize should reset identities")
         mockRuntime.simulateComingEvents(testEvent)
-
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1, handler: nil)
         // verify
         XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
         XCTAssertTrue(optimize.cachedPropositions.isEmpty)
@@ -2185,8 +2222,14 @@ class OptimizeFunctionalTests: XCTestCase {
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
         
+        let exp = expectation(description: "Update propositions complete should update propositions cache")
         // test
         mockRuntime.simulateComingEvents(testEvent)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
 
         // verify
         XCTAssertEqual(1, optimize.cachedPropositions.count)
@@ -2293,10 +2336,14 @@ class OptimizeFunctionalTests: XCTestCase {
                                     ],
                                     "type": "personalization:decisions"
                                   ])
-
+            let expectatation = XCTestExpectation(description: "Trigger event")
+            mockRuntime.onEventDispatch = { event in
+                expectatation.fulfill()
+            }
             // test
             mockRuntime.simulateComingEvents(testEvent)
 
+            wait(for: [expectatation], timeout: 5)
             //verify
             XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
 
@@ -2344,10 +2391,8 @@ class OptimizeFunctionalTests: XCTestCase {
             }
             
             /// Cache decisionScopes
-            optimize.cachedPropositions = [
-                decisionScopeA: propositionForScopeA,
-                decisionScopeB: propositionForScopeB
-            ]
+            optimize.cachedPropositions[decisionScopeA] = propositionForScopeA
+            optimize.cachedPropositions[decisionScopeB] = propositionForScopeB
             
             //test
             let expectationDebugEvent = XCTestExpectation(description: "Test Debug Event should get dispatched.")

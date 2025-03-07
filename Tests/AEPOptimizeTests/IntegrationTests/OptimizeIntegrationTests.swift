@@ -251,9 +251,12 @@ class OptimizeIntegrationTests: XCTestCase {
         let decisionScope = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
                                           placementId: "xcore:offer-placement:1111111111111111")
 
+        let updateCompletionExpectation = XCTestExpectation(description: "update proposition should complete before making get proposition request")
         // update propositions
-        Optimize.updatePropositions(for: [decisionScope], withXdm: nil)
-        wait(for: [requestExpectation], timeout: 2)
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { data, error in
+            updateCompletionExpectation.fulfill()
+        }
+        wait(for: [requestExpectation, updateCompletionExpectation], timeout: 5)
         
         // get propositions
         let retrieveExpectation = XCTestExpectation(description: "getPropositions should return the fetched propositions from the extension propositions cache.")
@@ -379,9 +382,12 @@ class OptimizeIntegrationTests: XCTestCase {
 
         let decisionScope = DecisionScope(name: "myMbox1")
 
+        let updateCompletionExpectation = XCTestExpectation(description: "update proposition should complete before making get proposition request")
         // update propositions
-        Optimize.updatePropositions(for: [decisionScope], withXdm: nil)
-        wait(for: [requestExpectation], timeout: 2)
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { data, error in
+            updateCompletionExpectation.fulfill()
+        }
+        wait(for: [requestExpectation, updateCompletionExpectation], timeout: 2)
         
         // get propositions
         let retrieveExpectation = XCTestExpectation(description: "getPropositions should return the fetched propositions from the extension propositions cache.")
@@ -832,9 +838,12 @@ class OptimizeIntegrationTests: XCTestCase {
         let decisionScope = DecisionScope(activityId: "xcore:offer-activity:1111111111111111",
                                           placementId: "xcore:offer-placement:1111111111111111")
 
+        let updateCompletionExpectation = XCTestExpectation(description: "update proposition should complete before making get proposition request")
         // update propositions
-        Optimize.updatePropositions(for: [decisionScope], withXdm: nil)
-        wait(for: [requestExpectation], timeout: 2)
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { data, error in
+            updateCompletionExpectation.fulfill()
+        }
+        wait(for: [requestExpectation, updateCompletionExpectation], timeout: 5)
 
         mockNetworkService.clear()
         
@@ -985,10 +994,13 @@ class OptimizeIntegrationTests: XCTestCase {
                                             "edge.configId": "configId"])
 
         let decisionScope = DecisionScope(name: "myMbox")
-
+        
+        let updateCompletionExpectation = XCTestExpectation(description: "update proposition should complete before making get proposition request")
         // update propositions
-        Optimize.updatePropositions(for: [decisionScope], withXdm: nil)
-        wait(for: [requestExpectation], timeout: 2)
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { data, error in
+            updateCompletionExpectation.fulfill()
+        }
+        wait(for: [requestExpectation, updateCompletionExpectation], timeout: 5)
 
         mockNetworkService.clear()
         
