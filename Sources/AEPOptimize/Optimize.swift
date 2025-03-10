@@ -451,13 +451,14 @@ public class Optimize: NSObject, Extension {
             let errorDetail = event.data?[OptimizeConstants.Edge.ErrorKeys.DETAIL] as? String
             let errorReport = event.data?[OptimizeConstants.Edge.ErrorKeys.REPORT] as? [String: Any]
 
-            let errorString = """
-                              Decisioning Service error, type: \(errorType ?? OptimizeConstants.ERROR_UNKNOWN), \
-                              status: \(errorStatus ?? OptimizeConstants.UNKNOWN_STATUS), \
-                              title: \(errorTitle ?? OptimizeConstants.ERROR_UNKNOWN), \
-                              detail: \(errorDetail ?? OptimizeConstants.ERROR_UNKNOWN), \
-                              report: \(errorReport ?? [:])
-                              """
+            let errorString =
+                """
+                Decisioning Service error, type: \(errorType ?? OptimizeConstants.ERROR_UNKNOWN), \
+                status: \(errorStatus ?? OptimizeConstants.UNKNOWN_STATUS), \
+                title: \(errorTitle ?? OptimizeConstants.ERROR_UNKNOWN), \
+                detail: \(errorDetail ?? OptimizeConstants.ERROR_UNKNOWN), \
+                report: \(errorReport ?? [:])"
+                """
 
             Log.warning(label: OptimizeConstants.LOG_TAG, errorString)
 
