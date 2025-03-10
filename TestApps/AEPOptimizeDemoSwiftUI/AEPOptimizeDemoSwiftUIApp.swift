@@ -25,7 +25,7 @@ import AEPOptimize
 import SwiftUI
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
-    private let ENVIRONMENT_FILE_ID = "3149c49c3910/0f12baf27522/launch-0d096c129660-development"
+    private let ENVIRONMENT_FILE_ID = ""
     private let OVERRIDE_DATASET_ID = ""
     
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -36,24 +36,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             
             // Update Configuration with override dataset identifier
             MobileCore.updateConfigurationWith(configDict: ["optimize.datasetId": self.OVERRIDE_DATASET_ID])
-            
-            self.breakIt()
+
         }
         return true
     }
-    
-    
-    func breakIt(){
-        for i in 0...50 {
-            DispatchQueue.global().async {
-                for j in 0...10 {
-                    Optimize.updatePropositions(for: [DecisionScope(name: "mboxAug")], withXdm: nil, timeout: 10) { results, error in
-                        print(" \(i) && AKHIL is reproducing hard result: \(results?.first?.value) error: \(error)")
-                    }
-                }
-            }
-        }
-    }
+
     
     @main
     struct AEPOptimizeDemoSwiftUIApp: App {
