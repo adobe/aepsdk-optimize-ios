@@ -134,7 +134,7 @@ public class Optimize: NSObject, Extension {
                 }
             } else if event.type == EventType.edge {
                 return self.queue.sync {
-                     !self.updateRequestEventIdsInProgress.keys.contains(event.id.uuidString)
+                    !self.updateRequestEventIdsInProgress.keys.contains(event.id.uuidString)
                 }
             }
             return true
@@ -199,7 +199,6 @@ public class Optimize: NSObject, Extension {
     /// - Parameter event: Update propositions request event
     private func processUpdatePropositions(event: Event) {
         queue.async {
-
             guard
                 let configSharedState = self.getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME,
                                                             event: event)?.value
@@ -451,14 +450,13 @@ public class Optimize: NSObject, Extension {
             let errorTitle = event.data?[OptimizeConstants.Edge.ErrorKeys.TITLE] as? String
             let errorDetail = event.data?[OptimizeConstants.Edge.ErrorKeys.DETAIL] as? String
             let errorReport = event.data?[OptimizeConstants.Edge.ErrorKeys.REPORT] as? [String: Any]
-            let errorString =
-            """
-            Decisioning Service error, type: \(errorType ?? OptimizeConstants.ERROR_UNKNOWN), \
-            status: \(errorStatus ?? OptimizeConstants.UNKNOWN_STATUS), \
-            title: \(errorTitle ?? OptimizeConstants.ERROR_UNKNOWN), \
-            detail: \(errorDetail ?? OptimizeConstants.ERROR_UNKNOWN), \
-            report: \(errorReport ?? [:])"
-            """
+            let errorString = """
+                Decisioning Service error, type: \(errorType ?? OptimizeConstants.ERROR_UNKNOWN), \
+                status: \(errorStatus ?? OptimizeConstants.UNKNOWN_STATUS), \
+                title: \(errorTitle ?? OptimizeConstants.ERROR_UNKNOWN), \
+                detail: \(errorDetail ?? OptimizeConstants.ERROR_UNKNOWN), \
+                report: \(errorReport ?? [:])
+                """
 
             Log.warning(label: OptimizeConstants.LOG_TAG, errorString)
 
@@ -483,35 +481,35 @@ public class Optimize: NSObject, Extension {
     ///  It returns previously cached propositions for the requested decision scopes. Any decision scope(s) not already present in the cache are ignored.
     /// - Parameter event: Get propositions request event
     private func processGetPropositions(event: Event) {
-            guard let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
-                  !decisionScopes.isEmpty
-            else {
-                Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
-                let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
-                dispatch(event: event.createErrorResponseEvent(aepOptimizeError))
-                return
-            }
-
-            // check if the requested scopes are present in preview cache
-            let previewPropositionDict = previewCachedPropositions.filter { decisionScopes.contains($0.key) }
-            let propositionsDict = cachedPropositions.filter { decisionScopes.contains($0.key) }
-
-            var eventData: [String: Any]?
-            if !previewPropositionDict.isEmpty {
-                Log.debug(label: OptimizeConstants.LOG_TAG, "Preview Mode is enabled")
-                // if preview cache has requested scope, send propositions to be previewed in eventData
-                eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: previewPropositionDict].asDictionary()
-            } else {
-                eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
-            }
-
-            let responseEvent = event.createResponseEvent(
-                name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
-                type: EventType.optimize,
-                source: EventSource.responseContent,
-                data: eventData
-            )
-            dispatch(event: responseEvent)
+        guard let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
+              !decisionScopes.isEmpty
+        else {
+            Log.debug(label: OptimizeConstants.LOG_TAG, "Decision scopes, in event data, is either not present or empty.")
+            let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
+            dispatch(event: event.createErrorResponseEvent(aepOptimizeError))
+            return
+        }
+        
+        // check if the requested scopes are present in preview cache
+        let previewPropositionDict = previewCachedPropositions.filter { decisionScopes.contains($0.key) }
+        let propositionsDict = cachedPropositions.filter { decisionScopes.contains($0.key) }
+        
+        var eventData: [String: Any]?
+        if !previewPropositionDict.isEmpty {
+            Log.debug(label: OptimizeConstants.LOG_TAG, "Preview Mode is enabled")
+            // if preview cache has requested scope, send propositions to be previewed in eventData
+            eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: previewPropositionDict].asDictionary()
+        } else {
+            eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
+        }
+        
+        let responseEvent = event.createResponseEvent(
+            name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
+            type: EventType.optimize,
+            source: EventSource.responseContent,
+            data: eventData
+        )
+        dispatch(event: responseEvent)
     }
 
     /// Processes the track propositions request event, dispatched with type `EventType.optimize` and source `EventSource.requestContent`.
@@ -588,10 +586,10 @@ public class Optimize: NSObject, Extension {
             let propositionsDict = propositions
                 .filter { !$0.offers.isEmpty }
                 .toDictionary { DecisionScope(name: $0.scope) }
-
+            
             guard !propositionsDict.isEmpty else {
                 Log.debug(
-                        label: OptimizeConstants.LOG_TAG,
+                    label: OptimizeConstants.LOG_TAG,
                         """
                         No propositions with valid offers are present in the Edge response event for the provided scopes(\
                         \(propositions
@@ -599,10 +597,10 @@ public class Optimize: NSObject, Extension {
                             .joined(separator: ","))
                         ).
                         """
-                    )
+                )
                 return
             }
-
+            
             // accumulate in preview cache
             self?.previewCachedPropositions.merge(propositionsDict) { _, new in new }
 
