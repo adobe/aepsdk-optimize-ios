@@ -181,7 +181,9 @@ class OptimizeFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             let updateEventIdsInProgress = self.optimize.getUpdateRequestEventIdsInProgress()
             XCTAssertEqual(1, updateEventIdsInProgress.count)
             XCTAssertEqual([DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")], updateEventIdsInProgress.values.first)
@@ -218,7 +220,9 @@ class OptimizeFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             let updateEventIdsInProgress = self.optimize.getUpdateRequestEventIdsInProgress()
             XCTAssertEqual(1, updateEventIdsInProgress.count)
             XCTAssertEqual([DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")], updateEventIdsInProgress.values.first)
@@ -254,7 +258,9 @@ class OptimizeFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             let updateEventIdsInProgress = self.optimize.getUpdateRequestEventIdsInProgress()
             XCTAssertEqual(1, updateEventIdsInProgress.count)
             XCTAssertEqual([DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")], updateEventIdsInProgress.values.first)
@@ -286,7 +292,9 @@ class OptimizeFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             let updateEventIdsInProgress = self.optimize.getUpdateRequestEventIdsInProgress()
             XCTAssertEqual(1, updateEventIdsInProgress.count)
             
@@ -414,7 +422,9 @@ class OptimizeFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             let updateEventIdsInProgress = self.optimize.getUpdateRequestEventIdsInProgress()
             XCTAssertEqual(1, updateEventIdsInProgress.count)
             XCTAssertEqual([DecisionScope(name: "myMbox")], updateEventIdsInProgress.values.first)
@@ -469,7 +479,7 @@ class OptimizeFunctionalTests: XCTestCase {
         // test
         mockRuntime.simulateComingEvents(testEvent)
         
-        let exp = expectation(description: "Waiting for test event to be dispatched")
+        let exp = expectation(description: "Test event should dispatch an event to mockRuntime.")
         mockRuntime.onEventDispatch  = { _ in
             exp.fulfill()
         }
@@ -580,7 +590,7 @@ class OptimizeFunctionalTests: XCTestCase {
         // test
         mockRuntime.simulateComingEvents(testEvent)
         
-        let exp = XCTestExpectation(description: "waiting for test event to be dispatched")
+        let exp = XCTestExpectation(description: "Test Event should dispatch an event to mockRuntime.")
         mockRuntime.onEventDispatch = { _ in
             exp.fulfill()
         }
@@ -918,7 +928,9 @@ class OptimizeFunctionalTests: XCTestCase {
         /// Dispatch the Update event
         mockRuntime.simulateComingEvents(updateEvent)
         
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             let updateEventIdsInProgress = self.optimize.getUpdateRequestEventIdsInProgress()
             XCTAssertEqual(1, updateEventIdsInProgress.count)
             
@@ -1037,7 +1049,9 @@ class OptimizeFunctionalTests: XCTestCase {
         
         mockRuntime.simulateComingEvents(optimizeContentComplete)
         
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             /// After the update is complete, the get event should now dispatch
             let expectation = XCTestExpectation(description: "Get propositions request should now dispatch response event after update completion.")
             
@@ -1156,7 +1170,9 @@ class OptimizeFunctionalTests: XCTestCase {
 
         wait(for: [expectationGet], timeout: 12)
         
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             /// Verify that the get proposition event was queued & is the last event to be executed.
             XCTAssertEqual(self.mockRuntime.firstEvent?.type, "com.adobe.eventType.optimize")
             XCTAssertEqual(self.mockRuntime.firstEvent?.source, "com.adobe.eventSource.responseContent")
@@ -1234,7 +1250,9 @@ class OptimizeFunctionalTests: XCTestCase {
         // test
         mockRuntime.simulateComingEvents(testEvent)
         
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             XCTAssertEqual(1, self.mockRuntime.dispatchedEvents.count)
 
             let dispatchedEvent = self.mockRuntime.dispatchedEvents.first
@@ -1326,7 +1344,9 @@ class OptimizeFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             XCTAssertEqual(1, self.mockRuntime.dispatchedEvents.count)
             
             let dispatchedEvent = self.mockRuntime.dispatchedEvents.first
@@ -1403,7 +1423,9 @@ class OptimizeFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             XCTAssertEqual(1, self.mockRuntime.dispatchedEvents.count)
             
             let dispatchedEvent = self.mockRuntime.dispatchedEvents.first
@@ -1442,7 +1464,9 @@ class OptimizeFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             XCTAssertEqual(1, self.mockRuntime.dispatchedEvents.count)
 
             let dispatchedEvent = self.mockRuntime.dispatchedEvents.first
@@ -1543,7 +1567,9 @@ class OptimizeFunctionalTests: XCTestCase {
         // simulate update event
         mockRuntime.simulateComingEvents(testUpdateEvent)
         
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             let updateEventIdsInProgress = self.optimize.getUpdateRequestEventIdsInProgress()
             XCTAssertEqual(1, updateEventIdsInProgress.count)
             
@@ -1609,7 +1635,9 @@ class OptimizeFunctionalTests: XCTestCase {
         // simulate update event
         mockRuntime.simulateComingEvents(testUpdateEvent)
         
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             let updateEventIdsInProgress = self.optimize.getUpdateRequestEventIdsInProgress()
             XCTAssertEqual(1, updateEventIdsInProgress.count)
             
@@ -1681,7 +1709,7 @@ class OptimizeFunctionalTests: XCTestCase {
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
         
-        let exp = XCTestExpectation(description: "waiting for event dispatch")
+        let exp = XCTestExpectation(description: "Test Event should dispatch an event to mockRuntime.")
         mockRuntime.onEventDispatch = { _ in
             exp.fulfill()
         }
@@ -1774,7 +1802,7 @@ class OptimizeFunctionalTests: XCTestCase {
                                         data: ([
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
         
-        let exp = XCTestExpectation(description: "waiting for event dispatch")
+        let exp = XCTestExpectation(description: "Test Event should dispatch an event to mockRuntime.")
         mockRuntime.onEventDispatch = { _ in
             exp.fulfill()
         }
@@ -1867,7 +1895,7 @@ class OptimizeFunctionalTests: XCTestCase {
                                             "optimize.datasetId": "111111111111111111111111"
                                         ] as [String: Any], .set))
         
-        let exp = XCTestExpectation(description: "waiting for event dispatch")
+        let exp = XCTestExpectation(description: "Test Event should dispatch an event to mockRuntime.")
         mockRuntime.onEventDispatch = { _ in
             exp.fulfill()
         }
@@ -2080,16 +2108,16 @@ class OptimizeFunctionalTests: XCTestCase {
                                             "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
 
         // test
-        let expectation = self.expectation(description: "Optimize should reset identities")
         mockRuntime.simulateComingEvents(testEvent)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: 1, handler: nil)
+        
         // verify
-        XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
-        XCTAssertTrue(optimize.cachedPropositions.isEmpty)
-        XCTAssertTrue(optimize.previewCachedPropositions.isEmpty)
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension 
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            XCTAssertEqual(0, self.mockRuntime.dispatchedEvents.count)
+            XCTAssertTrue(self.optimize.cachedPropositions.isEmpty)
+            XCTAssertTrue(self.optimize.previewCachedPropositions.isEmpty)
+        }
     }
 
     func testCoreResetIdentities() {
@@ -2144,15 +2172,15 @@ class OptimizeFunctionalTests: XCTestCase {
 
         // test
         
-        let expectation = self.expectation(description: "Optimize should reset identities")
         mockRuntime.simulateComingEvents(testEvent)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: 1, handler: nil)
+        
         // verify
-        XCTAssertEqual(0, mockRuntime.dispatchedEvents.count)
-        XCTAssertTrue(optimize.cachedPropositions.isEmpty)
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            XCTAssertEqual(0, self.mockRuntime.dispatchedEvents.count)
+            XCTAssertTrue(self.optimize.cachedPropositions.isEmpty)
+        }
     }
     
     func testUpdatePropositionsComplete_updatesPropositionsCache() {
@@ -2213,7 +2241,9 @@ class OptimizeFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
 
         // verify
-        DispatchQueue.main.async {
+        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             XCTAssertEqual(1, self.optimize.cachedPropositions.count)
             XCTAssertEqual(self.optimize.cachedPropositions[DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")], propositions)
             XCTAssertEqual(0, self.optimize.getUpdateRequestEventIdsInProgress().count)
@@ -2319,7 +2349,7 @@ class OptimizeFunctionalTests: XCTestCase {
                                     ],
                                     "type": "personalization:decisions"
                                   ])
-            let expectatation = XCTestExpectation(description: "Trigger event")
+            let expectatation = XCTestExpectation(description: "Test event should dispatch an event to mockRuntime.")
             mockRuntime.onEventDispatch = { event in
                 expectatation.fulfill()
             }

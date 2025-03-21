@@ -256,7 +256,7 @@ class OptimizeIntegrationTests: XCTestCase {
         Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { data, error in
             updateCompletionExpectation.fulfill()
         }
-        wait(for: [requestExpectation, updateCompletionExpectation], timeout: 5)
+        wait(for: [requestExpectation, updateCompletionExpectation], timeout: 2)
         
         // get propositions
         let retrieveExpectation = XCTestExpectation(description: "getPropositions should return the fetched propositions from the extension propositions cache.")
@@ -843,7 +843,7 @@ class OptimizeIntegrationTests: XCTestCase {
         Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { data, error in
             updateCompletionExpectation.fulfill()
         }
-        wait(for: [requestExpectation, updateCompletionExpectation], timeout: 5)
+        wait(for: [requestExpectation, updateCompletionExpectation], timeout: 2)
 
         mockNetworkService.clear()
         
@@ -1000,7 +1000,7 @@ class OptimizeIntegrationTests: XCTestCase {
         Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { data, error in
             updateCompletionExpectation.fulfill()
         }
-        wait(for: [requestExpectation, updateCompletionExpectation], timeout: 5)
+        wait(for: [requestExpectation, updateCompletionExpectation], timeout: 2)
 
         mockNetworkService.clear()
         
