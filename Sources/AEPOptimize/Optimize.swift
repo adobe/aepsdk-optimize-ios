@@ -198,7 +198,8 @@ public class Optimize: NSObject, Extension {
     /// It dispatches an event to the Edge extension to send personalization query request to the Experience Edge network.
     /// - Parameter event: Update propositions request event
     private func processUpdatePropositions(event: Event) {
-        queue.async {
+        queue.async { [weak self] in
+            guard let self = self else { return }
             guard
                 let configSharedState = self.getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME,
                                                             event: event)?.value
