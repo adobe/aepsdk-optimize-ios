@@ -162,6 +162,28 @@ class OfferTests: XCTestCase {
     }\
 }
 """
+    
+    private let OFFER_WITH_SCORE_AS_DOUBLE =
+"""
+{\
+    "id": "xcore:personalized-offer:2222222222222222",\
+    "etag": "7",\
+    "score": 6.43,\
+    "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",\
+    "data": {\
+        "id": "xcore:personalized-offer:2222222222222222",\
+        "format": "text/plain",\
+        "content": "This is a plain text content!",\
+        "language": [\
+            "en-us"\
+        ],\
+        "characteristics": {\
+            "mobile": "true"\
+        }\
+    }\
+}
+"""
+
 
     private let OFFER_INVALID_NO_CONTENT =
 """
@@ -190,6 +212,20 @@ class OfferTests: XCTestCase {
 }
 """
 
+    private let JSON_OFFER_WITHOUT_KEY =
+"""
+{\
+    "id": "xcore:personalized-offer:1111111111111111",\
+    "etag": "8",\
+    "schema": "https://ns.adobe.com/experience/offer-management/content-component-json",\
+    "data": {\
+        "id": "xcore:personalized-offer:1111111111111111",\
+        "format": "application/json",\
+        "content": ["abc", "def"]\
+    }\
+}
+"""
+
     private let OFFER_INVALID_CONTENT_UNEXPECTED =
 """
 {\
@@ -199,7 +235,7 @@ class OfferTests: XCTestCase {
     "data": {\
         "id": "xcore:personalized-offer:1111111111111111",\
         "format": "application/json",\
-        "content": ["123", "456"]\
+        "content": 123.45\
     }\
 }
 """
@@ -222,6 +258,20 @@ class OfferTests: XCTestCase {
         XCTAssertEqual("en-us", offer.language?[0])
         XCTAssertEqual(1, offer.characteristics?.count)
         XCTAssertEqual("true", offer.characteristics?["mobile"])
+    }
+    
+    func testOffer_jsonOfferWithoutKey() {
+        guard let offerData = JSON_OFFER_WITHOUT_KEY.data(using: .utf8),
+              let offer = try? JSONDecoder().decode(Offer.self, from: offerData) else {
+            XCTFail("Offer json data should be valid.")
+            return
+        }
+        
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
+        XCTAssertEqual("8", offer.etag)
+        XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-json", offer.schema)
+        XCTAssertEqual(OfferType.init(rawValue: 1), offer.type)
+        XCTAssertEqual("[\"abc\",\"def\"]", offer.content)
     }
 
     func testTextOffer() {
@@ -362,6 +412,26 @@ class OfferTests: XCTestCase {
         XCTAssertEqual(1, offer.language?.count)
         XCTAssertEqual("en-us", offer.language?[0])
         XCTAssertEqual(1, offer.characteristics?.count)
+        XCTAssertEqual("true", offer.characteristics?["mobile"])
+    }
+    
+    func testOffer_withScoreAsDouble() {
+        guard let offerData = OFFER_WITH_SCORE_AS_DOUBLE.data(using: .utf8),
+              let offer = try? JSONDecoder().decode(Offer.self, from: offerData)
+        else {
+            XCTFail("Offer should be valid.")
+            return
+        }
+        /// Assert the score is of type Double and has the correct value
+        XCTAssertTrue(type(of: offer.score) == Double.self, "Score should be a Double.")
+        XCTAssertEqual(6.43, offer.score, accuracy: 0.001, "Score value should be 6.43.")
+        
+        /// Other assertions to validate the remaining offer data
+        XCTAssertEqual("7", offer.etag)
+        XCTAssertEqual(OfferType.text, offer.type)
+        XCTAssertEqual("This is a plain text content!", offer.content)
+        XCTAssertEqual(1, offer.language?.count)
+        XCTAssertEqual("en-us", offer.language?[0])
         XCTAssertEqual("true", offer.characteristics?["mobile"])
     }
     

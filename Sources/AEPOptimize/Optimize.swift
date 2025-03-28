@@ -67,6 +67,20 @@ public class Optimize: NSObject, Extension {
         }
     #endif
 
+    /// Dictionary containing  propositions simulated for preview and cached in-memory in the SDK
+    private var _previewCachedPropositions: [DecisionScope: OptimizeProposition] = [:]
+    #if DEBUG
+        var previewCachedPropositions: [DecisionScope: OptimizeProposition] {
+            get { queue.sync { self._previewCachedPropositions } }
+            set { queue.async { self._previewCachedPropositions = newValue } }
+        }
+    #else
+        private(set) var previewCachedPropositions: [DecisionScope: OptimizeProposition] {
+            get { queue.sync { self._previewCachedPropositions } }
+            set { queue.async { self._previewCachedPropositions = newValue } }
+        }
+    #endif
+
     /// Array containing recoverable network error codes being retried by Edge Network Service
     private let recoverableNetworkErrorCodes: [Int] = [OptimizeConstants.HTTPResponseCodes.clientTimeout.rawValue,
                                                        OptimizeConstants.HTTPResponseCodes.tooManyRequests.rawValue,
@@ -119,6 +133,11 @@ public class Optimize: NSObject, Extension {
         registerListener(type: EventType.optimize,
                          source: EventSource.contentComplete,
                          listener: processUpdatePropositionsCompleted(event:))
+
+        // register listener for handling debug events
+        registerListener(type: EventType.system,
+                         source: EventSource.debug,
+                         listener: processDebugEvent)
 
         // Handler function called for each queued event. If the queued event is a get propositions event, process it
         // otherwise if it is an Edge event to update propositions, process it only if it is completed.
@@ -210,6 +229,10 @@ public class Optimize: NSObject, Extension {
             return
         }
 
+        // Timeout value
+        let finalTimeout = calculateTimeout(apiTimeout: event.configTimeout)
+
+        // Construct Edge event data
         var eventData: [String: Any] = [:]
 
         // Add query
@@ -256,12 +279,9 @@ public class Optimize: NSObject, Extension {
         // add the Edge event to update propositions in the events queue.
         eventsQueue.add(edgeEvent)
 
-        // Increase timeout to 10s to ensure edge requests have enough time to complete.
-        MobileCore.dispatch(event: edgeEvent, timeout: 10) { responseEvent in
-            guard
-                let responseEvent = responseEvent,
-                let requestEventId = responseEvent.requestEventId
-            else {
+        // Dispatch Edge event with synchronized timeout
+        MobileCore.dispatch(event: edgeEvent, timeout: finalTimeout) { responseEvent in
+            guard let responseEvent = responseEvent, let requestEventId = responseEvent.requestEventId else {
                 // response event failed or timed out, remove this event's ID from the requested event IDs dictionary, dispatch an error response event and kick-off queue.
                 self.updateRequestEventIdsInProgress.removeValue(forKey: edgeEvent.id.uuidString)
                 self.propositionsInProgress.removeAll()
@@ -452,9 +472,18 @@ public class Optimize: NSObject, Extension {
             return
         }
 
+        // check if the requested scopes are present in preview cache
+        let previewPropositionDict = previewCachedPropositions.filter { decisionScopes.contains($0.key) }
         let propositionsDict = cachedPropositions.filter { decisionScopes.contains($0.key) }
 
-        let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
+        var eventData: [String: Any]?
+        if !previewPropositionDict.isEmpty {
+            Log.debug(label: OptimizeConstants.LOG_TAG, "Preview Mode is enabled")
+            // if preview cache has requested scope, send propositions to be previewed in eventData
+            eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: previewPropositionDict].asDictionary()
+        } else {
+            eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
+        }
 
         let responseEvent = event.createResponseEvent(
             name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
@@ -509,6 +538,54 @@ public class Optimize: NSObject, Extension {
     private func processClearPropositions(event _: Event) {
         // Clear propositions cache
         cachedPropositions.removeAll()
+        previewCachedPropositions.removeAll()
+    }
+
+    /// Processes debug events triggered by the system.
+    ///
+    /// A debug event allows the optimize extension to processes non-production workflows.
+    /// - Parameter event: the debug `Event` to be handled.
+    private func processDebugEvent(event: Event) {
+        guard event.debugEventType == EventType.edge && event.debugEventSource == EventSource.personalizationDecisions
+        else {
+            Log.debug(label: OptimizeConstants.LOG_TAG,
+                      " Ignoring Debug event, either debug type is not com.adobe.eventType.edge or debug source is not personalization:decisions")
+            return
+        }
+
+        guard let propositions: [OptimizeProposition] = event.getTypedData(for: OptimizeConstants.Edge.PAYLOAD),
+              !propositions.isEmpty
+        else {
+            Log.debug(label: OptimizeConstants.LOG_TAG, "Failed to read Debug Event's Edge response, propositions array is invalid or empty.")
+            return
+        }
+
+        let propositionsDict = propositions
+            .filter { !$0.offers.isEmpty }
+            .toDictionary { DecisionScope(name: $0.scope) }
+
+        guard !propositionsDict.isEmpty else {
+            Log.debug(label: OptimizeConstants.LOG_TAG,
+                      """
+                      No propositions with valid offers are present in the Debug Event's Edge response event for the provided scopes(\
+                      \(propositions
+                          .map { $0.scope }
+                          .joined(separator: ","))
+                      ).
+                      """)
+            return
+        }
+
+        // accumulate in preview cache
+        previewCachedPropositions.merge(propositionsDict) { _, new in new }
+
+        let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
+
+        let event = Event(name: OptimizeConstants.EventNames.OPTIMIZE_NOTIFICATION,
+                          type: EventType.optimize,
+                          source: EventSource.notification,
+                          data: eventData)
+        dispatch(event: event)
     }
 
     /// Helper function to check if edge error response received should be suppressed as it is already being retried on Edge
@@ -517,6 +594,28 @@ public class Optimize: NSObject, Extension {
             return true
         }
         return false
+    }
+
+    /// Calculates the final timeout value based on API timeout, shared state, and default timeout.
+    ///
+    /// - Parameter apiTimeout: The timeout value provided in the API request.
+    /// - Returns: The final timeout value to be used.
+    private func calculateTimeout(apiTimeout: TimeInterval?) -> TimeInterval {
+        /// Fetch the timeout value from the shared state.
+        if let apiTimeout, apiTimeout != .infinity {
+            return apiTimeout
+        }
+
+        /// Fetch the timeout value from the shared state only if `apiTimeout` is absent.
+        var configTimeout: TimeInterval?
+        if let sharedState = getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME, event: nil)?.value,
+           let timeoutValue = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int
+        {
+            configTimeout = TimeInterval(timeoutValue)
+        }
+
+        /// Return the shared state timeout if available; otherwise, use the default timeout.
+        return configTimeout ?? OptimizeConstants.DEFAULT_TIMEOUT
     }
 
     #if DEBUG
