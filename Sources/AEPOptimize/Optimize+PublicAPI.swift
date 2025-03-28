@@ -37,7 +37,7 @@ public extension Optimize {
     /// - Parameter completion: Optional completion handler invoked with map of successful decision scopes to propositions and errors, if any
     @objc(updatePropositions:withXdm:andData:completion:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, _ completion: (([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
-        updatePropositions(for: decisionScopes, withXdm: xdm, andData: data, timeout: OptimizeConstants.DEFAULT_TIMEOUT, completion)
+        updatePropositions(for: decisionScopes, withXdm: xdm, andData: data, timeout: Double.infinity, completion)
     }
 
     /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the decisioning Services enabled behind Experience Edge.

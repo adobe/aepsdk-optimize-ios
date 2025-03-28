@@ -79,7 +79,14 @@ class OptimizePublicAPITests: XCTestCase {
         expectation.assertForOverFulfill = true
 
         let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
-        
+
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
+            type: EventType.optimize,
+            source: EventSource.requestContent) { event in
+                let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError()
+                MobileCore.dispatch(event: event.createErrorResponseEvent(timeoutError))
+            }
+
         // test
         Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { propositions, error in
             guard let error = error as? AEPOptimizeError else {
@@ -859,6 +866,23 @@ class OptimizePublicAPITests: XCTestCase {
         
         /// wait
         wait(for: [expectation], timeout: 5)
+    }
+    
+    func testUpdateProposition_fetchConfigTimeout() {
+        let decisionScope = DecisionScope(name: "mbox")
+        let expectation = XCTestExpectation(description: "Config timeout value should be `Double.infinity`")
+        expectation.assertForOverFulfill = true
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
+            type: EventType.optimize,
+            source: EventSource.requestContent) { event in
+                /// Asserting the `configTimeout` value equals `Double.infinity`  when it is not passed from the update proposition API.
+                XCTAssertNotNil(event.configTimeout)
+                XCTAssert(event.configTimeout == Double.infinity)
+                expectation.fulfill()
+            }
+        
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil, andData: nil, nil)
+        wait(for: [expectation], timeout: 5.0)
     }
 
     private func registerMockExtension<T: Extension>(_ type: T.Type) {

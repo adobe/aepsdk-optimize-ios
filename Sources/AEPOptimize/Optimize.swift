@@ -224,6 +224,10 @@ public class Optimize: NSObject, Extension {
                 return
             }
 
+            // Timeout value
+            let finalTimeout = calculateTimeout(apiTimeout: event.configTimeout)
+
+            // Construct Edge event data
             var eventData: [String: Any] = [:]
 
             // Add query
@@ -270,8 +274,8 @@ public class Optimize: NSObject, Extension {
             // add the Edge event to update propositions in the events queue.
             self.eventsQueue.add(edgeEvent)
 
-            let timeout: TimeInterval = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval ?? OptimizeConstants.DEFAULT_TIMEOUT
-            MobileCore.dispatch(event: edgeEvent, timeout: timeout) { responseEvent in
+            // Dispatch Edge event with synchronized timeout
+            MobileCore.dispatch(event: edgeEvent, timeout: finalTimeout) { responseEvent in
                 self.queue.async { [weak self] in
                     guard let self = self else { return }
                     guard
@@ -571,11 +575,11 @@ public class Optimize: NSObject, Extension {
     /// - Parameter event: the debug `Event` to be handled.
     private func processDebugEvent(event: Event) {
         queue.async { [weak self] in
-
-            guard event.type == EventType.system && event.source == OptimizeConstants.EventSource.DEBUG
+            guard let self else { return }
+            guard event.debugEventType == EventType.edge && event.debugEventSource == EventSource.personalizationDecisions
             else {
                 Log.debug(label: OptimizeConstants.LOG_TAG,
-                          " Ignoring Debug event, either handle type is not com.adobe.eventType.system or source is not com.adobe.eventSource.debug")
+                          " Ignoring Debug event, either debug type is not com.adobe.eventType.edge or debug source is not personalization:decisions")
                 return
             }
 
@@ -603,7 +607,7 @@ public class Optimize: NSObject, Extension {
             }
 
             // accumulate in preview cache
-            self?.previewCachedPropositions.merge(propositionsDict) { _, new in new }
+            self.previewCachedPropositions.merge(propositionsDict) { _, new in new }
 
             let eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsDict].asDictionary()
 
@@ -611,7 +615,7 @@ public class Optimize: NSObject, Extension {
                               type: EventType.optimize,
                               source: EventSource.notification,
                               data: eventData)
-            self?.dispatch(event: event)
+            self.dispatch(event: event)
         }
     }
 
@@ -621,6 +625,28 @@ public class Optimize: NSObject, Extension {
             return true
         }
         return false
+    }
+
+    /// Calculates the final timeout value based on API timeout, shared state, and default timeout.
+    ///
+    /// - Parameter apiTimeout: The timeout value provided in the API request.
+    /// - Returns: The final timeout value to be used.
+    private func calculateTimeout(apiTimeout: TimeInterval?) -> TimeInterval {
+        /// Fetch the timeout value from the shared state.
+        if let apiTimeout, apiTimeout != .infinity {
+            return apiTimeout
+        }
+
+        /// Fetch the timeout value from the shared state only if `apiTimeout` is absent.
+        var configTimeout: TimeInterval?
+        if let sharedState = getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME, event: nil)?.value,
+           let timeoutValue = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int
+        {
+            configTimeout = TimeInterval(timeoutValue)
+        }
+
+        /// Return the shared state timeout if available; otherwise, use the default timeout.
+        return configTimeout ?? OptimizeConstants.DEFAULT_TIMEOUT
     }
 
     #if DEBUG

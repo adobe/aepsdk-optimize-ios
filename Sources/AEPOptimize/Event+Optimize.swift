@@ -48,6 +48,11 @@ extension Event {
         data?[OptimizeConstants.EventDataKeys.REQUEST_TYPE] as? String == OptimizeConstants.EventDataValues.REQUEST_TYPE_TRACK
     }
 
+    /// Return the passed timeout value from the event.
+    var configTimeout: TimeInterval? {
+        data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval
+    }
+
     /// Decode an instance of given type from the event data.
     /// - Parameter key: Event data key, default value is nil.
     /// - Returns: Optional type instance
