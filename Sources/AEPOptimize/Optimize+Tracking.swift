@@ -15,12 +15,54 @@ import Foundation
 
 @objc
 public extension Optimize {
-    /// This API dispatches an event for the Edge extension to send an Experience Event to the Edge network with the display interaction data for list of propositions passed.
+    /// This API dispatches an event for the Edge extension to send an Experience Event to the Edge network with the display interaction data for list of offers passed.
     ///
-    /// - Parameter propositions: An array of optimize propositions.
-    static func trackDisplayedPropositions(for propositions: [OptimizeProposition]) {
-        let xdm = generateInteractionXdm(for: propositions, for: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_DISPLAY)
-        trackWithData(xdm)
+    /// - Parameter offers: An array of offer.
+    static func trackDisplayedOffers(for offers: [Offer]) {
+        guard !offers.isEmpty else { return }
+
+        // Get unique propositions from offers
+        let uniquePropositions = Set(offers.compactMap { $0.proposition })
+
+        // For each unique proposition, create a new proposition with only the relevant offers
+        let filteredPropositions = uniquePropositions.compactMap { proposition -> OptimizeProposition? in
+            // Filter offers to only include those from the original input
+            let relevantOffers = proposition.offers.filter { offer in
+                offers.contains { $0.id == offer.id }
+            }
+
+            // Dictionary representation of the proposition with clean offer data
+            let propositionData: [String: Any] = [
+                "id": proposition.id,
+                "scope": proposition.scope,
+                "scopeDetails": proposition.scopeDetails,
+                "items": relevantOffers.map { offer in
+                    [
+                        "id": offer.id,
+                        "schema": offer.schema,
+                        "data": [
+                            "id": offer.id,
+                            "type": offer.type.rawValue,
+                            "content": offer.content,
+                            "language": offer.language,
+                            "characteristics": offer.characteristics
+                        ]
+                    ]
+                }
+            ]
+
+            return OptimizeProposition.initFromData(propositionData)
+        }
+
+        guard !filteredPropositions.isEmpty else { return }
+
+        // Generate XDM data and track
+        if let xdmData = generateInteractionXdm(
+            for: filteredPropositions,
+            for: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_DISPLAY
+        ) {
+            trackWithData(xdmData)
+        }
     }
 
     /// Creates a dictionary containing XDM formatted data for `Experience Event - Proposition Interactions` field group from the given list of propositions and for the provided event type.
@@ -36,11 +78,11 @@ public extension Optimize {
                 OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_ID: proposition.id,
                 OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_SCOPE: proposition.scope,
                 OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_SCOPEDETAILS: proposition.scopeDetails,
-                OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_ITEMS: [
+                OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_ITEMS: proposition.offers.map { offer in
                     [
-                        OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_ITEMS_ID: proposition.offers[0].id
+                        OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_ITEMS_ID: offer.id
                     ]
-                ]
+                }
             ]
             propositionDetailsData.append(propositionMap)
         }

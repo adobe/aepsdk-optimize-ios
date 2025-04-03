@@ -550,126 +550,138 @@ class OptimizePublicAPITests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func testTrackDisplayedPropositions() {
-        let expectation = XCTestExpectation(description: "trackDisplayedPropositions should dispatch an event with expected data.")
+    func testTrackDisplayedOffers() {
+        // setup
+        let expectation = XCTestExpectation(description: "trackDisplayedOffers should dispatch an event with expected data.")
         expectation.assertForOverFulfill = true
         
-        let testScopeDetails: [String: Any] = [
-            "decisionProvider": "TGT",
-            "activity": [
-                "id": "125589"
-            ],
-            "experience": [
-                "id": "0"
-            ],
-            "strategies": [
-                [
-                    "algorithmID": "0",
-                    "trafficType": "0"
-                ]
-            ]
-        ]
-        
-        let testEventData: [String: Any] = [
-            "requesttype": "trackpropositions",
-            "propositioninteractions": [
-                "eventType": "decisioning.propositionDisplay",
-                "decisioning": [
-                    "propositions": [
-                        [
-                            "id": "de03ac85-802a-4331-a905-a57053164d35",
-                            "scope": "eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
-                            "scopeDetails": [:],
-                            "items": [
-                                [
-                                    "id": "xcore:personalized-offer:1111111111111111"
-                                ]
-                            ]
-                        ],
-                        [
-                            "id": "AT:eyJhY3Rpdml0eUlkIjoiMTI1NTg5IiwiZXhwZXJpZW5jZUlkIjoiMCJ9",
-                            "scope": "eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
-                            "scopeDetails": testScopeDetails,
-                            "items": [
-                                [
-                                    "id": "xcore:personalized-offer:1111111111111111"
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-          ]
-        
-         let testEvent = Event(name: "Optimize Track Propositions Request",
-                              type: "com.adobe.eventType.optimize",
-                              source: "com.adobe.eventSource.requestContent",
-                              data: testEventData)
-        
-        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
-                                                                                    source: testEvent.source) { event in
-            XCTAssertEqual(event.name, testEvent.name)
-            XCTAssertNotNil(event.data)
-            XCTAssertEqual("trackpropositions", event.data?["requesttype"] as? String)
-
-            let propositioninteractions = event.data?["propositioninteractions"] as? [String: Any]
-            XCTAssertEqual("decisioning.propositionDisplay", propositioninteractions?["eventType"] as? String)
-
-            let experience = propositioninteractions?["_experience"] as? [String: Any]
-            let decisioning = experience?["decisioning"] as? [String: Any]
-            let propositionEventType = decisioning?["propositionEventType"] as? [String: Any]
-            XCTAssertEqual(1, propositionEventType?["display"] as? Int)
-            let propositionDetailsArray = decisioning?["propositions"] as? [[String: Any]]
-            
-            guard let propositionDetailsData1 = propositionDetailsArray?[0] else {
-                XCTFail("Propositions array should contain proposition details data.")
-                return
+        // Create test offers
+        let offerData1 = """
+        {
+            "id": "xcore:personalized-offer:1111111111111111",
+            "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
+            "data": {
+                "id": "xcore:personalized-offer:1111111111111111",
+                "type": 2,
+                "content": "Test content 1"
             }
-            XCTAssertEqual("de03ac85-802a-4331-a905-a57053164d35", propositionDetailsData1["id"] as? String)
-            XCTAssertEqual("eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", propositionDetailsData1["scope"] as? String)
-
-            // To fix, once https://jira.corp.adobe.com/browse/CSMO-12405 is resolved.
-            let scopeDetails = propositionDetailsData1["scopeDetails"] as? [String: Any] ?? [:]
-            XCTAssertTrue(scopeDetails.isEmpty)
-
-            let items = propositionDetailsData1["items"] as? [[String: Any]]
-            XCTAssertEqual(1, items?.count)
-
-            let item = items?[0]
-            XCTAssertEqual("xcore:personalized-offer:1111111111111111", item?["id"] as? String)
-            
-            guard let propositionDetailsData2 = propositionDetailsArray?[1] else {
-                XCTFail("Propositions array should contain proposition details data.")
-                return
+        }
+        """.data(using: .utf8)!
+        
+        let offerData2 = """
+        {
+            "id": "xcore:personalized-offer:2222222222222222",
+            "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
+            "data": {
+                "id": "xcore:personalized-offer:2222222222222222",
+                "type": 2,
+                "content": "Test content 2"
             }
-            XCTAssertEqual("AT:eyJhY3Rpdml0eUlkIjoiMTI1NTg5IiwiZXhwZXJpZW5jZUlkIjoiMCJ9", propositionDetailsData2["id"] as? String)
-            XCTAssertEqual("myMbox", propositionDetailsData2["scope"] as? String)
-
-            let scopeDetails2 = propositionDetailsData2["scopeDetails"] as? [String: Any] ?? [:]
-            XCTAssertTrue(testScopeDetails == scopeDetails2)
-
-            let items2 = propositionDetailsData2["items"] as? [[String: Any]]
-            XCTAssertEqual(1, items2?.count)
-
-            let item2 = items2?[0]
-            XCTAssertEqual("246315", item2?["id"] as? String)
-            
-            expectation.fulfill()
+        }
+        """.data(using: .utf8)!
+        
+        let offerData3 = """
+        {
+            "id": "xcore:personalized-offer:3333333333333333",
+            "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
+            "data": {
+                "id": "xcore:personalized-offer:3333333333333333",
+                "type": 2,
+                "content": "Test content 3"
+            }
+        }
+        """.data(using: .utf8)!
+        
+        guard let offer1 = try? JSONDecoder().decode(Offer.self, from: offerData1),
+              let offer2 = try? JSONDecoder().decode(Offer.self, from: offerData2),
+              let offer3 = try? JSONDecoder().decode(Offer.self, from: offerData3) else {
+            XCTFail("Offers should be valid.")
+            return
         }
         
-        guard
-            let propositionData1 = Propositions_OptimizeTests.shared.PROPOSITION_VALID.data(using: .utf8),
-            let proposition1 = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData1),
-            let propositionData2 = Propositions_OptimizeTests.shared.PROPOSITION_VALID_TARGET.data(using: .utf8),
-            let proposition2 = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData2)
-        else {
+        // Create propositions
+        let propositionData1 = """
+        {
+            "id": "de03ac85-802a-4331-a905-a57053164d35",
+            "scope": "eyJ4ZG06YWN0aXZpdHlJZCI6ImRwczpvZmZlci1hY3Rpdml0eToxYTc4OWFkYTE0ODQ1YjA2IiwieGRtOnBsYWNlbWVudElkIjoiZHBzOm9mZmVyLXBsYWNlbWVudDoxYTc4Njc0YWI1MDg1MDZjIn0=",
+            "scopeDetails": {},
+            "items": [
+                {
+                    "id": "xcore:personalized-offer:1111111111111111",
+                    "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
+                    "data": {
+                        "id": "xcore:personalized-offer:1111111111111111",
+                        "type": 2,
+                        "content": "Test content 1"
+                    }
+                },
+                {
+                    "id": "xcore:personalized-offer:2222222222222222",
+                    "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
+                    "data": {
+                        "id": "xcore:personalized-offer:2222222222222222",
+                        "type": 2,
+                        "content": "Test content 2"
+                    }
+                }
+            ]
+        }
+        """.data(using: .utf8)!
+        
+        let propositionData2 = """
+        {
+            "id": "AT:eyJhY3Rpdml0eUlkIjoiMTI1NTg5IiwiZXhwZXJpZW5jZUlkIjoiMCJ9",
+            "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
+            "scopeDetails": {
+                "decisionProvider": "TGT",
+                "activity": { "id": "125589" },
+                "experience": { "id": "0" },
+                "strategies": [{"algorithmID": "0", "trafficType": "0"}]
+            },
+            "items": [
+                {
+                    "id": "xcore:personalized-offer:3333333333333333",
+                    "schema": "https://ns.adobe.com/experience/offer-management/content-component-text",
+                    "data": {
+                        "id": "xcore:personalized-offer:3333333333333333",
+                        "type": 2,
+                        "content": "Test content 3"
+                    }
+                }
+            ]
+        }
+        """.data(using: .utf8)!
+        
+        guard let proposition1 = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData1),
+              let proposition2 = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData2) else {
             XCTFail("Propositions should be valid.")
             return
         }
         
-        Optimize.trackDisplayedPropositions(for: [proposition1, proposition2])
-        wait(for: [expectation], timeout: 2)
+        // Manually associate offers with propositions
+        offer1.proposition = proposition1
+        offer2.proposition = proposition1
+        offer3.proposition = proposition2
         
+        
+        let testEvent = Event(name: "Optimize Track Propositions Request",
+                             type: "com.adobe.eventType.optimize",
+                             source: "com.adobe.eventSource.requestContent",
+                              data: nil)
+        
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(type: testEvent.type,
+                                                                                  source: testEvent.source) { event in
+            XCTAssertEqual(event.name, testEvent.name)
+            XCTAssertEqual(event.type, testEvent.type)
+            XCTAssertEqual(event.source, testEvent.source)
+            expectation.fulfill()
+        }
+        
+        // test
+        Optimize.trackDisplayedOffers(for: [offer1, offer2, offer3])
+        
+        // verify
+        wait(for: [expectation], timeout: 2)
     }
     
     func testGenerateInteractionXdm_multiplePropositions() throws {
@@ -858,6 +870,7 @@ class OptimizePublicAPITests: XCTestCase {
             XCTAssertEqual(propositions.count, 1)
             XCTAssertEqual(propositions.first?.id, proposition.id)
             XCTAssertEqual(propositions.first?.scope, proposition.scope)
+
             XCTAssertNotNil(returnedProposition)
             XCTAssertEqual(returnedProposition.id, proposition.id)
             XCTAssertEqual(returnedProposition.scope, proposition.scope)
