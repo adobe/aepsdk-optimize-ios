@@ -25,17 +25,34 @@ struct OffersView: View {
     
     @State private var errorAlert = false
     @State private var errorMessage = ""
+    @State private var useBatchTracking = false
     
     var body: some View {
         VStack {
             HeaderView(text: "Welcome to AEPOptimize Demo")
             List {
+                Section(header: Text("Tracking Methods")) {
+                    Toggle("Use Batch Tracking", isOn: $useBatchTracking)
+                        .padding(.vertical, 5)
+                    
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(useBatchTracking ? "Batch Tracking" : "Individual Tracking")
+                            .font(.headline)
+                        Text(useBatchTracking ? 
+                            "All offers are tracked together using Optimize.trackDisplayedOffers()" :
+                            "Each offer is tracked individually using offer.displayed() when it appears on screen")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                    }
+                    .padding(.vertical, 5)
+                }
+
                 Section(header: Text("Text Offers")) {
                     if let textProposition = propositions.textProposition,
                        !textProposition.offers.isEmpty {
                         ForEach(textProposition.offers, id: \.self) { offer in
                             TextOfferView(text: offer.content,
-                                          displayAction: { offer.displayed() },
+                                          displayAction: useBatchTracking ? nil : { offer.displayed() },
                                           tapAction: { offer.tapped() })
                         }
                     } else {
@@ -48,7 +65,7 @@ struct OffersView: View {
                        !imageProposition.offers.isEmpty {
                         ForEach(imageProposition.offers, id: \.self) { offer in
                             ImageOfferView(url: offer.content,
-                                           displayAction: { offer.displayed() },
+                                           displayAction: useBatchTracking ? nil : { offer.displayed() },
                                            tapAction: { offer.tapped() })
                         }
                     } else {
@@ -61,7 +78,7 @@ struct OffersView: View {
                        !htmlProposition.offers.isEmpty {
                         ForEach(htmlProposition.offers, id: \.self) { offer in
                             HtmlOfferView(htmlString: offer.content,
-                                          displayAction: { offer.displayed() },
+                                          displayAction: useBatchTracking ? nil : { offer.displayed() },
                                           tapAction: { offer.tapped() })
                         }
                     } else {
@@ -77,7 +94,7 @@ struct OffersView: View {
                        !jsonProposition.offers.isEmpty {
                         ForEach(jsonProposition.offers, id: \.self) { offer in
                             TextOfferView(text: offer.content,
-                                          displayAction: { offer.displayed() },
+                                          displayAction: useBatchTracking ? nil : { offer.displayed() },
                                           tapAction: { offer.tapped() })
                         }
                     } else {
@@ -93,11 +110,11 @@ struct OffersView: View {
                         ForEach(targetProposition.offers, id: \.self) { offer in
                             if offer.type == OfferType.html {
                                 HtmlOfferView(htmlString: offer.content,
-                                              displayAction: { offer.displayed() },
+                                              displayAction: useBatchTracking ? nil : { offer.displayed() },
                                               tapAction: { offer.tapped() })
                             } else {
                                 TextOfferView(text: offer.content,
-                                              displayAction: { offer.displayed() },
+                                              displayAction: useBatchTracking ? nil : { offer.displayed() },
                                               tapAction: { offer.tapped() })
                             }
                         }
@@ -109,7 +126,6 @@ struct OffersView: View {
             Divider()
             HStack {
                 CustomButtonView(buttonTitle: "Update Propositions") {
-                    
                     let textDecisionScope = DecisionScope(name: odeSettings.textEncodedDecisionScope)
                     let imageDecisionScope = DecisionScope(name: odeSettings.imageEncodedDecisionScope)
                     let htmlDecisionScope = DecisionScope(name: odeSettings.htmlEncodedDecisionScope)
@@ -154,25 +170,32 @@ struct OffersView: View {
                     }
                     data["dataKey"] = "5678"
 
-                    Optimize.updatePropositions(for: [
-                        textDecisionScope,
-                        imageDecisionScope,
-                        htmlDecisionScope,
-                        jsonDecisionScope,
-                        targetScope
-                    ], withXdm: ["xdmKey": "1234"], andData: data, timeout: 1
+                    // Use all decision scopes but track in batch when enabled
+                    let decisionScopes = [textDecisionScope, imageDecisionScope, htmlDecisionScope, jsonDecisionScope, targetScope]
 
-                    ) { data, error in
-                         if let error = error as? AEPOptimizeError {
+                    Optimize.updatePropositions(for: decisionScopes,
+                                             withXdm: ["xdmKey": "1234"],
+                                             andData: data,
+                                             timeout: 10) { data, error in
+                        if let error = error as? AEPOptimizeError {
                             errorAlert = true
                             if let errorStatus = error.status {
                                 errorMessage = (error.title ?? "Unexpected Error") + " : " + String(errorStatus)
-                            }else{
+                            } else {
                                 errorMessage = error.title ?? "Unexpected Error"
                             }
                         }
-                    }
                         
+                        if useBatchTracking {
+                            var offersArray: [Offer] = []
+                            for data in data ?? [:] {
+                                offersArray.append(contentsOf: data.value.offers)
+                            }
+                            if !offersArray.isEmpty {
+                                Optimize.trackDisplayedOffers(for: offersArray)
+                            }
+                        }
+                    }
                 }
                 .alert(isPresented: $errorAlert) {
                     Alert(title: Text("Error: Update Propositions"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
