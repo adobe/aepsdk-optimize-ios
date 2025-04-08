@@ -1,28 +1,26 @@
-// Delete this line
 /*
-Copyright 2025 Adobe. All rights reserved.
-This file is licensed to you under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License. You may obtain a copy
-of the License at http://www.apache.org/licenses/LICENSE-2.0
+ Copyright 2024 Adobe. All rights reserved.
+ This file is licensed to you under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License. You may obtain a copy
+ of the License at http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software distributed under
-the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
-OF ANY KIND, either express or implied. See the License for the specific language
-governing permissions and limitations under the License.
-*/
-  
-import Foundation
+ Unless required by applicable law or agreed to in writing, software distributed under
+ the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+ OF ANY KIND, either express or implied. See the License for the specific language
+ governing permissions and limitations under the License.
+ */
+
 import AEPCore
 import AEPServices
+import Foundation
 
-
-internal class OptimizeTrackingUtils {
-    
+/// Internal helper enum for tracking functionality
+internal enum OptimizeTrackingUtils {
     /// Creates a dictionary containing XDM formatted data for `Experience Event - Proposition Interactions` field group from the given list of propositions and for the provided event type.
     ///
     /// - Parameter propositions: An array of optimize propositions.
     /// - Parameter eventType: The Experience Event event type for the proposition interaction.
-    /// - Returns A dictionary containing XDM data for the propositon interactions.
+    /// - Returns: A dictionary containing XDM data for the proposition interactions.
     static func generateInteractionXdm(for propositions: [OptimizeProposition], for eventType: String) -> [String: Any]? {
         var propositionDetailsData: [[String: Any]] = []
 
@@ -62,7 +60,7 @@ internal class OptimizeTrackingUtils {
     ///
     /// No event is dispatched if the input xdm data is `nil`.
     ///
-    /// - Parameter xdmData: A dictionary containing XDM data for the propositon interactions.
+    /// - Parameter xdmData: A dictionary containing XDM data for the proposition interactions.
     static func trackWithData(_ xdmData: [String: Any]?) {
         guard let xdmData = xdmData else {
             Log.debug(label: OptimizeConstants.LOG_TAG,

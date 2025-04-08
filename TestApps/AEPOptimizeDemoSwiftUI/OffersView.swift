@@ -192,7 +192,7 @@ struct OffersView: View {
                                 offersArray.append(contentsOf: data.value.offers)
                             }
                             if !offersArray.isEmpty {
-                                Optimize.trackDisplayedOffers(for: offersArray)
+                                Optimize.displayed(for: offersArray)
                             }
                         }
                     }
