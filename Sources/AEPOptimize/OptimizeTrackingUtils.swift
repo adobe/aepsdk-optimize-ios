@@ -15,7 +15,7 @@ import AEPServices
 import Foundation
 
 /// Internal helper enum for tracking functionality
-internal enum OptimizeTrackingUtils {
+enum OptimizeTrackingUtils {
     /// Creates a dictionary containing XDM formatted data for `Experience Event - Proposition Interactions` field group from the given list of propositions and for the provided event type.
     ///
     /// - Parameter propositions: An array of optimize propositions.
