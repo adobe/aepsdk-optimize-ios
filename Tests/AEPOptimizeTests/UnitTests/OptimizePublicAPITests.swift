@@ -678,7 +678,7 @@ class OptimizePublicAPITests: XCTestCase {
         }
         
         // test
-        Optimize.trackDisplayedOffers(for: [offer1, offer2, offer3])
+        Optimize.displayed(for: [offer1, offer2, offer3])
         
         // verify
         wait(for: [expectation], timeout: 2)
@@ -695,7 +695,7 @@ class OptimizePublicAPITests: XCTestCase {
             return
         }
         
-        guard let propositionInteractionXdm = Optimize.generateInteractionXdm(for: [proposition1, proposition2],
+        guard let propositionInteractionXdm = OptimizeTrackingUtils.generateInteractionXdm(for: [proposition1, proposition2],
                                                                               for: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_DISPLAY) else {
             XCTFail("Generated proposition interaction XDM should be valid.")
             return

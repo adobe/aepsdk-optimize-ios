@@ -18,7 +18,7 @@ public extension Optimize {
     /// This API dispatches an event for the Edge extension to send an Experience Event to the Edge network with the display interaction data for list of offers passed.
     ///
     /// - Parameter offers: An array of offer.
-    static func trackDisplayedOffers(for offers: [Offer]) {
+    static func displayed(for offers: [Offer]) {
         guard !offers.isEmpty else { return }
 
         // Get unique propositions from offers
@@ -57,76 +57,11 @@ public extension Optimize {
         guard !filteredPropositions.isEmpty else { return }
 
         // Generate XDM data and track
-        if let xdmData = generateInteractionXdm(
+        if let xdmData = OptimizeTrackingUtils.generateInteractionXdm(
             for: filteredPropositions,
             for: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_DISPLAY
         ) {
-            trackWithData(xdmData)
+            OptimizeTrackingUtils.trackWithData(xdmData)
         }
-    }
-
-    /// Creates a dictionary containing XDM formatted data for `Experience Event - Proposition Interactions` field group from the given list of propositions and for the provided event type.
-    ///
-    /// - Parameter propositions: An array of optimize propositions.
-    /// - Parameter eventType: The Experience Event event type for the proposition interaction.
-    /// - Returns A dictionary containing XDM data for the propositon interactions.
-    static func generateInteractionXdm(for propositions: [OptimizeProposition], for eventType: String) -> [String: Any]? {
-        var propositionDetailsData: [[String: Any]] = []
-
-        for proposition in propositions {
-            let propositionMap: [String: Any] = [
-                OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_ID: proposition.id,
-                OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_SCOPE: proposition.scope,
-                OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_SCOPEDETAILS: proposition.scopeDetails,
-                OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_ITEMS: proposition.offers.map { offer in
-                    [
-                        OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_ITEMS_ID: offer.id
-                    ]
-                }
-            ]
-            propositionDetailsData.append(propositionMap)
-        }
-
-        var propositionEventType: [String: Any] = [:]
-        let propEventType = (eventType == OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_DISPLAY) ?
-            OptimizeConstants.JsonKeys.PROPOSITION_EVENT_TYPE_DISPLAY :
-            OptimizeConstants.JsonKeys.PROPOSITION_EVENT_TYPE_INTERACT
-        propositionEventType[propEventType] = 1
-
-        let xdmData: [String: Any] = [
-            OptimizeConstants.JsonKeys.EXPERIENCE_EVENT_TYPE: eventType,
-            OptimizeConstants.JsonKeys.EXPERIENCE: [
-                OptimizeConstants.JsonKeys.EXPERIENCE_DECISIONING: [
-                    OptimizeConstants.JsonKeys.DECISIONING_PROPOSITION_EVENT_TYPE: propositionEventType,
-                    OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS: propositionDetailsData
-                ]
-            ]
-        ]
-        return xdmData
-    }
-
-    /// Dispatches the track propositions request event with type `EventType.optimize` and source `EventSource.requestContent` and given proposition interactions data.
-    ///
-    /// No event is dispatched if the input xdm data is `nil`.
-    ///
-    /// - Parameter xdmData: A dictionary containing XDM data for the propositon interactions.
-    static func trackWithData(_ xdmData: [String: Any]?) {
-        guard let xdmData = xdmData else {
-            Log.debug(label: OptimizeConstants.LOG_TAG,
-                      "Cannot send track propositions request event, the provided xdmData is nil.")
-            return
-        }
-
-        let eventData: [String: Any] = [
-            OptimizeConstants.EventDataKeys.REQUEST_TYPE: OptimizeConstants.EventDataValues.REQUEST_TYPE_TRACK,
-            OptimizeConstants.EventDataKeys.PROPOSITION_INTERACTIONS: xdmData
-        ]
-
-        let event = Event(name: OptimizeConstants.EventNames.TRACK_PROPOSITIONS_REQUEST,
-                          type: EventType.optimize,
-                          source: EventSource.requestContent,
-                          data: eventData)
-
-        MobileCore.dispatch(event: event)
     }
 }

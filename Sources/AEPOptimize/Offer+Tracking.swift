@@ -32,7 +32,7 @@ public extension Offer {
                       "Cannot send display proposition interaction event for option \(id), proposition reference is not available.")
             return nil
         }
-        return Optimize.generateInteractionXdm(for: [proposition], for: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_DISPLAY)
+        return OptimizeTrackingUtils.generateInteractionXdm(for: [proposition], for: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_DISPLAY)
     }
 
     /// Creates a dictionary containing XDM formatted data for `Experience Event - Proposition Interactions` field group from the given proposition option.
@@ -49,20 +49,20 @@ public extension Offer {
                       "Cannot send tap proposition interaction event for option \(id), proposition reference is not available.")
             return nil
         }
-        return Optimize.generateInteractionXdm(for: [proposition], for: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_INTERACT)
+        return OptimizeTrackingUtils.generateInteractionXdm(for: [proposition], for: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_INTERACT)
     }
 
     /// Dispatches an event for the Edge extension to send an Experience Event to the Edge network with the display interaction data for the given proposition item.
     ///
     /// - SeeAlso: `trackWithData(_:)`
     func displayed() {
-        Optimize.trackWithData(generateDisplayInteractionXdm())
+        OptimizeTrackingUtils.trackWithData(generateDisplayInteractionXdm())
     }
 
     /// Dispatches an event for the Edge extension to send an Experience Event to the Edge network with the tap interaction data for the given proposition item.
     ///
     /// - SeeAlso: `trackWithData(_:)`
     func tapped() {
-        Optimize.trackWithData(generateTapInteractionXdm())
+        OptimizeTrackingUtils.trackWithData(generateTapInteractionXdm())
     }
 }
