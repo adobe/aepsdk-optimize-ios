@@ -19,8 +19,9 @@
 		78AF6DBF284FD9AA0022EB24 /* AEPOptimizeDemoAppExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 78AF6DB5284FD9AA0022EB24 /* AEPOptimizeDemoAppExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		79AF0BBA3B4B3F0D2B46C847 /* Pods_AEPOptimize.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89FA9F1584C29AFB176C28B9 /* Pods_AEPOptimize.framework */; };
 		B65FBE642CA28CD300EC3440 /* Optimize+Tracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65FBE632CA28CD300EC3440 /* Optimize+Tracking.swift */; };
-		B65FBE662CA2E37500EC3440 /* Propositions+OptimizeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65FBE652CA2E37500EC3440 /* Propositions+OptimizeTests.swift */; };
 		B68619422DA5518C00C1A0CF /* OptimizeTrackingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68619412DA5518500C1A0CF /* OptimizeTrackingUtils.swift */; };
+		B68619482DA6B1FB00C1A0CF /* PropositionsTestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68619472DA6B1F200C1A0CF /* PropositionsTestData.swift */; };
+		B686194D2DAB823C00C1A0CF /* OptimizeTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B686194C2DAB822A00C1A0CF /* OptimizeTrackingTests.swift */; };
 		B6B401C52C8052210082B3FE /* OptimizeError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B401C42C8052210082B3FE /* OptimizeError.swift */; };
 		C8076C4D265EE786006BEC5D /* TargetProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8076C3F265EE768006BEC5D /* TargetProduct.swift */; };
 		C8076C52265EE789006BEC5D /* TargetOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8076C46265EE776006BEC5D /* TargetOrder.swift */; };
@@ -192,8 +193,9 @@
 		AB8BAF0E948D2E2747418C4E /* Pods-FunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-FunctionalTests/Pods-FunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B588A06BD3941420A1C1CBC5 /* Pods-AEPOptimizeDemoObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEPOptimizeDemoObjC.debug.xcconfig"; path = "Target Support Files/Pods-AEPOptimizeDemoObjC/Pods-AEPOptimizeDemoObjC.debug.xcconfig"; sourceTree = "<group>"; };
 		B65FBE632CA28CD300EC3440 /* Optimize+Tracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optimize+Tracking.swift"; sourceTree = "<group>"; };
-		B65FBE652CA2E37500EC3440 /* Propositions+OptimizeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Propositions+OptimizeTests.swift"; sourceTree = "<group>"; };
 		B68619412DA5518500C1A0CF /* OptimizeTrackingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptimizeTrackingUtils.swift; sourceTree = "<group>"; };
+		B68619472DA6B1F200C1A0CF /* PropositionsTestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropositionsTestData.swift; sourceTree = "<group>"; };
+		B686194C2DAB822A00C1A0CF /* OptimizeTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptimizeTrackingTests.swift; sourceTree = "<group>"; };
 		B6B401C42C8052210082B3FE /* OptimizeError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptimizeError.swift; sourceTree = "<group>"; };
 		BEA1EA2DAE5E666C7DEEA655 /* Pods-UnitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnitTests.debug.xcconfig"; path = "Target Support Files/Pods-UnitTests/Pods-UnitTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C2AB724370848D9EA2ABD4AA /* Pods-AEPOptimizeDemoAppExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEPOptimizeDemoAppExtension.release.xcconfig"; path = "Target Support Files/Pods-AEPOptimizeDemoAppExtension/Pods-AEPOptimizeDemoAppExtension.release.xcconfig"; sourceTree = "<group>"; };
@@ -509,6 +511,7 @@
 				C8CA16E62624BDC9005B09A0 /* Utils */,
 				C88C5EA02613255F003AE3DE /* Info.plist */,
 				C88C5FBE261D6602003AE3DE /* OptimizePublicAPITests.swift */,
+				B686194C2DAB822A00C1A0CF /* OptimizeTrackingTests.swift */,
 				C88C5F1E2615916D003AE3DE /* DecisionScopeTests.swift */,
 				C88C5F0326152390003AE3DE /* OfferTests.swift */,
 				C8DE6C0E26895A260076623F /* OfferTrackingTests.swift */,
@@ -608,7 +611,6 @@
 				C8CA16DA2624BDA5005B09A0 /* String+OptimizeTests.swift */,
 				C8CA16DB2624BDA5005B09A0 /* StringInterpolation+OptimizeTests.swift */,
 				C8227C7627DAD19C005A7703 /* KeyedDecodingContainer+OptimizeTests.swift */,
-				B65FBE652CA2E37500EC3440 /* Propositions+OptimizeTests.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -638,6 +640,7 @@
 			children = (
 				C8DE6BF8268690540076623F /* Dictionary+OptimizeTests.swift */,
 				C88C5FB9261D65AD003AE3DE /* EventHub+OptimizeTests.swift */,
+				B68619472DA6B1F200C1A0CF /* PropositionsTestData.swift */,
 			);
 			path = TestHelpers;
 			sourceTree = "<group>";
@@ -1253,11 +1256,12 @@
 			files = (
 				C8DE6C77268CD9E50076623F /* Dictionary+OptimizeTests.swift in Sources */,
 				C8CA16DF2624BDA6005B09A0 /* StringInterpolation+OptimizeTests.swift in Sources */,
+				B68619482DA6B1FB00C1A0CF /* PropositionsTestData.swift in Sources */,
 				C8CA16DD2624BDA6005B09A0 /* Event+OptimizeTests.swift in Sources */,
+				B686194D2DAB823C00C1A0CF /* OptimizeTrackingTests.swift in Sources */,
 				C88C5F0A261523A4003AE3DE /* OfferTests.swift in Sources */,
 				C8CA16DE2624BDA6005B09A0 /* String+OptimizeTests.swift in Sources */,
 				C88C5FE3261D8FBF003AE3DE /* MockExtension.swift in Sources */,
-				B65FBE662CA2E37500EC3440 /* Propositions+OptimizeTests.swift in Sources */,
 				C88C5F1F2615916D003AE3DE /* DecisionScopeTests.swift in Sources */,
 				C88C5F56261C3F6A003AE3DE /* OptimizePropositionTests.swift in Sources */,
 				C88C5F272615A057003AE3DE /* OfferTypeTests.swift in Sources */,

@@ -31,7 +31,7 @@ extension OptimizePropositionTests {
     func testGenerateDisplayInteractionXdm_validProposition() throws {
 
         guard
-            let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -80,7 +80,7 @@ extension OptimizePropositionTests {
     func testGenerateDisplayInteractionXdm_validPropositionFromTarget() throws {
 
         guard
-            let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID_TARGET.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID_TARGET.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -136,7 +136,7 @@ extension OptimizePropositionTests {
     func testGenerateDisplayInteractionXdm_nilPropositionReference() throws {
 
         guard
-            let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -161,7 +161,7 @@ extension OptimizePropositionTests {
     func testGenerateTapInteractionXdm_validProposition() throws {
 
         guard
-            let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -208,7 +208,7 @@ extension OptimizePropositionTests {
     func testGenerateTapInteractionXdm_validPropositionFromTarget() throws {
 
         guard
-            let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID_TARGET.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID_TARGET.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -264,7 +264,7 @@ extension OptimizePropositionTests {
     func testGenerateTapInteractionXdm_nilPropositionReference() throws {
 
         guard
-            let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -353,7 +353,7 @@ extension OptimizePropositionTests {
             }
 
         guard
-            let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -452,7 +452,7 @@ extension OptimizePropositionTests {
         }
 
         guard
-            let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID_TARGET.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID_TARGET.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -481,7 +481,7 @@ extension OptimizePropositionTests {
             }
 
         guard
-            let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -566,7 +566,7 @@ extension OptimizePropositionTests {
         }
 
         guard
-            let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -666,7 +666,7 @@ extension OptimizePropositionTests {
         }
 
         guard
-            let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID_TARGET.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID_TARGET.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -695,7 +695,7 @@ extension OptimizePropositionTests {
             }
 
         guard
-            let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")

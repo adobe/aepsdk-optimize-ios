@@ -22,10 +22,9 @@ enum OptimizeTrackingUtils {
     /// - Parameter eventType: The Experience Event event type for the proposition interaction.
     /// - Returns: A dictionary containing XDM data for the proposition interactions.
     static func generateInteractionXdm(for propositions: [OptimizeProposition], for eventType: String) -> [String: Any]? {
-        var propositionDetailsData: [[String: Any]] = []
 
-        for proposition in propositions {
-            let propositionMap: [String: Any] = [
+        let propositionDetailsData: [[String: Any]] = propositions.map { proposition in
+            return [
                 OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_ID: proposition.id,
                 OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_SCOPE: proposition.scope,
                 OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_SCOPEDETAILS: proposition.scopeDetails,
@@ -35,7 +34,6 @@ enum OptimizeTrackingUtils {
                     ]
                 }
             ]
-            propositionDetailsData.append(propositionMap)
         }
 
         var propositionEventType: [String: Any] = [:]

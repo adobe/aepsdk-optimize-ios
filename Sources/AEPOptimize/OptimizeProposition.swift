@@ -60,7 +60,7 @@ public class OptimizeProposition: NSObject, Codable {
         try container.encode(id, forKey: .id)
         try container.encode(scope, forKey: .scope)
         try container.encode(AnyCodable.from(dictionary: scopeDetails), forKey: .scopeDetails)
-        try container.encode(items, forKey: .items)
+        try container.encode(offers, forKey: .items)
     }
 
     /// Creates Object of `Proposition` type from given data dictionary.

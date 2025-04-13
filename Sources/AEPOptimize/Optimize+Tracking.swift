@@ -41,7 +41,11 @@ public extension Optimize {
                         "id": offer.id,
                         "schema": offer.schema,
                         "data": [
-                            "id": offer.id
+                            "id": offer.id,
+                            "type": offer.type.rawValue,
+                            "content": offer.content,
+                            "language": offer.language,
+                            "characteristics": offer.characteristics
                         ]
                     ]
                 }

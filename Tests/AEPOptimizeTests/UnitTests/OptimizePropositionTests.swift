@@ -18,7 +18,7 @@ class OptimizePropositionTests: XCTestCase {
     func testProposition_valid() throws {
         // Decode
         guard
-            let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -50,7 +50,7 @@ class OptimizePropositionTests: XCTestCase {
     func testProposition_validFromTarget() throws {
         // Decode
         guard
-            let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID_TARGET.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID_TARGET.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -92,7 +92,7 @@ class OptimizePropositionTests: XCTestCase {
     }
 
     func testProposition_invalid() throws {
-        guard let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_INVALID.data(using: .utf8) else {
+        guard let propositionData = PropositionsTestData.PROPOSITION_INVALID.data(using: .utf8) else {
             XCTFail("Proposition json data should be valid.")
             return
         }
@@ -101,7 +101,7 @@ class OptimizePropositionTests: XCTestCase {
     }
     
     func testInitFromData() throws {
-        guard let propositionData = Propositions_OptimizeTests.shared.PROPOSITION_VALID_WITH_LANGUAGE_AND_CHARACTERISTICS.data(using: .utf8) else {
+        guard let propositionData = PropositionsTestData.PROPOSITION_VALID_WITH_LANGUAGE_AND_CHARACTERISTICS.data(using: .utf8) else {
             XCTFail("Proposition json data should be valid.")
             return
         }
