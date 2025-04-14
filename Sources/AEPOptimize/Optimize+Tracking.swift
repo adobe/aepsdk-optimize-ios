@@ -18,6 +18,7 @@ public extension Optimize {
     /// This API dispatches an event for the Edge extension to send an Experience Event to the Edge network with the display interaction data for list of offers passed.
     ///
     /// - Parameter offers: An array of offer.
+    @objc(displayed:)
     static func displayed(for offers: [Offer]) {
         guard !offers.isEmpty else { return }
 

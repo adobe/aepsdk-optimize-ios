@@ -39,7 +39,7 @@ struct OffersView: View {
                         Text(useBatchTracking ? "Batch Tracking" : "Individual Tracking")
                             .font(.headline)
                         Text(useBatchTracking ? 
-                            "All offers are tracked together using Optimize.trackDisplayedOffers()" :
+                            "All offers are tracked together using Optimize.displayed()" :
                             "Each offer is tracked individually using offer.displayed() when it appears on screen")
                             .font(.subheadline)
                             .foregroundColor(.gray)
