@@ -23,7 +23,7 @@ enum OptimizeTrackingUtils {
     /// - Returns: A dictionary containing XDM data for the proposition interactions.
     static func generateInteractionXdm(for propositions: [OptimizeProposition], for eventType: String) -> [String: Any]? {
         let propositionDetailsData: [[String: Any]] = propositions.map { proposition in
-             [
+            [
                 OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_ID: proposition.id,
                 OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_SCOPE: proposition.scope,
                 OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_SCOPEDETAILS: proposition.scopeDetails,
