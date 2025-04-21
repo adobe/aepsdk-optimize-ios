@@ -19,5 +19,6 @@ governing permissions and limitations under the License.
 @property (strong, nonatomic) IBOutlet UITextField *htmlEncodedDecisionScope;
 @property (strong, nonatomic) IBOutlet UITextField *jsonEncodedDecisionScope;
 @property (strong, nonatomic) IBOutlet UITextField *targetMbox;
+@property (weak, nonatomic) IBOutlet UIButton *displayMultipleOffersButton;
 @end
 

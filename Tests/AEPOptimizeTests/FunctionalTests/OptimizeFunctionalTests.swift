@@ -1937,6 +1937,107 @@ class OptimizeFunctionalTests: XCTestCase {
         let datasetId = try XCTUnwrap(dispatchedEvent.data?["datasetId"] as? String)
         XCTAssertEqual("111111111111111111111111", datasetId)
     }
+    
+    func testTrackPropositions_validOffersWithMultiplePropositionsInteractionsForDisplay() throws {
+        // setup
+        
+        let testEventData: [String: Any] = [
+            "requesttype": "trackpropositions",
+            "propositioninteractions": [
+                "eventType": "decisioning.propositionInteract",
+                "_experience": [
+                    "decisioning": [
+                        "propositionEventType": [
+                            "display": 1
+                        ],
+                        "propositions": [
+                            [
+                                "id": "AT:eyJhY3Rpdml0eUlkIjoiMTI1NTg5IiwiZXhwZXJpZW5jZUlkIjoiMCJ9",
+                                "scope": "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==",
+                                "scopeDetails": [
+                                    "decisionProvider": "TGT",
+                                    "activity": ["id": "125589"],
+                                    "experience": ["id": "0"],
+                                    "strategies": [["algorithmID": "0", "trafficType": "0"]]
+                                ],
+                                "items": [
+                                    ["id": "xcore:personalized-offer:3333333333333333"]
+                                ]
+                            ],
+                            [
+                                "id": "de03ac85-802a-4331-a905-a57053164d35",
+                                "scope": "eyJ4ZG06YWN0aXZpdHlJZCI6ImRwczpvZmZlci1hY3Rpdml0eToxYTc4OWFkYTE0ODQ1YjA2IiwieGRtOnBsYWNlbWVudElkIjoiZHBzOm9mZmVyLXBsYWNlbWVudDoxYTc4Njc0YWI1MDg1MDZjIn0=",
+                                "scopeDetails": [:],
+                                "items": [
+                                    ["id": "xcore:personalized-offer:1111111111111111"],
+                                    ["id": "xcore:personalized-offer:2222222222222222"]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+        
+        let testEvent = Event(name: "Optimize Track Propositions Request",
+                              type: "com.adobe.eventType.optimize",
+                              source: "com.adobe.eventSource.requestContent",
+                              data: testEventData)
+        
+        mockRuntime.simulateSharedState(for: ("com.adobe.module.configuration", testEvent),
+                                        data: ([
+                                            "edge.configId": "ffffffff-ffff-ffff-ffff-ffffffffffff"] as [String: Any], .set))
+        
+        // test
+        mockRuntime.simulateComingEvents(testEvent)
+        
+        // verify
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+        
+        let dispatchedEvent = try XCTUnwrap(mockRuntime.dispatchedEvents.first)
+        XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent.type)
+        XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent.source)
+
+        let xdm = try XCTUnwrap(dispatchedEvent.data?["xdm"] as? [String: Any])
+        let eventType = try XCTUnwrap(xdm["eventType"] as? String)
+        XCTAssertEqual("decisioning.propositionInteract", eventType)
+
+        let experience = try XCTUnwrap(xdm["_experience"] as? [String: Any])
+        let decisioning = try XCTUnwrap(experience["decisioning"] as? [String: Any])
+        let propositionEventType = try XCTUnwrap(decisioning["propositionEventType"] as? [String: Any])
+        XCTAssertEqual(1, propositionEventType["display"] as? Int)
+        let propositionDetailsArray = try XCTUnwrap(decisioning["propositions"] as? [[String: Any]])
+        XCTAssertEqual(2, propositionDetailsArray.count)
+
+        // Verify first proposition (Target proposition)
+        let propositionDetailsData1 = propositionDetailsArray[0]
+        XCTAssertEqual("AT:eyJhY3Rpdml0eUlkIjoiMTI1NTg5IiwiZXhwZXJpZW5jZUlkIjoiMCJ9", propositionDetailsData1["id"] as? String)
+        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", propositionDetailsData1["scope"] as? String)
+        
+        let scopeDetails1 = propositionDetailsData1["scopeDetails"] as? [String: Any] ?? [:]
+        XCTAssertEqual("TGT", scopeDetails1["decisionProvider"] as? String)
+        XCTAssertEqual(["id": "125589"], scopeDetails1["activity"] as? [String: String])
+        XCTAssertEqual(["id": "0"], scopeDetails1["experience"] as? [String: String])
+        XCTAssertEqual([["algorithmID": "0", "trafficType": "0"]], scopeDetails1["strategies"] as? [[String: String]])
+        
+        let items1 = propositionDetailsData1["items"] as? [[String: Any]]
+        XCTAssertEqual(1, items1?.count)
+        XCTAssertEqual("xcore:personalized-offer:3333333333333333", items1?[0]["id"] as? String)
+        
+        // Verify second proposition (Optimize proposition)
+        let propositionDetailsData2 = propositionDetailsArray[1]
+        XCTAssertEqual("de03ac85-802a-4331-a905-a57053164d35", propositionDetailsData2["id"] as? String)
+        XCTAssertEqual("eyJ4ZG06YWN0aXZpdHlJZCI6ImRwczpvZmZlci1hY3Rpdml0eToxYTc4OWFkYTE0ODQ1YjA2IiwieGRtOnBsYWNlbWVudElkIjoiZHBzOm9mZmVyLXBsYWNlbWVudDoxYTc4Njc0YWI1MDg1MDZjIn0=", propositionDetailsData2["scope"] as? String)
+        
+        let scopeDetails2 = propositionDetailsData2["scopeDetails"] as? [String: Any] ?? [:]
+        XCTAssertTrue(scopeDetails2.isEmpty, "scopeDetails should be empty")
+        
+        let items2 = propositionDetailsData2["items"] as? [[String: Any]]
+        XCTAssertEqual(2, items2?.count)
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", items2?[0]["id"] as? String)
+        XCTAssertEqual("xcore:personalized-offer:2222222222222222", items2?[1]["id"] as? String)
+        
+    }
 
     func testTrackPropositions_missingEventRequestTypeInData() throws {
         // setup
