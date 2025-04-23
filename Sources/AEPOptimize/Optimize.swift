@@ -164,7 +164,7 @@ public class Optimize: NSObject, Extension {
                 guard let eventDecisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
                       !eventDecisionScopes.isEmpty
                 else {
-                    Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Internal | Decision scopes, in event data, is either not present or empty.")
+                    Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Internal | Decision scopes in event data is either not present or empty.")
                     let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
                     self.dispatch(event: event.createErrorResponseEvent(aepOptimizeError))
                     return
@@ -180,7 +180,7 @@ public class Optimize: NSObject, Extension {
                 } else {
                     /// Not all decision scopes are present in the cache or requested scopes are currently in progress, adding it to the event queue
                     self.eventsQueue.add(event)
-                    Log.trace(label: OptimizeConstants.LOG_TAG, "Optimize - Internal | Decision scopes are either not present or currently in progress.")
+                    Log.trace(label: OptimizeConstants.LOG_TAG, "Optimize - Internal | Decision scopes are either not present or in progress.")
                 }
             } else if event.isTrackEvent {
                 self.processTrackPropositions(event: event)
@@ -220,7 +220,7 @@ public class Optimize: NSObject, Extension {
                 .filter { $0.isValid }
 
             guard !validDecisionScopes.isEmpty else {
-                Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Internal | No valid decision scopes found for the Edge personalization request!")
+                Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Internal | No valid decision scopes found!")
                 return
             }
 
@@ -339,8 +339,7 @@ public class Optimize: NSObject, Extension {
                 Log.debug(
                     label: OptimizeConstants.LOG_TAG,
                     """
-                    Optimize - Internal | 
-                    Ignoring Optimize complete event, either event Id for the completed event is not present in event data,
+                    Optimize - Internal | Ignoring Optimize complete event, either event Id for the completed event is not present in event data,
                     or the event Id is not being tracked for completion.
                     """
                 )
@@ -389,7 +388,7 @@ public class Optimize: NSObject, Extension {
                 Log.debug(
                     label: OptimizeConstants.LOG_TAG,
                     """
-                    Optimize - Internal | 
+                    Optimize - Internal |
                     Ignoring Edge event, either handle type is not personalization:decisions, or the response isn't intended for this extension.
                     """
                 )
@@ -399,7 +398,10 @@ public class Optimize: NSObject, Extension {
             guard let propositions: [OptimizeProposition] = event.getTypedData(for: OptimizeConstants.Edge.PAYLOAD),
                   !propositions.isEmpty
             else {
-                Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Internal | Failed to read Edge response, propositions array is invalid or empty.")
+                Log.debug(
+                    label: OptimizeConstants.LOG_TAG,
+                    "Optimize - Internal | Failed to read Edge response, propositions array is invalid or empty."
+                )
                 return
             }
 
@@ -411,7 +413,7 @@ public class Optimize: NSObject, Extension {
                 Log.debug(
                     label: OptimizeConstants.LOG_TAG,
                     """
-                    Optimize - Internal | 
+                    Optimize - Internal |
                     No propositions with valid offers are present in the Edge response event for the provided scopes(\
                     \(propositions
                         .map { $0.scope }
@@ -449,7 +451,7 @@ public class Optimize: NSObject, Extension {
                 Log.debug(
                     label: OptimizeConstants.LOG_TAG,
                     """
-                    Optimize - Internal | 
+                    Optimize - Internal |
                     Ignoring Edge event, either handle type is not errorResponseContent, or the response isn't intended for this extension.
                     """
                 )
@@ -464,7 +466,7 @@ public class Optimize: NSObject, Extension {
 
             let errorString =
                 """
-                Optimize - Internal | 
+                Optimize - Internal |
                 Decisioning Service error, type: \(errorType ?? OptimizeConstants.ERROR_UNKNOWN), \
                 status: \(errorStatus ?? OptimizeConstants.UNKNOWN_STATUS), \
                 title: \(errorTitle ?? OptimizeConstants.ERROR_UNKNOWN), \
@@ -481,7 +483,10 @@ public class Optimize: NSObject, Extension {
                                                         detail: errorDetail,
                                                         report: errorReport)
                 guard let edgeEventRequestId = event.requestEventId else {
-                    Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Internal | No valid edge event request ID found for error response event.")
+                    Log.debug(
+                        label: OptimizeConstants.LOG_TAG,
+                        "Optimize - Internal | No valid edge event request ID found for error response event."
+                    )
                     return
                 }
                 // store the error response as an AEPOptimizeError in error dictionary per edge request
@@ -498,7 +503,10 @@ public class Optimize: NSObject, Extension {
         guard let decisionScopes: [DecisionScope] = event.getTypedData(for: OptimizeConstants.EventDataKeys.DECISION_SCOPES),
               !decisionScopes.isEmpty
         else {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Internal | Decision scopes, in event data, is either not present or empty.")
+            Log.debug(
+                label: OptimizeConstants.LOG_TAG,
+                "Optimize - Internal | Decision scopes, in event data, is either not present or empty."
+            )
             let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
             dispatch(event: event.createErrorResponseEvent(aepOptimizeError))
             return
@@ -510,7 +518,10 @@ public class Optimize: NSObject, Extension {
 
         var eventData: [String: Any]?
         if !previewPropositionDict.isEmpty {
-            Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Internal | Preview Mode is enabled")
+            Log.debug(
+                label: OptimizeConstants.LOG_TAG,
+                "Optimize - Internal | Preview Mode is enabled"
+            )
             // if preview cache has requested scope, send propositions to be previewed in eventData
             eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: previewPropositionDict].asDictionary()
         } else {
@@ -586,14 +597,14 @@ public class Optimize: NSObject, Extension {
             guard event.debugEventType == EventType.edge && event.debugEventSource == EventSource.personalizationDecisions
             else {
                 Log.debug(label: OptimizeConstants.LOG_TAG,
-                          "Optimize - Internal | Ignoring Debug event, either debug type is not com.adobe.eventType.edge or debug source is not personalization:decisions")
+                          "Optimize - Internal | Ignoring Debug event, either debug type or debug source did not match")
                 return
             }
 
             guard let propositions: [OptimizeProposition] = event.getTypedData(for: OptimizeConstants.Edge.PAYLOAD),
                   !propositions.isEmpty
             else {
-                Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Internal | Failed to read Edge response, propositions array is invalid or empty.")
+                Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Internal | Failed to read response, propositions array is invalid or empty.")
                 return
             }
 
@@ -605,7 +616,7 @@ public class Optimize: NSObject, Extension {
                 Log.debug(
                     label: OptimizeConstants.LOG_TAG,
                     """
-                    Optimize - Internal | 
+                    Optimize - Internal |
                     No propositions with valid offers are present in the Edge response event for the provided scopes (
                     \(propositions.map { $0.scope }.joined(separator: ","))
                     ).
@@ -648,8 +659,7 @@ public class Optimize: NSObject, Extension {
         /// Fetch the timeout value from the shared state only if `apiTimeout` is absent.
         var configTimeout: TimeInterval?
         if let sharedState = getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME, event: nil)?.value,
-           let timeoutValue = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int
-        {
+           let timeoutValue = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int {
             configTimeout = TimeInterval(timeoutValue)
         }
 

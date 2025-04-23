@@ -50,7 +50,16 @@ public extension Optimize {
     /// - Parameter completion: Optional completion handler invoked with map of successful decision scopes to propositions and errors, if any
     @objc(updatePropositions:withXdm:timeout:andData:completion:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, timeout: TimeInterval, _ completion: (([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
-        Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Public API | \n decisionScopes: \(decisionScopes) \n xdm: \(String(describing: xdm)) \n data: \(String(describing: data)) \n timeout: \(timeout)")
+        Log.debug(
+            label: OptimizeConstants.LOG_TAG,
+            """
+            Optimize - Public API |
+                  \n decisionScopes: \(decisionScopes)
+                  \n xdm: \(String(describing: xdm))
+                  \n data: \(String(describing: data))
+                  \n timeout: \(timeout)
+            """
+        )
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
