@@ -50,13 +50,14 @@ public extension Optimize {
     /// - Parameter completion: Optional completion handler invoked with map of successful decision scopes to propositions and errors, if any
     @objc(updatePropositions:withXdm:timeout:andData:completion:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, timeout: TimeInterval, _ completion: (([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
+        Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Public API | \n decisionScopes: \(decisionScopes) \n xdm: \(String(describing: xdm)) \n data: \(String(describing: data)) \n timeout: \(timeout)")
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
 
         guard !flattenedDecisionScopes.isEmpty else {
             Log.warning(label: OptimizeConstants.LOG_TAG,
-                        "Cannot update propositions, provided decision scopes array is empty or has invalid items.")
+                        "Optimize - Public API | Cannot update propositions, provided decision scopes array is empty or has invalid items.")
             let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
             completion?(nil, aepOptimizeError)
             return
@@ -84,12 +85,15 @@ public extension Optimize {
         MobileCore.dispatch(event: event, timeout: timeout) { responseEvent in
             guard let responseEvent = responseEvent else {
                 let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError()
+                Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Public API | update propositions request timed out")
                 completion?(nil, timeoutError)
                 return
             }
             let result = responseEvent.data?[OptimizeConstants.EventDataKeys.PROPOSITIONS] as? [DecisionScope: OptimizeProposition]
             let error = responseEvent.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR] as? AEPOptimizeError
             completion?(result, error)
+            Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Public API | update propositions request result: \(String(describing: result))")
+            Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Public API | update propositions request error: \(String(describing: error))")
         }
     }
 
@@ -113,6 +117,7 @@ public extension Optimize {
     ///   - completion: The completion handler to be invoked when the decisions are retrieved from cache.
     @objc(getPropositions:timeout:completion:)
     static func getPropositions(for decisionScopes: [DecisionScope], timeout: TimeInterval, _ completion: @escaping ([DecisionScope: OptimizeProposition]?, Error?) -> Void) {
+        Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Public API | \n decisionScopes: \(decisionScopes) \n timeout: \(timeout)")
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
@@ -120,7 +125,7 @@ public extension Optimize {
         guard !flattenedDecisionScopes.isEmpty else {
             completion(nil, AEPError.invalidRequest)
             Log.warning(label: OptimizeConstants.LOG_TAG,
-                        "Cannot get propositions, provided decision scopes array is empty or has invalid items.")
+                        "Optimize - Public API | Cannot get propositions, provided decision scopes array is empty or has invalid items.")
             return
         }
 
@@ -136,11 +141,13 @@ public extension Optimize {
 
         MobileCore.dispatch(event: event, timeout: timeout) { responseEvent in
             guard let responseEvent = responseEvent else {
+                Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Public API | get propositions request timed out")
                 completion(nil, AEPError.callbackTimeout)
                 return
             }
 
             if let error = responseEvent.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR] as? AEPOptimizeError {
+                Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Public API | get propositions request error: \(error.aepError)")
                 completion(nil, error.aepError)
                 return
             }
@@ -148,9 +155,11 @@ public extension Optimize {
             guard
                 let propositions: [DecisionScope: OptimizeProposition] = responseEvent.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS)
             else {
+                Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Public API | get propositions request error: \(AEPError.unexpected)")
                 completion(nil, AEPError.unexpected)
                 return
             }
+            Log.debug(label: OptimizeConstants.LOG_TAG, "Optimize - Public API | get propositions request result: \(propositions)")
             completion(propositions, .none)
         }
     }
@@ -169,10 +178,9 @@ public extension Optimize {
                 let propositions: [DecisionScope: OptimizeProposition] = event.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS),
                 !propositions.isEmpty
             else {
-                Log.warning(label: OptimizeConstants.LOG_TAG, "No valid propositions found in the notification event.")
+                Log.warning(label: OptimizeConstants.LOG_TAG, "Optimize - Public API | No valid propositions found in the notification event.")
                 return
             }
-
             action(propositions)
         }
     }
