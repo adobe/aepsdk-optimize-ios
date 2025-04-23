@@ -115,7 +115,8 @@ public class Offer: NSObject, Codable {
             }
             if let jsonData = jsonData,
                let encodedData = try? JSONSerialization.data(withJSONObject: jsonData),
-               let offerContent = String(data: encodedData, encoding: .utf8) {
+               let offerContent = String(data: encodedData, encoding: .utf8)
+            {
                 content = offerContent
                 return
             }

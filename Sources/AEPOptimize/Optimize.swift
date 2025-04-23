@@ -659,7 +659,8 @@ public class Optimize: NSObject, Extension {
         /// Fetch the timeout value from the shared state only if `apiTimeout` is absent.
         var configTimeout: TimeInterval?
         if let sharedState = getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME, event: nil)?.value,
-           let timeoutValue = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int {
+           let timeoutValue = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int
+        {
             configTimeout = TimeInterval(timeoutValue)
         }
 
