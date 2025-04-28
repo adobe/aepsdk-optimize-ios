@@ -1896,6 +1896,7 @@ class OptimizeFunctionalTests: XCTestCase {
     
     func testTrackPropositions_validOffersWithMultiplePropositionsInteractionsForDisplay() throws {
         // setup
+        
         let testEventData: [String: Any] = [
             "requesttype": "trackpropositions",
             "propositioninteractions": [
@@ -1947,85 +1948,51 @@ class OptimizeFunctionalTests: XCTestCase {
         mockRuntime.simulateComingEvents(testEvent)
         
         // verify
-        // using DispatchQueue to change the run loop as the events are now being processed inside a serial queue in optimize extension
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
-                return
-            }
-            
-            XCTAssertEqual(1, self.mockRuntime.dispatchedEvents.count)
-            
-            guard let dispatchedEvent = self.mockRuntime.dispatchedEvents.first else {
-                XCTFail("No dispatched events found")
-                return
-            }
-            
-            XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent.type)
-            XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent.source)
-            
-            guard let xdm = dispatchedEvent.data?["xdm"] as? [String: Any] else {
-                XCTFail("Failed to unwrap xdm")
-                return
-            }
-            
-            guard let eventType = xdm["eventType"] as? String else {
-                XCTFail("Failed to unwrap eventType")
-                return
-            }
-            XCTAssertEqual("decisioning.propositionInteract", eventType)
-            
-            guard let experience = xdm["_experience"] as? [String: Any] else {
-                XCTFail("Failed to unwrap experience")
-                return
-            }
-            
-            guard let decisioning = experience["decisioning"] as? [String: Any] else {
-                XCTFail("Failed to unwrap decisioning")
-                return
-            }
-            
-            guard let propositionEventType = decisioning["propositionEventType"] as? [String: Any] else {
-                XCTFail("Failed to unwrap propositionEventType")
-                return
-            }
-            
-            XCTAssertEqual(1, propositionEventType["display"] as? Int)
-            
-            guard let propositionDetailsArray = decisioning["propositions"] as? [[String: Any]] else {
-                XCTFail("Failed to unwrap propositions")
-                return
-            }
-            
-            XCTAssertEqual(2, propositionDetailsArray.count)
-            
-            // Verify first proposition (Target proposition)
-            let propositionDetailsData1 = propositionDetailsArray[0]
-            XCTAssertEqual("AT:eyJhY3Rpdml0eUlkIjoiMTI1NTg5IiwiZXhwZXJpZW5jZUlkIjoiMCJ9", propositionDetailsData1["id"] as? String)
-            XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", propositionDetailsData1["scope"] as? String)
-            
-            let scopeDetails1 = propositionDetailsData1["scopeDetails"] as? [String: Any] ?? [:]
-            XCTAssertEqual("TGT", scopeDetails1["decisionProvider"] as? String)
-            XCTAssertEqual(["id": "125589"], scopeDetails1["activity"] as? [String: String])
-            XCTAssertEqual(["id": "0"], scopeDetails1["experience"] as? [String: String])
-            XCTAssertEqual([["algorithmID": "0", "trafficType": "0"]], scopeDetails1["strategies"] as? [[String: String]])
-            
-            let items1 = propositionDetailsData1["items"] as? [[String: Any]]
-            XCTAssertEqual(1, items1?.count)
-            XCTAssertEqual("xcore:personalized-offer:3333333333333333", items1?[0]["id"] as? String)
-            
-            // Verify second proposition (Optimize proposition)
-            let propositionDetailsData2 = propositionDetailsArray[1]
-            XCTAssertEqual("de03ac85-802a-4331-a905-a57053164d35", propositionDetailsData2["id"] as? String)
-            XCTAssertEqual("eyJ4ZG06YWN0aXZpdHlJZCI6ImRwczpvZmZlci1hY3Rpdml0eToxYTc4OWFkYTE0ODQ1YjA2IiwieGRtOnBsYWNlbWVudElkIjoiZHBzOm9mZmVyLXBsYWNlbWVudDoxYTc4Njc0YWI1MDg1MDZjIn0=", propositionDetailsData2["scope"] as? String)
-            
-            let scopeDetails2 = propositionDetailsData2["scopeDetails"] as? [String: Any] ?? [:]
-            XCTAssertTrue(scopeDetails2.isEmpty, "scopeDetails should be empty")
-            
-            let items2 = propositionDetailsData2["items"] as? [[String: Any]]
-            XCTAssertEqual(2, items2?.count)
-            XCTAssertEqual("xcore:personalized-offer:1111111111111111", items2?[0]["id"] as? String)
-            XCTAssertEqual("xcore:personalized-offer:2222222222222222", items2?[1]["id"] as? String)
-        }
+        XCTAssertEqual(1, mockRuntime.dispatchedEvents.count)
+        
+        let dispatchedEvent = try XCTUnwrap(mockRuntime.dispatchedEvents.first)
+        XCTAssertEqual("com.adobe.eventType.edge", dispatchedEvent.type)
+        XCTAssertEqual("com.adobe.eventSource.requestContent", dispatchedEvent.source)
+
+        let xdm = try XCTUnwrap(dispatchedEvent.data?["xdm"] as? [String: Any])
+        let eventType = try XCTUnwrap(xdm["eventType"] as? String)
+        XCTAssertEqual("decisioning.propositionInteract", eventType)
+
+        let experience = try XCTUnwrap(xdm["_experience"] as? [String: Any])
+        let decisioning = try XCTUnwrap(experience["decisioning"] as? [String: Any])
+        let propositionEventType = try XCTUnwrap(decisioning["propositionEventType"] as? [String: Any])
+        XCTAssertEqual(1, propositionEventType["display"] as? Int)
+        let propositionDetailsArray = try XCTUnwrap(decisioning["propositions"] as? [[String: Any]])
+        XCTAssertEqual(2, propositionDetailsArray.count)
+
+        // Verify first proposition (Target proposition)
+        let propositionDetailsData1 = propositionDetailsArray[0]
+        XCTAssertEqual("AT:eyJhY3Rpdml0eUlkIjoiMTI1NTg5IiwiZXhwZXJpZW5jZUlkIjoiMCJ9", propositionDetailsData1["id"] as? String)
+        XCTAssertEqual("eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==", propositionDetailsData1["scope"] as? String)
+        
+        let scopeDetails1 = propositionDetailsData1["scopeDetails"] as? [String: Any] ?? [:]
+        XCTAssertEqual("TGT", scopeDetails1["decisionProvider"] as? String)
+        XCTAssertEqual(["id": "125589"], scopeDetails1["activity"] as? [String: String])
+        XCTAssertEqual(["id": "0"], scopeDetails1["experience"] as? [String: String])
+        XCTAssertEqual([["algorithmID": "0", "trafficType": "0"]], scopeDetails1["strategies"] as? [[String: String]])
+        
+        let items1 = propositionDetailsData1["items"] as? [[String: Any]]
+        XCTAssertEqual(1, items1?.count)
+        XCTAssertEqual("xcore:personalized-offer:3333333333333333", items1?[0]["id"] as? String)
+        
+        // Verify second proposition (Optimize proposition)
+        let propositionDetailsData2 = propositionDetailsArray[1]
+        XCTAssertEqual("de03ac85-802a-4331-a905-a57053164d35", propositionDetailsData2["id"] as? String)
+        XCTAssertEqual("eyJ4ZG06YWN0aXZpdHlJZCI6ImRwczpvZmZlci1hY3Rpdml0eToxYTc4OWFkYTE0ODQ1YjA2IiwieGRtOnBsYWNlbWVudElkIjoiZHBzOm9mZmVyLXBsYWNlbWVudDoxYTc4Njc0YWI1MDg1MDZjIn0=", propositionDetailsData2["scope"] as? String)
+        
+        let scopeDetails2 = propositionDetailsData2["scopeDetails"] as? [String: Any] ?? [:]
+        XCTAssertTrue(scopeDetails2.isEmpty, "scopeDetails should be empty")
+        
+        let items2 = propositionDetailsData2["items"] as? [[String: Any]]
+        XCTAssertEqual(2, items2?.count)
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", items2?[0]["id"] as? String)
+        XCTAssertEqual("xcore:personalized-offer:2222222222222222", items2?[1]["id"] as? String)
+        
     }
 
     func testTrackPropositions_missingEventRequestTypeInData() throws {
