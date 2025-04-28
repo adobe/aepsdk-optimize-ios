@@ -549,7 +549,7 @@ class OptimizePublicAPITests: XCTestCase {
         // verify
         wait(for: [expectation], timeout: 1)
     }
-
+    
     func testClearCachedPropositions() {
         // setup
         let expectation = XCTestExpectation(description: "clearCachedPropositions should dispatch an event.")
@@ -682,6 +682,7 @@ class OptimizePublicAPITests: XCTestCase {
             XCTAssertEqual(propositions.count, 1)
             XCTAssertEqual(propositions.first?.id, proposition.id)
             XCTAssertEqual(propositions.first?.scope, proposition.scope)
+
             XCTAssertNotNil(returnedProposition)
             XCTAssertEqual(returnedProposition.id, proposition.id)
             XCTAssertEqual(returnedProposition.scope, proposition.scope)

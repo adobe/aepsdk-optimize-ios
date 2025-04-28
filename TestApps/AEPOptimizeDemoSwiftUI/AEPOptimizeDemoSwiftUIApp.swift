@@ -36,25 +36,26 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             
             // Update Configuration with override dataset identifier
             MobileCore.updateConfigurationWith(configDict: ["optimize.datasetId": self.OVERRIDE_DATASET_ID])
+
         }
         return true
     }
-}
 
-@main
-struct AEPOptimizeDemoSwiftUIApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @Environment(\.scenePhase) private var scenePhase
     
-    var body: some Scene {
-        WindowGroup {
-            HomeView()
-                .onOpenURL{ url in
-                    Assurance.startSession(url: url)
-                }
-        }
-        .onChange(of: scenePhase) { phase in
-            switch phase {
+    @main
+    struct AEPOptimizeDemoSwiftUIApp: App {
+        @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+        @Environment(\.scenePhase) private var scenePhase
+        
+        var body: some Scene {
+            WindowGroup {
+                HomeView()
+                    .onOpenURL{ url in
+                        Assurance.startSession(url: url)
+                    }
+            }
+            .onChange(of: scenePhase) { phase in
+                switch phase {
                 case .background:
                     print("Scene phase changed to background.")
                     MobileCore.lifecyclePause()
@@ -65,6 +66,7 @@ struct AEPOptimizeDemoSwiftUIApp: App {
                     print("Scene phase changed to inactive.")
                 @unknown default:
                     print("Unknown scene phase.")
+                }
             }
         }
     }
