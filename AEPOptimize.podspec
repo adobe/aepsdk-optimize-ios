@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "AEPOptimize"
-  s.version          = "5.3.0"
+  s.version          = "5.4.0"
   s.summary          = "Experience Platform Optimize extension for Adobe Experience Platform Mobile SDK. Written and maintained by Adobe."
   s.description      = <<-DESC
                         The Experience Platform Optimize extension provides APIs to enable real-time personalization workflows in the Adobe Experience Platform SDKs using Adobe Target or Adobe Journey Optimizer Offer Decisioning. 
@@ -15,6 +15,6 @@ Pod::Spec.new do |s|
   s.pod_target_xcconfig = { 'BUILD_LIBRARY_FOR_DISTRIBUTION' => 'YES' }
 
   s.source_files          = 'Sources/**/*.swift'
-  s.dependency 'AEPCore', '>= 5.0.0', '< 6.0.0'
+  s.dependency 'AEPCore', '>= 5.4.0', '< 6.0.0'
   s.dependency 'AEPEdge', '>= 5.0.0', '< 6.0.0'
 end

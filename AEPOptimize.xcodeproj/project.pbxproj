@@ -18,6 +18,10 @@
 		78AF6DBB284FD9AA0022EB24 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 78AF6DB9284FD9AA0022EB24 /* MainInterface.storyboard */; };
 		78AF6DBF284FD9AA0022EB24 /* AEPOptimizeDemoAppExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 78AF6DB5284FD9AA0022EB24 /* AEPOptimizeDemoAppExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		79AF0BBA3B4B3F0D2B46C847 /* Pods_AEPOptimize.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89FA9F1584C29AFB176C28B9 /* Pods_AEPOptimize.framework */; };
+		B65FBE642CA28CD300EC3440 /* Optimize+Tracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65FBE632CA28CD300EC3440 /* Optimize+Tracking.swift */; };
+		B68619422DA5518C00C1A0CF /* OptimizeTrackingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68619412DA5518500C1A0CF /* OptimizeTrackingUtils.swift */; };
+		B68619482DA6B1FB00C1A0CF /* PropositionsTestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68619472DA6B1F200C1A0CF /* PropositionsTestData.swift */; };
+		B686194D2DAB823C00C1A0CF /* OptimizeTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B686194C2DAB822A00C1A0CF /* OptimizeTrackingTests.swift */; };
 		B6B401C52C8052210082B3FE /* OptimizeError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B401C42C8052210082B3FE /* OptimizeError.swift */; };
 		C8076C4D265EE786006BEC5D /* TargetProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8076C3F265EE768006BEC5D /* TargetProduct.swift */; };
 		C8076C52265EE789006BEC5D /* TargetOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8076C46265EE776006BEC5D /* TargetOrder.swift */; };
@@ -188,6 +192,10 @@
 		AB699BC71E1531AB6A02B9AD /* Pods-shared-AEPOptimizeDemoAppExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shared-AEPOptimizeDemoAppExtension.debug.xcconfig"; path = "Target Support Files/Pods-shared-AEPOptimizeDemoAppExtension/Pods-shared-AEPOptimizeDemoAppExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		AB8BAF0E948D2E2747418C4E /* Pods-FunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-FunctionalTests/Pods-FunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B588A06BD3941420A1C1CBC5 /* Pods-AEPOptimizeDemoObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEPOptimizeDemoObjC.debug.xcconfig"; path = "Target Support Files/Pods-AEPOptimizeDemoObjC/Pods-AEPOptimizeDemoObjC.debug.xcconfig"; sourceTree = "<group>"; };
+		B65FBE632CA28CD300EC3440 /* Optimize+Tracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optimize+Tracking.swift"; sourceTree = "<group>"; };
+		B68619412DA5518500C1A0CF /* OptimizeTrackingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptimizeTrackingUtils.swift; sourceTree = "<group>"; };
+		B68619472DA6B1F200C1A0CF /* PropositionsTestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropositionsTestData.swift; sourceTree = "<group>"; };
+		B686194C2DAB822A00C1A0CF /* OptimizeTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptimizeTrackingTests.swift; sourceTree = "<group>"; };
 		B6B401C42C8052210082B3FE /* OptimizeError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptimizeError.swift; sourceTree = "<group>"; };
 		BEA1EA2DAE5E666C7DEEA655 /* Pods-UnitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnitTests.debug.xcconfig"; path = "Target Support Files/Pods-UnitTests/Pods-UnitTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C2AB724370848D9EA2ABD4AA /* Pods-AEPOptimizeDemoAppExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEPOptimizeDemoAppExtension.release.xcconfig"; path = "Target Support Files/Pods-AEPOptimizeDemoAppExtension/Pods-AEPOptimizeDemoAppExtension.release.xcconfig"; sourceTree = "<group>"; };
@@ -468,6 +476,7 @@
 			children = (
 				C88C5F1726154621003AE3DE /* Public */,
 				C88C5E8F2613249C003AE3DE /* Optimize.swift */,
+				B68619412DA5518500C1A0CF /* OptimizeTrackingUtils.swift */,
 				C88C5E912613249C003AE3DE /* OptimizeConstants.swift */,
 				C88C5E902613249C003AE3DE /* AEPOptimize.h */,
 				C88C5F3626185F0D003AE3DE /* Utils */,
@@ -502,6 +511,7 @@
 				C8CA16E62624BDC9005B09A0 /* Utils */,
 				C88C5EA02613255F003AE3DE /* Info.plist */,
 				C88C5FBE261D6602003AE3DE /* OptimizePublicAPITests.swift */,
+				B686194C2DAB822A00C1A0CF /* OptimizeTrackingTests.swift */,
 				C88C5F1E2615916D003AE3DE /* DecisionScopeTests.swift */,
 				C88C5F0326152390003AE3DE /* OfferTests.swift */,
 				C8DE6C0E26895A260076623F /* OfferTrackingTests.swift */,
@@ -516,6 +526,7 @@
 			isa = PBXGroup;
 			children = (
 				C88C5F79261D06A5003AE3DE /* Optimize+PublicAPI.swift */,
+				B65FBE632CA28CD300EC3440 /* Optimize+Tracking.swift */,
 				C88C5F1126152DAB003AE3DE /* DecisionScope.swift */,
 				C88C5EDC2614F640003AE3DE /* Offer.swift */,
 				C8DE6B692684181A0076623F /* Offer+Tracking.swift */,
@@ -629,6 +640,7 @@
 			children = (
 				C8DE6BF8268690540076623F /* Dictionary+OptimizeTests.swift */,
 				C88C5FB9261D65AD003AE3DE /* EventHub+OptimizeTests.swift */,
+				B68619472DA6B1F200C1A0CF /* PropositionsTestData.swift */,
 			);
 			path = TestHelpers;
 			sourceTree = "<group>";
@@ -1219,10 +1231,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				C88C5EDD2614F640003AE3DE /* Offer.swift in Sources */,
+				B65FBE642CA28CD300EC3440 /* Optimize+Tracking.swift in Sources */,
 				C8DE6BEF2686848B0076623F /* Proposition+Tracking.swift in Sources */,
 				C8227C7527DA5BD6005A7703 /* KeyedDecodingContainer+Optimize.swift in Sources */,
 				C88C5F3326185EF8003AE3DE /* StringInterpolation+Optimize.swift in Sources */,
 				C8CA1654261EF29E005B09A0 /* Event+Optimize.swift in Sources */,
+				B68619422DA5518C00C1A0CF /* OptimizeTrackingUtils.swift in Sources */,
 				C88C5F7A261D06A6003AE3DE /* Optimize+PublicAPI.swift in Sources */,
 				C88C5F0E26152CFF003AE3DE /* OptimizeProposition.swift in Sources */,
 				C88C5F1226152DAB003AE3DE /* DecisionScope.swift in Sources */,
@@ -1242,7 +1256,9 @@
 			files = (
 				C8DE6C77268CD9E50076623F /* Dictionary+OptimizeTests.swift in Sources */,
 				C8CA16DF2624BDA6005B09A0 /* StringInterpolation+OptimizeTests.swift in Sources */,
+				B68619482DA6B1FB00C1A0CF /* PropositionsTestData.swift in Sources */,
 				C8CA16DD2624BDA6005B09A0 /* Event+OptimizeTests.swift in Sources */,
+				B686194D2DAB823C00C1A0CF /* OptimizeTrackingTests.swift in Sources */,
 				C88C5F0A261523A4003AE3DE /* OfferTests.swift in Sources */,
 				C8CA16DE2624BDA6005B09A0 /* String+OptimizeTests.swift in Sources */,
 				C88C5FE3261D8FBF003AE3DE /* MockExtension.swift in Sources */,
@@ -1656,7 +1672,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.3.0;
+				MARKETING_VERSION = 5.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.adobe.aep.AEPOptimize;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1685,7 +1701,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.3.0;
+				MARKETING_VERSION = 5.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.adobe.aep.AEPOptimize;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
