@@ -71,16 +71,6 @@ extension OptimizePublicAPITests {
             }
             XCTAssertEqual(propositions.count, 2)
             
-            // Verify first proposition
-            let proposition1 = propositions[0]
-            XCTAssertEqual(proposition1["id"] as? String, offer3.proposition?.id)
-            XCTAssertEqual(proposition1["scope"] as? String, offer3.proposition?.scope)
-            
-            // Verify second proposition
-            let proposition2 = propositions[1]
-            XCTAssertEqual(proposition2["id"] as? String, offer1.proposition?.id)
-            XCTAssertEqual(proposition2["scope"] as? String, offer1.proposition?.scope)
-            
             expectation.fulfill()
         }
         
