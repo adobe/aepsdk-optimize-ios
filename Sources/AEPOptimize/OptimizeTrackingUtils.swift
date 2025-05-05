@@ -87,7 +87,7 @@ enum OptimizeTrackingUtils {
     /// - Parameter offers: An array of offers to extract propositions from.
     /// - Returns: An array of unique OptimizeProposition objects containing only the relevant offers.
     /// If no matching propositions are found, returns an empty array.
-    
+
     static func mapToUniquePropositions(_ offers: [Offer]) -> [OptimizeProposition] {
         // Get unique propositions from offers
         let uniquePropositions = Set(offers.compactMap { $0.proposition })

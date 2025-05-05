@@ -169,6 +169,10 @@ AEPDecisionScope* targetDecisionScope;
             // Display all offers at once
             [AEPMobileOptimize displayed:allOffers];
             NSLog(@"Displayed %ld offers", (long)allOffers.count);
+            
+            NSDictionary *xdmData = [AEPMobileOptimize generateDisplayInteractionXdm:allOffers];
+            NSLog(@"XDM Data: %@", xdmData);
+            
         } else {
             NSLog(@"No offers available to display");
         }
