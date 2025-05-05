@@ -77,4 +77,55 @@ enum OptimizeTrackingUtils {
 
         MobileCore.dispatch(event: event)
     }
+
+    /// Creates an array of unique propositions containing only offers that match those in the input array.
+    ///
+    /// This function extracts unique propositions from the provided offers and creates new proposition
+    /// objects containing only the relevant offers. This helps ensure tracking only includes data for
+    /// the specific offers that were displayed or interacted with.
+    ///
+    /// - Parameter offers: An array of offers to extract propositions from.
+    /// - Returns: An array of unique OptimizeProposition objects containing only the relevant offers.
+    /// If no matching propositions are found, returns an empty array.
+    
+    static func mapToUniquePropositions(_ offers: [Offer]) -> [OptimizeProposition] {
+        // Get unique propositions from offers
+        let uniquePropositions = Set(offers.compactMap { $0.proposition })
+
+        // For each unique proposition, create a new proposition with only the relevant offers
+        let filteredPropositions = uniquePropositions.compactMap { proposition -> OptimizeProposition? in
+            // Filter offers to only include those from the original input
+            let relevantOffers = proposition.offers.filter { offer in
+                offers.contains { $0.id == offer.id }
+            }
+
+            // Dictionary representation of the proposition with clean offer data
+            let propositionData: [String: Any] = [
+                "id": proposition.id,
+                "scope": proposition.scope,
+                "scopeDetails": proposition.scopeDetails,
+                "items": relevantOffers.map { offer in
+                    [
+                        "id": offer.id,
+                        "schema": offer.schema,
+                        "data": [
+                            "id": offer.id,
+                            "type": offer.type.rawValue,
+                            "content": offer.content,
+                            "language": offer.language,
+                            "characteristics": offer.characteristics
+                        ]
+                    ]
+                }
+            ]
+
+            return OptimizeProposition.initFromData(propositionData)
+        }
+
+        guard !filteredPropositions.isEmpty else {
+            Log.debug(label: OptimizeConstants.LOG_TAG, "No unique propositions found for provided offers")
+            return []
+        }
+        return filteredPropositions
+    }
 }

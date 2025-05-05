@@ -94,7 +94,7 @@ extension OptimizePublicAPITests {
         wait(for: [expectation], timeout: 2)
     }
     
-    func testTrackPropositions_validPropositionInteractionsForDisplay_MultiplePropositions() throws {
+    func testDisplayedOffers_validPropositionInteractionsForDisplay_MultiplePropositions() throws {
         // setup
         let expectation = XCTestExpectation(description: "Track propositions request should dispatch event with expected data.")
         expectation.assertForOverFulfill = true
@@ -171,7 +171,7 @@ extension OptimizePublicAPITests {
         wait(for: [expectation], timeout: 2)
     }
     
-    func testTrackPropositions_validPropositionInteractionsForDisplay_SameProposition() throws {
+    func testDisplayedOffers_validPropositionInteractionsForDisplay_SameProposition() throws {
         // setup
         let expectation = XCTestExpectation(description: "Track propositions request should dispatch event with expected data.")
         expectation.assertForOverFulfill = true
@@ -237,7 +237,7 @@ extension OptimizePublicAPITests {
         wait(for: [expectation], timeout: 2)
     }
     
-    func testTrackPropositions_validPropositionInteractionsForDisplay_EmptyOffers() {
+    func testDisplayedOffers_validPropositionInteractionsForDisplay_EmptyOffers() {
         // setup
         let expectation = XCTestExpectation(description: "Track propositions request should not dispatch event for empty offers.")
         expectation.isInverted = true
@@ -260,4 +260,113 @@ extension OptimizePublicAPITests {
         wait(for: [expectation], timeout: 1)
     }
     
+    func testGenerateDisplayInteractionXdm_MultiplePropositions() throws {
+        // setup
+        // Create multiple offers from different propositions
+        guard
+            let propositionData1 = PropositionsTestData.PROPOSITION_VALID.data(using: .utf8),
+            let proposition1 = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData1),
+            let propositionData2 = PropositionsTestData.PROPOSITION_VALID_TARGET.data(using: .utf8),
+            let proposition2 = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData2)
+        else {
+            XCTFail("Propositions should be valid.")
+            return
+        }
+        
+        // Create offers from propositions
+        let offer1 = proposition1.offers[0]
+        let offer2 = proposition2.offers[0]
+        
+        // Manually associate offers with propositions
+        offer1.proposition = proposition1
+        offer2.proposition = proposition2
+        
+        
+        // test
+        guard let propositionInteractionXdm = Optimize.generateDisplayInteractionXdm(for: [offer1, offer2]) else {
+            XCTFail("XDM data should be generated")
+            return
+        }
+        
+        //verify
+        let eventType = try XCTUnwrap(propositionInteractionXdm["eventType"] as? String)
+        XCTAssertEqual("decisioning.propositionDisplay", eventType)
+
+        let experience = try XCTUnwrap(propositionInteractionXdm["_experience"] as? [String: Any])
+        let decisioning = try XCTUnwrap(experience["decisioning"] as? [String: Any])
+        let propositionEventType = try XCTUnwrap(decisioning["propositionEventType"] as? [String: Any])
+        XCTAssertEqual(1, propositionEventType["display"] as? Int)
+        let propositions = try XCTUnwrap(decisioning["propositions"] as? [[String: Any]])
+        XCTAssertEqual(2, propositions.count)
+        
+        //  Verify propositions
+        for proposition in propositions {
+            if proposition["id"] as? String == offer1.proposition?.id {
+                XCTAssertEqual(proposition["scope"] as? String, offer1.proposition?.scope)
+            }
+            else if proposition["id"] as? String == offer2.proposition?.id {
+                XCTAssertEqual(proposition["scope"] as? String, offer2.proposition?.scope)
+            }
+            else {
+                XCTFail("Invalid proposition")
+            }
+        }
+    }
+    
+    func testGenerateDisplayInteractionXdm_SameProposition() throws {
+        // setup
+        // Create multiple offers from same proposition
+        guard let propositionData = PropositionsTestData.PROPOSITION_VALID.data(using: .utf8),
+              let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
+        else {
+            XCTFail("Proposition should be valid.")
+            return
+        }
+        
+        // Create two offers from same proposition
+        let offer1 = proposition.offers[0]
+        let offer2 = proposition.offers[0]
+        
+        // Manually associate offers with proposition
+        offer1.proposition = proposition
+        offer2.proposition = proposition
+        
+        // test
+        guard let propositionInteractionXdm = Optimize.generateDisplayInteractionXdm(for: [offer1, offer2]) else {
+            XCTFail("XDM data should be generated")
+            return
+        }
+        
+        //verify
+        let eventType = try XCTUnwrap(propositionInteractionXdm["eventType"] as? String)
+        XCTAssertEqual("decisioning.propositionDisplay", eventType)
+
+        let experience = try XCTUnwrap(propositionInteractionXdm["_experience"] as? [String: Any])
+        let decisioning = try XCTUnwrap(experience["decisioning"] as? [String: Any])
+        let propositionEventType = try XCTUnwrap(decisioning["propositionEventType"] as? [String: Any])
+        XCTAssertEqual(1, propositionEventType["display"] as? Int)
+        let propositionInteractionDetailsArray = try XCTUnwrap(decisioning["propositions"] as? [[String: Any]])
+        XCTAssertEqual(1, propositionInteractionDetailsArray.count)
+
+        let propositionInteractionDetails = try XCTUnwrap(propositionInteractionDetailsArray[0])
+        XCTAssertEqual(proposition.id, propositionInteractionDetails["id"] as? String)
+        XCTAssertEqual(proposition.scope, propositionInteractionDetails["scope"] as? String)
+
+        let scopeDetails = propositionInteractionDetails["scopeDetails"] as? [String: Any] ?? [:]
+        XCTAssertTrue(proposition.scopeDetails == scopeDetails)
+
+        let items = try XCTUnwrap(propositionInteractionDetails["items"] as? [[String: Any]])
+        XCTAssertEqual(1, items.count)
+
+        let item = items[0]
+        XCTAssertEqual("xcore:personalized-offer:1111111111111111", item["id"] as? String)
+    }
+    
+    func testGenerateDisplayInteractionXdm_EmptyOffers() {
+        // test
+        let xdmData = Optimize.generateDisplayInteractionXdm(for: [])
+        
+        // verify
+        XCTAssertNil(xdmData)
+    }
 }
