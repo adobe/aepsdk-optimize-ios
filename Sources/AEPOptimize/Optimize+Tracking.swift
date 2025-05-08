@@ -22,47 +22,30 @@ public extension Optimize {
     static func displayed(for offers: [Offer]) {
         guard !offers.isEmpty else { return }
 
-        // Get unique propositions from offers
-        let uniquePropositions = Set(offers.compactMap { $0.proposition })
-
-        // For each unique proposition, create a new proposition with only the relevant offers
-        let filteredPropositions = uniquePropositions.compactMap { proposition -> OptimizeProposition? in
-            // Filter offers to only include those from the original input
-            let relevantOffers = proposition.offers.filter { offer in
-                offers.contains { $0.id == offer.id }
-            }
-
-            // Dictionary representation of the proposition with clean offer data
-            let propositionData: [String: Any] = [
-                "id": proposition.id,
-                "scope": proposition.scope,
-                "scopeDetails": proposition.scopeDetails,
-                "items": relevantOffers.map { offer in
-                    [
-                        "id": offer.id,
-                        "schema": offer.schema,
-                        "data": [
-                            "id": offer.id,
-                            "type": offer.type.rawValue,
-                            "content": offer.content,
-                            "language": offer.language,
-                            "characteristics": offer.characteristics
-                        ]
-                    ]
-                }
-            ]
-
-            return OptimizeProposition.initFromData(propositionData)
-        }
-
-        guard !filteredPropositions.isEmpty else { return }
-
         // Generate XDM data and track
         if let xdmData = OptimizeTrackingUtils.generateInteractionXdm(
-            for: filteredPropositions,
+            for: OptimizeTrackingUtils.mapToUniquePropositions(offers),
             for: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_DISPLAY
         ) {
             OptimizeTrackingUtils.trackWithData(xdmData)
         }
+    }
+
+    /// This API returns a dictionary containing XDM formatted data for `Experience Event - Proposition Interactions` field group for the list of offers
+    ///
+    /// The Edge `sendEvent(experienceEvent:_:)` API can be used to dispatch this data in an Experience Event along with any additional XDM, free-form data, or override dataset identifier.
+    ///
+    /// - Parameter offers: An array of offer.
+    /// - Note: The returned XDM data also contains the `eventType` for the Experience Event with value `decisioning.propositionInteract`.
+    /// - Returns A dictionary containing XDM data for the propositon interactions.
+    /// - SeeAlso: `interactionXdm(for:)`
+    @objc(generateDisplayInteractionXdm:)
+    static func generateDisplayInteractionXdm(for offers: [Offer]) -> [String: Any]? {
+        guard !offers.isEmpty else { return nil }
+
+        return OptimizeTrackingUtils.generateInteractionXdm(
+            for: OptimizeTrackingUtils.mapToUniquePropositions(offers),
+            for: OptimizeConstants.JsonValues.EE_EVENT_TYPE_PROPOSITION_DISPLAY
+        )
     }
 }
