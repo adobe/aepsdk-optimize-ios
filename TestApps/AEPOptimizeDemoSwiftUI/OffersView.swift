@@ -193,6 +193,8 @@ struct OffersView: View {
                             }
                             if !offersArray.isEmpty {
                                 Optimize.displayed(for: offersArray)
+                                let xdmData = Optimize.generateDisplayInteractionXdm(for: offersArray)
+                                print( xdmData ?? "No XDM data found for list of Offers")
                             }
                         }
                     }

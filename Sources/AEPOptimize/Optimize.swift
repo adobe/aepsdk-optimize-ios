@@ -127,7 +127,10 @@ public class Optimize: NSObject, Extension {
 
         // Handler function called for each queued event. If the queued event is a get propositions event, process it
         // otherwise if it is an Edge event to update propositions, process it only if it is completed.
-        eventsQueue.setHandler { event -> Bool in
+        eventsQueue.setHandler { [weak self] event -> Bool in
+            guard let self else {
+                return false
+            }
             if event.isGetEvent {
                 self.queue.async {
                     self.processGetPropositions(event: event)
