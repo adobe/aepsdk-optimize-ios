@@ -30,6 +30,8 @@ class OptimizePropositionTests: XCTestCase {
         XCTAssertEqual(1, proposition.offers.count)
         let offer = proposition.offers[0]
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
+        XCTAssertEqual("xcore:offer-activity:1111111111111111", proposition.activity["id"] as? String)
+        XCTAssertEqual("8", proposition.activity["etag"] as? String)
         XCTAssertEqual("10", offer.etag)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 3), offer.type)
@@ -118,6 +120,7 @@ class OptimizePropositionTests: XCTestCase {
         XCTAssertEqual(1, proposition?.offers.count)
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
         XCTAssertTrue(proposition?.scopeDetails.isEmpty ?? false)
+        XCTAssertTrue(proposition?.activity.isEmpty ?? false)
         XCTAssertEqual("10", proposition?.offers[0].etag)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", proposition?.offers[0].schema)
         XCTAssertEqual(OfferType.html, proposition?.offers[0].type)

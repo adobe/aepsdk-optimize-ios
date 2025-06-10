@@ -106,6 +106,8 @@ enum OptimizeConstants {
         static let DECISIONING_PROPOSITIONS_ID = "id"
         static let DECISIONING_PROPOSITIONS_SCOPE = "scope"
         static let DECISIONING_PROPOSITIONS_SCOPEDETAILS = "scopeDetails"
+        static let DECISIONING_PROPOSITIONS_ACTIVITY = "activity"
+        static let DECISIONING_PROPOSITIONS_PLACEMENT = "placement"
         static let DECISIONING_PROPOSITIONS_ITEMS = "items"
         static let DECISIONING_PROPOSITIONS_ITEMS_ID = "id"
         static let REQUEST = "request"
