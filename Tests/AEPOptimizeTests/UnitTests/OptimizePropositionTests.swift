@@ -121,6 +121,7 @@ class OptimizePropositionTests: XCTestCase {
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
         XCTAssertTrue(proposition?.scopeDetails.isEmpty ?? false)
         XCTAssertEqual(proposition?.activity.count, 2)
+        XCTAssertEqual(proposition?.placement.count, 2)
         XCTAssertEqual("10", proposition?.offers[0].etag)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", proposition?.offers[0].schema)
         XCTAssertEqual(OfferType.html, proposition?.offers[0].type)
