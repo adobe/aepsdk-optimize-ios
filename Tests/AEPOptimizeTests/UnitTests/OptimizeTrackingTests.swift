@@ -355,6 +355,12 @@ extension OptimizePublicAPITests {
         let scopeDetails = propositionInteractionDetails["scopeDetails"] as? [String: Any] ?? [:]
         XCTAssertTrue(proposition.scopeDetails == scopeDetails)
 
+        let activity = propositionInteractionDetails["activity"] as? [String: Any] ?? [:]
+        XCTAssertTrue(proposition.activity == activity)
+
+        let placement = propositionInteractionDetails["placement"] as? [String: Any] ?? [:]
+        XCTAssertTrue(proposition.placement == placement)
+
         let items = try XCTUnwrap(propositionInteractionDetails["items"] as? [[String: Any]])
         XCTAssertEqual(1, items.count)
 
