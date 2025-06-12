@@ -27,6 +27,8 @@ enum OptimizeTrackingUtils {
                 OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_ID: proposition.id,
                 OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_SCOPE: proposition.scope,
                 OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_SCOPEDETAILS: proposition.scopeDetails,
+                OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_ACTIVITY: proposition.activity,
+                OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_PLACEMENT: proposition.placement,
                 OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_ITEMS: proposition.offers.map { offer in
                     [
                         OptimizeConstants.JsonKeys.DECISIONING_PROPOSITIONS_ITEMS_ID: offer.id
@@ -104,6 +106,8 @@ enum OptimizeTrackingUtils {
                 "id": proposition.id,
                 "scope": proposition.scope,
                 "scopeDetails": proposition.scopeDetails,
+                "activity": proposition.activity,
+                "placement": proposition.placement,
                 "items": relevantOffers.map { offer in
                     [
                         "id": offer.id,
