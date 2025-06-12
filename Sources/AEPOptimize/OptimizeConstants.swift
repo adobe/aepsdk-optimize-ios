@@ -15,7 +15,7 @@ import Foundation
 enum OptimizeConstants {
     static let EXTENSION_NAME = "com.adobe.optimize"
     static let FRIENDLY_NAME = "Optimize"
-    static let EXTENSION_VERSION = "5.5.0"
+    static let EXTENSION_VERSION = "5.6.0"
     static let LOG_TAG = FRIENDLY_NAME
 
     static let DECISION_SCOPE_NAME = "name"
