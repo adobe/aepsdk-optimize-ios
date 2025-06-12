@@ -121,7 +121,7 @@ class Event_OptimizeTests: XCTestCase {
 
         let errorResponseEvent = testEvent.createErrorResponseEvent(aepOptimizeError)
 
-        let errorData = errorResponseEvent.data?["responseerror"] as? AEPOptimizeError
+        let errorData: AEPOptimizeError? = errorResponseEvent.getTypedData(for: OptimizeConstants.EventDataKeys.RESPONSE_ERROR)
         XCTAssertEqual("Optimize Response", errorResponseEvent.name)
         XCTAssertEqual("com.adobe.eventType.optimize", errorResponseEvent.type)
         XCTAssertEqual("com.adobe.eventSource.responseContent", errorResponseEvent.source)

@@ -87,8 +87,8 @@ public extension Optimize {
                 completion?(nil, timeoutError)
                 return
             }
-            let result = responseEvent.data?[OptimizeConstants.EventDataKeys.PROPOSITIONS] as? [DecisionScope: OptimizeProposition]
-            let error = responseEvent.data?[OptimizeConstants.EventDataKeys.RESPONSE_ERROR] as? AEPOptimizeError
+            let result: [DecisionScope: OptimizeProposition]? = responseEvent.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS)
+            let error: AEPOptimizeError? = responseEvent.getTypedData(for: OptimizeConstants.EventDataKeys.RESPONSE_ERROR)
             completion?(result, error)
         }
     }

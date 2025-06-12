@@ -296,17 +296,23 @@ public class Optimize: NSObject, Extension {
                     // Error response received for Edge request event UUID (if any)
                     let edgeError = self.updateRequestEventIdsErrors[requestEventId]
 
-                    // response event to provide success callback to updateProposition public api
+                    let propositionsEventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionsInProgress.shallowCopy].asDictionary()
+
+                    var responseData: [String: Any] = propositionsEventData ?? [:]
+
+                    // Add error if it exists
+                    if let edgeError = edgeError {
+                        responseData[OptimizeConstants.EventDataKeys.RESPONSE_ERROR] = edgeError.asDictionary()
+                    }
+
+                    // response event to provide callback to updateProposition public api
                     let responseEventToSend = event.createResponseEvent(
                         name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
                         type: EventType.optimize,
                         source: EventSource.responseContent,
-                        data: [
-                            OptimizeConstants.EventDataKeys.PROPOSITIONS: self.propositionsInProgress.shallowCopy,
-                            OptimizeConstants.EventDataKeys.RESPONSE_ERROR: edgeError as Any
-                        ]
+                        data: responseData
                     )
-                    self.dispatch(event: responseEventToSend)
+                    dispatch(event: responseEventToSend)
 
                     let updateCompleteEvent = responseEvent.createChainedEvent(name: OptimizeConstants.EventNames.OPTIMIZE_UPDATE_COMPLETE,
                                                                                type: EventType.optimize,
