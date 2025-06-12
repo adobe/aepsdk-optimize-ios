@@ -98,27 +98,27 @@ public class AEPOptimizeError: NSObject, Error, Codable {
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        self.type = try container.decodeIfPresent(String.self, forKey: .type)
-        self.status = try container.decodeIfPresent(Int.self, forKey: .status)
-        self.title = try container.decodeIfPresent(String.self, forKey: .title)
-        self.detail = try container.decodeIfPresent(String.self, forKey: .detail)
+        type = try container.decodeIfPresent(String.self, forKey: .type)
+        status = try container.decodeIfPresent(Int.self, forKey: .status)
+        title = try container.decodeIfPresent(String.self, forKey: .title)
+        detail = try container.decodeIfPresent(String.self, forKey: .detail)
 
         // Handle [String: Any] using AnyCodable
         let anyCodableReport = try container.decodeIfPresent([String: AnyCodable].self, forKey: .report)
-        self.report = AnyCodable.toAnyDictionary(dictionary: anyCodableReport)
+        report = AnyCodable.toAnyDictionary(dictionary: anyCodableReport)
 
         super.init()
 
         // Map error response to AEPError
-        if let status = self.status {
+        if let status = status {
             if status == HTTPResponseCodes.clientTimeout.rawValue {
-                self.aepError = .callbackTimeout
+                aepError = .callbackTimeout
             } else if serverErrors.contains(status) {
-                self.aepError = .serverError
+                aepError = .serverError
             } else if networkError.contains(status) {
-                self.aepError = .networkError
+                aepError = .networkError
             } else if (400 ... 499).contains(status) {
-                self.aepError = .invalidRequest
+                aepError = .invalidRequest
             }
         }
     }

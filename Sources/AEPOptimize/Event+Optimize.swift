@@ -73,10 +73,10 @@ extension Event {
     func createErrorResponseEvent(_ error: AEPOptimizeError) -> Event {
         let errorEventData = [OptimizeConstants.EventDataKeys.RESPONSE_ERROR: error].asDictionary()
         return createResponseEvent(
-                                    name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
-                                    type: EventType.optimize,
-                                    source: EventSource.responseContent,
-                                    data: errorEventData
-                                  )
+            name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
+            type: EventType.optimize,
+            source: EventSource.responseContent,
+            data: errorEventData
+        )
     }
 }
