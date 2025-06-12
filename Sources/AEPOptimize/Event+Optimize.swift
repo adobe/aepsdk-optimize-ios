@@ -48,6 +48,11 @@ extension Event {
         data?[OptimizeConstants.EventDataKeys.REQUEST_TYPE] as? String == OptimizeConstants.EventDataValues.REQUEST_TYPE_TRACK
     }
 
+    /// Return the passed timeout value from the event.
+    var configTimeout: TimeInterval? {
+        data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval
+    }
+
     /// Decode an instance of given type from the event data.
     /// - Parameter key: Event data key, default value is nil.
     /// - Returns: Optional type instance
@@ -66,11 +71,12 @@ extension Event {
     /// - Parameter error: type of AEPOptimizeError
     /// - Returns: error response Event
     func createErrorResponseEvent(_ error: AEPOptimizeError) -> Event {
-        createResponseEvent(name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
-                            type: EventType.optimize,
-                            source: EventSource.responseContent,
-                            data: [
-                                OptimizeConstants.EventDataKeys.RESPONSE_ERROR: error
-                            ])
+        let errorEventData = [OptimizeConstants.EventDataKeys.RESPONSE_ERROR: error].asDictionary()
+        return createResponseEvent(
+            name: OptimizeConstants.EventNames.OPTIMIZE_RESPONSE,
+            type: EventType.optimize,
+            source: EventSource.responseContent,
+            data: errorEventData
+        )
     }
 }

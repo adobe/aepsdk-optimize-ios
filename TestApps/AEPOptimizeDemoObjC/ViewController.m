@@ -138,4 +138,45 @@ AEPDecisionScope* targetDecisionScope;
     [AEPMobileOptimize clearCachedPropositions];
 }
 
+- (IBAction)displayMultipleOffers:(id)sender {
+    textDecisionScope = [[AEPDecisionScope alloc]initWithName: self.textEncodedDecisionScope.text];
+    imageDecisionScope = [[AEPDecisionScope alloc]initWithName: self.imageEncodedDecisionScope.text];
+    htmlDecisionScope = [[AEPDecisionScope alloc]initWithName: self.htmlEncodedDecisionScope.text];
+    jsonDecisionScope = [[AEPDecisionScope alloc]initWithName: self.jsonEncodedDecisionScope.text];
+    targetDecisionScope = [[AEPDecisionScope alloc]initWithName: self.targetMbox.text];
+    
+    [AEPMobileOptimize updatePropositions:@[
+        textDecisionScope,
+        imageDecisionScope,
+        htmlDecisionScope,
+        jsonDecisionScope,
+        targetDecisionScope
+    ] withXdm:@{@"xdmKey": @"1234"} andData:@{@"dataKey": @"5678"} completion:^(NSDictionary<AEPDecisionScope *,AEPOptimizeProposition *>* propositionsDict, NSError* error) {
+        if (error != nil) {
+            NSLog(@"Update propositions failed with error: %@", [error localizedDescription]);
+            return;
+        }
+        
+        // Collect all offers from all propositions
+        NSMutableArray<AEPOffer *> *allOffers = [NSMutableArray array];
+        
+        for (AEPDecisionScope *scope in propositionsDict) {
+            AEPOptimizeProposition *proposition = propositionsDict[scope];
+            [allOffers addObjectsFromArray:proposition.offers];
+        }
+        
+        if (allOffers.count > 0) {
+            // Display all offers at once
+            [AEPMobileOptimize displayed:allOffers];
+            NSLog(@"Displayed %ld offers", (long)allOffers.count);
+            
+            NSDictionary *xdmData = [AEPMobileOptimize generateDisplayInteractionXdm:allOffers];
+            NSLog(@"XDM Data: %@", xdmData);
+            
+        } else {
+            NSLog(@"No offers available to display");
+        }
+    }];
+}
+
 @end

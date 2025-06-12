@@ -15,126 +15,10 @@ import XCTest
 
 class OptimizePropositionTests: XCTestCase {
 
-   let PROPOSITION_VALID =
-"""
-{\
-    "id": "de03ac85-802a-4331-a905-a57053164d35",\
-    "items": [{\
-        "id": "xcore:personalized-offer:1111111111111111",\
-        "etag": "10",\
-        "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",\
-        "data": {\
-            "id": "xcore:personalized-offer:1111111111111111",\
-            "format": "text/html",\
-            "content": "<h1>This is a HTML content</h1>"\
-        }\
-    }],\
-    "placement": {\
-        "etag": "1",\
-        "id": "xcore:offer-placement:1111111111111111"\
-    },\
-    "activity": {\
-        "etag": "8",\
-        "id": "xcore:offer-activity:1111111111111111"\
-    },\
-    "scope": "eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="\
-}
-"""
-    
-    let PROPOSITION_VALID_WITH_LANGUAGE_AND_CHARACTERISTICS =
- """
- {\
-     "id": "de03ac85-802a-4331-a905-a57053164d35",\
-     "items": [{\
-         "id": "xcore:personalized-offer:1111111111111111",\
-         "etag": "10",\
-         "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",\
-         "data": {\
-             "id": "xcore:personalized-offer:1111111111111111",\
-             "format": "text/html",\
-             "content": "<h1>This is a HTML content</h1>",\
-             "language": [\
-                 "en-us"\
-             ],\
-             "characteristics": {\
-                 "mobile": "true"\
-             }\
-         }\
-     }],\
-     "placement": {\
-         "etag": "1",\
-         "id": "xcore:offer-placement:1111111111111111"\
-     },\
-     "activity": {\
-         "etag": "8",\
-         "id": "xcore:offer-activity:1111111111111111"\
-     },\
-     "scope": "eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="\
- }
- """
-
-    let PROPOSITION_VALID_TARGET =
-"""
-{\
-    "id": "AT:eyJhY3Rpdml0eUlkIjoiMTI1NTg5IiwiZXhwZXJpZW5jZUlkIjoiMCJ9",\
-    "items": [{\
-        "id": "246315",\
-        "schema": "https://ns.adobe.com/personalization/json-content-item",\
-        "data": {\
-            "id": "246315",\
-            "format": "application/json",
-            "content": {\
-                "device": "mobile"\
-            }\
-        }\
-    }],\
-    "scope": "myMbox",\
-    "scopeDetails": {\
-        "decisionProvider": "TGT",\
-        "activity": {\
-            "id": "125589"\
-        },\
-        "experience": {\
-            "id": "0"\
-        },\
-        "strategies": [\
-            {\
-                "algorithmID": "0",\
-                "trafficType": "0"\
-            }\
-        ]\
-    }\
-}
-"""
-
-    let PROPOSITION_INVALID =
-"""
-{\
-    "items": [{\
-        "id": "xcore:personalized-offer:1111111111111111",\
-        "etag": "10",\
-        "schema": "https://ns.adobe.com/experience/offer-management/content-component-html",\
-        "data": {\
-            "id": "xcore:personalized-offer:1111111111111111",\
-            "format": "text/html",\
-            "content": "<h1>This is a HTML content</h1>"\
-        }\
-    }],\
-    "placement": {\
-        "etag": "1",\
-        "id": "xcore:offer-placement:1111111111111111"\
-    },\
-    "activity": {\
-        "etag": "8",\
-        "id": "xcore:offer-activity:1111111111111111"\
-    },\
-    "scope": "eydhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ=="\
-}
-"""
     func testProposition_valid() throws {
         // Decode
         guard
-            let propositionData = PROPOSITION_VALID.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -146,6 +30,8 @@ class OptimizePropositionTests: XCTestCase {
         XCTAssertEqual(1, proposition.offers.count)
         let offer = proposition.offers[0]
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", offer.id)
+        XCTAssertEqual("xcore:offer-activity:1111111111111111", proposition.activity["id"] as? String)
+        XCTAssertEqual("8", proposition.activity["etag"] as? String)
         XCTAssertEqual("10", offer.etag)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", offer.schema)
         XCTAssertEqual(OfferType.init(rawValue: 3), offer.type)
@@ -166,7 +52,7 @@ class OptimizePropositionTests: XCTestCase {
     func testProposition_validFromTarget() throws {
         // Decode
         guard
-            let propositionData = PROPOSITION_VALID_TARGET.data(using: .utf8),
+            let propositionData = PropositionsTestData.PROPOSITION_VALID_TARGET.data(using: .utf8),
             let proposition = try? JSONDecoder().decode(OptimizeProposition.self, from: propositionData)
         else {
             XCTFail("Proposition should be valid.")
@@ -208,7 +94,7 @@ class OptimizePropositionTests: XCTestCase {
     }
 
     func testProposition_invalid() throws {
-        guard let propositionData = PROPOSITION_INVALID.data(using: .utf8) else {
+        guard let propositionData = PropositionsTestData.PROPOSITION_INVALID.data(using: .utf8) else {
             XCTFail("Proposition json data should be valid.")
             return
         }
@@ -217,7 +103,7 @@ class OptimizePropositionTests: XCTestCase {
     }
     
     func testInitFromData() throws {
-        guard let propositionData = PROPOSITION_VALID_WITH_LANGUAGE_AND_CHARACTERISTICS.data(using: .utf8) else {
+        guard let propositionData = PropositionsTestData.PROPOSITION_VALID_WITH_LANGUAGE_AND_CHARACTERISTICS.data(using: .utf8) else {
             XCTFail("Proposition json data should be valid.")
             return
         }
@@ -234,6 +120,8 @@ class OptimizePropositionTests: XCTestCase {
         XCTAssertEqual(1, proposition?.offers.count)
         XCTAssertEqual("xcore:personalized-offer:1111111111111111", proposition?.offers[0].id)
         XCTAssertTrue(proposition?.scopeDetails.isEmpty ?? false)
+        XCTAssertEqual(proposition?.activity.count, 2)
+        XCTAssertEqual(proposition?.placement.count, 2)
         XCTAssertEqual("10", proposition?.offers[0].etag)
         XCTAssertEqual("https://ns.adobe.com/experience/offer-management/content-component-html", proposition?.offers[0].schema)
         XCTAssertEqual(OfferType.html, proposition?.offers[0].type)

@@ -79,7 +79,14 @@ class OptimizePublicAPITests: XCTestCase {
         expectation.assertForOverFulfill = true
 
         let decisionScope = DecisionScope(name: "eyJhY3Rpdml0eUlkIjoieGNvcmU6b2ZmZXItYWN0aXZpdHk6MTExMTExMTExMTExMTExMSIsInBsYWNlbWVudElkIjoieGNvcmU6b2ZmZXItcGxhY2VtZW50OjExMTExMTExMTExMTExMTEifQ==")
-        
+
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
+            type: EventType.optimize,
+            source: EventSource.requestContent) { event in
+                let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError()
+                MobileCore.dispatch(event: event.createErrorResponseEvent(timeoutError))
+            }
+
         // test
         Optimize.updatePropositions(for: [decisionScope], withXdm: nil) { propositions, error in
             guard let error = error as? AEPOptimizeError else {
@@ -542,7 +549,7 @@ class OptimizePublicAPITests: XCTestCase {
         // verify
         wait(for: [expectation], timeout: 1)
     }
-
+    
     func testClearCachedPropositions() {
         // setup
         let expectation = XCTestExpectation(description: "clearCachedPropositions should dispatch an event.")
@@ -638,8 +645,7 @@ class OptimizePublicAPITests: XCTestCase {
         EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
             type: testEvent.type,
             source: testEvent.source) { event in
-                var eventData: [String: Any] = [:]
-                eventData[OptimizeConstants.EventDataKeys.PROPOSITIONS] = propositionDictionary
+                var eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionDictionary].asDictionary()
                 let timeout: TimeInterval = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval ?? OptimizeConstants.DEFAULT_TIMEOUT
                 let edgeEvent = event.createChainedEvent(name: OptimizeConstants.EventNames.EDGE_PERSONALIZATION_REQUEST,
                                                          type: EventType.edge,
@@ -675,6 +681,7 @@ class OptimizePublicAPITests: XCTestCase {
             XCTAssertEqual(propositions.count, 1)
             XCTAssertEqual(propositions.first?.id, proposition.id)
             XCTAssertEqual(propositions.first?.scope, proposition.scope)
+
             XCTAssertNotNil(returnedProposition)
             XCTAssertEqual(returnedProposition.id, proposition.id)
             XCTAssertEqual(returnedProposition.scope, proposition.scope)
@@ -859,6 +866,23 @@ class OptimizePublicAPITests: XCTestCase {
         
         /// wait
         wait(for: [expectation], timeout: 5)
+    }
+    
+    func testUpdateProposition_fetchConfigTimeout() {
+        let decisionScope = DecisionScope(name: "mbox")
+        let expectation = XCTestExpectation(description: "Config timeout value should be `Double.infinity`")
+        expectation.assertForOverFulfill = true
+        EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
+            type: EventType.optimize,
+            source: EventSource.requestContent) { event in
+                /// Asserting the `configTimeout` value equals `Double.infinity`  when it is not passed from the update proposition API.
+                XCTAssertNotNil(event.configTimeout)
+                XCTAssert(event.configTimeout == Double.infinity)
+                expectation.fulfill()
+            }
+        
+        Optimize.updatePropositions(for: [decisionScope], withXdm: nil, andData: nil, nil)
+        wait(for: [expectation], timeout: 5.0)
     }
 
     private func registerMockExtension<T: Extension>(_ type: T.Type) {
