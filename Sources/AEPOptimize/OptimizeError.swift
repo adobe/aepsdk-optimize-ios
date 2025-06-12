@@ -12,11 +12,12 @@
  */
 
 import AEPCore
+import AEPServices
 import Foundation
 
 /// AEPOptimizeError class used to create AEPOptimizeError from error details received from Experience Edge.
 @objc(AEPOptimizeError)
-public class AEPOptimizeError: NSObject, Error {
+public class AEPOptimizeError: NSObject, Error, Codable {
     typealias HTTPResponseCodes = OptimizeConstants.HTTPResponseCodes
     public let type: String?
     public let status: Int?
@@ -81,5 +82,59 @@ public class AEPOptimizeError: NSObject, Error {
             report: nil,
             aepError: AEPError.invalidRequest
         )
+    }
+
+    // MARK: - Codable Implementation
+
+    enum CodingKeys: String, CodingKey {
+        case type
+        case status
+        case title
+        case detail
+        case report
+        case aepError
+    }
+
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        type = try container.decodeIfPresent(String.self, forKey: .type)
+        status = try container.decodeIfPresent(Int.self, forKey: .status)
+        title = try container.decodeIfPresent(String.self, forKey: .title)
+        detail = try container.decodeIfPresent(String.self, forKey: .detail)
+
+        // Handle [String: Any] using AnyCodable
+        let anyCodableReport = try container.decodeIfPresent([String: AnyCodable].self, forKey: .report)
+        report = AnyCodable.toAnyDictionary(dictionary: anyCodableReport)
+
+        super.init()
+
+        // Map error response to AEPError
+        if let status = status {
+            if status == HTTPResponseCodes.clientTimeout.rawValue {
+                aepError = .callbackTimeout
+            } else if serverErrors.contains(status) {
+                aepError = .serverError
+            } else if networkError.contains(status) {
+                aepError = .networkError
+            } else if (400 ... 499).contains(status) {
+                aepError = .invalidRequest
+            }
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(status, forKey: .status)
+        try container.encodeIfPresent(title, forKey: .title)
+        try container.encodeIfPresent(detail, forKey: .detail)
+
+        // Handle [String: Any] using AnyCodable
+        try container.encodeIfPresent(AnyCodable.from(dictionary: report), forKey: .report)
+
+        // Encode aepError as string representation
+        try container.encode(String(describing: aepError), forKey: .aepError)
     }
 }

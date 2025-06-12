@@ -15,7 +15,7 @@ import Foundation
 enum OptimizeConstants {
     static let EXTENSION_NAME = "com.adobe.optimize"
     static let FRIENDLY_NAME = "Optimize"
-    static let EXTENSION_VERSION = "5.5.0"
+    static let EXTENSION_VERSION = "5.6.0"
     static let LOG_TAG = FRIENDLY_NAME
 
     static let DECISION_SCOPE_NAME = "name"
@@ -106,6 +106,8 @@ enum OptimizeConstants {
         static let DECISIONING_PROPOSITIONS_ID = "id"
         static let DECISIONING_PROPOSITIONS_SCOPE = "scope"
         static let DECISIONING_PROPOSITIONS_SCOPEDETAILS = "scopeDetails"
+        static let DECISIONING_PROPOSITIONS_ACTIVITY = "activity"
+        static let DECISIONING_PROPOSITIONS_PLACEMENT = "placement"
         static let DECISIONING_PROPOSITIONS_ITEMS = "items"
         static let DECISIONING_PROPOSITIONS_ITEMS_ID = "id"
         static let REQUEST = "request"

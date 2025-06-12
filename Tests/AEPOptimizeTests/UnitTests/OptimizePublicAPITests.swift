@@ -645,8 +645,7 @@ class OptimizePublicAPITests: XCTestCase {
         EventHub.shared.getExtensionContainer(MockExtension.self)?.registerListener(
             type: testEvent.type,
             source: testEvent.source) { event in
-                var eventData: [String: Any] = [:]
-                eventData[OptimizeConstants.EventDataKeys.PROPOSITIONS] = propositionDictionary
+                var eventData = [OptimizeConstants.EventDataKeys.PROPOSITIONS: propositionDictionary].asDictionary()
                 let timeout: TimeInterval = event.data?[OptimizeConstants.EventDataKeys.TIMEOUT] as? TimeInterval ?? OptimizeConstants.DEFAULT_TIMEOUT
                 let edgeEvent = event.createChainedEvent(name: OptimizeConstants.EventNames.EDGE_PERSONALIZATION_REQUEST,
                                                          type: EventType.edge,
