@@ -35,11 +35,19 @@ public class OptimizeProposition: NSObject, Codable {
     /// Scope details dictionary
     @objc public var scopeDetails: [String: Any]
 
+    /// Scope details dictionary
+    @objc public var activity: [String: Any]
+
+    /// Scope details dictionary
+    @objc public var placement: [String: Any]
+
     enum CodingKeys: String, CodingKey {
         case id
         case items
         case scope
         case scopeDetails
+        case activity
+        case placement
     }
 
     public required init(from decoder: Decoder) throws {
@@ -47,10 +55,14 @@ public class OptimizeProposition: NSObject, Codable {
 
         id = try container.decode(String.self, forKey: .id)
         scope = try container.decode(String.self, forKey: .scope)
-        let anyCodableDict = try? container.decode([String: AnyCodable].self, forKey: .scopeDetails)
+        let scopeDetailsCodableDict = try? container.decode([String: AnyCodable].self, forKey: .scopeDetails)
         // Fix this once ODE supports scopeDetails in personalization query response,
         // refer to https://jira.corp.adobe.com/browse/CSMO-12405
-        scopeDetails = AnyCodable.toAnyDictionary(dictionary: anyCodableDict) ?? [:]
+        scopeDetails = AnyCodable.toAnyDictionary(dictionary: scopeDetailsCodableDict) ?? [:]
+        let activityCodableDict = try? container.decode([String: AnyCodable].self, forKey: .activity)
+        activity = AnyCodable.toAnyDictionary(dictionary: activityCodableDict) ?? [:]
+        let placementCodableDict = try? container.decode([String: AnyCodable].self, forKey: .placement)
+        placement = AnyCodable.toAnyDictionary(dictionary: placementCodableDict) ?? [:]
         items = (try? container.decode([Offer].self, forKey: .items, ignoreInvalid: true)) ?? []
     }
 
@@ -60,6 +72,8 @@ public class OptimizeProposition: NSObject, Codable {
         try container.encode(id, forKey: .id)
         try container.encode(scope, forKey: .scope)
         try container.encode(AnyCodable.from(dictionary: scopeDetails), forKey: .scopeDetails)
+        try container.encode(AnyCodable.from(dictionary: activity), forKey: .activity)
+        try container.encode(AnyCodable.from(dictionary: placement), forKey: .placement)
         try container.encode(offers, forKey: .items)
     }
 

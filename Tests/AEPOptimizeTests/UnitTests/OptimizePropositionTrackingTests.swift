@@ -93,6 +93,9 @@ extension OptimizePropositionTests {
         let scopeDetails = propositionInteractionDetails1["scopeDetails"] as? [String: Any] ?? [:]
         XCTAssertTrue(scopeDetails == [:])
 
+        XCTAssertEqual("xcore:offer-activity:1111111111111111", proposition1.activity["id"] as? String)
+        XCTAssertEqual("8", proposition1.activity["etag"] as? String)
+
         let items = try XCTUnwrap(propositionInteractionDetails1["items"] as? [[String: Any]])
         XCTAssertEqual(1, items.count)
 
