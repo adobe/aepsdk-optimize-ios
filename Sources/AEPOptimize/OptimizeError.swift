@@ -137,4 +137,15 @@ public class AEPOptimizeError: NSObject, Error, Codable {
         // Encode aepError as string representation
         try container.encode(String(describing: aepError), forKey: .aepError)
     }
+
+    @objc public func asNSError() -> NSError {
+        var info: [String: Any] = [:]
+        info["status"] = status
+        info["title"] = title
+        info["detail"] = detail
+        info["report"] = report
+        info["aepError"] = String(describing: aepError)
+        
+        return NSError(domain: "com.adobe.AEPOptimize.AEPOptimizeError", code: status ?? -1, userInfo: info)
+    }
 }
