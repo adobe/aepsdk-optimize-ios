@@ -141,11 +141,11 @@ public class AEPOptimizeError: NSObject, Error, Codable {
 
 extension AEPOptimizeError: CustomNSError {
     public static var errorDomain: String {
-        return "com.adobe.AEPOptimize.AEPOptimizeError"
+        "com.adobe.AEPOptimize.AEPOptimizeError"
     }
 
     public var errorCode: Int {
-        return status ?? -1 
+        status ?? -1
     }
 
     public var errorUserInfo: [String: Any] {
@@ -155,7 +155,7 @@ extension AEPOptimizeError: CustomNSError {
         info["title"] = title
         info["detail"] = detail
         info["report"] = report
-        info["aepError"] = aepError 
+        info["aepError"] = aepError
         return info
     }
 }
