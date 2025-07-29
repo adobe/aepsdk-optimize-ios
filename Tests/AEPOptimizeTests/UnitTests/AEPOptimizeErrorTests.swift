@@ -49,20 +49,19 @@ class AEPOptimizeErrorTests: XCTestCase {
             aepError: AEPError.serverError
         )
         
-        // Test
-        let nsError = optimizeError.asNSError()
-        
         // Verify NSError properties for Objective-C
-        XCTAssertEqual(nsError.domain, "com.adobe.AEPOptimize.AEPOptimizeError")
-        XCTAssertEqual(nsError.code, 500)
+        XCTAssertEqual(AEPOptimizeError.errorDomain, "com.adobe.AEPOptimize.AEPOptimizeError")
+        XCTAssertEqual(optimizeError.errorCode, 500)
         
         // Verify all fields are accessible in userInfo for Objective-C
-        XCTAssertEqual(nsError.userInfo["status"] as? Int, 500)
-        XCTAssertEqual(nsError.userInfo["title"] as? String, "Server Error")
-        XCTAssertEqual(nsError.userInfo["detail"] as? String, "Internal server error occurred")
-        XCTAssertEqual(nsError.userInfo["aepError"] as? AEPError, AEPError.serverError)
+        let errorUserInfo = optimizeError.errorUserInfo
         
-        let report = nsError.userInfo["report"] as? [String: Any]
+        XCTAssertEqual(errorUserInfo["status"] as? Int, 500)
+        XCTAssertEqual(errorUserInfo["title"] as? String, "Server Error")
+        XCTAssertEqual(errorUserInfo["detail"] as? String, "Internal server error occurred")
+        XCTAssertEqual(errorUserInfo["aepError"] as? AEPError, AEPError.serverError)
+        
+        let report = errorUserInfo["report"] as? [String: Any]
         XCTAssertEqual(report?["errorCode"] as? String, "E001")
     }
 }

@@ -58,7 +58,7 @@ public extension Optimize {
             Log.warning(label: OptimizeConstants.LOG_TAG,
                         "Cannot update propositions, provided decision scopes array is empty or has invalid items.")
             let aepOptimizeError = AEPOptimizeError.createAEPOptimizInvalidRequestError()
-            completion?(nil, aepOptimizeError.asNSError())
+            completion?(nil, aepOptimizeError)
             return
         }
 
@@ -84,12 +84,12 @@ public extension Optimize {
         MobileCore.dispatch(event: event, timeout: timeout) { responseEvent in
             guard let responseEvent = responseEvent else {
                 let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError()
-                completion?(nil, timeoutError.asNSError())
+                completion?(nil, timeoutError)
                 return
             }
             let result: [DecisionScope: OptimizeProposition]? = responseEvent.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS)
             let error: AEPOptimizeError? = responseEvent.getTypedData(for: OptimizeConstants.EventDataKeys.RESPONSE_ERROR)
-            completion?(result, error?.asNSError())
+            completion?(result, error)
         }
     }
 
