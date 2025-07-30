@@ -54,7 +54,7 @@ commands:
     steps:
       - macos/preboot-simulator:
           platform: "iOS"
-          version: "17.2"
+          version: "17.4"
           device: "iPhone 15"
 
 jobs:
