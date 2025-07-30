@@ -152,7 +152,12 @@ AEPDecisionScope* targetDecisionScope;
         jsonDecisionScope,
         targetDecisionScope
     ] withXdm:@{@"xdmKey": @"1234"} andData:@{@"dataKey": @"5678"} completion:^(NSDictionary<AEPDecisionScope *,AEPOptimizeProposition *>* propositionsDict, NSError* error) {
-        if (error != nil) {
+        if (error != nil && [error.domain isEqualToString:@"com.adobe.AEPOptimize.AEPOptimizeError"]) {
+            NSLog(@"Status: %@", error.userInfo[@"status"]);
+            NSLog(@"Title: %@", error.userInfo[@"title"]);
+            NSLog(@"Detail: %@", error.userInfo[@"detail"]);
+            NSLog(@"Report: %@", error.userInfo[@"report"]);
+            NSLog(@"AEPError: %@", error.userInfo[@"aepError"]);
             NSLog(@"Update propositions failed with error: %@", [error localizedDescription]);
             return;
         }
