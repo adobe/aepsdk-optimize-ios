@@ -178,7 +178,7 @@ public class Optimize: NSObject, Extension {
                 let scopesInProgress = eventDecisionScopes.filter { scope in
                     self.updateRequestEventIdsInProgress.values.flatMap { $0 }.contains(scope)
                 }
-                if eventDecisionScopes.count == fetchedPropositions.count && scopesInProgress.isEmpty {
+                if eventDecisionScopes.count == fetchedPropositions.count, scopesInProgress.isEmpty {
                     self.processGetPropositions(event: event)
                 } else {
                     /// Not all decision scopes are present in the cache or requested scopes are currently in progress, adding it to the event queue
@@ -585,7 +585,7 @@ public class Optimize: NSObject, Extension {
     private func processDebugEvent(event: Event) {
         queue.async { [weak self] in
             guard let self else { return }
-            guard event.debugEventType == EventType.edge && event.debugEventSource == EventSource.personalizationDecisions
+            guard event.debugEventType == EventType.edge, event.debugEventSource == EventSource.personalizationDecisions
             else {
                 Log.debug(label: OptimizeConstants.LOG_TAG,
                           " Ignoring Debug event, either debug type is not com.adobe.eventType.edge or debug source is not personalization:decisions")

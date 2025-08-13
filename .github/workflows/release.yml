@@ -21,7 +21,7 @@ on:
 
 jobs:
   release_AEPOptimize:
-    runs-on: macOS-13
+    runs-on: macOS-14
     steps:
     - uses: actions/checkout@v2
       with:
