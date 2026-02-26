@@ -24,13 +24,12 @@ public extension OptimizeProposition {
     /// - Note: The returned XDM data does not contain an `eventType` for the Experience Event.
     /// - Returns A dictionary containing XDM data for the propositon reference.
     func generateReferenceXdm() -> [String: Any] {
-        let xdmData: [String: Any] = [
+        [
             OptimizeConstants.JsonKeys.EXPERIENCE: [
                 OptimizeConstants.JsonKeys.EXPERIENCE_DECISIONING: [
                     OptimizeConstants.JsonKeys.DECISIONING_PROPOSITION_ID: id
                 ]
             ]
         ]
-        return xdmData
     }
 }

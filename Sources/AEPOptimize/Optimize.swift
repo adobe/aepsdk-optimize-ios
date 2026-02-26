@@ -24,9 +24,9 @@ public class Optimize: NSObject, Extension {
     public let metadata: [String: String]? = nil
     public let runtime: ExtensionRuntime
 
-    // Operation orderer used to maintain the order of update and get propositions events.
-    // It ensures any update propositions requests issued before a get propositions call are completed
-    // and the get propositions request is fulfilled from the latest cached content.
+    /// Operation orderer used to maintain the order of update and get propositions events.
+    /// It ensures any update propositions requests issued before a get propositions call are completed
+    /// and the get propositions request is fulfilled from the latest cached content.
     private let eventsQueue = OperationOrderer<Event>("OptimizeEvents")
 
     /// Dispatch queue used to protect against simultaneous access of our containers from multiple threads
@@ -47,7 +47,7 @@ public class Optimize: NSObject, Extension {
         identifier: "com.adobe.optimize.propositionsInProgress"
     )
 
-    /// Dictionary containing decision propositions currently cached in-memory in the SDK.
+    // Dictionary containing decision propositions currently cached in-memory in the SDK.
     #if DEBUG
         var cachedPropositions = ThreadSafeDictionary<DecisionScope, OptimizeProposition>(identifier: "com.adobe.optimize.cachedPropositions")
     #else
@@ -56,7 +56,7 @@ public class Optimize: NSObject, Extension {
         )
     #endif
 
-    /// Dictionary containing  propositions simulated for preview and cached in-memory in the SDK
+    // Dictionary containing propositions simulated for preview and cached in-memory in the SDK
     #if DEBUG
         var previewCachedPropositions = ThreadSafeDictionary<DecisionScope, OptimizeProposition>(
             identifier: "com.adobe.optimize.previewCachedPropositions"
@@ -66,6 +66,12 @@ public class Optimize: NSObject, Extension {
             identifier: "com.adobe.optimize.previewCachedPropositions"
         )
     #endif
+
+    /// Static dictionary mapping original request event IDs to Edge event IDs.
+    /// This allows the public API to retrieve the Edge event ID even when the extension times out.
+    static var requestToEdgeEventIds = ThreadSafeDictionary<String, String>(
+        identifier: "com.adobe.optimize.requestToEdgeEventIds"
+    )
 
     /// Array containing recoverable network error codes being retried by Edge Network Service
     private let recoverableNetworkErrorCodes: [Int] = [OptimizeConstants.HTTPResponseCodes.clientTimeout.rawValue,
@@ -172,16 +178,16 @@ public class Optimize: NSObject, Extension {
                     self.dispatch(event: event.createErrorResponseEvent(aepOptimizeError))
                     return
                 }
-                /// Fetch propositions and check if all of the decision scopes are present in the cache
+                // Fetch propositions and check if all of the decision scopes are present in the cache
                 let fetchedPropositions = eventDecisionScopes.filter { self.cachedPropositions.keys.contains($0) }
-                /// Check if the decision scopes are currently in progress in `updateRequestEventIdsInProgress`
+                // Check if the decision scopes are currently in progress in `updateRequestEventIdsInProgress`
                 let scopesInProgress = eventDecisionScopes.filter { scope in
                     self.updateRequestEventIdsInProgress.values.flatMap { $0 }.contains(scope)
                 }
                 if eventDecisionScopes.count == fetchedPropositions.count, scopesInProgress.isEmpty {
                     self.processGetPropositions(event: event)
                 } else {
-                    /// Not all decision scopes are present in the cache or requested scopes are currently in progress, adding it to the event queue
+                    // Not all decision scopes are present in the cache or requested scopes are currently in progress, adding it to the event queue
                     self.eventsQueue.add(event)
                     Log.trace(label: OptimizeConstants.LOG_TAG, "Decision scopes are either not present or currently in progress.")
                 }
@@ -274,6 +280,8 @@ public class Optimize: NSObject, Extension {
             // Storing the request event UUID to compare and process only the anticipated response in the extension.
             self.updateRequestEventIdsInProgress[edgeEvent.id.uuidString] = validDecisionScopes
 
+            // Store mapping from original request event ID to Edge event ID for public API timeout handling
+            Optimize.requestToEdgeEventIds[event.id.uuidString] = edgeEvent.id.uuidString
             // add the Edge event to update propositions in the events queue.
             self.eventsQueue.add(edgeEvent)
 
@@ -287,8 +295,9 @@ public class Optimize: NSObject, Extension {
                     else {
                         // response event failed or timed out, remove this event's ID from the requested event IDs dictionary, dispatch an error response event and kick-off queue.
                         self.updateRequestEventIdsInProgress.removeValue(forKey: edgeEvent.id.uuidString)
+                        Optimize.requestToEdgeEventIds.removeValue(forKey: event.id.uuidString)
                         self.propositionsInProgress.removeAll()
-                        let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError()
+                        let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError(requestEventId: edgeEvent.id.uuidString)
                         self.dispatch(event: event.createErrorResponseEvent(timeoutError))
                         self.eventsQueue.start()
                         return
@@ -313,6 +322,9 @@ public class Optimize: NSObject, Extension {
                         data: responseData
                     )
                     dispatch(event: responseEventToSend)
+
+                    // Clean up request-to-edge event ID mapping after response is dispatched
+                    Optimize.requestToEdgeEventIds.removeValue(forKey: event.id.uuidString)
 
                     let updateCompleteEvent = responseEvent.createChainedEvent(name: OptimizeConstants.EventNames.OPTIMIZE_UPDATE_COMPLETE,
                                                                                type: EventType.optimize,
@@ -481,13 +493,10 @@ public class Optimize: NSObject, Extension {
                                                         status: errorStatus,
                                                         title: errorTitle,
                                                         detail: errorDetail,
-                                                        report: errorReport)
-                guard let edgeEventRequestId = event.requestEventId else {
-                    Log.debug(label: OptimizeConstants.LOG_TAG, "No valid edge event request ID found for error response event.")
-                    return
-                }
+                                                        report: errorReport,
+                                                        requestEventId: requestEventId)
                 // store the error response as an AEPOptimizeError in error dictionary per edge request
-                self.updateRequestEventIdsErrors[edgeEventRequestId] = aepOptimizeError
+                self.updateRequestEventIdsErrors[requestEventId] = aepOptimizeError
             }
         }
     }
@@ -641,12 +650,12 @@ public class Optimize: NSObject, Extension {
     /// - Parameter apiTimeout: The timeout value provided in the API request.
     /// - Returns: The final timeout value to be used.
     private func calculateTimeout(apiTimeout: TimeInterval?) -> TimeInterval {
-        /// Fetch the timeout value from the shared state.
+        // Fetch the timeout value from the shared state.
         if let apiTimeout, apiTimeout != .infinity {
             return apiTimeout
         }
 
-        /// Fetch the timeout value from the shared state only if `apiTimeout` is absent.
+        // Fetch the timeout value from the shared state only if `apiTimeout` is absent.
         var configTimeout: TimeInterval?
         if let sharedState = getSharedState(extensionName: OptimizeConstants.Configuration.EXTENSION_NAME, event: nil)?.value,
            let timeoutValue = sharedState[OptimizeConstants.Configuration.OPTIMIZE_TIMEOUT_VALUE] as? Int
@@ -654,7 +663,7 @@ public class Optimize: NSObject, Extension {
             configTimeout = TimeInterval(timeoutValue)
         }
 
-        /// Return the shared state timeout if available; otherwise, use the default timeout.
+        // Return the shared state timeout if available; otherwise, use the default timeout.
         return configTimeout ?? OptimizeConstants.DEFAULT_TIMEOUT
     }
 

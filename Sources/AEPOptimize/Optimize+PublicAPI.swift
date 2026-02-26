@@ -83,7 +83,11 @@ public extension Optimize {
                           data: eventData)
         MobileCore.dispatch(event: event, timeout: timeout) { responseEvent in
             guard let responseEvent = responseEvent else {
-                let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError()
+                // Look up the Edge event ID from the mapping (if available)
+                let edgeEventId = Optimize.requestToEdgeEventIds[event.id.uuidString]
+                Optimize.requestToEdgeEventIds.removeValue(forKey: event.id.uuidString)
+                let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError(requestEventId: edgeEventId)
+                debugPrint(timeoutError.requestEventId)
                 completion?(nil, timeoutError)
                 return
             }

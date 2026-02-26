@@ -112,6 +112,7 @@ class OptimizeIntegrationTests: XCTestCase {
             XCTAssertTrue(error.aepError == .callbackTimeout)
             XCTAssertTrue(error.title == "Request Timeout")
             XCTAssertTrue(error.detail == "Update/Get proposition request resulted in a timeout.")
+            XCTAssertNotNil(error.requestEventId, "requestEventId should be present in timeout error for debugging")
             exp.fulfill()
         }
 
@@ -515,6 +516,7 @@ class OptimizeIntegrationTests: XCTestCase {
                 XCTAssertTrue(error.aepError == .invalidRequest)
                 XCTAssertTrue(error.title == "Invalid Request")
                 XCTAssertTrue(error.detail == "Request cannot be processed as few parameters are missing. Please check and try again later.")
+                XCTAssertNotNil(error.requestEventId, "requestEventId should be present in Edge error response for debugging")
             }
             invalidResponseExpectation.fulfill()
         }

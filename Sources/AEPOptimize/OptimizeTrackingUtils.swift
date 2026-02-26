@@ -43,7 +43,7 @@ enum OptimizeTrackingUtils {
             OptimizeConstants.JsonKeys.PROPOSITION_EVENT_TYPE_INTERACT
         propositionEventType[propEventType] = 1
 
-        let xdmData: [String: Any] = [
+        return [
             OptimizeConstants.JsonKeys.EXPERIENCE_EVENT_TYPE: eventType,
             OptimizeConstants.JsonKeys.EXPERIENCE: [
                 OptimizeConstants.JsonKeys.EXPERIENCE_DECISIONING: [
@@ -52,7 +52,6 @@ enum OptimizeTrackingUtils {
                 ]
             ]
         ]
-        return xdmData
     }
 
     /// Dispatches the track propositions request event with type `EventType.optimize` and source `EventSource.requestContent` and given proposition interactions data.
@@ -88,8 +87,7 @@ enum OptimizeTrackingUtils {
     ///
     /// - Parameter offers: An array of offers to extract propositions from.
     /// - Returns: An array of unique OptimizeProposition objects containing only the relevant offers.
-    /// If no matching propositions are found, returns an empty array.
-
+    ///   If no matching propositions are found, returns an empty array.
     static func mapToUniquePropositions(_ offers: [Offer]) -> [OptimizeProposition] {
         // Get unique propositions from offers
         let uniquePropositions = Set(offers.compactMap { $0.proposition })

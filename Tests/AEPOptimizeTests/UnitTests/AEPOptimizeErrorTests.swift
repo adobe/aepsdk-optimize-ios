@@ -64,4 +64,101 @@ class AEPOptimizeErrorTests: XCTestCase {
         let report = errorUserInfo["report"] as? [String: Any]
         XCTAssertEqual(report?["errorCode"] as? String, "E001")
     }
+    
+    func testAEPOptimizeError_WithRequestEventId() {
+        // Setup
+        let requestEventId = "test-request-event-id-12345"
+        let optimizeError = AEPOptimizeError(
+            type: "timeout-error",
+            status: 408,
+            title: "Request Timeout",
+            detail: "Update proposition request resulted in a timeout.",
+            report: nil,
+            aepError: AEPError.callbackTimeout,
+            requestEventId: requestEventId
+        )
+        
+        // Verify requestEventId is correctly stored
+        XCTAssertEqual(optimizeError.requestEventId, requestEventId)
+        XCTAssertEqual(optimizeError.status, 408)
+        XCTAssertEqual(optimizeError.title, "Request Timeout")
+        XCTAssertEqual(optimizeError.aepError, AEPError.callbackTimeout)
+    }
+    
+    func testAEPOptimizeError_RequestEventIdInErrorUserInfo() {
+        // Setup
+        let requestEventId = "edge-request-uuid-67890"
+        let optimizeError = AEPOptimizeError(
+            type: "edge-error",
+            status: 500,
+            title: "Server Error",
+            detail: "Edge server error",
+            report: nil,
+            aepError: AEPError.serverError,
+            requestEventId: requestEventId
+        )
+        
+        // Verify requestEventId is accessible in errorUserInfo for Objective-C compatibility
+        let errorUserInfo = optimizeError.errorUserInfo
+        XCTAssertEqual(errorUserInfo["requestEventId"] as? String, requestEventId)
+    }
+    
+    func testCreateAEPOptimizeTimeoutError_WithRequestEventId() {
+        // Setup
+        let requestEventId = "timeout-request-id-abc123"
+        
+        // Test
+        let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError(requestEventId: requestEventId)
+        
+        // Verify
+        XCTAssertEqual(timeoutError.status, 408)
+        XCTAssertEqual(timeoutError.title, "Request Timeout")
+        XCTAssertEqual(timeoutError.detail, "Update/Get proposition request resulted in a timeout.")
+        XCTAssertEqual(timeoutError.aepError, AEPError.callbackTimeout)
+        XCTAssertEqual(timeoutError.requestEventId, requestEventId)
+    }
+    
+    func testCreateAEPOptimizeInvalidRequestError_WithRequestEventId() {
+        // Setup
+        let requestEventId = "invalid-request-id-xyz789"
+        
+        // Test
+        let invalidRequestError = AEPOptimizeError.createAEPOptimizInvalidRequestError(requestEventId: requestEventId)
+        
+        // Verify
+        XCTAssertEqual(invalidRequestError.status, 400)
+        XCTAssertEqual(invalidRequestError.title, "Invalid Request")
+        XCTAssertEqual(invalidRequestError.detail, "Decision scopes, in event data, is either not present or empty.")
+        XCTAssertEqual(invalidRequestError.aepError, AEPError.invalidRequest)
+        XCTAssertEqual(invalidRequestError.requestEventId, requestEventId)
+    }
+    
+    func testAEPOptimizeError_CodableWithRequestEventId() throws {
+        // Setup
+        let requestEventId = "codable-test-request-id"
+        let originalError = AEPOptimizeError(
+            type: "test-type",
+            status: 400,
+            title: "Test Title",
+            detail: "Test Detail",
+            report: ["key": "value"],
+            aepError: AEPError.invalidRequest,
+            requestEventId: requestEventId
+        )
+        
+        // Encode
+        let encoder = JSONEncoder()
+        let encodedData = try encoder.encode(originalError)
+        
+        // Decode
+        let decoder = JSONDecoder()
+        let decodedError = try decoder.decode(AEPOptimizeError.self, from: encodedData)
+        
+        // Verify all properties including requestEventId survive encode/decode
+        XCTAssertEqual(decodedError.type, originalError.type)
+        XCTAssertEqual(decodedError.status, originalError.status)
+        XCTAssertEqual(decodedError.title, originalError.title)
+        XCTAssertEqual(decodedError.detail, originalError.detail)
+        XCTAssertEqual(decodedError.requestEventId, requestEventId)
+    }
 }

@@ -24,6 +24,8 @@ public class AEPOptimizeError: NSObject, Error, Codable {
     public let title: String?
     public let detail: String?
     public let report: [String: Any]?
+    /// The Edge request event ID associated with this error. Useful for debugging and investigation.
+    public let requestEventId: String?
     public var aepError = AEPError.unexpected
 
     private let serverErrors = [
@@ -37,12 +39,13 @@ public class AEPOptimizeError: NSObject, Error, Codable {
         HTTPResponseCodes.gatewayTimeout.rawValue
     ]
 
-    public init(type: String?, status: Int?, title: String?, detail: String?, report: [String: Any]?, aepError: AEPError? = nil) {
+    public init(type: String?, status: Int?, title: String?, detail: String?, report: [String: Any]?, aepError: AEPError? = nil, requestEventId: String? = nil) {
         self.type = type
         self.status = status
         self.title = title
         self.detail = detail
         self.report = report
+        self.requestEventId = requestEventId
         if let aepError {
             self.aepError = aepError
         } else {
@@ -62,25 +65,27 @@ public class AEPOptimizeError: NSObject, Error, Codable {
         }
     }
 
-    static func createAEPOptimizeTimeoutError() -> AEPOptimizeError {
+    static func createAEPOptimizeTimeoutError(requestEventId: String? = nil) -> AEPOptimizeError {
         AEPOptimizeError(
             type: nil,
             status: OptimizeConstants.ErrorData.Timeout.STATUS,
             title: OptimizeConstants.ErrorData.Timeout.TITLE,
             detail: OptimizeConstants.ErrorData.Timeout.DETAIL,
             report: nil,
-            aepError: AEPError.callbackTimeout
+            aepError: AEPError.callbackTimeout,
+            requestEventId: requestEventId
         )
     }
 
-    static func createAEPOptimizInvalidRequestError() -> AEPOptimizeError {
+    static func createAEPOptimizInvalidRequestError(requestEventId: String? = nil) -> AEPOptimizeError {
         AEPOptimizeError(
             type: nil,
             status: OptimizeConstants.ErrorData.InvalidRequest.STATUS,
             title: OptimizeConstants.ErrorData.InvalidRequest.TITLE,
             detail: OptimizeConstants.ErrorData.InvalidRequest.DETAIL,
             report: nil,
-            aepError: AEPError.invalidRequest
+            aepError: AEPError.invalidRequest,
+            requestEventId: requestEventId
         )
     }
 
@@ -93,6 +98,7 @@ public class AEPOptimizeError: NSObject, Error, Codable {
         case detail
         case report
         case aepError
+        case requestEventId
     }
 
     public required init(from decoder: Decoder) throws {
@@ -102,6 +108,7 @@ public class AEPOptimizeError: NSObject, Error, Codable {
         status = try container.decodeIfPresent(Int.self, forKey: .status)
         title = try container.decodeIfPresent(String.self, forKey: .title)
         detail = try container.decodeIfPresent(String.self, forKey: .detail)
+        requestEventId = try container.decodeIfPresent(String.self, forKey: .requestEventId)
 
         // Handle [String: Any] using AnyCodable
         let anyCodableReport = try container.decodeIfPresent([String: AnyCodable].self, forKey: .report)
@@ -130,6 +137,7 @@ public class AEPOptimizeError: NSObject, Error, Codable {
         try container.encodeIfPresent(status, forKey: .status)
         try container.encodeIfPresent(title, forKey: .title)
         try container.encodeIfPresent(detail, forKey: .detail)
+        try container.encodeIfPresent(requestEventId, forKey: .requestEventId)
 
         // Handle [String: Any] using AnyCodable
         try container.encodeIfPresent(AnyCodable.from(dictionary: report), forKey: .report)
@@ -156,6 +164,7 @@ extension AEPOptimizeError: CustomNSError {
         info["detail"] = detail
         info["report"] = report
         info["aepError"] = aepError
+        info["requestEventId"] = requestEventId
         return info
     }
 }
