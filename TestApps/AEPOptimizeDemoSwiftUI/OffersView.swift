@@ -22,11 +22,12 @@ struct OffersView: View {
     @EnvironmentObject var odeSettings: OdeSettings
     @EnvironmentObject var targetSettings: TargetSettings
     @ObservedObject var propositions: Propositions
-    
+    @StateObject private var sequenceLog = SequenceLogManager()
+
     @State private var errorAlert = false
     @State private var errorMessage = ""
     @State private var useBatchTracking = false
-    
+
     var body: some View {
         VStack {
             HeaderView(text: "Welcome to AEPOptimize Demo")
@@ -34,17 +35,43 @@ struct OffersView: View {
                 Section(header: Text("Tracking Methods")) {
                     Toggle("Use Batch Tracking", isOn: $useBatchTracking)
                         .padding(.vertical, 5)
-                    
+
                     VStack(alignment: .leading, spacing: 10) {
                         Text(useBatchTracking ? "Batch Tracking" : "Individual Tracking")
                             .font(.headline)
-                        Text(useBatchTracking ? 
+                        Text(useBatchTracking ?
                             "All offers are tracked together using Optimize.displayed()" :
                             "Each offer is tracked individually using offer.displayed() when it appears on screen")
                             .font(.subheadline)
                             .foregroundColor(.gray)
                     }
                     .padding(.vertical, 5)
+                }
+
+                Section(header: Text("Batching Test (6-call sequence)")) {
+                    HStack {
+                        CustomButtonView(buttonTitle: "Run Seq (6 calls)") {
+                            runPropositionsSequence()
+                        }
+                        CustomButtonView(buttonTitle: "Clear Log") {
+                            sequenceLog.clear()
+                        }
+                    }
+                    if sequenceLog.logs.isEmpty {
+                        Text("No log entries yet. Tap \"Run Seq (6 calls)\" to fire the measurement sequence.")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    } else {
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: 4) {
+                                ForEach(Array(sequenceLog.logs.enumerated()), id: \.offset) { _, entry in
+                                    Text(entry)
+                                        .font(.system(.caption, design: .monospaced))
+                                }
+                            }
+                        }
+                        .frame(height: 160)
+                    }
                 }
 
                 Section(header: Text("Text Offers")) {
@@ -272,6 +299,61 @@ struct OffersView: View {
                 }
             }
             .padding(15)
+        }
+    }
+
+    // MARK: - Batching test: 6-call sequence
+
+    /// Decision scope deliberately not configured in any datastream/sandbox — expected to fail/404,
+    /// exercising the error path alongside the success path within the same batch.
+    private static let invalidMboxScope = DecisionScope(name: "invalidMbox")
+
+    /// Measurement harness mirroring `aepsdk-optimize-android`'s test app `updatePropositionsSequence()`:
+    /// fires six DISTINCT `updatePropositions` calls — call1 alone, then a pause of 20ms, then calls
+    /// 2-6 back-to-back with no further delay — exercising different scope combinations plus repeats:
+    ///   call1 = [mbox]              call2 = [ode]
+    ///   call3 = [mbox] (repeat)     call4 = [invalidMbox]
+    ///   call5 = [mbox, ode, invalidMbox]   call6 = [same three] (repeat)
+    ///
+    /// Firing all 6 back-to-back would race the hit queue's background executor: the first batch
+    /// cycle reads however many events happen to already be queued when it wakes up, which varies
+    /// run to run. The single pause after call1 (comfortably longer than the in-process time to
+    /// schedule/run a batch cycle) lets that first cycle reliably grab only call1. Calls 2-6 are then
+    /// fired with no gap between them so they enqueue essentially simultaneously and land in one
+    /// consistent batch once call1's request clears.
+    private func runPropositionsSequence() {
+        let mbox = DecisionScope(name: targetSettings.targetMbox)
+        let ode = DecisionScope(name: odeSettings.textEncodedDecisionScope)
+        let invalid = Self.invalidMboxScope
+
+        sequenceLog.addLog("Sequence | firing 6 distinct updatePropositions calls")
+        DispatchQueue.global(qos: .userInitiated).async {
+            updatePropositionsForScopes(callTag: "call1_mbox", scopes: [mbox])
+            Thread.sleep(forTimeInterval: 0.02)
+            updatePropositionsForScopes(callTag: "call2_ode", scopes: [ode])
+            updatePropositionsForScopes(callTag: "call3_mbox", scopes: [mbox])
+            updatePropositionsForScopes(callTag: "call4_invalidMbox", scopes: [invalid])
+            updatePropositionsForScopes(callTag: "call5_all", scopes: [mbox, ode, invalid])
+            updatePropositionsForScopes(callTag: "call6_all", scopes: [mbox, ode, invalid])
+        }
+    }
+
+    /// Issues a single `updatePropositions` call for `scopes`, timing call -> callback and logging
+    /// the elapsed time tagged with `callTag` for measurement. Does not touch `propositions` state
+    /// (so caching across the sequence is observable via subsequent "Get Propositions" calls).
+    private func updatePropositionsForScopes(callTag: String, scopes: [DecisionScope]) {
+        let startTime = Date()
+        Optimize.updatePropositions(for: scopes,
+                                     withXdm: ["xdmKey": "1234"],
+                                     andData: ["dataKey": "5678"],
+                                     timeout: 10) { data, error in
+            let elapsedMs = Int(Date().timeIntervalSince(startTime) * 1000)
+            if let error = error {
+                let description = (error as? AEPOptimizeError)?.title ?? error.localizedDescription
+                sequenceLog.addLog("\(callTag) | fail | \(elapsedMs) ms | \(description)")
+            } else {
+                sequenceLog.addLog("\(callTag) | success | \(elapsedMs) ms | \(data?.count ?? 0) propositions")
+            }
         }
     }
 }

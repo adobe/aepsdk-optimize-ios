@@ -11,19 +11,21 @@ governing permissions and limitations under the License.
 */
     
 import AEPAssurance
+import AEPCore
 import AEPOptimize
 
 import SwiftUI
 
 struct SettingsView: View {
     @State private var assuranceSessionURL = ""
-   
+    @State private var edgeBatchingEnabled = false
+
     @EnvironmentObject var odeSettings: OdeSettings
     @EnvironmentObject var targetSettings: TargetSettings
-    
+
     @State private var mboxDictRows: UInt = 1
     @State private var profileDictRows: UInt = 1
-    
+
     var body: some View {
         VStack {
             HeaderView(text: "Settings")
@@ -36,7 +38,15 @@ struct SettingsView: View {
                             }
                         }
                 }
-                
+
+                Section(header: Text("Edge Batching"),
+                        footer: Text("Coalesces multiple queued Experience Events into a single Edge network request. Takes effect on the next event queued after toggling.")) {
+                    Toggle("Enable Edge Batching", isOn: $edgeBatchingEnabled)
+                        .onChange(of: edgeBatchingEnabled) {
+                            MobileCore.updateConfigurationWith(configDict: ["edge.batching.enabled": $0])
+                        }
+                }
+
                 Section(header: Text("AEPOptimize - ODE")) {
                     TextField("Enter Encoded Decision Scope (Text)", text: $odeSettings.textEncodedDecisionScope)
                     TextField("Enter Encoded Decision Scope (Image)", text: $odeSettings.imageEncodedDecisionScope)

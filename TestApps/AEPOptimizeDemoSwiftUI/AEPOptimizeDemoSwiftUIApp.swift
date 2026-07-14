@@ -25,18 +25,22 @@ import AEPOptimize
 import SwiftUI
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
-    private let ENVIRONMENT_FILE_ID = ""
+    // Same Launch/Data Collection property used by aepsdk-optimize-android's test app
+    // (MainApplication.kt's LAUNCH_ENVIRONMENT_FILE_ID) for apples-to-apples batching validation.
+    private let ENVIRONMENT_FILE_ID = "3149c49c3910/0f12baf27522/launch-c219c0fa9543"
     private let OVERRIDE_DATASET_ID = ""
-    
+
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         MobileCore.setLogLevel(.trace)
 
         MobileCore.registerExtensions([AEPEdgeIdentity.Identity.self, AEPIdentity.Identity.self, Lifecycle.self, Signal.self, Edge.self, Optimize.self, Assurance.self]) {
             MobileCore.configureWith(appId: self.ENVIRONMENT_FILE_ID)
-            
-            // Update Configuration with override dataset identifier
-            MobileCore.updateConfigurationWith(configDict: ["optimize.datasetId": self.OVERRIDE_DATASET_ID])
 
+            // Update Configuration with override dataset identifier, only if one was actually provided
+            // (an empty override would otherwise clobber the real Launch-configured optimize.datasetId).
+            if !self.OVERRIDE_DATASET_ID.isEmpty {
+                MobileCore.updateConfigurationWith(configDict: ["optimize.datasetId": self.OVERRIDE_DATASET_ID])
+            }
         }
         return true
     }

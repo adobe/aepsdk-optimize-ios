@@ -46,6 +46,18 @@ def app_dev
   pod 'AEPEdgeIdentity', :git => 'https://github.com/adobe/aepsdk-edgeidentity-ios.git', :branch => 'dev-v5.0.0'
 end
 
+# Local-checkout variant for validating the Edge iOS batching port against this machine's
+# aepsdk-edge-ios working copy, without publishing anything. Not for CI/release use.
+def app_local
+  lib_main
+  pod 'AEPLifecycle'
+  pod 'AEPSignal'
+  pod 'AEPIdentity'
+  pod 'AEPEdge', :path => '/Users/sagar/Adobe/aepsdk-edge-ios'
+  pod 'AEPEdgeConsent'
+  pod 'AEPEdgeIdentity'
+end
+
 # ==================
 # TARGET DEFINITIONS
 # ==================
@@ -63,19 +75,19 @@ target 'FunctionalTests' do
 end
 
 target 'IntegrationTests' do
-  app_main
+  app_local
 end
 
 target 'AEPOptimizeDemoAppExtension' do
-  app_main
+  app_local
 end
 
-target 'AEPOptimizeDemoSwiftUI' do  
-  app_main
+target 'AEPOptimizeDemoSwiftUI' do
+  app_local
   pod 'AEPAssurance'
 end
 
 target 'AEPOptimizeDemoObjC' do
-  app_main
+  app_local
   pod 'AEPAssurance'
 end

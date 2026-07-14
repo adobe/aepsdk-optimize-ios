@@ -26,7 +26,7 @@ PODS:
 DEPENDENCIES:
   - AEPAssurance
   - AEPCore
-  - AEPEdge
+  - AEPEdge (from `/Users/sagar/Adobe/aepsdk-edge-ios`)
   - AEPEdgeConsent
   - AEPEdgeIdentity
   - AEPIdentity
@@ -40,7 +40,6 @@ SPEC REPOS:
   trunk:
     - AEPAssurance
     - AEPCore
-    - AEPEdge
     - AEPEdgeConsent
     - AEPEdgeIdentity
     - AEPIdentity
@@ -49,6 +48,10 @@ SPEC REPOS:
     - AEPServices
     - AEPSignal
     - SwiftLint
+
+EXTERNAL SOURCES:
+  AEPEdge:
+    :path: "/Users/sagar/Adobe/aepsdk-edge-ios"
 
 SPEC CHECKSUMS:
   AEPAssurance: df04baeace42befb0cc213fd6cdfe51651d11ba6
@@ -63,6 +66,6 @@ SPEC CHECKSUMS:
   AEPSignal: 9b34890eea1b81714aa45b7d7f8deb82206b0ca2
   SwiftLint: 13280e21cdda6786ad908dc6e416afe5acd1fcb7
 
-PODFILE CHECKSUM: 6c01a16ccaa4ad210fcb2a0841c0df8d98fd1f78
+PODFILE CHECKSUM: 0e5d35af8b4a6a6d53f3d34b1447410cd4acddfd
 
 COCOAPODS: 1.16.2
