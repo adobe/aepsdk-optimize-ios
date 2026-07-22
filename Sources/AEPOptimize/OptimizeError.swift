@@ -17,7 +17,7 @@ import Foundation
 
 /// AEPOptimizeError class used to create AEPOptimizeError from error details received from Experience Edge.
 @objc(AEPOptimizeError)
-public class AEPOptimizeError: NSObject, Error, Codable {
+public final class AEPOptimizeError: NSObject, Error, Codable {
     typealias HTTPResponseCodes = OptimizeConstants.HTTPResponseCodes
     public let type: String?
     public let status: Int?
