@@ -48,7 +48,7 @@ public extension Optimize {
     /// - Parameter data: Additional free-form data to be sent in the personalization request.
     /// - Parameter timeout: Timeout for the event.
     /// - Parameter completion: Optional completion handler invoked with map of successful decision scopes to propositions and errors, if any
-    @objc(updatePropositions:withXdm:timeout:andData:completion:)
+    @objc(updatePropositions:withXdm:andData:timeout:completion:)
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, timeout: TimeInterval, _ completion: (([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
         let flattenedDecisionScopes = decisionScopes
             .filter { $0.isValid }
