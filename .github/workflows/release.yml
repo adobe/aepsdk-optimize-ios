@@ -23,7 +23,7 @@ jobs:
   release_AEPOptimize:
     runs-on: macOS-14
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         ref: main
     - uses: maxim-lobanov/setup-xcode@v1
@@ -66,8 +66,8 @@ jobs:
         make zip 
 
     - name: Create GH release
-      id: create_release       
-      uses: release-drafter/release-drafter@v5
+      id: create_release
+      uses: release-drafter/release-drafter@v6
       if: ${{ github.event.inputs.action_tag == 'yes' }}
       with:
         name: v${{ github.event.inputs.tag }}
@@ -77,14 +77,16 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Rename asset
+      if: ${{ github.event.inputs.action_tag == 'yes' }}
+      run: mv ./build/AEPOptimize.xcframework.zip ./build/AEPOptimize-${{ github.event.inputs.tag }}.xcframework.zip
+
     - name: Upload - AEPOptimize
-      uses: actions/upload-release-asset@v1
-      if: ${{ github.event.inputs.action_tag == 'yes' }}  
+      uses: softprops/action-gh-release@v2
+      if: ${{ github.event.inputs.action_tag == 'yes' }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./build/AEPOptimize.xcframework.zip
-        asset_name: AEPOptimize-${{ github.event.inputs.tag }}.xcframework.zip
-        asset_content_type: application/zip
+        tag_name: ${{ github.event.inputs.tag }}
+        files: ./build/AEPOptimize-${{ github.event.inputs.tag }}.xcframework.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

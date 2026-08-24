@@ -134,7 +134,7 @@ class OptimizeIntegrationTests: XCTestCase {
                     // xdm
                     let xdm = event?["xdm"] as? [String: Any]
                     let eventType = xdm?["eventType"] as? String
-                    XCTAssertEqual("personalization.request", eventType)
+                    XCTAssertEqual("decisioning.propositionFetch", eventType)
                     
                     // query
                     let query = event?["query"] as? [String: Any]

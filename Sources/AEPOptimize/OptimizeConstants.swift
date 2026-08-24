@@ -15,7 +15,7 @@ import Foundation
 enum OptimizeConstants {
     static let EXTENSION_NAME = "com.adobe.optimize"
     static let FRIENDLY_NAME = "Optimize"
-    static let EXTENSION_VERSION = "5.6.1"
+    static let EXTENSION_VERSION = "5.7.0"
     static let LOG_TAG = FRIENDLY_NAME
 
     static let DECISION_SCOPE_NAME = "name"
@@ -115,7 +115,7 @@ enum OptimizeConstants {
     }
 
     enum JsonValues {
-        static let EE_EVENT_TYPE_PERSONALIZATION = "personalization.request"
+        static let EE_EVENT_TYPE_PERSONALIZATION = "decisioning.propositionFetch"
         static let EE_EVENT_TYPE_PROPOSITION_DISPLAY = "decisioning.propositionDisplay"
         static let EE_EVENT_TYPE_PROPOSITION_INTERACT = "decisioning.propositionInteract"
 
