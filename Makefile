@@ -63,10 +63,10 @@ install-swiftformat:
 	(brew install swiftformat) 
 
 check-format:
-	(swiftformat --lint Sources/$(PROJECT_NAME) --swiftversion 5.1)
+	(swiftformat --lint Sources/$(PROJECT_NAME) --swiftversion 5.10)
 	
 swift-format:
-	(swiftformat Sources/$(PROJECT_NAME) --swiftversion 5.1)
+	(swiftformat Sources/$(PROJECT_NAME) --swiftversion 5.10)
 
 lint:
 	(./Pods/SwiftLint/swiftlint lint $(PROJECT_NAME)/Sources)

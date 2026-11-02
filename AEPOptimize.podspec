@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => "Apache License, Version 2.0", :file => "LICENSE" }
   s.author           = "Adobe Experience Platform SDK Team"
   s.source           = { :git => "https://github.com/adobe/aepsdk-optimize-ios.git", :tag => s.version.to_s }
-  s.swift_version = '5.1'
+  s.swift_version = '5.10'
   s.ios.deployment_target = '15.0'
 
   s.pod_target_xcconfig = { 'BUILD_LIBRARY_FOR_DISTRIBUTION' => 'YES' }
