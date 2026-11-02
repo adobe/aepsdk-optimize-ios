@@ -13,7 +13,6 @@
 import AEPServices
 import Foundation
 
-// Offers are handed across threads in Swift 6 apps. All stored state is immutable except proposition, which is guarded by stateLock so the unchecked Sendable conformance holds.
 /// `Offer` class
 @objc(AEPOffer)
 public class Offer: NSObject, Codable, @unchecked Sendable {
@@ -50,6 +49,7 @@ public class Offer: NSObject, Codable, @unchecked Sendable {
         set { stateLock.lock(); defer { stateLock.unlock() }; _proposition = newValue }
     }
 
+    // Offers are handed across threads in Swift 6 apps. All stored state is immutable except proposition, which is guarded by stateLock so the unchecked Sendable conformance holds.
     private let stateLock = NSLock()
     private weak var _proposition: OptimizeProposition?
 
@@ -120,7 +120,7 @@ public class Offer: NSObject, Codable, @unchecked Sendable {
             } else if let data = data.dictionaryValue {
                 jsonData = data
             }
-            if let jsonData = jsonData,
+            if let jsonData,
                let encodedData = try? JSONSerialization.data(withJSONObject: jsonData),
                let offerContent = String(data: encodedData, encoding: .utf8)
             {

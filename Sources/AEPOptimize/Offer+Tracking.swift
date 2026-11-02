@@ -27,7 +27,7 @@ public extension Offer {
     /// - Returns A dictionary containing XDM data for the propositon interactions.
     /// - SeeAlso: `interactionXdm(for:)`
     func generateDisplayInteractionXdm() -> [String: Any]? {
-        guard let proposition = proposition else {
+        guard let proposition else {
             Log.debug(label: OptimizeConstants.LOG_TAG,
                       "Cannot send display proposition interaction event for option \(id), proposition reference is not available.")
             return nil
@@ -44,7 +44,7 @@ public extension Offer {
     /// - Returns A dictionary containing XDM data for the propositon interactions.
     /// - SeeAlso: `interactionXdm(for:)`
     func generateTapInteractionXdm() -> [String: Any]? {
-        guard let proposition = proposition else {
+        guard let proposition else {
             Log.debug(label: OptimizeConstants.LOG_TAG,
                       "Cannot send tap proposition interaction event for option \(id), proposition reference is not available.")
             return nil

@@ -53,15 +53,15 @@ public enum OfferType: Int, Codable {
     public func toString() -> String {
         switch self {
         case .html:
-            return "text/html"
+            "text/html"
         case .json:
-            return "application/json"
+            "application/json"
         case .text:
-            return "text/plain"
+            "text/plain"
         case .image:
-            return "image/*"
+            "image/*"
         default:
-            return ""
+            ""
         }
     }
 }

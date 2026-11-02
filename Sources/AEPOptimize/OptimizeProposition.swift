@@ -13,12 +13,12 @@
 import AEPServices
 import Foundation
 
-// Callbacks hand propositions across threads in Swift 6 apps. Every mutable property is guarded by stateLock so the unchecked Sendable conformance holds.
 /// `OptimizeProposition` class
 @objc(AEPOptimizeProposition)
 public class OptimizeProposition: NSObject, Codable, @unchecked Sendable {
     private let items: [Offer]
 
+    // Callbacks hand propositions across threads in Swift 6 apps. Every mutable property is guarded by stateLock so the unchecked Sendable conformance holds.
     private let stateLock = NSLock()
     private var _offers: [Offer]?
     private var _scopeDetails: [String: Any]

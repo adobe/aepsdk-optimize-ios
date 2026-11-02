@@ -28,7 +28,6 @@ public extension Optimize {
         updatePropositions(for: decisionScopes, withXdm: xdm, andData: data, nil)
     }
 
-    // Completion runs on the SDK queue. Sendable tells Swift 6 apps not to assume main actor, and preconcurrency keeps old callers compiling.
     /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the decisioning Services enabled behind Experience Edge.
     ///
     /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
@@ -39,10 +38,10 @@ public extension Optimize {
     @objc(updatePropositions:withXdm:andData:completion:)
     @preconcurrency
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, _ completion: (@Sendable ([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
+        // Completion runs on the SDK queue. Sendable tells Swift 6 apps not to assume main actor, and preconcurrency keeps old callers compiling.
         updatePropositions(for: decisionScopes, withXdm: xdm, andData: data, timeout: Double.infinity, completion)
     }
 
-    // Completion runs on the SDK queue. Sendable tells Swift 6 apps not to assume main actor, and preconcurrency keeps old callers compiling.
     /// This API dispatches an Event for the Edge network extension to fetch decision propositions for the provided decision scopes from the decisioning Services enabled behind Experience Edge.
     ///
     /// The returned decision propositions are cached in memory in the Optimize SDK extension and can be retrieved using `getPropositions(for:_:)` API.
@@ -54,8 +53,9 @@ public extension Optimize {
     @objc(updatePropositions:withXdm:timeout:andData:completion:)
     @preconcurrency
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, timeout: TimeInterval, _ completion: (@Sendable ([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
+        // Completion runs on the SDK queue. Sendable tells Swift 6 apps not to assume main actor, and preconcurrency keeps old callers compiling.
         let flattenedDecisionScopes = decisionScopes
-            .filter { $0.isValid }
+            .filter(\.isValid)
             .compactMap { $0.asDictionary() }
 
         guard !flattenedDecisionScopes.isEmpty else {
@@ -71,12 +71,12 @@ public extension Optimize {
             OptimizeConstants.EventDataKeys.DECISION_SCOPES: flattenedDecisionScopes
         ]
         // Add XDM data
-        if let xdm = xdm {
+        if let xdm {
             eventData[OptimizeConstants.EventDataKeys.XDM] = xdm
         }
 
         // Add free-form data
-        if let data = data {
+        if let data {
             eventData[OptimizeConstants.EventDataKeys.DATA] = data
         }
 
@@ -86,7 +86,7 @@ public extension Optimize {
                           source: EventSource.requestContent,
                           data: eventData)
         MobileCore.dispatch(event: event, timeout: timeout) { responseEvent in
-            guard let responseEvent = responseEvent else {
+            guard let responseEvent else {
                 let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError()
                 completion?(nil, timeoutError)
                 return
@@ -97,7 +97,6 @@ public extension Optimize {
         }
     }
 
-    // Completion runs on the SDK queue. Sendable tells Swift 6 apps not to assume main actor, and preconcurrency keeps old callers compiling.
     /// This API retrieves the previously fetched decisions for the provided decision scopes from the in-memory extension cache.
     ///
     /// The completion handler will be invoked with the decision propositions corresponding to the given decision scopes. If a certain decision scope has not already been fetched prior to this API call, it will not be contained in the returned propositions.
@@ -107,10 +106,10 @@ public extension Optimize {
     @objc(getPropositions:completion:)
     @preconcurrency
     static func getPropositions(for decisionScopes: [DecisionScope], _ completion: @escaping @Sendable ([DecisionScope: OptimizeProposition]?, Error?) -> Void) {
+        // Completion runs on the SDK queue. Sendable tells Swift 6 apps not to assume main actor, and preconcurrency keeps old callers compiling.
         getPropositions(for: decisionScopes, timeout: OptimizeConstants.DEFAULT_TIMEOUT, completion)
     }
 
-    // Completion runs on the SDK queue. Sendable tells Swift 6 apps not to assume main actor, and preconcurrency keeps old callers compiling.
     /// This API retrieves the previously fetched decisions for the provided decision scopes from the in-memory extension cache.
     ///
     /// The completion handler will be invoked with the decision propositions corresponding to the given decision scopes. If a certain decision scope has not already been fetched prior to this API call, it will not be contained in the returned propositions.
@@ -121,8 +120,9 @@ public extension Optimize {
     @objc(getPropositions:timeout:completion:)
     @preconcurrency
     static func getPropositions(for decisionScopes: [DecisionScope], timeout: TimeInterval, _ completion: @escaping @Sendable ([DecisionScope: OptimizeProposition]?, Error?) -> Void) {
+        // Completion runs on the SDK queue. Sendable tells Swift 6 apps not to assume main actor, and preconcurrency keeps old callers compiling.
         let flattenedDecisionScopes = decisionScopes
-            .filter { $0.isValid }
+            .filter(\.isValid)
             .compactMap { $0.asDictionary() }
 
         guard !flattenedDecisionScopes.isEmpty else {
@@ -143,7 +143,7 @@ public extension Optimize {
                           data: eventData)
 
         MobileCore.dispatch(event: event, timeout: timeout) { responseEvent in
-            guard let responseEvent = responseEvent else {
+            guard let responseEvent else {
                 completion(nil, AEPError.callbackTimeout)
                 return
             }
@@ -163,7 +163,6 @@ public extension Optimize {
         }
     }
 
-    // Listener runs on the SDK queue. Sendable tells Swift 6 apps not to assume main actor, and preconcurrency keeps old callers compiling.
     /// This API registers a permanent callback which will be invoked whenever the Edge extension dispatches an Event handle,
     /// upon a personalization decisions response from the Experience Edge Network.
     ///
@@ -174,6 +173,7 @@ public extension Optimize {
     @objc(onPropositionsUpdate:)
     @preconcurrency
     static func onPropositionsUpdate(perform action: @escaping @Sendable ([DecisionScope: OptimizeProposition]) -> Void) {
+        // Listener runs on the SDK queue. Sendable tells Swift 6 apps not to assume main actor, and preconcurrency keeps old callers compiling.
         MobileCore.registerEventListener(type: EventType.optimize, source: EventSource.notification) { event in
             guard
                 let propositions: [DecisionScope: OptimizeProposition] = event.getTypedData(for: OptimizeConstants.EventDataKeys.PROPOSITIONS),

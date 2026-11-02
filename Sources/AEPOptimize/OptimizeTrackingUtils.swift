@@ -61,7 +61,7 @@ enum OptimizeTrackingUtils {
     ///
     /// - Parameter xdmData: A dictionary containing XDM data for the proposition interactions.
     static func trackWithData(_ xdmData: [String: Any]?) {
-        guard let xdmData = xdmData else {
+        guard let xdmData else {
             Log.debug(label: OptimizeConstants.LOG_TAG,
                       "Cannot send track propositions request event, the provided xdmData is nil.")
             return
@@ -91,7 +91,7 @@ enum OptimizeTrackingUtils {
     /// If no matching propositions are found, returns an empty array.
     static func mapToUniquePropositions(_ offers: [Offer]) -> [OptimizeProposition] {
         // Get unique propositions from offers
-        let uniquePropositions = Set(offers.compactMap { $0.proposition })
+        let uniquePropositions = Set(offers.compactMap(\.proposition))
 
         // For each unique proposition, create a new proposition with only the relevant offers
         let filteredPropositions = uniquePropositions.compactMap { proposition -> OptimizeProposition? in
