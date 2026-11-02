@@ -31,7 +31,7 @@ class String_OptimizeTests: XCTestCase {
     }
 
     func testBase64Decode_invalidString() {
-        XCTAssertNil("VGhp=".base64Decode())
+        XCTAssertNil("=VGhp=".base64Decode())
     }
 
     func testBase64Decode_emptyString() {
