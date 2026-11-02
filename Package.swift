@@ -16,7 +16,7 @@ import PackageDescription
 
 let package = Package(
     name: "AEPOptimize",
-    platforms: [.iOS(.v12)],
+    platforms: [.iOS("15.0")],
     products: [
         .library(name: "AEPOptimize", targets: ["AEPOptimize"]),
     ],
