@@ -60,7 +60,7 @@ commands:
 jobs:
   validate-code:
     macos:
-      xcode: 15.3.0 # Specify the Xcode version to use
+      xcode: 27.0.0 # Specify the Xcode version to use
 
     steps:
       - checkout
