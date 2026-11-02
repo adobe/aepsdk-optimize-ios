@@ -54,11 +54,12 @@ commands:
     steps:
       - macos/preboot-simulator:
           platform: "iOS"
-          version: "17.4"
-          device: "iPhone 15"
+          version: "27.0"
+          device: "iPhone 18 Pro"
 
 jobs:
   validate-code:
+    resource_class: m4pro.medium
     macos:
       xcode: 27.0.0 # Specify the Xcode version to use
 
@@ -80,8 +81,9 @@ jobs:
           command: make check-format
 
   test-ios:
+    resource_class: m4pro.medium
     macos:
-      xcode: 15.3.0 # Specify the Xcode version to use
+      xcode: 27.0.0 # Specify the Xcode version to use
 
     steps:
       - checkout
@@ -101,9 +103,10 @@ jobs:
       #     upload_name: Coverage Report for AEPOptimize iOS Tests
       #     xtra_args: -c -v --xc --xp ./build/AEPOptimize.xcresult
 
-  test-spm-podspec-archive:  
+  test-spm-podspec-archive:
+    resource_class: m4pro.medium
     macos:
-      xcode: 15.3.0 # Specify the Xcode version to use
+      xcode: 27.0.0 # Specify the Xcode version to use
     
     steps:
       - checkout
@@ -130,3 +133,4 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "main" ] || [ "${CIRCLE_BRANCH}" == "staging" ]; then
               make test-SPM-integration
             fi
+
