@@ -13,8 +13,8 @@
 import AEPServices
 import Foundation
 
-/// `Offer` class
 // Offers are handed across threads in Swift 6 apps. All stored state is immutable except proposition, which is guarded by stateLock so the unchecked Sendable conformance holds.
+/// `Offer` class
 @objc(AEPOffer)
 public class Offer: NSObject, Codable, @unchecked Sendable {
     /// Unique Offer identifier

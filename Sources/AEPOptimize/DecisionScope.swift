@@ -13,8 +13,8 @@
 import AEPServices
 import Foundation
 
-/// `DecisionScope` class is used to create decision scopes for personalization requests to Experience Edge Network.
 // Decision scopes are handed across threads in Swift 6 apps. The only stored state is an immutable name, so the unchecked Sendable conformance is safe.
+/// `DecisionScope` class is used to create decision scopes for personalization requests to Experience Edge Network.
 @objc(AEPDecisionScope)
 public class DecisionScope: NSObject, Codable, @unchecked Sendable {
     /// Decision scope name
