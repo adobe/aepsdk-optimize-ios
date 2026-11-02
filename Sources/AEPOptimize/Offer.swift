@@ -14,8 +14,9 @@ import AEPServices
 import Foundation
 
 /// `Offer` class
+// Offers are handed across threads in Swift 6 apps. All stored state is immutable except proposition, which is guarded by stateLock so the unchecked Sendable conformance holds.
 @objc(AEPOffer)
-public class Offer: NSObject, Codable {
+public class Offer: NSObject, Codable, @unchecked Sendable {
     /// Unique Offer identifier
     @objc public let id: String
 
@@ -44,7 +45,13 @@ public class Offer: NSObject, Codable {
     @objc public let characteristics: [String: String]?
 
     /// Weak reference to OptimizeProposition instance
-    @objc weak var proposition: OptimizeProposition?
+    @objc var proposition: OptimizeProposition? {
+        get { stateLock.lock(); defer { stateLock.unlock() }; return _proposition }
+        set { stateLock.lock(); defer { stateLock.unlock() }; _proposition = newValue }
+    }
+
+    private let stateLock = NSLock()
+    private weak var _proposition: OptimizeProposition?
 
     enum CodingKeys: String, CodingKey {
         case id

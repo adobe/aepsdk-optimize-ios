@@ -14,32 +14,56 @@ import AEPServices
 import Foundation
 
 /// `OptimizeProposition` class
+// Callbacks hand propositions across threads in Swift 6 apps. Every mutable property is guarded by stateLock so the unchecked Sendable conformance holds.
 @objc(AEPOptimizeProposition)
-public class OptimizeProposition: NSObject, Codable {
+public class OptimizeProposition: NSObject, Codable, @unchecked Sendable {
     private let items: [Offer]
+
+    private let stateLock = NSLock()
+    private var _offers: [Offer]?
+    private var _scopeDetails: [String: Any]
+    private var _activity: [String: Any]
+    private var _placement: [String: Any]
 
     /// Unique proposition identifier
     @objc public let id: String
 
     /// Array containing proposition decision options
-    @objc public lazy var offers: [Offer] = {
-        for item in items {
-            item.proposition = self
+    @objc public var offers: [Offer] {
+        get {
+            stateLock.lock(); defer { stateLock.unlock() }
+            if let offers = _offers {
+                return offers
+            }
+            for item in items {
+                item.proposition = self
+            }
+            _offers = items
+            return items
         }
-        return items
-    }()
+        set { stateLock.lock(); defer { stateLock.unlock() }; _offers = newValue }
+    }
 
     /// Decision scope string
     @objc public let scope: String
 
     /// Scope details dictionary
-    @objc public var scopeDetails: [String: Any]
+    @objc public var scopeDetails: [String: Any] {
+        get { stateLock.lock(); defer { stateLock.unlock() }; return _scopeDetails }
+        set { stateLock.lock(); defer { stateLock.unlock() }; _scopeDetails = newValue }
+    }
 
     /// Scope details dictionary
-    @objc public var activity: [String: Any]
+    @objc public var activity: [String: Any] {
+        get { stateLock.lock(); defer { stateLock.unlock() }; return _activity }
+        set { stateLock.lock(); defer { stateLock.unlock() }; _activity = newValue }
+    }
 
     /// Scope details dictionary
-    @objc public var placement: [String: Any]
+    @objc public var placement: [String: Any] {
+        get { stateLock.lock(); defer { stateLock.unlock() }; return _placement }
+        set { stateLock.lock(); defer { stateLock.unlock() }; _placement = newValue }
+    }
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -58,11 +82,11 @@ public class OptimizeProposition: NSObject, Codable {
         let scopeDetailsCodableDict = try? container.decode([String: AnyCodable].self, forKey: .scopeDetails)
         // Fix this once ODE supports scopeDetails in personalization query response,
         // refer to https://jira.corp.adobe.com/browse/CSMO-12405
-        scopeDetails = AnyCodable.toAnyDictionary(dictionary: scopeDetailsCodableDict) ?? [:]
+        _scopeDetails = AnyCodable.toAnyDictionary(dictionary: scopeDetailsCodableDict) ?? [:]
         let activityCodableDict = try? container.decode([String: AnyCodable].self, forKey: .activity)
-        activity = AnyCodable.toAnyDictionary(dictionary: activityCodableDict) ?? [:]
+        _activity = AnyCodable.toAnyDictionary(dictionary: activityCodableDict) ?? [:]
         let placementCodableDict = try? container.decode([String: AnyCodable].self, forKey: .placement)
-        placement = AnyCodable.toAnyDictionary(dictionary: placementCodableDict) ?? [:]
+        _placement = AnyCodable.toAnyDictionary(dictionary: placementCodableDict) ?? [:]
         items = (try? container.decode([Offer].self, forKey: .items, ignoreInvalid: true)) ?? []
     }
 
