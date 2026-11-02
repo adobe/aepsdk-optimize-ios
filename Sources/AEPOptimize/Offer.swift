@@ -120,7 +120,7 @@ public class Offer: NSObject, Codable, @unchecked Sendable {
             } else if let data = data.dictionaryValue {
                 jsonData = data
             }
-            if let jsonData,
+            if let jsonData = jsonData,
                let encodedData = try? JSONSerialization.data(withJSONObject: jsonData),
                let offerContent = String(data: encodedData, encoding: .utf8)
             {

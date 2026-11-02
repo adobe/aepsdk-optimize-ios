@@ -1,2 +1,4 @@
 # For details on formatting rules, refer https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md
 --commas inline
+# Keep the Swift 5.10 rules from rewriting existing code into syntax that needs a newer compiler than the minimum toolchain.
+--disable preferKeyPath,redundantOptionalBinding,redundantReturn,redundantSelf

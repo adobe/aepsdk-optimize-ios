@@ -55,7 +55,7 @@ public extension Optimize {
     static func updatePropositions(for decisionScopes: [DecisionScope], withXdm xdm: [String: Any]?, andData data: [String: Any]? = nil, timeout: TimeInterval, _ completion: (@Sendable ([DecisionScope: OptimizeProposition]?, Error?) -> Void)? = nil) {
         // Completion runs on the SDK queue. Sendable tells Swift 6 apps not to assume main actor, and preconcurrency keeps old callers compiling.
         let flattenedDecisionScopes = decisionScopes
-            .filter(\.isValid)
+            .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
 
         guard !flattenedDecisionScopes.isEmpty else {
@@ -71,12 +71,12 @@ public extension Optimize {
             OptimizeConstants.EventDataKeys.DECISION_SCOPES: flattenedDecisionScopes
         ]
         // Add XDM data
-        if let xdm {
+        if let xdm = xdm {
             eventData[OptimizeConstants.EventDataKeys.XDM] = xdm
         }
 
         // Add free-form data
-        if let data {
+        if let data = data {
             eventData[OptimizeConstants.EventDataKeys.DATA] = data
         }
 
@@ -86,7 +86,7 @@ public extension Optimize {
                           source: EventSource.requestContent,
                           data: eventData)
         MobileCore.dispatch(event: event, timeout: timeout) { responseEvent in
-            guard let responseEvent else {
+            guard let responseEvent = responseEvent else {
                 let timeoutError = AEPOptimizeError.createAEPOptimizeTimeoutError()
                 completion?(nil, timeoutError)
                 return
@@ -122,7 +122,7 @@ public extension Optimize {
     static func getPropositions(for decisionScopes: [DecisionScope], timeout: TimeInterval, _ completion: @escaping @Sendable ([DecisionScope: OptimizeProposition]?, Error?) -> Void) {
         // Completion runs on the SDK queue. Sendable tells Swift 6 apps not to assume main actor, and preconcurrency keeps old callers compiling.
         let flattenedDecisionScopes = decisionScopes
-            .filter(\.isValid)
+            .filter { $0.isValid }
             .compactMap { $0.asDictionary() }
 
         guard !flattenedDecisionScopes.isEmpty else {
@@ -143,7 +143,7 @@ public extension Optimize {
                           data: eventData)
 
         MobileCore.dispatch(event: event, timeout: timeout) { responseEvent in
-            guard let responseEvent else {
+            guard let responseEvent = responseEvent else {
                 completion(nil, AEPError.callbackTimeout)
                 return
             }

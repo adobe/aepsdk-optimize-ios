@@ -110,7 +110,7 @@ public class AEPOptimizeError: NSObject, Error, Codable {
         super.init()
 
         // Map error response to AEPError
-        if let status {
+        if let status = status {
             if status == HTTPResponseCodes.clientTimeout.rawValue {
                 aepError = .callbackTimeout
             } else if serverErrors.contains(status) {
