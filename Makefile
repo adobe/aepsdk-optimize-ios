@@ -34,6 +34,24 @@ test: clean
 	@echo "######################################################################"
 	xcodebuild test -workspace $(PROJECT_NAME).xcworkspace -scheme $(PROJECT_NAME) -destination $(IOS_DESTINATION) -derivedDataPath build/out -resultBundlePath build/$(PROJECT_NAME).xcresult -enableCodeCoverage YES
 
+unit-test: clean
+	@echo "######################################################################"
+	@echo "### Unit Testing"
+	@echo "######################################################################"
+	xcodebuild test -workspace $(PROJECT_NAME).xcworkspace -scheme "UnitTests" -destination $(IOS_DESTINATION) -derivedDataPath build/out -resultBundlePath build/UnitTests.xcresult -enableCodeCoverage YES
+
+functional-test: clean
+	@echo "######################################################################"
+	@echo "### Functional Testing"
+	@echo "######################################################################"
+	xcodebuild test -workspace $(PROJECT_NAME).xcworkspace -scheme "FunctionalTests" -destination $(IOS_DESTINATION) -derivedDataPath build/out -resultBundlePath build/FunctionalTests.xcresult -enableCodeCoverage YES
+
+integration-test: clean
+	@echo "######################################################################"
+	@echo "### Integration Testing"
+	@echo "######################################################################"
+	xcodebuild test -workspace $(PROJECT_NAME).xcworkspace -scheme "IntegrationTests" -destination $(IOS_DESTINATION) -derivedDataPath build/out -resultBundlePath build/IntegrationTests.xcresult -enableCodeCoverage YES
+
 archive: pod-install _archive
 
 ci-archive: ci-pod-install _archive
