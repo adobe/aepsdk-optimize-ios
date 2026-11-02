@@ -14,6 +14,8 @@ import AEPCore
 @testable import AEPOptimize
 import XCTest
 
+// Swift 6 flags sending the test case into main queue closures. The checks already run on main so the whole class is isolated to the main actor.
+@MainActor
 class OptimizeFunctionalTests: XCTestCase {
     var optimize: Optimize!
     var mockRuntime: TestableExtensionRuntime!

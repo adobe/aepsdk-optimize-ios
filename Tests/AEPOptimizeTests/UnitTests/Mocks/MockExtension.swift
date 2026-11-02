@@ -23,9 +23,10 @@ class MockExtension: NSObject, Extension {
         self.runtime = runtime
     }
 
-    static var registrationClosure: (() -> Void)?
-    static var unregistrationClosure: (() -> Void)?
-    static var eventReceivedClosure: ((Event) -> Void)?
+    // Swift 6 flags shared statics as unsafe. Tests set and reset these hooks serially so we opt out of the check here.
+    nonisolated(unsafe) static var registrationClosure: (() -> Void)?
+    nonisolated(unsafe) static var unregistrationClosure: (() -> Void)?
+    nonisolated(unsafe) static var eventReceivedClosure: ((Event) -> Void)?
 
     static func reset() {
         registrationClosure = nil
