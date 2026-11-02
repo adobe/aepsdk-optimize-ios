@@ -79,3 +79,17 @@ format: lint-autocorrect swift-format
 # used to test update-versions.sh script locally
 test-versions:
 	(sh ./scripts/update-versions.sh -n Optimize -v 5.0.1 -d "AEPCore 5.0.0, AEPEdge 5.0.0")
+
+# Builds the AEPOptimize target in Swift 6 language mode. AEPOPTIMIZE_SWIFT_VERSION is
+# only referenced by the AEPOptimize target, so dependency pods keep their own modes.
+build-swift6:
+	xcodebuild build -workspace $(PROJECT_NAME).xcworkspace -scheme $(PROJECT_NAME) -destination 'generic/platform=iOS Simulator' AEPOPTIMIZE_SWIFT_VERSION=6.0
+
+# Compiles a Swift 6 consumer that calls the public completion-handler APIs with
+# plain closures from @MainActor code (protects the @Sendable contract).
+test-swift6-consumer:
+	sh ./scripts/test-swift6-consumer.sh
+
+# Compile-only build on the minimum supported toolchain (Xcode 15.3+/Swift 5.10).
+build-min-toolchain:
+	xcodebuild build -workspace $(PROJECT_NAME).xcworkspace -scheme $(PROJECT_NAME) -destination 'generic/platform=iOS Simulator'
