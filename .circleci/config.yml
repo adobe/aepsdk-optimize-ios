@@ -4,7 +4,7 @@
 version: 2.1
 
 orbs:
-  # codecov: codecov/codecov@3.3.0
+  codecov: codecov/codecov@6.0.0
   macos: circleci/macos@2
 
 # Workflows orchestrate a set of jobs to be run;
@@ -85,6 +85,54 @@ commands:
           version: "27.0"
           device: "iPhone 18 Pro"
 
+  parse_and_upload_coverage:
+    description: "Convert .xcresult → Cobertura XML and upload to Codecov"
+    parameters:
+      # Directory or file created by -resultBundlePath (ex: build/UnitTests.xcresult)
+      path: { type: string }
+      # Codecov flag (ex: aepoptimize-ios-unit-tests)
+      flag: { type: string }
+    steps:
+      - run:
+          name: Install xcresultparser
+          command: brew list xcresultparser || brew install xcresultparser
+
+      - run:
+          name: Parse .xcresult bundle(s)
+          command: |
+            set -eo pipefail
+            mkdir -p ./build/coverage
+
+            BUNDLE="<< parameters.path >>"
+
+            if [ -d "$BUNDLE" ]; then
+              echo "Directory given; searching for .xcresult…"
+              RESULT_FILES=$(find "$BUNDLE" -name "*.xcresult")
+              [ -z "$RESULT_FILES" ] && { echo "No .xcresult found"; exit 0; }
+
+              # Merge if there is more than one bundle
+              COUNT=$(echo "$RESULT_FILES" | wc -w)
+              if [ "$COUNT" -gt 1 ]; then
+                echo "Merging $COUNT result bundles"
+                MERGE_CMD="xcrun xccov merge --output ./build/Merged.xcresult"
+                for f in $RESULT_FILES; do MERGE_CMD="$MERGE_CMD $f"; done
+                eval "$MERGE_CMD"
+                xcresultparser --output-format cobertura ./build/Merged.xcresult > ./build/coverage/coverage.xml
+              else
+                echo "Single bundle found"
+                xcresultparser --output-format cobertura $RESULT_FILES > ./build/coverage/coverage.xml
+              fi
+            else
+              echo "File given; parsing $BUNDLE"
+              xcresultparser --output-format cobertura "$BUNDLE" > ./build/coverage/coverage.xml
+            fi
+
+      - codecov/upload:
+          files: ./build/coverage/coverage.xml
+          flags: << parameters.flag >>
+          upload_name: << parameters.flag >>
+          disable_search: true
+
 jobs:
   validate-code:
     resource_class: m4pro.medium
@@ -124,6 +172,10 @@ jobs:
           name: Run Unit Tests
           command: make unit-test
 
+      - parse_and_upload_coverage:
+          path: build/UnitTests.xcresult
+          flag: aepoptimize-ios-unit-tests
+
   test-ios-functional:
     resource_class: m4pro.medium
     macos:
@@ -139,6 +191,10 @@ jobs:
       - run:
           name: Run Functional Tests
           command: make functional-test
+
+      - parse_and_upload_coverage:
+          path: build/FunctionalTests.xcresult
+          flag: aepoptimize-ios-functional-tests
 
   test-ios-integration:
     resource_class: m4pro.medium
