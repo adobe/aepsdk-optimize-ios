@@ -8,7 +8,7 @@ SIMULATOR_ARCHIVE_PATH = $(CURRENT_DIRECTORY)/build/ios_simulator.xcarchive/Prod
 SIMULATOR_ARCHIVE_DSYM_PATH = $(CURRENT_DIRECTORY)/build/ios_simulator.xcarchive/dSYMs/
 IOS_ARCHIVE_PATH = $(CURRENT_DIRECTORY)/build/ios.xcarchive/Products/Library/Frameworks/
 IOS_ARCHIVE_DSYM_PATH = $(CURRENT_DIRECTORY)/build/ios.xcarchive/dSYMs/
-IOS_DESTINATION = 'platform=iOS Simulator,name=iPhone 15'
+IOS_DESTINATION = 'platform=iOS Simulator,name=iPhone 18 Pro'
 
 pod-install:
 	(pod install --repo-update)
@@ -33,6 +33,24 @@ test: clean
 	@echo "### Testing iOS"
 	@echo "######################################################################"
 	xcodebuild test -workspace $(PROJECT_NAME).xcworkspace -scheme $(PROJECT_NAME) -destination $(IOS_DESTINATION) -derivedDataPath build/out -resultBundlePath build/$(PROJECT_NAME).xcresult -enableCodeCoverage YES
+
+unit-test: clean
+	@echo "######################################################################"
+	@echo "### Unit Testing"
+	@echo "######################################################################"
+	xcodebuild test -workspace $(PROJECT_NAME).xcworkspace -scheme "UnitTests" -destination $(IOS_DESTINATION) -derivedDataPath build/out -resultBundlePath build/UnitTests.xcresult -enableCodeCoverage YES
+
+functional-test: clean
+	@echo "######################################################################"
+	@echo "### Functional Testing"
+	@echo "######################################################################"
+	xcodebuild test -workspace $(PROJECT_NAME).xcworkspace -scheme "FunctionalTests" -destination $(IOS_DESTINATION) -derivedDataPath build/out -resultBundlePath build/FunctionalTests.xcresult -enableCodeCoverage YES
+
+integration-test: clean
+	@echo "######################################################################"
+	@echo "### Integration Testing"
+	@echo "######################################################################"
+	xcodebuild test -workspace $(PROJECT_NAME).xcworkspace -scheme "IntegrationTests" -destination $(IOS_DESTINATION) -derivedDataPath build/out -resultBundlePath build/IntegrationTests.xcresult -enableCodeCoverage YES
 
 archive: pod-install _archive
 
@@ -63,10 +81,10 @@ install-swiftformat:
 	(brew install swiftformat) 
 
 check-format:
-	(swiftformat --lint Sources/$(PROJECT_NAME) --swiftversion 5.1)
+	(swiftformat --lint Sources/$(PROJECT_NAME) --swiftversion 5.10)
 	
 swift-format:
-	(swiftformat Sources/$(PROJECT_NAME) --swiftversion 5.1)
+	(swiftformat Sources/$(PROJECT_NAME) --swiftversion 5.10)
 
 lint:
 	(./Pods/SwiftLint/swiftlint lint $(PROJECT_NAME)/Sources)
@@ -79,3 +97,17 @@ format: lint-autocorrect swift-format
 # used to test update-versions.sh script locally
 test-versions:
 	(sh ./scripts/update-versions.sh -n Optimize -v 5.0.1 -d "AEPCore 5.0.0, AEPEdge 5.0.0")
+
+# Builds the AEPOptimize target in Swift 6 language mode. AEPOPTIMIZE_SWIFT_VERSION is
+# only referenced by the AEPOptimize target, so dependency pods keep their own modes.
+build-swift6:
+	xcodebuild build -workspace $(PROJECT_NAME).xcworkspace -scheme $(PROJECT_NAME) -destination 'generic/platform=iOS Simulator' AEPOPTIMIZE_SWIFT_VERSION=6.0
+
+# Compiles a Swift 6 consumer that calls the public completion-handler APIs with
+# plain closures from @MainActor code (protects the @Sendable contract).
+test-swift6-consumer:
+	sh ./scripts/test-swift6-consumer.sh
+
+# Compile-only build on the minimum supported toolchain (Xcode 15.3+/Swift 5.10).
+build-min-toolchain:
+	xcodebuild build -workspace $(PROJECT_NAME).xcworkspace -scheme $(PROJECT_NAME) -destination 'generic/platform=iOS Simulator'

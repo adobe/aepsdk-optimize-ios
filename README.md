@@ -8,8 +8,8 @@ The AEPOptimize Mobile SDK provides APIs to enable real-time personalization wor
 
 ## Requirements
 
-- Xcode 15 (or newer)
-- Swift 5.1 (or newer)
+- Xcode 15.3 (or newer)
+- Swift 5.10 (or newer)
 
 ## Installation
 

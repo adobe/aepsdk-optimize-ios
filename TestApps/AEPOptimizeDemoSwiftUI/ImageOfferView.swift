@@ -43,6 +43,8 @@ struct ImageOfferView: View {
     }
 }
 
+// Published state drives the view, so the loader is isolated to the main actor and can be safely captured in the main queue update below.
+@MainActor
 class ImageLoader: ObservableObject {
     @Published var uiImage: UIImage?
 

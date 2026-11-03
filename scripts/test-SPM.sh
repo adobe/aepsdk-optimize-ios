@@ -23,13 +23,13 @@ mkdir -p $PROJECT_NAME && cd $PROJECT_NAME
 swift package init
 
 # Create the Package.swift.
-echo "// swift-tools-version:5.3
+echo "// swift-tools-version:5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 let package = Package(
     name: \"TestProject\",
     platforms: [
-        .iOS(.v12)
+        .iOS(.v15)
     ],
     products: [
         .library(

@@ -4,7 +4,7 @@
 version: 2.1
 
 orbs:
-  # codecov: codecov/codecov@3.3.0
+  codecov: codecov/codecov@6.0.0
   macos: circleci/macos@2
 
 # Workflows orchestrate a set of jobs to be run;
@@ -13,10 +13,22 @@ workflows:
   build-test-deploy:
     jobs:
       - validate-code
-      - test-ios:
+      - test-ios-unit:
+          requires:
+            - validate-code
+      - test-ios-functional:
+          requires:
+            - validate-code
+      - test-ios-integration:
           requires:
             - validate-code
       - test-spm-podspec-archive:
+          requires:
+            - validate-code
+      - build-swift6:
+          requires:
+            - validate-code
+      - build-min-toolchain:
           requires:
             - validate-code
 
@@ -32,7 +44,9 @@ commands:
       # make sure we're on the right version of cocoapods
       - run:
           name: Verify Cocoapods Version
-          command: bundle check || bundle install --path vendor/bundle
+          command: |
+            bundle config set path 'vendor/bundle'
+            bundle check || bundle install
 
       # save cocoapods version gem data
       - save_cache:
@@ -40,6 +54,20 @@ commands:
           key: 1-gems-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
+
+      # CircleCI's `checkout` injects a global git rule that rewrites https://github.com -> SSH.
+      # On this resource class SSH egress is blocked, so HTTPS clones of GitHub packages fail.
+      # Remove that rewrite (so HTTPS is used as-is) and force any SSH GitHub URLs back to HTTPS.
+      - run:
+          name: Force git to use HTTPS for GitHub
+          command: |
+            # `--get-regexp` exits 1 when no key matches; under CircleCI's default `bash -eo pipefail`
+            # that would abort the step before the insteadOf lines run. Trailing `|| true` keeps it tolerant.
+            git config --global --get-regexp 'url\..*\.insteadof' 2>/dev/null | awk '{print $1}' | while read -r key; do
+              git config --global --unset-all "$key" || true
+            done || true
+            git config --global url."https://github.com/".insteadOf "git@github.com:"
+            git config --global --add url."https://github.com/".insteadOf "ssh://git@github.com/"
 
       # install CocoaPods - using default CocoaPods version, not the bundle
       - run:
@@ -54,13 +82,62 @@ commands:
     steps:
       - macos/preboot-simulator:
           platform: "iOS"
-          version: "17.4"
-          device: "iPhone 15"
+          version: "27.0"
+          device: "iPhone 18 Pro"
+
+  parse_and_upload_coverage:
+    description: "Convert .xcresult → Cobertura XML and upload to Codecov"
+    parameters:
+      # Directory or file created by -resultBundlePath (ex: build/UnitTests.xcresult)
+      path: { type: string }
+      # Codecov flag (ex: aepoptimize-ios-unit-tests)
+      flag: { type: string }
+    steps:
+      - run:
+          name: Install xcresultparser
+          command: brew list xcresultparser || brew install xcresultparser
+
+      - run:
+          name: Parse .xcresult bundle(s)
+          command: |
+            set -eo pipefail
+            mkdir -p ./build/coverage
+
+            BUNDLE="<< parameters.path >>"
+
+            if [ -d "$BUNDLE" ]; then
+              echo "Directory given; searching for .xcresult…"
+              RESULT_FILES=$(find "$BUNDLE" -name "*.xcresult")
+              [ -z "$RESULT_FILES" ] && { echo "No .xcresult found"; exit 0; }
+
+              # Merge if there is more than one bundle
+              COUNT=$(echo "$RESULT_FILES" | wc -w)
+              if [ "$COUNT" -gt 1 ]; then
+                echo "Merging $COUNT result bundles"
+                MERGE_CMD="xcrun xccov merge --output ./build/Merged.xcresult"
+                for f in $RESULT_FILES; do MERGE_CMD="$MERGE_CMD $f"; done
+                eval "$MERGE_CMD"
+                xcresultparser --output-format cobertura ./build/Merged.xcresult > ./build/coverage/coverage.xml
+              else
+                echo "Single bundle found"
+                xcresultparser --output-format cobertura $RESULT_FILES > ./build/coverage/coverage.xml
+              fi
+            else
+              echo "File given; parsing $BUNDLE"
+              xcresultparser --output-format cobertura "$BUNDLE" > ./build/coverage/coverage.xml
+            fi
+
+      - codecov/upload:
+          files: ./build/coverage/coverage.xml
+          flags: << parameters.flag >>
+          upload_name: << parameters.flag >>
+          disable_search: true
 
 jobs:
   validate-code:
+    resource_class: m4pro.medium
     macos:
-      xcode: 15.3.0 # Specify the Xcode version to use
+      xcode: 27.0.0 # Specify the Xcode version to use
 
     steps:
       - checkout
@@ -79,9 +156,10 @@ jobs:
           name: Check Source Code Formatting
           command: make check-format
 
-  test-ios:
+  test-ios-unit:
+    resource_class: m4pro.medium
     macos:
-      xcode: 15.3.0 # Specify the Xcode version to use
+      xcode: 27.0.0 # Specify the Xcode version to use
 
     steps:
       - checkout
@@ -91,19 +169,53 @@ jobs:
       - prestart_ios_simulator
 
       - run:
-          name: Run AEPOptimize Tests
-          command: make test
+          name: Run Unit Tests
+          command: make unit-test
 
-      # Code coverage upload using Codecov
-      # See options explanation here: https://docs.codecov.com/docs/codecov-uploader
-      # - codecov/upload:
-      #     flags: aepoptimize-ios-tests
-      #     upload_name: Coverage Report for AEPOptimize iOS Tests
-      #     xtra_args: -c -v --xc --xp ./build/AEPOptimize.xcresult
+      - parse_and_upload_coverage:
+          path: build/UnitTests.xcresult
+          flag: aepoptimize-ios-unit-tests
 
-  test-spm-podspec-archive:  
+  test-ios-functional:
+    resource_class: m4pro.medium
     macos:
-      xcode: 15.3.0 # Specify the Xcode version to use
+      xcode: 27.0.0 # Specify the Xcode version to use
+
+    steps:
+      - checkout
+
+      - install_dependencies
+
+      - prestart_ios_simulator
+
+      - run:
+          name: Run Functional Tests
+          command: make functional-test
+
+      - parse_and_upload_coverage:
+          path: build/FunctionalTests.xcresult
+          flag: aepoptimize-ios-functional-tests
+
+  test-ios-integration:
+    resource_class: m4pro.medium
+    macos:
+      xcode: 27.0.0 # Specify the Xcode version to use
+
+    steps:
+      - checkout
+
+      - install_dependencies
+
+      - prestart_ios_simulator
+
+      - run:
+          name: Run Integration Tests
+          command: make integration-test
+
+  test-spm-podspec-archive:
+    resource_class: m4pro.medium
+    macos:
+      xcode: 27.0.0 # Specify the Xcode version to use
     
     steps:
       - checkout
@@ -130,3 +242,30 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "main" ] || [ "${CIRCLE_BRANCH}" == "staging" ]; then
               make test-SPM-integration
             fi
+
+  build-swift6:
+    resource_class: m4pro.medium
+    macos:
+      xcode: 27.0.0
+
+    steps:
+      - checkout
+      - install_dependencies
+      - run:
+          name: Build AEPOptimize in Swift 6 language mode (dependencies keep their modes)
+          command: make build-swift6
+      - run:
+          name: Build Swift 6 consumer (plain closures from @MainActor)
+          command: make test-swift6-consumer
+
+  build-min-toolchain:
+    resource_class: m4pro.medium
+    macos:
+      xcode: 15.4.0
+
+    steps:
+      - checkout
+      - install_dependencies
+      - run:
+          name: Build SDK on minimum supported toolchain (Xcode 15.4 / Swift 5.10)
+          command: make build-min-toolchain

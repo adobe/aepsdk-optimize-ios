@@ -23,9 +23,26 @@ class MockExtension: NSObject, Extension {
         self.runtime = runtime
     }
 
-    static var registrationClosure: (() -> Void)?
-    static var unregistrationClosure: (() -> Void)?
-    static var eventReceivedClosure: ((Event) -> Void)?
+    // Tests set and reset these hooks on the main thread while the EventHub queue reads them, so the storage is guarded by a lock. That makes the nonisolated(unsafe) opt out for Swift 6 actually safe.
+    private static let hooksLock = NSLock()
+    nonisolated(unsafe) private static var _registrationClosure: (() -> Void)?
+    nonisolated(unsafe) private static var _unregistrationClosure: (() -> Void)?
+    nonisolated(unsafe) private static var _eventReceivedClosure: ((Event) -> Void)?
+
+    static var registrationClosure: (() -> Void)? {
+        get { hooksLock.lock(); defer { hooksLock.unlock() }; return _registrationClosure }
+        set { hooksLock.lock(); defer { hooksLock.unlock() }; _registrationClosure = newValue }
+    }
+
+    static var unregistrationClosure: (() -> Void)? {
+        get { hooksLock.lock(); defer { hooksLock.unlock() }; return _unregistrationClosure }
+        set { hooksLock.lock(); defer { hooksLock.unlock() }; _unregistrationClosure = newValue }
+    }
+
+    static var eventReceivedClosure: ((Event) -> Void)? {
+        get { hooksLock.lock(); defer { hooksLock.unlock() }; return _eventReceivedClosure }
+        set { hooksLock.lock(); defer { hooksLock.unlock() }; _eventReceivedClosure = newValue }
+    }
 
     static func reset() {
         registrationClosure = nil
